@@ -33,11 +33,11 @@ public class EachCommand extends AbstractCommand {
             context.putVar(var, obj);
             Size size = area.applyAt(currentPos, context);
             if( byRows ){
-                currentPos = new Pos(currentPos.getRow() + size.getHeight(), currentPos.getCol());
+                currentPos = new Pos(currentPos.getX() + size.getHeight(), currentPos.getY());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
             }else{
-                currentPos = new Pos(currentPos.getRow(), currentPos.getCol() + size.getWidth());
+                currentPos = new Pos(currentPos.getX(), currentPos.getY() + size.getWidth());
                 width += size.getWidth();
                 height = Math.max( height, size.getHeight() );
             }

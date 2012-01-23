@@ -12,8 +12,8 @@ import com.jxls.writer.Size
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new BaseComand(new Pos(5, 10), new Size(5,5))
-            def elseArea = new BaseComand(new Pos(10,10), new Size(3,3))
+            def ifArea = new BaseCommand(new Pos(5, 10), new Size(5,5))
+            def elseArea = new BaseCommand(new Pos(10,10), new Size(3,3))
             def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2, 4), new Size(1,1),
                     ifArea, elseArea );
         then:
@@ -26,7 +26,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseComand(new Pos(5, 10), new Size(5,5)), new BaseComand(new Pos(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)), new BaseCommand(new Pos(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -40,7 +40,7 @@ class IfCommandTest extends Specification{
     
     def "test size" (){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseComand(new Pos(5, 10), new Size(5,5)), new BaseComand(new Pos(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)), new BaseCommand(new Pos(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -54,7 +54,7 @@ class IfCommandTest extends Specification{
     
     def "test size without else section"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseComand(new Pos(5, 10), new Size(5,5)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)))
             def context = new Context()
         when:
             context.putVar("x", xValue)

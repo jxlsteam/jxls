@@ -1,7 +1,6 @@
 package com.jxls.writer.poi;
 
 import com.jxls.writer.Pos;
-import com.jxls.writer.BeanContext;
 import com.jxls.writer.XlsProxy;
 import com.jxls.writer.command.Context;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -25,13 +24,13 @@ public class PoiSheetXlsProxy implements XlsProxy {
 
     public void processCell(Pos pos, Pos newPos, Context context) {
         XlsCellInfo cellInfo = sheetInfo.getPos(pos);
-        Row row = sheet.getRow( newPos.getRow() );
+        Row row = sheet.getRow( newPos.getX() );
         if( row == null ){
-            row = sheet.createRow( newPos.getRow() );
+            row = sheet.createRow( newPos.getX() );
         }
-        Cell cell = row.getCell( newPos.getCol() );
+        Cell cell = row.getCell( newPos.getY() );
         if( cell == null ){
-            cell = row.createCell( newPos.getCol() );
+            cell = row.createCell( newPos.getY() );
         }
         cellInfo.writeToCell( cell );
     }

@@ -19,12 +19,12 @@ public class IfCommand extends AbstractCommand {
     public IfCommand(String condition, Pos pos, Size initialSize, Command ifArea, Command elseArea){
         super(pos, initialSize);
         this.condition = condition;
-        this.ifArea = ifArea != null ? ifArea : BaseComand.EMPTY_COMAND;
-        this.elseArea = elseArea != null ? elseArea : BaseComand.EMPTY_COMAND;
+        this.ifArea = ifArea != null ? ifArea : BaseCommand.EMPTY_COMMAND;
+        this.elseArea = elseArea != null ? elseArea : BaseCommand.EMPTY_COMMAND;
     }
 
-    public IfCommand(String condition, Pos pos, Size initialSize,  BaseComand ifArea) {
-        this(condition, pos, initialSize, ifArea, BaseComand.EMPTY_COMAND);
+    public IfCommand(String condition, Pos pos, Size initialSize,  BaseCommand ifArea) {
+        this(condition, pos, initialSize, ifArea, BaseCommand.EMPTY_COMMAND);
     }
 
     public Size applyAt(Pos pos, Context context) {

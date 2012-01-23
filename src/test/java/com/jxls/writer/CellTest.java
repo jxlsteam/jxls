@@ -12,8 +12,8 @@ public class CellTest {
     @Test
     public void construction(){
         Pos pos = new Pos(10, 20);
-        assertEquals("Pos row was set incorrectly", 10, pos.getRow() );
-        assertEquals("Pos col was set incorrectly", 20, pos.getCol() );
+        assertEquals("Pos x was set incorrectly", 10, pos.getX() );
+        assertEquals("Pos y was set incorrectly", 20, pos.getY() );
     }
 
     @Test

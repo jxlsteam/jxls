@@ -6,35 +6,35 @@ package com.jxls.writer;
  * @author Leonid Vysochyn
  */
 public class Pos {
-    int col;
-    int row;
+    int y;
+    int x;
 
-    public Pos(int row, int col) {
-        this.row = row;
-        this.col = col;
+    public Pos(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public int getCol() {
-        return col;
+    public int getY() {
+        return y;
     }
 
-    public int getRow() {
-        return row;
+    public int getX() {
+        return x;
     }
 
     public Pos add(Size size){
-        return new Pos(row + size.getHeight(), col + size.getWidth());
+        return new Pos(x + size.getWidth(), y + size.getHeight());
     }
 
     public Pos append(Size size){
-        row += size.getHeight();
-        col += size.getWidth();
+        x += size.getWidth();
+        y += size.getHeight();
         return this;
     }
 
     @Override
     public String toString() {
-        return "(" + row + "," + col + ")";    
+        return "(" + x + "," + y + ")";
     }
 
     @Override
@@ -44,36 +44,36 @@ public class Pos {
 
         Pos pos = (Pos) o;
 
-        if (col != pos.col) return false;
-        if (row != pos.row) return false;
+        if (y != pos.y) return false;
+        if (x != pos.x) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = col;
-        result = 31 * result + row;
+        int result = y;
+        result = 31 * result + x;
         return result;
     }
 
     public boolean isLower(Pos pos) {
-        return row > pos.getRow();
+        return y > pos.getY();
     }
 
     public boolean isOnTheRightOf(Pos pos){
-        return col > pos.getCol();
+        return x > pos.getX();
     }
 
     public Size minus(Pos pos) {
-        return new Size(col - pos.getCol(), row - pos.getRow());
+        return new Size(x - pos.getX(), y - pos.getY());
     }
 
-    public Pos addColModification(int colChange) {
-        return new Pos(row, col + colChange);
+    public Pos addYModification(int yChange) {
+        return new Pos(x, y + yChange);
     }
 
-    public Pos addRowModification(int rowChange) {
-        return new Pos(row + rowChange, col);
+    public Pos addXModification(int xChange) {
+        return new Pos(x + xChange, y);
     }
 }

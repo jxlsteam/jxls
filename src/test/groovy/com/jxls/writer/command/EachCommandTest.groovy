@@ -11,7 +11,7 @@ import com.jxls.writer.Size
 class EachCommandTest extends Specification{
     def "test init"(){
         when:
-            def area = new BaseComand(new Pos(20, 20), new Size(4, 5))
+            def area = new BaseCommand(new Pos(20, 20), new Size(4, 5))
             def eachCommand = new EachCommand(new Pos(1,2), new Size(2,3), "x", "dataList", area)
         then:
             assert eachCommand.pos == new Pos(1,2)
@@ -23,7 +23,7 @@ class EachCommandTest extends Specification{
 
     def "test size"(){
         given:
-            def area = new BaseComand(new Pos(20, 20), new Size(4, 5))
+            def area = new BaseCommand(new Pos(20, 20), new Size(4, 5))
             def eachCommand = new EachCommand(new Pos(1,2), new Size(2,3), "x", "dataList", area)
             def context = new Context()
         when:
