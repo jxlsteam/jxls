@@ -1,6 +1,6 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.Pos;
+import com.jxls.writer.Cell;
 import com.jxls.writer.Size;
 import com.jxls.writer.transform.Transformer;
 
@@ -12,27 +12,27 @@ import java.util.List;
  * Date: 1/16/12 6:44 PM
  */
 public class BaseCommand implements Command {
-    public static final BaseCommand EMPTY_COMMAND = new BaseCommand(new Pos(0,0), Size.ZERO_SIZE);
+    public static final BaseCommand EMPTY_COMMAND = new BaseCommand(new Cell(0,0), Size.ZERO_SIZE);
 
     List<Command> commands;
     Transformer transformer;
     
-    Pos pos;
+    Cell cell;
     Size initialSize;
 
-    public BaseCommand(Pos pos, Size initialSize, List<Command> commands, Transformer transformer) {
-        this.pos = pos;
+    public BaseCommand(Cell cell, Size initialSize, List<Command> commands, Transformer transformer) {
+        this.cell = cell;
         this.initialSize = initialSize;
         this.commands = commands != null ? commands : new ArrayList<Command>();
         this.transformer = transformer;
     }
 
-    public BaseCommand(Pos pos, Size initialSize) {
-        this(pos, initialSize, null, null);
+    public BaseCommand(Cell cell, Size initialSize) {
+        this(cell, initialSize, null, null);
     }
 
-    public BaseCommand(Pos pos, Size initialSize, Transformer transformer) {
-        this(pos, initialSize, null, transformer);
+    public BaseCommand(Cell cell, Size initialSize, Transformer transformer) {
+        this(cell, initialSize, null, transformer);
     }
 
     public void addCommand(Command command){
@@ -48,18 +48,18 @@ public class BaseCommand implements Command {
     }
 
     @Override
-    public Size applyAt(Pos pos, Context context) {
-        int xDelta = pos.getX() - this.pos.getX();
-        int yDelta = pos.getY() - this.pos.getY();
+    public Size applyAt(Cell cell, Context context) {
+        int colDelta = cell.getCol() - this.cell.getCol();
+        int rowDelta = cell.getRow() - this.cell.getRow();
         for(Command command: commands){
-            Pos newPos = new Pos(command.getPos().getX() + xDelta, command.getPos().getY() + yDelta);
-            command.applyAt(newPos, context);
+            Cell newCell = new Cell(command.getStartCell().getCol() + colDelta, command.getStartCell().getRow() + rowDelta);
+            command.applyAt(newCell, context);
         }
-        for(int x = this.pos.getX(), maxX = this.pos.getX() + initialSize.getWidth(); x < maxX; x++){
-            for(int y = this.pos.getY(), maxY = this.pos.getY() + initialSize.getHeight(); y < maxY; y++){
-                Pos origPos = new Pos(x,y);
-                Pos newPos = new Pos(x + xDelta, y + yDelta);
-                transformer.transform(origPos, newPos, context);
+        for(int x = this.cell.getCol(), maxX = this.cell.getCol() + initialSize.getWidth(); x < maxX; x++){
+            for(int y = this.cell.getRow(), maxY = this.cell.getRow() + initialSize.getHeight(); y < maxY; y++){
+                Cell origCell = new Cell(x,y);
+                Cell newCell = new Cell(x + colDelta, y + rowDelta);
+                transformer.transform(origCell, newCell, context);
             }
         }
         return null;
@@ -85,8 +85,8 @@ public class BaseCommand implements Command {
     }
 
     @Override
-    public Pos getPos() {
-        return pos;
+    public Cell getStartCell() {
+        return cell;
     }
 
     @Override

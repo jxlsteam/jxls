@@ -2,8 +2,8 @@ package com.jxls.writer.command
 
 import spock.lang.Specification
 
-import com.jxls.writer.Pos
 import com.jxls.writer.Size
+import com.jxls.writer.Cell
 
 /**
  * @author Leonid Vysochyn
@@ -12,13 +12,13 @@ import com.jxls.writer.Size
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new BaseCommand(new Pos(5, 10), new Size(5,5))
-            def elseArea = new BaseCommand(new Pos(10,10), new Size(3,3))
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2, 4), new Size(1,1),
+            def ifArea = new BaseCommand(new Cell(5, 10), new Size(5,5))
+            def elseArea = new BaseCommand(new Cell(10,10), new Size(3,3))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2, 4), new Size(1,1),
                     ifArea, elseArea );
         then:
             assert ifCommand.initialSize == new Size(1,1)
-            assert ifCommand.pos == new Pos(2,4)
+            assert ifCommand.startCell == new Cell(2,4)
             assert ifCommand.condition == "2*x + 5 > 10"
             assert ifCommand.ifArea == ifArea
             assert ifCommand.elseArea == elseArea
@@ -26,7 +26,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)), new BaseCommand(new Pos(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)), new BaseCommand(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -40,7 +40,7 @@ class IfCommandTest extends Specification{
     
     def "test size" (){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)), new BaseCommand(new Pos(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)), new BaseCommand(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -54,7 +54,7 @@ class IfCommandTest extends Specification{
     
     def "test size without else section"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), new BaseCommand(new Pos(5, 10), new Size(5,5)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -70,13 +70,13 @@ class IfCommandTest extends Specification{
         given:
             def ifArea = Mock(Command)
             def elseArea = Mock(Command)
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), ifArea, elseArea)
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
             context.putVar("x", 2)
-            ifCommand.applyAt(new Pos(1,1), context)
+            ifCommand.applyAt(new Cell(1,1), context)
         then:
-            1 * elseArea.applyAt(new Pos(1,1), context)
+            1 * elseArea.applyAt(new Cell(1,1), context)
             0 * _._
     }
 
@@ -84,13 +84,13 @@ class IfCommandTest extends Specification{
         given:
             def ifArea = Mock(Command)
             def elseArea = Mock(Command)
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Pos(2,4), new Size(1,1), ifArea, elseArea)
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
             context.putVar("x", 3)
-            ifCommand.applyAt(new Pos(1,1), context)
+            ifCommand.applyAt(new Cell(1,1), context)
         then:
-            1 * ifArea.applyAt(new Pos(1,1), context)
+            1 * ifArea.applyAt(new Cell(1,1), context)
             0 * _._
     }
 

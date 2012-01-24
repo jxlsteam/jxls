@@ -9,19 +9,19 @@ import java.util.ArrayList;
  * @author Leonid Vysochyn
  */
 public class Location {
-    Pos pos;
+    Cell cell;
     Size size;
 
-    List<Pos> posList;
+    List<Cell> cellList;
     private XlsProxy xlsProxy;
 
-    public Location(Pos pos, Size size) {
-        this.pos = pos;
+    public Location(Cell cell, Size size) {
+        this.cell = cell;
         this.size = size;
     }
 
-    public Pos getPos() {
-        return pos;
+    public Cell getCell() {
+        return cell;
     }
 
     public Size getSize() {
@@ -29,28 +29,28 @@ public class Location {
     }
 
     public int getRightmostCol(){
-        return pos.getY() + size.getWidth();
+        return cell.getRow() + size.getWidth();
     }
 
     public int getLowestRow(){
-        return pos.getX() + size.getHeight();
+        return cell.getCol() + size.getHeight();
     }
 
-    List<Pos> getPosList(){
-        if( posList == null ){
-            posList = new ArrayList<Pos>();
-            for( int row = pos.getX(); row <= pos.getX() + size.getHeight(); row++){
-                for( int col = pos.getY(); col <= pos.getY() + size.getWidth(); col++){
-                    posList.add( new Pos(row, col));
+    List<Cell> getCellList(){
+        if( cellList == null ){
+            cellList = new ArrayList<Cell>();
+            for( int row = cell.getCol(); row <= cell.getCol() + size.getHeight(); row++){
+                for( int col = cell.getRow(); col <= cell.getRow() + size.getWidth(); col++){
+                    cellList.add( new Cell(row, col));
                 }
             }
         }
-        return posList;
+        return cellList;
     }
 
     @Override
     public String toString() {
-        return "Pos: " + pos + ", Size: " + size;    
+        return "Cell: " + cell + ", Size: " + size;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Location {
 
         Location location = (Location) o;
 
-        if (pos != null ? !pos.equals(location.pos) : location.pos != null) return false;
+        if (cell != null ? !cell.equals(location.cell) : location.cell != null) return false;
         if (size != null ? !size.equals(location.size) : location.size != null) return false;
 
         return true;
@@ -68,17 +68,17 @@ public class Location {
 
     @Override
     public int hashCode() {
-        int result = pos != null ? pos.hashCode() : 0;
+        int result = cell != null ? cell.hashCode() : 0;
         result = 31 * result + (size != null ? size.hashCode() : 0);
         return result;
     }
 
     public boolean isOnTheLeftOf(Location location) {
-        if( pos.getY() < location.getPos().getY() ){
-            int startRow = pos.getX();
-            int endRow = pos.getX() + size.getHeight();
-            int startRow2 = location.getPos().getX();
-            int endRow2 = location.getPos().getX() + size.getHeight();
+        if( cell.getRow() < location.getCell().getRow() ){
+            int startRow = cell.getCol();
+            int endRow = cell.getCol() + size.getHeight();
+            int startRow2 = location.getCell().getCol();
+            int endRow2 = location.getCell().getCol() + size.getHeight();
             return (startRow >= startRow2 && startRow <= endRow2 ) ||
                     (startRow2 >= startRow && startRow2 <= endRow);
         }else{
@@ -87,11 +87,11 @@ public class Location {
     }
 
     public boolean isAbove(Location location) {
-        if( pos.getX() < location.getPos().getX() ){
-            int startCol = pos.getY();
-            int endCol = pos.getY() + size.getWidth();
-            int startCol2 = location.getPos().getY();
-            int endCol2 = location.getPos().getY() + location.getSize().getWidth();
+        if( cell.getCol() < location.getCell().getCol() ){
+            int startCol = cell.getRow();
+            int endCol = cell.getRow() + size.getWidth();
+            int startCol2 = location.getCell().getRow();
+            int endCol2 = location.getCell().getRow() + location.getSize().getWidth();
             return (startCol >= startCol2 && startCol <= endCol2) ||
                     (startCol2 >= startCol && startCol2 <= endCol );
         }else{
@@ -103,51 +103,51 @@ public class Location {
         this.xlsProxy = xlsProxy;
     }
 
-    public boolean contains(Pos pos) {
-        return containsRow(pos.getX()) && containsCol(pos.getY());
+    public boolean contains(Cell cell) {
+        return containsRow(cell.getCol()) && containsCol(cell.getRow());
     }
 
     private boolean containsCol(int col) {
-        return pos.getY() <= col && pos.getY() +
+        return cell.getRow() <= col && cell.getRow() +
                 size.getWidth() >= col;
     }
 
     private boolean containsRow(int row) {
-        return pos.getX() <= row && pos.getX() +
+        return cell.getCol() <= row && cell.getCol() +
                 size.getHeight() >= row;
     }
 
-    public boolean isOnTheLeftOf(Pos aPos) {
-        if( pos.getY() < aPos.getY() ){
-            int startRow = pos.getX();
-            int endRow = pos.getX() + size.getHeight();
-            return (startRow <= aPos.getX() && endRow >= aPos.getX() );
+    public boolean isOnTheLeftOf(Cell aCell) {
+        if( cell.getRow() < aCell.getRow() ){
+            int startRow = cell.getCol();
+            int endRow = cell.getCol() + size.getHeight();
+            return (startRow <= aCell.getCol() && endRow >= aCell.getCol() );
         }else{
             return false;
         }
     }
 
-    public boolean isAbove(Pos aPos) {
-        if( pos.getX() < aPos.getX() ){
-            int startCol = pos.getY();
-            int endCol = pos.getY() + size.getWidth();
-            return (startCol <= aPos.getY() && endCol >= aPos.getY());
+    public boolean isAbove(Cell aCell) {
+        if( cell.getCol() < aCell.getCol() ){
+            int startCol = cell.getRow();
+            int endCol = cell.getRow() + size.getWidth();
+            return (startCol <= aCell.getRow() && endCol >= aCell.getRow());
         }else{
             return false;
         }
     }
 
     public Location addPosColModification(int colChange) {
-        Pos newPos = pos.addYModification(colChange);
-        return new Location(newPos, size);
+        Cell newCell = cell.addYModification(colChange);
+        return new Location(newCell, size);
     }
 
     public Location addPosRowModification(int rowChange) {
-        Pos newPos = pos.addXModification(rowChange);
-        return new Location(newPos, size);
+        Cell newCell = cell.addXModification(rowChange);
+        return new Location(newCell, size);
     }
 
-    public Pos getLeftBottomPos() {
-        return new Pos(pos.getX() + size.getHeight(), pos.y);
+    public Cell getLeftBottomPos() {
+        return new Cell(cell.getCol() + size.getHeight(), cell.row);
     }
 }

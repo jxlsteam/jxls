@@ -9,42 +9,42 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class PosMap {
-    private List<Pos> destination = new ArrayList<Pos>();
-    private Pos origin;
+    private List<Cell> destination = new ArrayList<Cell>();
+    private Cell origin;
 
-    public PosMap(Pos origin, List<Pos> destination) {
+    public PosMap(Cell origin, List<Cell> destination) {
         this.origin = origin;
         this.destination = destination;
     }
 
-    public PosMap(Pos origin) {
+    public PosMap(Cell origin) {
         this.origin = origin;
     }
 
     public PosMap() {
     }
 
-    public void addToDestination(Pos pos){
-        destination.add( pos );
+    public void addToDestination(Cell cell){
+        destination.add(cell);
     }
 
-    public void setDestination(List<Pos> destination) {
+    public void setDestination(List<Cell> destination) {
         this.destination = destination;
     }
 
-    public List<Pos> getDestination() {
+    public List<Cell> getDestination() {
         return destination;
     }
 
     public void combine(PosMap posMap) {
         if( posMap.isOneToOneMap() ){
             Size delta = posMap.getDelta();
-            List<Pos> newDestination = new ArrayList<Pos>();
+            List<Cell> newDestination = new ArrayList<Cell>();
             if( destination.isEmpty() ){
                 newDestination.add( posMap.getDestination().get(0) );
             }else{
-                for (Pos pos : destination) {
-                    newDestination.add(pos.add(delta));
+                for (Cell cell : destination) {
+                    newDestination.add(cell.add(delta));
                 }
             }
             destination = newDestination;

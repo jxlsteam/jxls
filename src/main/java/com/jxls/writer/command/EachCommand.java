@@ -17,27 +17,27 @@ public class EachCommand extends AbstractCommand {
     boolean byRows = true;
     Command area;
 
-    public EachCommand(Pos pos, Size initialSize, String var, String items, Command area) {
-        super(pos, initialSize);
+    public EachCommand(Cell cell, Size initialSize, String var, String items, Command area) {
+        super(cell, initialSize);
         this.var = var;
         this.items = items;
         this.area = area;
     }
 
-    public Size applyAt(Pos pos, Context context) {
+    public Size applyAt(Cell cell, Context context) {
         Collection itemsCollection = calculateItemsCollection(context);
-        Pos currentPos = pos;
+        Cell currentCell = cell;
         int width = 0;
         int height = 0;
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
-            Size size = area.applyAt(currentPos, context);
+            Size size = area.applyAt(currentCell, context);
             if( byRows ){
-                currentPos = new Pos(currentPos.getX() + size.getHeight(), currentPos.getY());
+                currentCell = new Cell(currentCell.getCol() + size.getHeight(), currentCell.getRow());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
             }else{
-                currentPos = new Pos(currentPos.getX(), currentPos.getY() + size.getWidth());
+                currentCell = new Cell(currentCell.getCol(), currentCell.getRow() + size.getWidth());
                 width += size.getWidth();
                 height = Math.max( height, size.getHeight() );
             }

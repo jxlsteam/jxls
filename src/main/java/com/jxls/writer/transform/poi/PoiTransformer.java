@@ -1,9 +1,8 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.Pos;
+import com.jxls.writer.Cell;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.Transformer;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,19 +20,20 @@ public class PoiTransformer implements Transformer {
     }
 
     @Override
-    public void transform(Pos pos, Pos newPos, Context context) {
-        Sheet sheet = workbook.getSheetAt(0);
-        Row row = sheet.getRow(pos.getY());
-        Cell cell = row.getCell(pos.getX());
+    public void transform(Cell pos, Cell newCell, Context context) {
+        Sheet sheet = workbook.getSheetAt(pos.getSheetIndex());
+        Row row = sheet.getRow(pos.getRow());
+        org.apache.poi.ss.usermodel.Cell cell = row.getCell(pos.getCol());
         if (cell != null) {
             CellData cellData = CellData.createCellData(cell);
-            Row destRow = sheet.getRow(newPos.getY());
+            Sheet destSheet = workbook.getSheetAt(newCell.getSheetIndex());
+            Row destRow = destSheet.getRow(newCell.getRow());
             if (destRow == null) {
-                destRow = sheet.createRow(newPos.getY());
+                destRow = destSheet.createRow(newCell.getRow());
             }
-            Cell destCell = destRow.getCell(newPos.getX());
+            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newCell.getCol());
             if (destCell == null) {
-                destCell = destRow.createCell(newPos.getX());
+                destCell = destRow.createCell(newCell.getCol());
             }
             cellData.writeToCell(destCell, context);
         }

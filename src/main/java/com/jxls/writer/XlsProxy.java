@@ -1,6 +1,5 @@
 package com.jxls.writer;
 
-import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
 
 
@@ -11,6 +10,6 @@ import com.jxls.writer.command.Context;
  */
 public interface XlsProxy {
 
-    void processCell(Pos pos, Pos newPos, Context context);
+    void processCell(Cell cell, Cell newCell, Context context);
 
 }

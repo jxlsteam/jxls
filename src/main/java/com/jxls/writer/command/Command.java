@@ -9,11 +9,11 @@ import com.jxls.writer.*;
  */
 public interface Command {
 
-    Pos getPos();
+    Cell getStartCell();
 
     Size getInitialSize();
 
-    Size applyAt(Pos pos, Context context);
+    Size applyAt(Cell cell, Context context);
 
     Size getSize(Context context);
 

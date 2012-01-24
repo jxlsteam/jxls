@@ -17,23 +17,23 @@ public class ContextTest {
     @Test
     public void addVars(){
         Context context = new Context();
-        context.putVar("x", 1);
-        context.putVar("y", 2);
+        context.putVar("col", 1);
+        context.putVar("row", 2);
         context.putVar("obj", "12345");
         Map vars = context.toMap();
-        assertEquals(vars.get("x"), 1);
-        assertEquals(vars.get("y"), 2);
+        assertEquals(vars.get("col"), 1);
+        assertEquals(vars.get("row"), 2);
         assertEquals(vars.get("obj"), "12345");
     }
 
     @Test
     public void removeVar(){
         Context context = new Context();
-        context.putVar("x", 1);
+        context.putVar("col", 1);
         Map vars = context.toMap();
-        assertEquals(vars.get("x"), 1);
-        context.removeVar("x");
+        assertEquals(vars.get("col"), 1);
+        context.removeVar("col");
         vars = context.toMap();
-        assertFalse( vars.containsKey("x") );
+        assertFalse( vars.containsKey("col") );
     }
 }

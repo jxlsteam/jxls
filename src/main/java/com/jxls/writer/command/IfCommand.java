@@ -16,23 +16,23 @@ public class IfCommand extends AbstractCommand {
     Command ifArea;
     Command elseArea;
     
-    public IfCommand(String condition, Pos pos, Size initialSize, Command ifArea, Command elseArea){
-        super(pos, initialSize);
+    public IfCommand(String condition, Cell cell, Size initialSize, Command ifArea, Command elseArea){
+        super(cell, initialSize);
         this.condition = condition;
         this.ifArea = ifArea != null ? ifArea : BaseCommand.EMPTY_COMMAND;
         this.elseArea = elseArea != null ? elseArea : BaseCommand.EMPTY_COMMAND;
     }
 
-    public IfCommand(String condition, Pos pos, Size initialSize,  BaseCommand ifArea) {
-        this(condition, pos, initialSize, ifArea, BaseCommand.EMPTY_COMMAND);
+    public IfCommand(String condition, Cell cell, Size initialSize,  BaseCommand ifArea) {
+        this(condition, cell, initialSize, ifArea, BaseCommand.EMPTY_COMMAND);
     }
 
-    public Size applyAt(Pos pos, Context context) {
+    public Size applyAt(Cell cell, Context context) {
         conditionResult = isConditionTrue(context);
         if( conditionResult ){
-            return ifArea.applyAt(pos, context);
+            return ifArea.applyAt(cell, context);
         }else{
-            return elseArea.applyAt(pos, context);
+            return elseArea.applyAt(cell, context);
         }
     }
 

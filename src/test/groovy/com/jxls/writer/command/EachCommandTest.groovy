@@ -1,7 +1,7 @@
 package com.jxls.writer.command
 
 import spock.lang.Specification
-import com.jxls.writer.Pos
+import com.jxls.writer.Cell
 import com.jxls.writer.Size
 
 /**
@@ -11,10 +11,10 @@ import com.jxls.writer.Size
 class EachCommandTest extends Specification{
     def "test init"(){
         when:
-            def area = new BaseCommand(new Pos(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Pos(1,2), new Size(2,3), "x", "dataList", area)
+            def area = new BaseCommand(new Cell(20, 20), new Size(4, 5))
+            def eachCommand = new EachCommand(new Cell(1,2), new Size(2,3), "x", "dataList", area)
         then:
-            assert eachCommand.pos == new Pos(1,2)
+            assert eachCommand.startCell == new Cell(1,2)
             assert eachCommand.initialSize == new Size(2,3)
             assert eachCommand.var == "x"
             assert eachCommand.items == "dataList"
@@ -23,8 +23,8 @@ class EachCommandTest extends Specification{
 
     def "test size"(){
         given:
-            def area = new BaseCommand(new Pos(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Pos(1,2), new Size(2,3), "x", "dataList", area)
+            def area = new BaseCommand(new Cell(20, 20), new Size(4, 5))
+            def eachCommand = new EachCommand(new Cell(1,2), new Size(2,3), "x", "dataList", area)
             def context = new Context()
         when:
             context.putVar("dataList", dataList)

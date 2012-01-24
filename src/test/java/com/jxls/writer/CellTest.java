@@ -11,14 +11,14 @@ import static org.junit.Assert.assertEquals;
 public class CellTest {
     @Test
     public void construction(){
-        Pos pos = new Pos(10, 20);
-        assertEquals("Pos x was set incorrectly", 10, pos.getX() );
-        assertEquals("Pos y was set incorrectly", 20, pos.getY() );
+        Cell cell = new Cell(10, 20);
+        assertEquals("Cell col was set incorrectly", 10, cell.getCol() );
+        assertEquals("Cell row was set incorrectly", 20, cell.getRow() );
     }
 
     @Test
     public void toStringTest(){
-        Pos pos = new Pos(10, 20);
-        assertEquals("toString() is incorrect", "(10,20)", pos.toString() );
+        Cell cell = new Cell(10, 20);
+        assertEquals("toString() is incorrect", "(10,20)", cell.toString() );
     }
 }
