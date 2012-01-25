@@ -17,7 +17,7 @@ public class EachCommand extends AbstractCommand {
     boolean byRows = true;
     Command area;
 
-    public EachCommand(Cell cell, Size initialSize, String var, String items, Command area) {
+    public EachCommand(Cell cell, Size initialSize, String var, String items, Area area) {
         super(cell, initialSize);
         this.var = var;
         this.items = items;

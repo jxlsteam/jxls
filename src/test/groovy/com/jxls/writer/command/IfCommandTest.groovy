@@ -12,8 +12,8 @@ import com.jxls.writer.Cell
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new BaseCommand(new Cell(5, 10), new Size(5,5))
-            def elseArea = new BaseCommand(new Cell(10,10), new Size(3,3))
+            def ifArea = new BaseArea(new Cell(5, 10), new Size(5,5))
+            def elseArea = new BaseArea(new Cell(10,10), new Size(3,3))
             def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2, 4), new Size(1,1),
                     ifArea, elseArea );
         then:
@@ -26,7 +26,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)), new BaseCommand(new Cell(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -40,7 +40,7 @@ class IfCommandTest extends Specification{
     
     def "test size" (){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)), new BaseCommand(new Cell(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -54,7 +54,7 @@ class IfCommandTest extends Specification{
     
     def "test size without else section"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseCommand(new Cell(5, 10), new Size(5,5)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -68,8 +68,8 @@ class IfCommandTest extends Specification{
 
     def "test applyAt when condition is false"(){
         given:
-            def ifArea = Mock(Command)
-            def elseArea = Mock(Command)
+            def ifArea = Mock(Area)
+            def elseArea = Mock(Area)
             def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
@@ -82,8 +82,8 @@ class IfCommandTest extends Specification{
 
     def "test applyAt when condition is true"(){
         given:
-            def ifArea = Mock(Command)
-            def elseArea = Mock(Command)
+            def ifArea = Mock(Area)
+            def elseArea = Mock(Area)
             def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
