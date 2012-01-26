@@ -32,6 +32,18 @@ public class Cell {
         return sheetIndex;
     }
 
+    public void setSheetIndex(int sheetIndex) {
+        this.sheetIndex = sheetIndex;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
+
     public Cell add(Size size){
         return new Cell(col + size.getWidth(), row + size.getHeight());
     }

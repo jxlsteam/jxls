@@ -49,7 +49,7 @@ class BaseAreaTest extends Specification{
             1 * innerArea.applyAt(new Cell(6,8), context) >> new Size(2,5)
     }
     
-    def "test applyAt for simple command"(){
+    def "test applyAt for simple area"(){
         given:
             def area = new BaseArea(new Cell(1,1), new Size(2,3))
             def transformer = Mock(Transformer)
@@ -69,19 +69,26 @@ class BaseAreaTest extends Specification{
     
     def "test applyAt with two inner commands"(){
         given:
-            def area = new BaseArea(new Cell(1,1), new Size(10,15),Mock(Transformer))
+            def transformer = Mock(Transformer)
+            def area = new BaseArea(new Cell(1,1), new Size(10,15), transformer)
             def innerCommand1 = Mock(Command)
             def context = new Context()
             innerCommand1.getInitialSize() >> new Size(2,3)
             area.addCommand(new Pos(1,2), innerCommand1)
             def innerCommand2 = Mock(Command)
             innerCommand2.getInitialSize() >> new Size(4,5)
-            area.addCommand(new Pos(0, 5), innerCommand2)
+            area.addCommand(new Pos(0, 7), innerCommand2)
         when:
             area.applyAt(new Cell(4,5), context)
         then:
             1 * innerCommand1.applyAt(new Cell(5, 7), context) >> new Size(3,6)
-            1 * innerCommand2.applyAt(new Cell(4, 13), context) >> new Size(4,3)
+            1 * innerCommand2.applyAt(new Cell(4, 15), context) >> new Size(4,3)
+            1 * transformer.transform(new Cell(1,1), new Cell(4,5), context)
+            1 * transformer.transform(new Cell(2,6), new Cell(5,13), context)
+            1 * transformer.transform(new Cell(3,6), new Cell(6,13), context)
+            1 * transformer.transform(new Cell(5,3), new Cell(9,7), context)
+//            1 * transformer.transform(new Cell(1,14), new Cell(4,19), context)
+//            1 * transformer.transform(new Cell(1,14), new Cell(4,18), context)
     }
 
 

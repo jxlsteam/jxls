@@ -1,6 +1,7 @@
 package com.jxls.writer.command;
 
 import com.jxls.writer.Cell;
+import com.jxls.writer.CellRange;
 import com.jxls.writer.Pos;
 import com.jxls.writer.Size;
 import com.jxls.writer.transform.Transformer;
@@ -18,6 +19,8 @@ public class BaseArea implements Area {
     List<CommandData> commandDataList;
     Transformer transformer;
     
+    CellRange cellRange;
+    
     Cell startCell;
     Size initialSize;
 
@@ -26,6 +29,7 @@ public class BaseArea implements Area {
         this.initialSize = initialSize;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
+        cellRange = new CellRange(startCell, initialSize.getWidth(), initialSize.getHeight());
     }
 
     public BaseArea(Cell startCell, Size initialSize) {
@@ -55,13 +59,23 @@ public class BaseArea implements Area {
             CommandData commandData = commandDataList.get(i);
             Cell newCell = new Cell(commandData.getStartPos().getCol() + cell.getCol(), commandData.getStartPos().getRow() + cell.getRow(), cell.getSheetIndex());
             Size initialSize = commandData.getCommand().getInitialSize();
-            //Command c = commandData.getCommand();
+            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getCommand().getInitialSize().getWidth() - 1,
+                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight() - 1);
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
             int heightChange = newSize.getHeight() - initialSize.getHeight();
             if( widthChange != 0 || heightChange != 0){
                 widthDelta += widthChange;
                 heightDelta += heightChange;
+                if( widthChange != 0 ){
+                    cellRange.shiftCellsWithRowBlock(commandData.getStartPos().getRow(),
+                            commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight(),
+                            commandData.getStartPos().getCol() + initialSize.getWidth(), widthChange);
+                }
+                if( heightChange != 0 ){
+                    cellRange.shiftCellsWithColBlock(commandData.getStartPos().getCol(),
+                            commandData.getStartPos().getCol() + newSize.getWidth()-1, commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight()-1, heightChange);
+                }
                 for (int j = i + 1; j < commandDataList.size(); j++) {
                     CommandData data = commandDataList.get(j);
                     Command command = data.getCommand();
@@ -81,11 +95,14 @@ public class BaseArea implements Area {
                 }
             }
         }
-        for(int x = startCell.getCol(), maxX = startCell.getCol() + initialSize.getWidth(); x < maxX; x++){
-            for(int y = startCell.getRow(), maxY = startCell.getRow() + initialSize.getHeight(); y < maxY; y++){
-                Cell origCell = new Cell(x,y, startCell.getSheetIndex());
-                Cell newCell = new Cell(x - startCell.getCol() + cell.getCol(), y - startCell.getRow() + cell.getRow(), cell.getSheetIndex());
-                transformer.transform(origCell, newCell, context);
+        for(int x = 0; x < initialSize.getWidth(); x++){
+            for(int y = 0; y < initialSize.getHeight(); y++){
+                if( !cellRange.isExcluded(x,y) ){
+                    Cell relativeCell = cellRange.getCell(x, y);
+                    Cell srcCell = new Cell(startCell.getCol() + x, startCell.getRow() + y);
+                    Cell targetCell = new Cell(relativeCell.getCol() + cell.getCol(), relativeCell.getRow() + cell.getRow());
+                    transformer.transform(srcCell, targetCell, context);
+                }
             }
         }
         return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
