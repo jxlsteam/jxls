@@ -9,14 +9,17 @@ public class CellRange {
     int width;
     int height;
     Cell[][] cells;
+    boolean[][] changeMatrix;
 
     public CellRange(Cell startCell, int width, int height) {
         this.startCell = startCell;
         this.width = width;
         this.height = height;
         cells = new Cell[width][];
+        changeMatrix = new boolean[width][];
         for(int col = 0; col < width; col++){
             cells[col] = new Cell[height];
+            changeMatrix[col] = new boolean[height];
             for(int row = 0; row < height; row++){
                 cells[col][row] = new Cell(col, row);
             }
@@ -32,17 +35,23 @@ public class CellRange {
     }
 
     public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift){
-        for(int i = col+1; i < width; i++){
-            for(int j = startRow; j <= endRow; j++){
-                cells[i][j].setCol( cells[i][j].getCol() + colShift );
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                if( cells[i][j] != null && cells[i][j].getCol() > col && cells[i][j].getRow() >= startRow && cells[i][j].getRow() <= endRow && !changeMatrix[i][j]){
+                    cells[i][j].setCol( cells[i][j].getCol() + colShift );
+                    changeMatrix[i][j] = true;
+                }
             }
         }
     }
     
     public void shiftCellsWithColBlock(int startCol, int endCol, int row, int rowShift){
-        for(int i = startCol; i <= endCol; i++){
-            for(int j = row + 1; j < height; j++){
-                cells[i][j].setRow(cells[i][j].getRow() + rowShift );
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                if(cells[i][j] != null && cells[i][j].getRow() > row && cells[i][j].getCol() >= startCol && cells[i][j].getCol() <= endCol && !changeMatrix[i][j]){
+                    cells[i][j].setRow(cells[i][j].getRow() + rowShift );
+                    changeMatrix[i][j] = true;
+                }
             }
         }
     }
@@ -57,6 +66,18 @@ public class CellRange {
 
     public boolean isExcluded(int col, int row){
         return cells[col][row] == null;
+    }
+
+    public boolean hasChanged(int col, int row){
+        return changeMatrix[col][row];
+    }
+    
+    public void resetChangeMatrix(){
+        for(int i = 0; i < width; i++){
+            for(int j=0; j<height; j++){
+                changeMatrix[i][j] = false;
+            }
+        }
     }
 
 }

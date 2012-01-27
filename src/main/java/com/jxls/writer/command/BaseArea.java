@@ -29,7 +29,6 @@ public class BaseArea implements Area {
         this.initialSize = initialSize;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
-        cellRange = new CellRange(startCell, initialSize.getWidth(), initialSize.getHeight());
     }
 
     public BaseArea(Cell startCell, Size initialSize) {
@@ -51,16 +50,24 @@ public class BaseArea implements Area {
     public void setTransformer(Transformer transformer) {
         this.transformer = transformer;
     }
+    
+    private void createCellRange(){
+        cellRange = new CellRange(startCell, initialSize.getWidth(), initialSize.getHeight());
+        for(CommandData commandData: commandDataList){
+            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getCommand().getInitialSize().getWidth()-1,
+                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight()-1);
+        }
+    }
 
     public Size applyAt(Cell cell, Context context) {
         int widthDelta = 0;
         int heightDelta = 0;
+        createCellRange();
         for (int i = 0; i < commandDataList.size(); i++) {
+            cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
             Cell newCell = new Cell(commandData.getStartPos().getCol() + cell.getCol(), commandData.getStartPos().getRow() + cell.getRow(), cell.getSheetIndex());
             Size initialSize = commandData.getCommand().getInitialSize();
-            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getCommand().getInitialSize().getWidth() - 1,
-                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight() - 1);
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
             int heightChange = newSize.getHeight() - initialSize.getHeight();
@@ -85,11 +92,16 @@ public class BaseArea implements Area {
                             (newCol + command.getInitialSize().getWidth() >= newCell.getCol() && newCol + command.getInitialSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
                             (newCell.getCol() >= newCol && newCell.getCol() <= newCol + command.getInitialSize().getWidth() )
                     )){
+                        cellRange.shiftCellsWithColBlock(data.getStartPos().getCol(),
+                                data.getStartPos().getCol() + data.getCommand().getInitialSize().getWidth()-1, data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1, heightChange);
                         data.setStartPos(new Pos(data.getStartPos().getCol(), data.getStartPos().getRow() + heightChange));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
                    ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + command.getInitialSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
                     newCell.getRow() >= newRow && newCell.getRow() <= newRow + command.getInitialSize().getHeight()) ){
+                        cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
+                                data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1,
+                                data.getStartPos().getCol() + initialSize.getWidth(), widthChange);
                         data.setStartPos(new Pos(data.getStartPos().getCol() + widthChange, data.getStartPos().getRow()));
                     }
                 }

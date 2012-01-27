@@ -77,18 +77,18 @@ class BaseAreaTest extends Specification{
             area.addCommand(new Pos(1,2), innerCommand1)
             def innerCommand2 = Mock(Command)
             innerCommand2.getInitialSize() >> new Size(4,5)
-            area.addCommand(new Pos(0, 7), innerCommand2)
+            area.addCommand(new Pos(0, 6), innerCommand2)
         when:
             area.applyAt(new Cell(4,5), context)
         then:
             1 * innerCommand1.applyAt(new Cell(5, 7), context) >> new Size(3,6)
-            1 * innerCommand2.applyAt(new Cell(4, 15), context) >> new Size(4,3)
+            1 * innerCommand2.applyAt(new Cell(4, 14), context) >> new Size(4,3)
             1 * transformer.transform(new Cell(1,1), new Cell(4,5), context)
             1 * transformer.transform(new Cell(2,6), new Cell(5,13), context)
             1 * transformer.transform(new Cell(3,6), new Cell(6,13), context)
             1 * transformer.transform(new Cell(5,3), new Cell(9,7), context)
-//            1 * transformer.transform(new Cell(1,14), new Cell(4,19), context)
-//            1 * transformer.transform(new Cell(1,14), new Cell(4,18), context)
+            1 * transformer.transform(new Cell(2,14), new Cell(5,19), context)
+            1 * transformer.transform(new Cell(1,14), new Cell(4,19), context)
     }
 
 
