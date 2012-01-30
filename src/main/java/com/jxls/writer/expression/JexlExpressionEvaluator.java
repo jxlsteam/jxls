@@ -33,7 +33,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
             }
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
-            throw new EvaluationException("An error occurred when evaluating expression " + expression);
+            throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
         }
     }
 }

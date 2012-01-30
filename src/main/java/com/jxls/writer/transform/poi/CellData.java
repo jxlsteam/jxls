@@ -27,11 +27,16 @@ public class CellData {
     private int colIndex;
     private Object evaluationResult;
     private String evaluationExpression;
+    private Object cellOriginalValue;
     
     public static CellData createCellData(Cell cell){
         CellData cellData = new CellData();
         cellData.readCell(cell);
         return cellData;
+    }
+    
+    public Object getCellValue(){
+        return cellOriginalValue;
     }
     
     public void evaluate(Context context){
@@ -67,27 +72,33 @@ public class CellData {
             case Cell.CELL_TYPE_STRING:
                 richTextString = cell.getRichStringCellValue();
                 evaluationResult = richTextString.getString();
+                cellOriginalValue = richTextString.getString();
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 booleanValue = cell.getBooleanCellValue();
                 evaluationResult = booleanValue;
+                cellOriginalValue = booleanValue;
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 if(DateUtil.isCellDateFormatted(cell)) {
                     dateValue = cell.getDateCellValue();
                     evaluationResult = dateValue;
+                    cellOriginalValue = dateValue;
                 } else {
                     doubleValue = cell.getNumericCellValue();
                     evaluationResult = doubleValue;
+                    cellOriginalValue = doubleValue;
                 }
                 break;
             case Cell.CELL_TYPE_FORMULA:
                 formula = cell.getCellFormula();
                 evaluationResult = formula;
+                cellOriginalValue = formula;
                 break;
             case Cell.CELL_TYPE_ERROR:
                 errorValue = cell.getErrorCellValue();
                 evaluationResult = errorValue;
+                cellOriginalValue = errorValue;
                 break;
         }
     }
@@ -148,5 +159,15 @@ public class CellData {
         cell.setCellStyle( style );
     }
 
-    
+    @Override
+    public String toString() {
+        return "CellData{" +
+                "col=" + colIndex +
+                ", row=" + rowIndex +
+                ", source cell type=" + cellType +
+                ", target cell type=" + resultCellType +
+                ", eval.expression='" + evaluationExpression + '\'' +
+                ", eval.result=" + evaluationResult +
+                '}';
+    }
 }

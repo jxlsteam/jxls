@@ -36,4 +36,12 @@ public class ContextTest {
         vars = context.toMap();
         assertFalse( vars.containsKey("col") );
     }
+    
+    @Test 
+    public void testToString(){
+        Context context = new Context();
+        context.putVar("x", 1);
+        context.putVar("y", "Abc");
+        assertEquals("Context{y=Abc, x=1}", context.toString() );
+    }
 }

@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Row
 
 import com.jxls.writer.Cell
 import com.jxls.writer.command.Context
+import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
@@ -30,6 +31,22 @@ class PoiTransformerTest extends Specification{
         row2.createCell(0).setCellValue("XYZ")
         row2.createCell(1).setCellValue('${2*y}')
         row2.createCell(2).setCellValue('${4*4}')
+    }
+
+    def "test template cells storage"(){
+        when:
+            def poiTransformer = new PoiTransformer(wb)
+            wb.removeSheetAt(0)
+        then:
+            assert wb.getNumberOfSheets() == 0
+            assert poiTransformer.getCellData(col,row,0).getCellValue() == value
+        where:
+            row | col   | value
+            0   | 0     | new Double(1.5)
+            0   | 1     | '${x}'
+            0   | 2     | '${x*y}'
+            1   | 1     | "SUM(A1:A3)"
+            2   | 0     | "XYZ"
     }
 
     def "test transform string var"(){
@@ -70,6 +87,61 @@ class PoiTransformerTest extends Specification{
             Row row7 = sheet.getRow(7)
             assert row7.getCell(7).cellType == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA
             assert row7.getCell(7).getCellFormula() == "SUM(A1:A3)"
+    }
+
+    def "test transform a cell to other sheet"(){
+        given:
+            def poiTransformer = new PoiTransformer(wb)
+            def context = new Context()
+            context.putVar("x", "Abcde")
+        when:
+            poiTransformer.transform(new Cell(1,0), new Cell(7,7,1), context)
+        then:
+            Sheet sheet = wb.getSheetAt(0)
+            Row row = sheet.getRow(7)
+            assert row == null
+            Sheet sheet1 = wb.getSheetAt(1)
+            Row row1 = sheet1.getRow(7)
+            assert row1.getCell(7).getStringCellValue() == "Abcde"
+    }
+    
+    def "test transform multiple times"(){
+        given:
+            def poiTransformer = new PoiTransformer(wb)
+            def context1 = new Context()
+            context1.putVar("x", "Abcde")
+            def context2 = new Context()
+            context2.putVar("x", "Fghij")
+        when:
+            poiTransformer.transform(new Cell(1,0), new Cell(1, 5), context1)
+            poiTransformer.transform(new Cell(1,0), new Cell(1, 10), context2)
+        then:
+            Sheet sheet = wb.getSheetAt(0)
+            Row row5 = sheet.getRow(5)
+            Row row10 = sheet.getRow(10)
+            assert row5.getCell(1).getStringCellValue() == "Abcde"
+            assert row10.getCell(1).getStringCellValue() == "Fghij"
+    }
+
+    def "test transform overridden cells"(){
+        given:
+        def poiTransformer = new PoiTransformer(wb)
+        def context1 = new Context()
+        context1.putVar("x", "Abcde")
+        def context2 = new Context()
+        context2.putVar("x", "Fghij")
+        when:
+        poiTransformer.transform(new Cell(1,0), new Cell(1, 5), context1)
+        poiTransformer.transform(new Cell(0,0), new Cell(1, 0), context1)
+        poiTransformer.transform(new Cell(1,0), new Cell(1, 10), context2)
+        then:
+        Sheet sheet = wb.getSheetAt(0)
+        Row row5 = sheet.getRow(5)
+        Row row10 = sheet.getRow(10)
+        assert row5.getCell(1).getStringCellValue() == "Abcde"
+        assert row10.getCell(1).getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING
+        assert row10.getCell(1).getStringCellValue() == "Fghij"
+
     }
 
 }

@@ -19,6 +19,6 @@ public class CellTest {
     @Test
     public void toStringTest(){
         Cell cell = new Cell(10, 20);
-        assertEquals("toString() is incorrect", "(10,20)", cell.toString() );
+        assertEquals("toString() is incorrect", "Cell(10,20,0)", cell.toString() );
     }
 }

@@ -22,4 +22,10 @@ public class Context {
     public void removeVar(String var) {
         varMap.remove(var);
     }
+
+    @Override
+    public String toString() {
+        return "Context" +
+                varMap;
+    }
 }

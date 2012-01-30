@@ -15,12 +15,10 @@ public abstract class AbstractCommand implements Command {
         this.initialSize = initialSize;
     }
 
-    @Override
     public Cell getStartCell() {
         return cell;
     }
 
-    @Override
     public Size getInitialSize() {
         return initialSize;
     }

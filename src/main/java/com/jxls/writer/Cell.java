@@ -56,7 +56,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "(" + col + "," + row + ")";
+        return "Cell(" + col + "," + row + "," + sheetIndex + ")";
     }
 
     @Override
@@ -66,15 +66,17 @@ public class Cell {
 
         Cell cell = (Cell) o;
 
-        if (row != cell.row) return false;
         if (col != cell.col) return false;
+        if (row != cell.row) return false;
+        if (sheetIndex != cell.sheetIndex) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = row;
+        int result = sheetIndex;
+        result = 31 * result + row;
         result = 31 * result + col;
         return result;
     }

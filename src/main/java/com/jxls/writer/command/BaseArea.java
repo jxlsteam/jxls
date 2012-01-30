@@ -5,6 +5,8 @@ import com.jxls.writer.CellRange;
 import com.jxls.writer.Pos;
 import com.jxls.writer.Size;
 import com.jxls.writer.transform.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
  * Date: 1/16/12 6:44 PM
  */
 public class BaseArea implements Area {
+    static Logger logger = LoggerFactory.getLogger(BaseArea.class);
+
     public static final BaseArea EMPTY_AREA = new BaseArea(new Cell(0,0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
@@ -60,6 +64,7 @@ public class BaseArea implements Area {
     }
 
     public Size applyAt(Cell cell, Context context) {
+        logger.debug("Applying BaseArea at {} with {}", cell, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
