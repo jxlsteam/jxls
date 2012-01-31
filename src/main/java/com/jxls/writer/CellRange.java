@@ -12,6 +12,7 @@ public class CellRange {
     boolean[][] changeMatrix;
 
     public CellRange(Cell startCell, int width, int height) {
+        int sheetIndex = startCell.getSheetIndex();
         this.startCell = startCell;
         this.width = width;
         this.height = height;
@@ -21,7 +22,7 @@ public class CellRange {
             cells[col] = new Cell[height];
             changeMatrix[col] = new boolean[height];
             for(int row = 0; row < height; row++){
-                cells[col][row] = new Cell(col, row);
+                cells[col][row] = new Cell(col, row, sheetIndex);
             }
         }
     }

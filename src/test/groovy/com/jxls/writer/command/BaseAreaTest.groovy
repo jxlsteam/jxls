@@ -67,6 +67,24 @@ class BaseAreaTest extends Specification{
             0 * _._
     }
     
+    def "test applyAt for another sheet"(){
+        given:
+            def area = new BaseArea(new Cell(1,1), new Size(2,3))
+            def transformer = Mock(Transformer)
+            def context = new Context()
+            area.setTransformer(transformer)
+        when:
+            area.applyAt(new Cell(3,4,1), context)
+        then:
+            1 * transformer.transform(new Cell(1,1), new Cell(3,4,1), context)
+            1 * transformer.transform(new Cell(1,2), new Cell(3,5,1), context)
+            1 * transformer.transform(new Cell(1,3), new Cell(3,6,1), context)
+            1 * transformer.transform(new Cell(2,1), new Cell(4,4,1), context)
+            1 * transformer.transform(new Cell(2,2), new Cell(4,5,1), context)
+            1 * transformer.transform(new Cell(2,3), new Cell(4,6,1), context)
+            0 * _._
+    }
+
     def "test applyAt with two inner commands"(){
         given:
             def transformer = Mock(Transformer)

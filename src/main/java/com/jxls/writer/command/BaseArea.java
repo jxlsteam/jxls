@@ -121,8 +121,8 @@ public class BaseArea implements Area {
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(x,y) ){
                     Cell relativeCell = cellRange.getCell(x, y);
-                    Cell srcCell = new Cell(startCell.getCol() + x, startCell.getRow() + y);
-                    Cell targetCell = new Cell(relativeCell.getCol() + cell.getCol(), relativeCell.getRow() + cell.getRow());
+                    Cell srcCell = new Cell(startCell.getCol() + x, startCell.getRow() + y, startCell.getSheetIndex());
+                    Cell targetCell = new Cell(relativeCell.getCol() + cell.getCol(), relativeCell.getRow() + cell.getRow(), cell.getSheetIndex());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }
