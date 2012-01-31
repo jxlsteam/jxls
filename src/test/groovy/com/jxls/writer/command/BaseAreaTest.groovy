@@ -18,9 +18,9 @@ class BaseAreaTest extends Specification{
         when:
             def area = new BaseArea(new Cell(1,1), new Size(5,5), transformer)
         then:
-            assert area.startCell == new Cell(1,1)
-            assert area.initialSize == new Size(5,5)
-            assert area.transformer == transformer
+            area.startCell == new Cell(1,1)
+            area.initialSize == new Size(5,5)
+            area.transformer == transformer
     }
     
     def "test size"(){
@@ -33,7 +33,7 @@ class BaseAreaTest extends Specification{
             innerArea.getInitialSize() >> new Size(1,1)
             innerArea.getSize(context) >> new Size(3,5)
         then:
-            assert area.getSize(context) == new Size(12, 19)
+            area.getSize(context) == new Size(12, 19)
     }
 
     def "test applyAt with inner command"(){

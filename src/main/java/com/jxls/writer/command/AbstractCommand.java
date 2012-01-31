@@ -7,16 +7,10 @@ import com.jxls.writer.*;
  *         Date: 21.03.2009
  */
 public abstract class AbstractCommand implements Command {
-    Cell cell;
     Size initialSize;
 
-    protected AbstractCommand(Cell cell, Size initialSize) {
-        this.cell = cell;
+    protected AbstractCommand(Size initialSize) {
         this.initialSize = initialSize;
-    }
-
-    public Cell getStartCell() {
-        return cell;
     }
 
     public Size getInitialSize() {

@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
 import com.jxls.writer.command.Context
+import org.apache.poi.ss.usermodel.Cell
 
 /**
  * @author Leonid Vysochyn
@@ -31,6 +32,8 @@ class CellDataTest extends Specification{
         row2.createCell(2).setCellValue('${4*4}')
         row2.createCell(3).setCellValue('${2*x}x and ${2*y}y')
         row2.createCell(4).setCellValue('${2*x}x and ${2*y} ${cur}')
+        Sheet sheet2 = wb.createSheet("sheet 2")
+        sheet2.createRow(0).createCell(0)
     }
 
     def "test get cell Value"(){
@@ -85,5 +88,18 @@ class CellDataTest extends Specification{
         context.putVar("cur", '$')
         expect:
             cellData.evaluate(context) == '4x and 6 $'
+    }
+
+    def "test write to another sheet"(){
+        setup:
+            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
+            def context = new Context()
+            context.putVar("x", 35)
+            Cell targetCell = wb.getSheetAt(1).getRow(0).getCell(0)
+        when:
+            cellData.writeToCell(targetCell, context)
+        then:
+            wb.getSheetAt(1).getRow(0).getCell(0).getNumericCellValue() == 35
+
     }
 }

@@ -112,6 +112,11 @@ public class BaseArea implements Area {
                 }
             }
         }
+        transformStaticCells(cell, context);
+        return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
+    }
+
+    private void transformStaticCells(Cell cell, Context context) {
         for(int x = 0; x < initialSize.getWidth(); x++){
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(x,y) ){
@@ -122,7 +127,6 @@ public class BaseArea implements Area {
                 }
             }
         }
-        return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
     }
 
     public Size getSize(Context context) {

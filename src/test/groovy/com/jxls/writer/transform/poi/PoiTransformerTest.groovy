@@ -101,7 +101,7 @@ class PoiTransformerTest extends Specification{
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row = sheet.getRow(7)
-            assert row == null
+            row == null
             Sheet sheet1 = wb.getSheetAt(1)
             Row row1 = sheet1.getRow(7)
             row1.getCell(7).getStringCellValue() == "Abcde"

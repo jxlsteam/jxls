@@ -1,6 +1,7 @@
 package com.jxls.writer.command;
 
 import com.jxls.writer.Cell;
+import com.jxls.writer.transform.Transformer;
 
 /**
  * @author Leonid Vysochyn
@@ -8,4 +9,5 @@ import com.jxls.writer.Cell;
  */
 public interface Area extends Command{
     Cell getStartCell();
+    Transformer getTransformer();
 }

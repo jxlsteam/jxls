@@ -13,19 +13,18 @@ class EachCommandTest extends Specification{
     def "test init"(){
         when:
             def area = new BaseArea(new Cell(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Cell(1,2), new Size(2,3), "x", "dataList", area)
+            def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
         then:
-            assert eachCommand.startCell == new Cell(1,2)
-            assert eachCommand.initialSize == new Size(2,3)
-            assert eachCommand.var == "x"
-            assert eachCommand.items == "dataList"
-            assert eachCommand.area == area
+             eachCommand.initialSize == new Size(2,3)
+             eachCommand.var == "x"
+             eachCommand.items == "dataList"
+             eachCommand.area == area
     }
 
     def "test size"(){
         given:
             def area = new BaseArea(new Cell(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Cell(1,2), new Size(2,3), "x", "dataList", area)
+            def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
             def context = new Context()
         when:
             context.putVar("dataList", dataList)
@@ -41,7 +40,7 @@ class EachCommandTest extends Specification{
     def "test applyAt"(){
         given:
             def eachArea = Mock(Area)
-            def eachCommand = new EachCommand(new Cell(1, 2), new Size(4, 2), "x", "items", eachArea)
+            def eachCommand = new EachCommand(new Size(4, 2), "x", "items", eachArea)
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3,2)

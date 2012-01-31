@@ -14,19 +14,18 @@ class IfCommandTest extends Specification{
         when:
             def ifArea = new BaseArea(new Cell(5, 10), new Size(5,5))
             def elseArea = new BaseArea(new Cell(10,10), new Size(3,3))
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2, 4), new Size(1,1),
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1),
                     ifArea, elseArea );
         then:
-            assert ifCommand.initialSize == new Size(1,1)
-            assert ifCommand.startCell == new Cell(2,4)
-            assert ifCommand.condition == "2*x + 5 > 10"
-            assert ifCommand.ifArea == ifArea
-            assert ifCommand.elseArea == elseArea
+             ifCommand.initialSize == new Size(1,1)
+             ifCommand.condition == "2*x + 5 > 10"
+             ifCommand.ifArea == ifArea
+             ifCommand.elseArea == elseArea
     }
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -40,7 +39,7 @@ class IfCommandTest extends Specification{
     
     def "test size" (){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -54,7 +53,7 @@ class IfCommandTest extends Specification{
     
     def "test size without else section"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -70,7 +69,7 @@ class IfCommandTest extends Specification{
         given:
             def ifArea = Mock(Area)
             def elseArea = Mock(Area)
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
             context.putVar("x", 2)
@@ -84,7 +83,7 @@ class IfCommandTest extends Specification{
         given:
             def ifArea = Mock(Area)
             def elseArea = Mock(Area)
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Cell(2,4), new Size(1,1), ifArea, elseArea)
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), ifArea, elseArea)
             def context = new Context()
         when:
             context.putVar("x", 3)
