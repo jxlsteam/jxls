@@ -6,12 +6,19 @@ import com.jxls.writer.expression.JexlExpressionEvaluator;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 1/23/12 6:39 PM
  */
 public class CellData {
+    protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
+    protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
+
+
     RichTextString richTextString;
     boolean booleanValue;
 
@@ -28,7 +35,7 @@ public class CellData {
     private Object evaluationResult;
     private String evaluationExpression;
     private Object cellOriginalValue;
-    
+
     public static CellData createCellData(Cell cell){
         CellData cellData = new CellData();
         cellData.readCell(cell);
@@ -39,15 +46,39 @@ public class CellData {
         return cellOriginalValue;
     }
     
-    public void evaluate(Context context){
+    public Object evaluate(Context context){
+        resultCellType = cellType;
         if( richTextString != null){
             String strValue = richTextString.getString();
-            if( strValue.startsWith("${") && strValue.endsWith("}")){
-                evaluationExpression = strValue.substring(2, strValue.length()-1);
-                ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
-                evaluationResult = evaluator.evaluate(evaluationExpression);
+            StringBuffer sb = new StringBuffer();
+            Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
+            ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
+            String matchedString;
+            String expression;
+            Object lastMatchEvalResult = null;
+            int matchCount = 0;
+            int endOffset = 0;
+            while(exprMatcher.find()){
+                endOffset = exprMatcher.end();
+                matchCount++;
+                matchedString = exprMatcher.group();
+                expression = matchedString.substring(2, matchedString.length() - 1);
+                lastMatchEvalResult = evaluator.evaluate(expression);
+                exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
+            }
+            if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
+                exprMatcher.appendTail(sb);
+                evaluationResult = sb.toString();
+            }else if(matchCount == 1){
+                evaluationResult = lastMatchEvalResult;
+                if(evaluationResult instanceof Number){
+                    resultCellType = Cell.CELL_TYPE_NUMERIC;
+                }else if(evaluationResult instanceof Boolean){
+                    resultCellType = Cell.CELL_TYPE_BOOLEAN;
+                }
             }
         }
+        return evaluationResult;
     }
 
     public int getColIndex() {
@@ -115,16 +146,16 @@ public class CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-        resultCellType = cellType;
-        if( evaluationExpression != null ){
-            if( evaluationResult instanceof String){
-                resultCellType = Cell.CELL_TYPE_STRING;
-            }else if(evaluationResult instanceof Number){
-                resultCellType = Cell.CELL_TYPE_NUMERIC;
-            }else if(evaluationResult instanceof Boolean){
-                resultCellType = Cell.CELL_TYPE_BOOLEAN;
-            }
-        }
+//        resultCellType = cellType;
+//        if( evaluationExpression != null ){
+//            if( evaluationResult instanceof String){
+//                resultCellType = Cell.CELL_TYPE_STRING;
+//            }else if(evaluationResult instanceof Number){
+//                resultCellType = Cell.CELL_TYPE_NUMERIC;
+//            }else if(evaluationResult instanceof Boolean){
+//                resultCellType = Cell.CELL_TYPE_BOOLEAN;
+//            }
+//        }
         cell.setCellType( resultCellType );
         if( hyperlink != null ){
             cell.setHyperlink( hyperlink );
@@ -166,7 +197,7 @@ public class CellData {
                 ", row=" + rowIndex +
                 ", source cell type=" + cellType +
                 ", target cell type=" + resultCellType +
-                ", eval.expression='" + evaluationExpression + '\'' +
+                ", cellValue=" + cellOriginalValue +
                 ", eval.result=" + evaluationResult +
                 '}';
     }
