@@ -33,7 +33,6 @@ public class CellData {
     private int rowIndex;
     private int colIndex;
     private Object evaluationResult;
-    private String evaluationExpression;
     private Object cellOriginalValue;
 
     public static CellData createCellData(Cell cell){
@@ -146,16 +145,6 @@ public class CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-//        resultCellType = cellType;
-//        if( evaluationExpression != null ){
-//            if( evaluationResult instanceof String){
-//                resultCellType = Cell.CELL_TYPE_STRING;
-//            }else if(evaluationResult instanceof Number){
-//                resultCellType = Cell.CELL_TYPE_NUMERIC;
-//            }else if(evaluationResult instanceof Boolean){
-//                resultCellType = Cell.CELL_TYPE_BOOLEAN;
-//            }
-//        }
         cell.setCellType( resultCellType );
         if( hyperlink != null ){
             cell.setHyperlink( hyperlink );
