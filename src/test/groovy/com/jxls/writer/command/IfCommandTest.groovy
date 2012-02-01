@@ -37,34 +37,6 @@ class IfCommandTest extends Specification{
             3       | true
     }
     
-    def "test size" (){
-        given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
-            def context = new Context()
-        when:
-            context.putVar("x", xValue)
-        then:
-            ifCommand.getSize(context) == new Size(width, height)
-        where:
-            xValue | width | height
-            2      | 3     | 3
-            3      | 5     | 5
-    }
-    
-    def "test size without else section"(){
-        given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)))
-            def context = new Context()
-        when:
-            context.putVar("x", xValue)
-        then:
-            ifCommand.getSize(context) == new Size(width, height)
-        where:
-            xValue | width | height
-            2      | 0     | 0
-            3      | 5     | 5
-    }
-
     def "test applyAt when condition is false"(){
         given:
             def ifArea = Mock(Area)

@@ -22,19 +22,6 @@ class BaseAreaTest extends Specification{
             area.initialSize == new Size(5,5)
             area.transformer == transformer
     }
-    
-    def "test size"(){
-        given:
-            def area = new BaseArea(new Cell(1,1), new Size(10,15))
-            def innerArea = Mock(Command)
-            area.addCommand(new Pos(1,2), innerArea)
-            def context = new Context()
-        when:
-            innerArea.getInitialSize() >> new Size(1,1)
-            innerArea.getSize(context) >> new Size(3,5)
-        then:
-            area.getSize(context) == new Size(12, 19)
-    }
 
     def "test applyAt with inner command"(){
         given:

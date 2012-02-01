@@ -129,24 +129,6 @@ public class BaseArea implements Area {
         }
     }
 
-    public Size getSize(Context context) {
-        Size newSize = new Size(initialSize.getWidth(), initialSize.getHeight());
-        for(CommandData commandData: commandDataList){
-            Size startSize = commandData.getCommand().getInitialSize();
-            Size endSize = commandData.getCommand().getSize(context);
-            if( startSize == null ){
-                startSize = Size.ZERO_SIZE;
-            }
-            if( endSize == null ){
-                endSize = Size.ZERO_SIZE;
-            }
-            int widthChange = endSize.getWidth() - startSize.getWidth();
-            int heightChange = endSize.getHeight() - startSize.getHeight();
-            newSize.append(widthChange, heightChange);
-        }
-        return newSize;
-    }
-
     public Cell getStartCell() {
         return startCell;
     }

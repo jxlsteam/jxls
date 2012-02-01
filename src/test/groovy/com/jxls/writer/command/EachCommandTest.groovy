@@ -21,22 +21,6 @@ class EachCommandTest extends Specification{
              eachCommand.area == area
     }
 
-    def "test size"(){
-        given:
-            def area = new BaseArea(new Cell(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
-            def context = new Context()
-        when:
-            context.putVar("dataList", dataList)
-        then:
-            eachCommand.getSize(context) == size
-        where:
-            dataList        | size
-            ['a', 'b', 'c'] | new Size(4, 15)
-            ['x', 'y']      | new Size(4, 10)
-            []              | new Size(0, 0)
-    }
-    
     def "test applyAt"(){
         given:
             def eachArea = Mock(Area)

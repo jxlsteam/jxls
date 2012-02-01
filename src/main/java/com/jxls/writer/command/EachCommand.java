@@ -46,25 +46,6 @@ public class EachCommand extends AbstractCommand {
         return new Size(width, height);
     }
 
-    public Size getSize(Context context) {
-        Collection itemsCollection = calculateItemsCollection(context);
-        int width = 0;
-        int height = 0;
-        for( Object obj : itemsCollection){
-            context.putVar(var, obj);
-            Size size = area.getSize(context);
-            if( byRows ){
-                width = Math.max(width, size.getWidth());
-                height += size.getHeight();
-            }else{
-                width += size.getWidth();
-                height = Math.max( height, size.getHeight() );
-            }
-            context.removeVar( var );
-        }
-        return new Size(width, height);
-    }
-
     protected Collection calculateItemsCollection(Context context){
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
         Object itemsObject = expressionEvaluator.evaluate(items);

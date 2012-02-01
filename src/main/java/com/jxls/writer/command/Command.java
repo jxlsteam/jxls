@@ -13,6 +13,4 @@ public interface Command {
 
     Size applyAt(Cell cell, Context context);
 
-    Size getSize(Context context);
-
 }

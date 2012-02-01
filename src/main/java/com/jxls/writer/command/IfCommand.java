@@ -36,11 +36,6 @@ public class IfCommand extends AbstractCommand {
         }
     }
 
-    public Size getSize(Context context) {
-        Boolean conditionResult = isConditionTrue(context);
-        return conditionResult ? ifArea.getSize(context) : elseArea.getSize(context);
-    }
-
     public Boolean isConditionTrue(Context context){
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
         Object conditionResult = expressionEvaluator.evaluate(condition);
