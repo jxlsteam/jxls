@@ -19,6 +19,7 @@ class EachCommandTest extends Specification{
              eachCommand.var == "x"
              eachCommand.items == "dataList"
              eachCommand.area == area
+             eachCommand.direction == EachCommand.Direction.DOWN
     }
 
     def "test applyAt"(){
@@ -41,5 +42,37 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new Cell(2,5,1), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new Cell(2,6,1), context) >> new Size(3, 1)
             0 * _._
+    }
+    
+    def "test set direction"(){
+        def area = Mock(Area)
+        def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
+        when:
+            eachCommand.setDirection(EachCommand.Direction.RIGHT)
+        then:
+            eachCommand.getDirection() == EachCommand.Direction.RIGHT
+    }
+
+    def "test applyAt with RIGHT direction"(){
+        given:
+            def eachArea = Mock(Area)
+            def eachCommand = new EachCommand(new Size(3, 2), "x", "items", eachArea, EachCommand.Direction.RIGHT)
+            def context = Mock(Context)
+        when:
+            eachArea.getInitialSize() >> new Size(3, 2)
+            eachCommand.applyAt(new Cell(1,1,1), context)
+        then:
+            context.toMap() >> ["items": [1,2,3,4]]
+            1 * context.putVar("x", 1)
+            1 * context.putVar("x", 2)
+            1 * context.putVar("x", 3)
+            1 * context.putVar("x", 4)
+            4 * context.removeVar("x")
+            1 * eachArea.applyAt(new Cell(1,1,1), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Cell(4,1,1), context) >> new Size(3, 2)
+            1 * eachArea.applyAt(new Cell(7,1,1), context) >> new Size(4, 1)
+            1 * eachArea.applyAt(new Cell(11,1,1), context) >> new Size(3, 1)
+            //0 * _._
+
     }
 }

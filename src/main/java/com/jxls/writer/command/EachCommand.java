@@ -12,16 +12,37 @@ import java.util.Collection;
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
+    public enum Direction {RIGHT, DOWN}
+    
     String var;
     String items;
     boolean byRows = true;
     Command area;
+    Direction direction = Direction.DOWN;
 
     public EachCommand(Size initialSize, String var, String items, Area area) {
         super(initialSize);
         this.var = var;
         this.items = items;
         this.area = area;
+    }
+    
+    public EachCommand(Size initialSize, String var, String items, Area area, Direction direction) {
+        super(initialSize);
+        this.var = var;
+        this.items = items;
+        this.area = area;
+        this.direction = direction == null ? Direction.DOWN : direction;
+    }
+    
+    
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public Size applyAt(Cell cell, Context context) {
@@ -32,7 +53,7 @@ public class EachCommand extends AbstractCommand {
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
             Size size = area.applyAt(currentCell, context);
-            if( byRows ){
+            if( direction == Direction.DOWN ){
                 currentCell = new Cell(currentCell.getCol(), currentCell.getRow() + size.getHeight(), currentCell.getSheetIndex());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
