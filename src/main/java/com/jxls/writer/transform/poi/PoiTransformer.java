@@ -17,29 +17,50 @@ public class PoiTransformer implements Transformer {
     static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
 
     Workbook workbook;
-    CellData[][][] cellDatas;
+    CellData[][][] cellData;
+    SheetData[] sheetData;
+    boolean ignoreColumnProps = false;
+    boolean ignoreRowProps = false;
 
     public PoiTransformer(Workbook workbook) {
         this.workbook = workbook;
         readCellData();
     }
-    
+
+    public boolean isIgnoreColumnProps() {
+        return ignoreColumnProps;
+    }
+
+    public void setIgnoreColumnProps(boolean ignoreColumnProps) {
+        this.ignoreColumnProps = ignoreColumnProps;
+    }
+
+    public boolean isIgnoreRowProps() {
+        return ignoreRowProps;
+    }
+
+    public void setIgnoreRowProps(boolean ignoreRowProps) {
+        this.ignoreRowProps = ignoreRowProps;
+    }
+
     private void readCellData(){
         int numberOfSheets = workbook.getNumberOfSheets();
-        cellDatas = new CellData[numberOfSheets][][];
+        cellData = new CellData[numberOfSheets][][];
+        sheetData = new SheetData[numberOfSheets];
         for(int sheetIndex = 0; sheetIndex < numberOfSheets; sheetIndex++){
             Sheet sheet = workbook.getSheetAt(sheetIndex);
+            sheetData[sheetIndex] = SheetData.createSheetData(sheet);
             int numberOfRows = sheet.getLastRowNum() + 1;
-            cellDatas[sheetIndex] = new CellData[numberOfRows][];
+            cellData[sheetIndex] = new CellData[numberOfRows][];
             for(int rowIndex = 0; rowIndex < numberOfRows; rowIndex++){
                 Row row = sheet.getRow(rowIndex);
                 if( row != null ){
                     int numberOfCells = row.getLastCellNum() + 1;
-                    cellDatas[sheetIndex][rowIndex] = new CellData[numberOfCells];
+                    cellData[sheetIndex][rowIndex] = new CellData[numberOfCells];
                     for(int cellIndex = 0; cellIndex < numberOfCells; cellIndex++){
                         org.apache.poi.ss.usermodel.Cell cell = row.getCell(cellIndex);
                         if(cell != null ){
-                            cellDatas[sheetIndex][rowIndex][cellIndex] = CellData.createCellData(cell);
+                            cellData[sheetIndex][rowIndex][cellIndex] = CellData.createCellData(cell);
                         }
                     }
                 }
@@ -48,14 +69,14 @@ public class PoiTransformer implements Transformer {
     }
     
     public CellData getCellData(int col, int row, int sheet){
-        return cellDatas[sheet][row][col];
+        return cellData[sheet][row][col];
     }
 
     public void transform(Cell pos, Cell newCell, Context context) {
-        if(cellDatas == null ||  cellDatas.length <= pos.getSheetIndex() || cellDatas[pos.getSheetIndex()] == null ||
-                cellDatas[pos.getSheetIndex()].length <= pos.getRow() || cellDatas[pos.getSheetIndex()][pos.getRow()] == null ||
-                cellDatas[pos.getSheetIndex()][pos.getRow()].length <= pos.getCol()) return;
-        CellData cellData = cellDatas[pos.getSheetIndex()][pos.getRow()][pos.getCol()];
+        if(cellData == null ||  cellData.length <= pos.getSheetIndex() || cellData[pos.getSheetIndex()] == null ||
+                cellData[pos.getSheetIndex()].length <= pos.getRow() || cellData[pos.getSheetIndex()][pos.getRow()] == null ||
+                cellData[pos.getSheetIndex()][pos.getRow()].length <= pos.getCol()) return;
+        CellData cellData = this.cellData[pos.getSheetIndex()][pos.getRow()][pos.getCol()];
         if(cellData != null){
             int numberOfSheets = workbook.getNumberOfSheets();
             while(numberOfSheets <= newCell.getSheetIndex() ){
@@ -63,9 +84,15 @@ public class PoiTransformer implements Transformer {
                 numberOfSheets = workbook.getNumberOfSheets();
             }
             Sheet destSheet = workbook.getSheetAt(newCell.getSheetIndex());
+            if(!ignoreColumnProps){
+                destSheet.setColumnWidth(newCell.getCol(), sheetData[pos.getSheetIndex()].getColumnWidth(pos.getCol()));
+            }
             Row destRow = destSheet.getRow(newCell.getRow());
             if (destRow == null) {
                 destRow = destSheet.createRow(newCell.getRow());
+            }
+            if(!ignoreRowProps){
+                destSheet.getRow(newCell.getRow()).setHeight( sheetData[pos.getSheetIndex()].getRowData(pos.getRow()).getHeight());
             }
             org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newCell.getCol());
             if (destCell == null) {

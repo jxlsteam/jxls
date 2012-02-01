@@ -8,7 +8,6 @@ import org.apache.poi.ss.usermodel.Row
 
 import com.jxls.writer.Cell
 import com.jxls.writer.command.Context
-import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
@@ -24,9 +23,12 @@ class PoiTransformerTest extends Specification{
         row0.createCell(0).setCellValue(1.5)
         row0.createCell(1).setCellValue('${x}')
         row0.createCell(2).setCellValue('${x*y}')
+        row0.setHeight((short)23)
+        sheet.setColumnWidth(1, 123);
         Row row1 = sheet.createRow(1)
         row1.createCell(1).setCellFormula("SUM(A1:A3)")
         row1.createCell(2).setCellValue('${y*y}')
+        row1.setHeight((short)456)
         Row row2 = sheet.createRow(2)
         row2.createCell(0).setCellValue("XYZ")
         row2.createCell(1).setCellValue('${2*y}')
@@ -61,6 +63,8 @@ class PoiTransformerTest extends Specification{
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
             row7.getCell(7).getStringCellValue() == "Abcde"
+            sheet.getColumnWidth(7) == 123
+            sheet.getRow(7).getHeight() == 23
     }
 
     def "test transform numeric var"(){
@@ -157,6 +161,21 @@ class PoiTransformerTest extends Specification{
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
             row7.getCell(7).getStringCellValue() == "4x and 6y"
+    }
+
+    def "test ignore source column and row props"(){
+        given:
+            def poiTransformer = new PoiTransformer(wb)
+            poiTransformer.setIgnoreColumnProps(true)
+            poiTransformer.setIgnoreRowProps(true)
+            def context = new Context()
+            context.putVar("x", "Abcde")
+        when:
+            poiTransformer.transform(new Cell(1,0), new Cell(7,7), context)
+        then:
+            Sheet sheet = wb.getSheetAt(0)
+            sheet.getColumnWidth(7) != sheet.getColumnWidth(1)
+            sheet.getRow(0).getHeight() != sheet.getRow(7).getHeight()
     }
 
 }
