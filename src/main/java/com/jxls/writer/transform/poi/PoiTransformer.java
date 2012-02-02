@@ -106,4 +106,20 @@ public class PoiTransformer implements Transformer {
             }
         }
     }
+
+    public void updateFormulaCell(Cell cell, String formulaString) {
+        Sheet sheet = workbook.getSheetAt(cell.getSheetIndex());
+        if( sheet == null){
+            sheet = workbook.createSheet();
+        }
+        Row row = sheet.getRow(cell.getRow());
+        if( row == null ){
+            row = sheet.createRow(cell.getRow());
+        }
+        org.apache.poi.ss.usermodel.Cell poiCell = row.getCell(cell.getCol());
+        if( poiCell == null ){
+            poiCell = row.createCell(cell.getCol());
+        }
+        poiCell.setCellFormula( formulaString );
+    }
 }

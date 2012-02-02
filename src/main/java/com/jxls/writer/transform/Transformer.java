@@ -9,4 +9,5 @@ import com.jxls.writer.command.Context;
  */
 public interface Transformer {
     void transform(Cell cell, Cell newCell, Context context);
+    void updateFormulaCell(Cell cell, String formulaString);
 }

@@ -6,7 +6,6 @@ import com.jxls.writer.expression.JexlExpressionEvaluator;
 import org.apache.poi.ss.usermodel.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +16,8 @@ import java.util.regex.Pattern;
 public class CellData {
     protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
     protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
+    public static final String USER_FORMULA_PREFIX = "$[";
+    public static final String USER_FORMULA_SUFFIX = "]";
 
 
     RichTextString richTextString;
@@ -44,40 +45,65 @@ public class CellData {
     public Object getCellValue(){
         return cellOriginalValue;
     }
+
+    public boolean isFormulaCell(){
+        if(cellType == Cell.CELL_TYPE_FORMULA ) return true;
+        return richTextString != null && isUserFormula(richTextString.getString());
+    }
     
     public Object evaluate(Context context){
         resultCellType = cellType;
         if( richTextString != null){
             String strValue = richTextString.getString();
-            StringBuffer sb = new StringBuffer();
-            Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
-            ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
-            String matchedString;
-            String expression;
-            Object lastMatchEvalResult = null;
-            int matchCount = 0;
-            int endOffset = 0;
-            while(exprMatcher.find()){
-                endOffset = exprMatcher.end();
-                matchCount++;
-                matchedString = exprMatcher.group();
-                expression = matchedString.substring(2, matchedString.length() - 1);
-                lastMatchEvalResult = evaluator.evaluate(expression);
-                exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
-            }
-            if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
-                exprMatcher.appendTail(sb);
-                evaluationResult = sb.toString();
-            }else if(matchCount == 1){
-                evaluationResult = lastMatchEvalResult;
-                if(evaluationResult instanceof Number){
-                    resultCellType = Cell.CELL_TYPE_NUMERIC;
-                }else if(evaluationResult instanceof Boolean){
-                    resultCellType = Cell.CELL_TYPE_BOOLEAN;
+            if( isUserFormula(strValue) ){
+                String formulaStr = strValue.substring(2, strValue.length()-1);
+                evaluate(formulaStr, context);
+                if( evaluationResult != null ){
+                    evaluationResult = evaluationResult.toString();
+                    resultCellType = Cell.CELL_TYPE_FORMULA;
                 }
+            }else{
+                evaluate(strValue, context);
+            }
+            if(evaluationResult == null){
+                resultCellType = Cell.CELL_TYPE_BLANK;
             }
         }
         return evaluationResult;
+    }
+
+    private void evaluate(String strValue, Context context) {
+        StringBuffer sb = new StringBuffer();
+        Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
+        ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
+        String matchedString;
+        String expression;
+        Object lastMatchEvalResult = null;
+        int matchCount = 0;
+        int endOffset = 0;
+        while(exprMatcher.find()){
+            endOffset = exprMatcher.end();
+            matchCount++;
+            matchedString = exprMatcher.group();
+            expression = matchedString.substring(2, matchedString.length() - 1);
+            lastMatchEvalResult = evaluator.evaluate(expression);
+            exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
+        }
+        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
+            exprMatcher.appendTail(sb);
+            evaluationResult = sb.toString();
+        }else if(matchCount == 1){
+            evaluationResult = lastMatchEvalResult;
+            if(evaluationResult instanceof Number){
+                resultCellType = Cell.CELL_TYPE_NUMERIC;
+            }else if(evaluationResult instanceof Boolean){
+                resultCellType = Cell.CELL_TYPE_BOOLEAN;
+            }
+        }
+    }
+
+    private boolean isUserFormula(String str) {
+        return str.startsWith(USER_FORMULA_PREFIX) && str.endsWith(USER_FORMULA_SUFFIX);
     }
 
     public int getColIndex() {

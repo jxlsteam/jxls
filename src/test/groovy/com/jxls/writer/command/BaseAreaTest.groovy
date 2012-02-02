@@ -115,4 +115,24 @@ class BaseAreaTest extends Specification{
             0 * _._
     }
 
+    def "test formulas transformation"(){
+        given:
+        def transformer = Mock(Transformer)
+        def area = new BaseArea(new Cell(1,1), new Size(2,1), transformer)
+        Context context1 = new Context()
+        context1.putVar("x", 1)
+        Context context2 = new Context()
+        context2.putVar("x", 2)
+        when:
+        area.applyAt(new Cell(2,2), context1)
+        area.applyAt(new Cell(2,10), context2)
+        then:
+        1 * transformer.transform(new Cell(1,1), new Cell(2,2), context1)
+        1 * transformer.transform(new Cell(2,1), new Cell(3,2), context1)
+        1 * transformer.transform(new Cell(1,1), new Cell(2,10), context2)
+        1 * transformer.transform(new Cell(2,1), new Cell(3,10), context2)
+        0 * _._
+
+    }
+
 }

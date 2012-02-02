@@ -26,6 +26,7 @@ class CellDataTest extends Specification{
         row1.createCell(1).setCellFormula("SUM(A1:A3)")
         row1.createCell(2).setCellValue('${y*y}')
         row1.createCell(3).setCellValue('${x} words')
+        row1.createCell(4).setCellValue('$[${myvar}*SUM(A1:A5) + ${myvar2}]')
         Row row2 = sheet.createRow(2)
         row2.createCell(0).setCellValue("XYZ")
         row2.createCell(1).setCellValue('${2*y}')
@@ -37,10 +38,8 @@ class CellDataTest extends Specification{
     }
 
     def "test get cell Value"(){
-        given:
-            CellData cellData = null
         when:
-            cellData = CellData.createCellData( wb.getSheetAt(0).getRow(row).getCell(col) )
+            CellData cellData = CellData.createCellData( wb.getSheetAt(0).getRow(row).getCell(col) )
         then:
             assert cellData.getCellValue() == value
         where:
@@ -100,6 +99,29 @@ class CellDataTest extends Specification{
             cellData.writeToCell(targetCell, context)
         then:
             wb.getSheetAt(1).getRow(0).getCell(0).getNumericCellValue() == 35
-
+    }
+    
+    def "test write parameterized formula cell"(){
+        setup:
+            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
+            def context = new Context()
+            context.putVar("myvar", 2)
+            context.putVar("myvar2", 3)
+            wb.getSheetAt(0).createRow(7).createCell(7)
+        when:
+            cellData.writeToCell(wb.getSheetAt(0).getRow(7).getCell(7), context)
+        then:
+            wb.getSheetAt(0).getRow(7).getCell(7).getCellFormula() == "2*SUM(A1:A5)+3"
+    }
+    
+    def "test formula cell check"(){
+        when:
+            CellData notFormulaCell = CellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
+            CellData formulaCell1 = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(1))
+            CellData formulaCell2 = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
+        then:
+            !notFormulaCell.isFormulaCell()
+            formulaCell1.isFormulaCell()
+            formulaCell2.isFormulaCell()
     }
 }

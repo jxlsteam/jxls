@@ -178,4 +178,13 @@ class PoiTransformerTest extends Specification{
             sheet.getRow(0).getHeight() != sheet.getRow(7).getHeight()
     }
 
+    def "test update formula value"(){
+        given:
+            def poiTransformer = new PoiTransformer(wb)
+        when:
+            poiTransformer.updateFormulaCell(new Cell(1,1), "SUM(B1:B5)")
+        then:
+            wb.getSheetAt(0).getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
+    }
+
 }
