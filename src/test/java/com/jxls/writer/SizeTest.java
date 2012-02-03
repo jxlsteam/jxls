@@ -12,8 +12,8 @@ public class SizeTest {
     @Test
     public void construction(){
         Size size = new Size(20, 10);
-        assertEquals( "Size width is incorrect", 10, size.getHeight());
-        assertEquals( "Size height is incorrect", 20, size.getWidth());
+        assertEquals( "Size height is incorrect", 10, size.getHeight());
+        assertEquals( "Size width is incorrect", 20, size.getWidth());
     }
 
     @Test

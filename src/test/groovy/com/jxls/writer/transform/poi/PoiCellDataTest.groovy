@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Cell
  * @author Leonid Vysochyn
  * Date: 1/30/12 5:52 PM
  */
-class CellDataTest extends Specification{
+class PoiCellDataTest extends Specification{
     Workbook wb;
 
     def setup(){
@@ -39,7 +39,7 @@ class CellDataTest extends Specification{
 
     def "test get cell Value"(){
         when:
-            CellData cellData = CellData.createCellData( wb.getSheetAt(0).getRow(row).getCell(col) )
+            PoiCellData cellData = PoiCellData.createCellData( wb.getSheetAt(0).getRow(row).getCell(col) )
         then:
             assert cellData.getCellValue() == value
         where:
@@ -53,7 +53,7 @@ class CellDataTest extends Specification{
 
     def "test evaluate simple expression"(){
         setup:
-            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
             def context = new Context()
             context.putVar("x", 35)
         expect:
@@ -62,7 +62,7 @@ class CellDataTest extends Specification{
     
     def "test evaluate multiple regex"(){
         setup:
-            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(2).getCell(3))
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(2).getCell(3))
             def context = new Context()
             context.putVar("x", 2)
             context.putVar("y", 3)
@@ -72,7 +72,7 @@ class CellDataTest extends Specification{
 
     def "test evaluate single expression constant string concatenation"(){
         setup:
-            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(3))
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(3))
             def context = new Context()
             context.putVar("x", 35)
         expect:
@@ -80,7 +80,7 @@ class CellDataTest extends Specification{
     }
 
     def "test evaluate regex with dollar sign"(){
-        CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(2).getCell(4))
+        PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(2).getCell(4))
         def context = new Context()
         context.putVar("x", 2)
         context.putVar("y", 3)
@@ -91,7 +91,7 @@ class CellDataTest extends Specification{
 
     def "test write to another sheet"(){
         setup:
-            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
             def context = new Context()
             context.putVar("x", 35)
             Cell targetCell = wb.getSheetAt(1).getRow(0).getCell(0)
@@ -103,7 +103,7 @@ class CellDataTest extends Specification{
     
     def "test write parameterized formula cell"(){
         setup:
-            CellData cellData = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
             def context = new Context()
             context.putVar("myvar", 2)
             context.putVar("myvar2", 3)
@@ -116,9 +116,9 @@ class CellDataTest extends Specification{
     
     def "test formula cell check"(){
         when:
-            CellData notFormulaCell = CellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
-            CellData formulaCell1 = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(1))
-            CellData formulaCell2 = CellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
+            PoiCellData notFormulaCell = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData formulaCell1 = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(1))
+            PoiCellData formulaCell2 = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
         then:
             !notFormulaCell.isFormulaCell()
             formulaCell1.isFormulaCell()

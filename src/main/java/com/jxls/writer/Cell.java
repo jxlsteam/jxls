@@ -10,11 +10,11 @@ public class Cell {
     int row;
     int col;
 
-    public Cell(int col, int row) {
-        this(col, row, 0);
+    public Cell(int row, int col) {
+        this(0, row, col);
     }
 
-    public Cell(int col, int row, int sheetIndex) {
+    public Cell(int sheetIndex, int row, int col) {
         this.col = col;
         this.row = row;
         this.sheetIndex = sheetIndex;
@@ -45,7 +45,7 @@ public class Cell {
     }
 
     public Cell add(Size size){
-        return new Cell(col + size.getWidth(), row + size.getHeight());
+        return new Cell(row + size.getHeight(), col + size.getWidth());
     }
 
     public Cell append(Size size){
@@ -56,7 +56,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "Cell(" + col + "," + row + "," + sheetIndex + ")";
+        return "Cell(" + sheetIndex + "," + row + "," + col + ")";
     }
 
     @Override
@@ -94,10 +94,10 @@ public class Cell {
     }
 
     public Cell addYModification(int yChange) {
-        return new Cell(col, row + yChange);
+        return new Cell(row + yChange, col);
     }
 
     public Cell addXModification(int xChange) {
-        return new Cell(col + xChange, row);
+        return new Cell(row, col + xChange);
     }
 }

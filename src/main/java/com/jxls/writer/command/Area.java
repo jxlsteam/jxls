@@ -10,4 +10,5 @@ import com.jxls.writer.transform.Transformer;
 public interface Area extends Command{
     Cell getStartCell();
     Transformer getTransformer();
+    void processFormulas();
 }

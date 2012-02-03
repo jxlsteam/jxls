@@ -1,9 +1,6 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.Cell;
-import com.jxls.writer.CellRange;
-import com.jxls.writer.Pos;
-import com.jxls.writer.Size;
+import com.jxls.writer.*;
 import com.jxls.writer.transform.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,7 @@ import java.util.List;
 public class BaseArea implements Area {
     static Logger logger = LoggerFactory.getLogger(BaseArea.class);
 
-    public static final BaseArea EMPTY_AREA = new BaseArea(new Cell(0,0), Size.ZERO_SIZE);
+    public static final BaseArea EMPTY_AREA = new BaseArea(new Cell(0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
     Transformer transformer;
@@ -51,6 +48,10 @@ public class BaseArea implements Area {
         return transformer;
     }
 
+    public void processFormulas() {
+        List<CellData> formulaCells = transformer.getFormulaCells();
+    }
+
     public void setTransformer(Transformer transformer) {
         this.transformer = transformer;
     }
@@ -71,7 +72,7 @@ public class BaseArea implements Area {
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
-            Cell newCell = new Cell(commandData.getStartPos().getCol() + cell.getCol(), commandData.getStartPos().getRow() + cell.getRow(), cell.getSheetIndex());
+            Cell newCell = new Cell(cell.getSheetIndex(), commandData.getStartPos().getRow() + cell.getRow(), commandData.getStartPos().getCol() + cell.getCol());
             Size initialSize = commandData.getCommand().getInitialSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
@@ -99,7 +100,7 @@ public class BaseArea implements Area {
                     )){
                         cellRange.shiftCellsWithColBlock(data.getStartPos().getCol(),
                                 data.getStartPos().getCol() + data.getCommand().getInitialSize().getWidth()-1, data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1, heightChange);
-                        data.setStartPos(new Pos(data.getStartPos().getCol(), data.getStartPos().getRow() + heightChange));
+                        data.setStartPos(new Pos(data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
                    ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + command.getInitialSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
@@ -107,7 +108,7 @@ public class BaseArea implements Area {
                         cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
                                 data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1,
                                 data.getStartPos().getCol() + initialSize.getWidth(), widthChange);
-                        data.setStartPos(new Pos(data.getStartPos().getCol() + widthChange, data.getStartPos().getRow()));
+                        data.setStartPos(new Pos(data.getStartPos().getRow(), data.getStartPos().getCol() + widthChange));
                     }
                 }
             }
@@ -119,10 +120,10 @@ public class BaseArea implements Area {
     private void transformStaticCells(Cell cell, Context context) {
         for(int x = 0; x < initialSize.getWidth(); x++){
             for(int y = 0; y < initialSize.getHeight(); y++){
-                if( !cellRange.isExcluded(x,y) ){
-                    Cell relativeCell = cellRange.getCell(x, y);
-                    Cell srcCell = new Cell(startCell.getCol() + x, startCell.getRow() + y, startCell.getSheetIndex());
-                    Cell targetCell = new Cell(relativeCell.getCol() + cell.getCol(), relativeCell.getRow() + cell.getRow(), cell.getSheetIndex());
+                if( !cellRange.isExcluded(y, x) ){
+                    Cell relativeCell = cellRange.getCell(y, x);
+                    Cell srcCell = new Cell(startCell.getSheetIndex(), startCell.getRow() + y, startCell.getCol() + x);
+                    Cell targetCell = new Cell(cell.getSheetIndex(), relativeCell.getRow() + cell.getRow(), relativeCell.getCol() + cell.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }

@@ -3,7 +3,6 @@ package com.jxls.writer.command
 import spock.lang.Specification
 import com.jxls.writer.Cell
 import com.jxls.writer.Size
-import com.jxls.writer.Pos
 
 /**
  * @author Leonid Vysochyn
@@ -29,7 +28,7 @@ class EachCommandTest extends Specification{
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3,2)
-            eachCommand.applyAt(new Cell(2,2,1), context)
+            eachCommand.applyAt(new Cell(1, 2, 2), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
             1 * context.putVar("x", 1)
@@ -37,10 +36,10 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
             4 * context.removeVar("x")
-            1 * eachArea.applyAt(new Cell(2,2,1), context) >> new Size(3, 1)
-            1 * eachArea.applyAt(new Cell(2,3,1), context) >> new Size(3, 2)
-            1 * eachArea.applyAt(new Cell(2,5,1), context) >> new Size(4, 1)
-            1 * eachArea.applyAt(new Cell(2,6,1), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Cell(1, 2, 2), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Cell(1, 3, 2), context) >> new Size(3, 2)
+            1 * eachArea.applyAt(new Cell(1, 5, 2), context) >> new Size(4, 1)
+            1 * eachArea.applyAt(new Cell(1, 6, 2), context) >> new Size(3, 1)
             0 * _._
     }
     
@@ -60,7 +59,7 @@ class EachCommandTest extends Specification{
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3, 2)
-            eachCommand.applyAt(new Cell(1,1,1), context)
+            eachCommand.applyAt(new Cell(1, 1, 1), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
             1 * context.putVar("x", 1)
@@ -68,10 +67,10 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
             4 * context.removeVar("x")
-            1 * eachArea.applyAt(new Cell(1,1,1), context) >> new Size(3, 1)
-            1 * eachArea.applyAt(new Cell(4,1,1), context) >> new Size(3, 2)
-            1 * eachArea.applyAt(new Cell(7,1,1), context) >> new Size(4, 1)
-            1 * eachArea.applyAt(new Cell(11,1,1), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Cell(1, 1, 1), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Cell(1, 1, 4), context) >> new Size(3, 2)
+            1 * eachArea.applyAt(new Cell(1, 1, 7), context) >> new Size(4, 1)
+            1 * eachArea.applyAt(new Cell(1, 1, 11), context) >> new Size(3, 1)
             //0 * _._
 
     }

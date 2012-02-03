@@ -42,7 +42,7 @@ class PoiTransformerTest extends Specification{
             wb.removeSheetAt(0)
         then:
             assert wb.getNumberOfSheets() == 0
-            assert poiTransformer.getCellData(col,row,0).getCellValue() == value
+            assert poiTransformer.getCellData(0, row, col).getCellValue() == value
         where:
             row | col   | value
             0   | 0     | new Double(1.5)
@@ -58,7 +58,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Cell(1,0), new Cell(7,7), context)
+            poiTransformer.transform(new Cell(0, 1), new Cell(7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
@@ -74,7 +74,7 @@ class PoiTransformerTest extends Specification{
             context.putVar("x", 3)
             context.putVar("y", 5)
         when:
-            poiTransformer.transform(new Cell(2,0), new Cell(7,7), context)
+            poiTransformer.transform(new Cell(0, 2), new Cell(7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
@@ -87,7 +87,7 @@ class PoiTransformerTest extends Specification{
             def poiTransformer = new PoiTransformer(wb)
             def context = new Context()
         when:
-            poiTransformer.transform(new Cell(1,1), new Cell(7,7), context)
+            poiTransformer.transform(new Cell(1, 1), new Cell(7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
@@ -101,7 +101,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Cell(1,0), new Cell(7,7,1), context)
+            poiTransformer.transform(new Cell(0, 1), new Cell(1, 7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row = sheet.getRow(7)
@@ -119,8 +119,8 @@ class PoiTransformerTest extends Specification{
             def context2 = new Context()
             context2.putVar("x", "Fghij")
         when:
-            poiTransformer.transform(new Cell(1,0), new Cell(1, 5), context1)
-            poiTransformer.transform(new Cell(1,0), new Cell(1, 10), context2)
+            poiTransformer.transform(new Cell(0, 1), new Cell(5, 1), context1)
+            poiTransformer.transform(new Cell(0, 1), new Cell(10, 1), context2)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row5 = sheet.getRow(5)
@@ -137,9 +137,9 @@ class PoiTransformerTest extends Specification{
         def context2 = new Context()
         context2.putVar("x", "Fghij")
         when:
-        poiTransformer.transform(new Cell(1,0), new Cell(1, 5), context1)
-        poiTransformer.transform(new Cell(0,0), new Cell(1, 0), context1)
-        poiTransformer.transform(new Cell(1,0), new Cell(1, 10), context2)
+        poiTransformer.transform(new Cell(0, 1), new Cell(5, 1), context1)
+        poiTransformer.transform(new Cell(0, 0), new Cell(0, 1), context1)
+        poiTransformer.transform(new Cell(0, 1), new Cell(10, 1), context2)
         then:
         Sheet sheet = wb.getSheetAt(0)
         Row row5 = sheet.getRow(5)
@@ -156,7 +156,7 @@ class PoiTransformerTest extends Specification{
             context.putVar("x", 2)
             context.putVar("y", 3)
         when:
-            poiTransformer.transform(new Cell(3,2), new Cell(7,7), context)
+            poiTransformer.transform(new Cell(2, 3), new Cell(7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
@@ -171,7 +171,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Cell(1,0), new Cell(7,7), context)
+            poiTransformer.transform(new Cell(0, 1), new Cell(7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             sheet.getColumnWidth(7) != sheet.getColumnWidth(1)
@@ -182,7 +182,7 @@ class PoiTransformerTest extends Specification{
         given:
             def poiTransformer = new PoiTransformer(wb)
         when:
-            poiTransformer.updateFormulaCell(new Cell(1,1), "SUM(B1:B5)")
+            poiTransformer.updateFormulaCell(new Cell(1, 1), "SUM(B1:B5)")
         then:
             wb.getSheetAt(0).getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
     }

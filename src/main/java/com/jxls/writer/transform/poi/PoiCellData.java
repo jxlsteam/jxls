@@ -1,9 +1,13 @@
 package com.jxls.writer.transform.poi;
 
+import com.jxls.writer.CellData;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;
+import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -13,11 +17,14 @@ import java.util.regex.Pattern;
  * @author Leonid Vysochyn
  *         Date: 1/23/12 6:39 PM
  */
-public class CellData {
+public class PoiCellData extends CellData {
+    static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
+
     protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
     protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
     public static final String USER_FORMULA_PREFIX = "$[";
     public static final String USER_FORMULA_SUFFIX = "]";
+
 
 
     RichTextString richTextString;
@@ -27,23 +34,15 @@ public class CellData {
     int resultCellType;
     private Date dateValue;
     private double doubleValue;
-    private String formula;
     private CellStyle style;
     private Hyperlink hyperlink;
     private byte errorValue;
-    private int rowIndex;
-    private int colIndex;
-    private Object evaluationResult;
-    private Object cellOriginalValue;
 
-    public static CellData createCellData(Cell cell){
-        CellData cellData = new CellData();
+
+    public static PoiCellData createCellData(Cell cell){
+        PoiCellData cellData = new PoiCellData();
         cellData.readCell(cell);
         return cellData;
-    }
-    
-    public Object getCellValue(){
-        return cellOriginalValue;
     }
 
     public boolean isFormulaCell(){
@@ -72,7 +71,7 @@ public class CellData {
         return evaluationResult;
     }
 
-    private void evaluate(String strValue, Context context) {
+    void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
         Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
         ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
@@ -102,14 +101,6 @@ public class CellData {
         }
     }
 
-    private boolean isUserFormula(String str) {
-        return str.startsWith(USER_FORMULA_PREFIX) && str.endsWith(USER_FORMULA_SUFFIX);
-    }
-
-    public int getColIndex() {
-        return colIndex;
-    }
-
     public void readCell(Cell cell){
         readCellGeneralInfo(cell);
         readCellContents(cell);
@@ -119,8 +110,8 @@ public class CellData {
     private void readCellGeneralInfo(Cell cell) {
         cellType = cell.getCellType();
         hyperlink = cell.getHyperlink();
-        colIndex = cell.getColumnIndex();
-        rowIndex = cell.getRowIndex();
+        rowIndex = cell.getColumnIndex();
+        colIndex = cell.getRowIndex();
     }
 
     private void readCellContents(Cell cell) {
@@ -193,7 +184,19 @@ public class CellData {
                     }
                 break;
             case Cell.CELL_TYPE_FORMULA:
-                cell.setCellFormula((String) evaluationResult);
+                try{
+                    cell.setCellFormula((String) evaluationResult);
+                }catch(FormulaParseException e){
+                    String formulaString = "";
+                    try{
+                        formulaString = evaluationResult.toString();
+                        logger.error("Failed to set cell formula " + formulaString + " for cell " + this.toString(), e);
+                        cell.setCellType(Cell.CELL_TYPE_STRING);
+                        cell.setCellValue(formulaString);
+                    }catch(Exception ex){
+                        logger.warn("Failed to convert formula to string for cell " + this.toString());
+                    }
+                }
                 break;
             case Cell.CELL_TYPE_ERROR:
                 cell.setCellErrorValue((Byte) evaluationResult);
@@ -207,13 +210,12 @@ public class CellData {
 
     @Override
     public String toString() {
-        return "CellData{" +
-                "col=" + colIndex +
-                ", row=" + rowIndex +
+        return "PoiCellData{" +
+                "col=" + getRowIndex() +
+                ", row=" + colIndex +
                 ", source cell type=" + cellType +
                 ", target cell type=" + resultCellType +
-                ", cellValue=" + cellOriginalValue +
-                ", eval.result=" + evaluationResult +
+                ", cellValue=" + getCellValue() +
                 '}';
     }
 }

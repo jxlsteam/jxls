@@ -8,7 +8,7 @@ public class Pos {
     int col;
     int row;
 
-    public Pos(int col, int row) {
+    public Pos(int row, int col) {
         this.col = col;
         this.row = row;
     }

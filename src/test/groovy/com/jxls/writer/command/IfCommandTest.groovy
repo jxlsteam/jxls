@@ -12,8 +12,8 @@ import com.jxls.writer.Cell
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new BaseArea(new Cell(5, 10), new Size(5,5))
-            def elseArea = new BaseArea(new Cell(10,10), new Size(3,3))
+            def ifArea = new BaseArea(new Cell(10, 5), new Size(5,5))
+            def elseArea = new BaseArea(new Cell(10, 10), new Size(3,3))
             def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1),
                     ifArea, elseArea );
         then:
@@ -25,7 +25,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(5, 10), new Size(5,5)), new BaseArea(new Cell(10,10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10", new Size(1,1), new BaseArea(new Cell(10, 5), new Size(5,5)), new BaseArea(new Cell(10, 10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -45,9 +45,9 @@ class IfCommandTest extends Specification{
             def context = new Context()
         when:
             context.putVar("x", 2)
-            ifCommand.applyAt(new Cell(1,1), context)
+            ifCommand.applyAt(new Cell(1, 1), context)
         then:
-            1 * elseArea.applyAt(new Cell(1,1), context)
+            1 * elseArea.applyAt(new Cell(1, 1), context)
             0 * _._
     }
 
@@ -59,9 +59,9 @@ class IfCommandTest extends Specification{
             def context = new Context()
         when:
             context.putVar("x", 3)
-            ifCommand.applyAt(new Cell(1,1), context)
+            ifCommand.applyAt(new Cell(1, 1), context)
         then:
-            1 * ifArea.applyAt(new Cell(1,1), context)
+            1 * ifArea.applyAt(new Cell(1, 1), context)
             0 * _._
     }
 
