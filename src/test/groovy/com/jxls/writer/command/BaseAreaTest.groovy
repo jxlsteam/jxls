@@ -123,11 +123,13 @@ class BaseAreaTest extends Specification{
             Context context = new Context()
             context.putVar("x", 1)
         when:
-            area.applyAt(new Cell(2, 2), context)
+            area.applyAt(new Cell(5, 5), context)
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData(1, 1), new CellData(3, 1), new CellData(2, 2)]
-            transformer.updateFormulaCell(new Cell(2, 2), "")
+            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 1, CellData.CellType.FORMULA, "A0+B3"), 
+                    new CellData(0, 3, 1, CellData.CellType.FORMULA, "D20 * E30"),
+                    new CellData(0, 2, 2, CellData.CellType.FORMULA, "SUM(F7)")]
+            1* transformer.updateFormulaCell(new Cell(6, 6), "A0+G8")
             //1 * transformer.updateFormulaCell(new Cell(1,1), new Cell(2,2), context)
     }
 

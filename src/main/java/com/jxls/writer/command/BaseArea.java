@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Leonid Vysochyn
@@ -49,8 +51,22 @@ public class BaseArea implements Area {
     }
 
     public void processFormulas() {
-        List<CellData> formulaCells = transformer.getFormulaCells();
+        Set<CellData> formulaCells = transformer.getFormulaCells();
+        for (Iterator<CellData> iterator = formulaCells.iterator(); iterator.hasNext(); ) {
+            CellData formulaCellData = iterator.next();
+            String targetFormulaString = formulaCellData.getFormula();
+            List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
+            for (int j = 0; j < formulaCellRefs.size(); j++) {
+                String cellRef = formulaCellRefs.get(j);
+                Pos pos = Pos.createFromCellRef(cellRef);
+                List<Pos> targetCellDataList = transformer.getTargetCells(pos.getSheet(), pos.getRow(), pos.getCol());
+                String targetCellRef = Util.createTargetCellRef(targetCellDataList);
+                targetFormulaString = targetFormulaString.replaceAll(cellRef, targetCellRef);
+            }
+            transformer.updateFormulaCell(new Cell(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol()), targetFormulaString);
+        }
     }
+
 
     public void setTransformer(Transformer transformer) {
         this.transformer = transformer;

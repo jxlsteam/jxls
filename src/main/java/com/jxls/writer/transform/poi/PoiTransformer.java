@@ -2,6 +2,7 @@ package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.Cell;
 import com.jxls.writer.CellData;
+import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.Transformer;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Leonid Vysochyn
@@ -76,6 +79,10 @@ public class PoiTransformer implements Transformer {
         return cellData[sheet][row][col];
     }
 
+    public List<Pos> getTargetCells(int sheet, int row, int col) {
+        return new ArrayList<Pos>();
+    }
+
     public void transform(Cell pos, Cell newCell, Context context) {
         if(cellData == null ||  cellData.length <= pos.getSheetIndex() || cellData[pos.getSheetIndex()] == null ||
                 cellData[pos.getSheetIndex()].length <= pos.getRow() || cellData[pos.getSheetIndex()][pos.getRow()] == null ||
@@ -127,12 +134,12 @@ public class PoiTransformer implements Transformer {
         poiCell.setCellFormula( formulaString );
     }
 
-    public List<CellData> getFormulaCells() {
-        List<CellData> formulaCells = new ArrayList<CellData>();
+    public Set<CellData> getFormulaCells() {
+        Set<CellData> formulaCells = new HashSet<CellData>();
         for(int sheetInd = 0; sheetInd < cellData.length; sheetInd++){
             for(int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++){
                 for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
-                    if( cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
+                    if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
                         formulaCells.add(cellData[sheetInd][rowInd][colInd]);
                     }
                 }

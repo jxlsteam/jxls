@@ -8,6 +8,8 @@ import org.apache.poi.ss.usermodel.Row
 
 import com.jxls.writer.Cell
 import com.jxls.writer.command.Context
+import com.jxls.writer.CellData
+import com.jxls.writer.Pos
 
 /**
  * @author Leonid Vysochyn
@@ -34,6 +36,7 @@ class PoiTransformerTest extends Specification{
         row2.createCell(1).setCellValue('${2*y}')
         row2.createCell(2).setCellValue('${4*4}')
         row2.createCell(3).setCellValue('${2*x}x and ${2*y}y')
+        row2.createCell(4).setCellValue('$[${myvar}*SUM(A1:A5) + ${myvar2}]')
     }
 
     def "test template cells storage"(){
@@ -50,6 +53,7 @@ class PoiTransformerTest extends Specification{
             0   | 2     | '${x*y}'
             1   | 1     | "SUM(A1:A3)"
             2   | 0     | "XYZ"
+            2   | 4     |  '$[${myvar}*SUM(A1:A5) + ${myvar2}]'
     }
 
     def "test transform string var"(){
@@ -185,6 +189,34 @@ class PoiTransformerTest extends Specification{
             poiTransformer.updateFormulaCell(new Cell(1, 1), "SUM(B1:B5)")
         then:
             wb.getSheetAt(0).getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
+    }
+
+    def "test get formula cells"(){
+        when:
+            def poiTransformer = new PoiTransformer(wb)
+            def context = new Context()
+            context.putVar("myvar", 2)
+            context.putVar("myvar2", 4)
+            poiTransformer.transform(new Cell(0,2,4), new Cell(0, 10,10), context)
+            def formulaCells = poiTransformer.getFormulaCells()
+        then:
+            formulaCells.size() == 2 
+            formulaCells.contains(new CellData(0,1,1, CellData.CellType.FORMULA, "SUM(A1:A3)"))
+            formulaCells.contains(new CellData(0,2,4, CellData.CellType.STRING, '$[${myvar}*SUM(A1:A5) + ${myvar2}]'))
+    }
+
+    def "test get target cells"(){
+        when:
+            def poiTransformer = new PoiTransformer(wb)
+            def context = new Context()
+            poiTransformer.transform(new Cell(0,1,0), new Cell(0,10,10), context)
+            poiTransformer.transform(new Cell(0,1,0), new Cell(0,10,12), context)
+            poiTransformer.transform(new Cell(0,1,0), new Cell(0,10,14), context)
+            poiTransformer.transform(new Cell(0,2,1), new Cell(0,20,11), context)
+            poiTransformer.transform(new Cell(0,2,1), new Cell(0,20,12), context)
+        then:
+            poiTransformer.getTargetCells(0,1,0) == [new Pos(0,10,10), new Pos(0,10,12), new Pos(0,10,14)]
+            poiTransformer.getTargetCells(0,2,1) == [new Pos(0,20,11), new Pos(0,20,12)]
     }
 
 }

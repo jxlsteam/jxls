@@ -22,15 +22,12 @@ public class PoiCellData extends CellData {
 
     protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
     protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
-    public static final String USER_FORMULA_PREFIX = "$[";
-    public static final String USER_FORMULA_SUFFIX = "]";
-
 
 
     RichTextString richTextString;
     boolean booleanValue;
 
-    int cellType;
+    int poiCellType;
     int resultCellType;
     private Date dateValue;
     private double doubleValue;
@@ -46,12 +43,12 @@ public class PoiCellData extends CellData {
     }
 
     public boolean isFormulaCell(){
-        if(cellType == Cell.CELL_TYPE_FORMULA ) return true;
+        if(poiCellType == Cell.CELL_TYPE_FORMULA ) return true;
         return richTextString != null && isUserFormula(richTextString.getString());
     }
     
     public Object evaluate(Context context){
-        resultCellType = cellType;
+        resultCellType = poiCellType;
         if( richTextString != null){
             String strValue = richTextString.getString();
             if( isUserFormula(strValue) ){
@@ -108,10 +105,10 @@ public class PoiCellData extends CellData {
     }
 
     private void readCellGeneralInfo(Cell cell) {
-        cellType = cell.getCellType();
+        poiCellType = cell.getCellType();
         hyperlink = cell.getHyperlink();
-        rowIndex = cell.getColumnIndex();
-        colIndex = cell.getRowIndex();
+        col = cell.getColumnIndex();
+        row = cell.getRowIndex();
     }
 
     private void readCellContents(Cell cell) {
@@ -119,33 +116,39 @@ public class PoiCellData extends CellData {
             case Cell.CELL_TYPE_STRING:
                 richTextString = cell.getRichStringCellValue();
                 evaluationResult = richTextString.getString();
-                cellOriginalValue = richTextString.getString();
+                cellValue = richTextString.getString();
+                cellType = CellType.STRING;
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 booleanValue = cell.getBooleanCellValue();
                 evaluationResult = booleanValue;
-                cellOriginalValue = booleanValue;
+                cellValue = booleanValue;
+                cellType = CellType.BOOLEAN;
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 if(DateUtil.isCellDateFormatted(cell)) {
                     dateValue = cell.getDateCellValue();
                     evaluationResult = dateValue;
-                    cellOriginalValue = dateValue;
+                    cellValue = dateValue;
+                    cellType = CellType.DATE;
                 } else {
                     doubleValue = cell.getNumericCellValue();
                     evaluationResult = doubleValue;
-                    cellOriginalValue = doubleValue;
+                    cellValue = doubleValue;
+                    cellType = CellType.NUMBER;
                 }
                 break;
             case Cell.CELL_TYPE_FORMULA:
                 formula = cell.getCellFormula();
                 evaluationResult = formula;
-                cellOriginalValue = formula;
+                cellValue = formula;
+                cellType = CellType.FORMULA;
                 break;
             case Cell.CELL_TYPE_ERROR:
                 errorValue = cell.getErrorCellValue();
                 evaluationResult = errorValue;
-                cellOriginalValue = errorValue;
+                cellValue = errorValue;
+                cellType = CellType.ERROR;
                 break;
         }
     }
@@ -208,14 +211,4 @@ public class PoiCellData extends CellData {
         cell.setCellStyle( style );
     }
 
-    @Override
-    public String toString() {
-        return "PoiCellData{" +
-                "col=" + getRowIndex() +
-                ", row=" + colIndex +
-                ", source cell type=" + cellType +
-                ", target cell type=" + resultCellType +
-                ", cellValue=" + getCellValue() +
-                '}';
-    }
 }
