@@ -6,7 +6,7 @@ package com.jxls.writer;
  * @author Leonid Vysochyn
  */
 public class Cell {
-    int sheetIndex;
+    int sheet;
     int row;
     int col;
 
@@ -14,10 +14,10 @@ public class Cell {
         this(0, row, col);
     }
 
-    public Cell(int sheetIndex, int row, int col) {
+    public Cell(int sheet, int row, int col) {
         this.col = col;
         this.row = row;
-        this.sheetIndex = sheetIndex;
+        this.sheet = sheet;
     }
 
     public int getRow() {
@@ -28,12 +28,12 @@ public class Cell {
         return col;
     }
 
-    public int getSheetIndex() {
-        return sheetIndex;
+    public int getSheet() {
+        return sheet;
     }
 
-    public void setSheetIndex(int sheetIndex) {
-        this.sheetIndex = sheetIndex;
+    public void setSheet(int sheet) {
+        this.sheet = sheet;
     }
 
     public void setRow(int row) {
@@ -56,7 +56,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "Cell(" + sheetIndex + "," + row + "," + col + ")";
+        return "Cell(" + sheet + "," + row + "," + col + ")";
     }
 
     @Override
@@ -68,14 +68,14 @@ public class Cell {
 
         if (col != cell.col) return false;
         if (row != cell.row) return false;
-        if (sheetIndex != cell.sheetIndex) return false;
+        if (sheet != cell.sheet) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = sheetIndex;
+        int result = sheet;
         result = 31 * result + row;
         result = 31 * result + col;
         return result;

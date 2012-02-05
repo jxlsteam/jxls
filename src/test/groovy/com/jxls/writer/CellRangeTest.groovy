@@ -9,7 +9,7 @@ import spock.lang.Specification
 class CellRangeTest extends Specification{
     def "test shift cells with row block"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
             int startRow = 3;
             int endRow = 5;
             int col = 5;
@@ -18,16 +18,16 @@ class CellRangeTest extends Specification{
         when:
             cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift)
         then:
-            assert cellRange.getCell(4, 3) == new Cell(4, 3)
-            assert cellRange.getCell(3, 6) == new Cell(3, 9)
-            assert cellRange.getCell(5, 6) == new Cell(5, 6)
-            assert cellRange.getCell(6, 6) == new Cell(6, 6)
-            assert cellRange.getCell(4, 9) == new Cell(4, 12)
+            assert cellRange.getCell(4, 3) == new Pos(4, 3)
+            assert cellRange.getCell(3, 6) == new Pos(3, 9)
+            assert cellRange.getCell(5, 6) == new Pos(5, 6)
+            assert cellRange.getCell(6, 6) == new Pos(6, 6)
+            assert cellRange.getCell(4, 9) == new Pos(4, 12)
     }
 
     def "test change matrix when shifting with row block"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
             int startRow = 3;
             int endRow = 5;
             int col = 5;
@@ -43,7 +43,7 @@ class CellRangeTest extends Specification{
 
     def "test shift cells with column block"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
             int startCol = 3;
             int endCol = 5;
             int row = 5;
@@ -52,16 +52,16 @@ class CellRangeTest extends Specification{
         when:
             cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift)
         then:
-            assert cellRange.getCell(3, 4) == new Cell(3, 4)
-            assert cellRange.getCell(6, 3) == new Cell(3, 3)
-            assert cellRange.getCell(7, 4) == new Cell(7, 4)
-            assert cellRange.getCell(7, 6) == new Cell(7, 6)
-            assert cellRange.getCell(7, 5) == new Cell(4, 5)
+            assert cellRange.getCell(3, 4) == new Pos(3, 4)
+            assert cellRange.getCell(6, 3) == new Pos(3, 3)
+            assert cellRange.getCell(7, 4) == new Pos(7, 4)
+            assert cellRange.getCell(7, 6) == new Pos(7, 6)
+            assert cellRange.getCell(7, 5) == new Pos(4, 5)
     }
 
     def "test change matrix when shifting with column block"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
             int startCol = 3;
             int endCol = 5;
             int row = 5;
@@ -77,7 +77,7 @@ class CellRangeTest extends Specification{
 
     def "test change matrix reset"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
             int startCol = 3;
             int endCol = 5;
             int row = 5;
@@ -94,7 +94,7 @@ class CellRangeTest extends Specification{
 
     def "test exclude cells"(){
         given:
-            CellRange cellRange = new CellRange(new Cell(0, 0), 10, 10)
+            CellRange cellRange = new CellRange(new Pos(0, 0), 10, 10)
         when:
             cellRange.excludeCells(3, 4, 5, 7)
         then:

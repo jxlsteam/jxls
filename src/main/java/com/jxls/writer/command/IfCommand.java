@@ -27,7 +27,7 @@ public class IfCommand extends AbstractCommand {
         this(condition, initialSize, ifArea, BaseArea.EMPTY_AREA);
     }
 
-    public Size applyAt(Cell cell, Context context) {
+    public Size applyAt(Pos cell, Context context) {
         conditionResult = isConditionTrue(context);
         if( conditionResult ){
             return ifArea.applyAt(cell, context);

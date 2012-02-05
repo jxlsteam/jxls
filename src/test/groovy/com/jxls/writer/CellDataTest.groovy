@@ -27,4 +27,24 @@ class CellDataTest extends Specification{
             1.2 == cellData.getCellValue()
     }
 
+
+    def "test add target pos"(){
+        when:
+            CellData cellData = new CellData(1, 2, 3)
+            cellData.addTargetPos(new Pos(2,3))
+            cellData.addTargetPos(new Pos(1,3,4))
+            def targetPos = cellData.getTargetPos()
+        then:
+            targetPos.size() == 2
+            targetPos.contains(new Pos(2,3))
+            targetPos.contains(new Pos(1,3,4))
+    }    
+    
+    def "test get pos"(){
+        when:
+            CellData cellData = new CellData(1,2,3)
+        then:
+            cellData.getPos() == new Pos(1,2,3)
+    }
+
 }

@@ -5,34 +5,34 @@ package com.jxls.writer;
  *         Date: 1/26/12 1:43 PM
  */
 public class CellRange {
-    Cell startCell;
+    Pos startCell;
     int width;
     int height;
-    Cell[][] cells;
+    Pos[][] cells;
     boolean[][] changeMatrix;
 
-    public CellRange(Cell startCell, int width, int height) {
-        int sheetIndex = startCell.getSheetIndex();
+    public CellRange(Pos startCell, int width, int height) {
+        int sheetIndex = startCell.getSheet();
         this.startCell = startCell;
         this.width = width;
         this.height = height;
-        cells = new Cell[height][];
+        cells = new Pos[height][];
         changeMatrix = new boolean[height][];
         for(int row = 0; row < height; row++){
-            cells[row] = new Cell[width];
+            cells[row] = new Pos[width];
             changeMatrix[row] = new boolean[width];
             for(int col = 0; col < width; col++){
-                cells[row][col] = new Cell(sheetIndex, row, col);
+                cells[row][col] = new Pos(sheetIndex, row, col);
             }
         }
     }
     
-    public Cell getCell(int row, int col){
+    public Pos getCell(int row, int col){
         return cells[row][col];
     }
 
-    void setCell(int row, int col, Cell cell){
-        cells[row][col] = cell;
+    void setCell(int row, int col, Pos Pos){
+        cells[row][col] = Pos;
     }
 
     public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift){

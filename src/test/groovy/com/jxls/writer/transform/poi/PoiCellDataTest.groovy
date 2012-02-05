@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
 import com.jxls.writer.command.Context
 import org.apache.poi.ss.usermodel.Cell
+import com.jxls.writer.Pos
 
 /**
  * @author Leonid Vysochyn
@@ -124,4 +125,5 @@ class PoiCellDataTest extends Specification{
             formulaCell1.isFormulaCell()
             formulaCell2.isFormulaCell()
     }
+
 }

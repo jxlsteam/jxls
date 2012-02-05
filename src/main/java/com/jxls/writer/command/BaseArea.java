@@ -17,29 +17,29 @@ import java.util.Set;
 public class BaseArea implements Area {
     static Logger logger = LoggerFactory.getLogger(BaseArea.class);
 
-    public static final BaseArea EMPTY_AREA = new BaseArea(new Cell(0, 0), Size.ZERO_SIZE);
+    public static final BaseArea EMPTY_AREA = new BaseArea(new Pos(0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
     Transformer transformer;
     
     CellRange cellRange;
     
-    Cell startCell;
+    Pos startPos;
     Size initialSize;
 
-    public BaseArea(Cell startCell, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
-        this.startCell = startCell;
+    public BaseArea(Pos startPos, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
+        this.startPos = startPos;
         this.initialSize = initialSize;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
     }
 
-    public BaseArea(Cell startCell, Size initialSize) {
-        this(startCell, initialSize, null, null);
+    public BaseArea(Pos startPos, Size initialSize) {
+        this(startPos, initialSize, null, null);
     }
 
-    public BaseArea(Cell startCell, Size initialSize, Transformer transformer) {
-        this(startCell, initialSize, null, transformer);
+    public BaseArea(Pos startPos, Size initialSize, Transformer transformer) {
+        this(startPos, initialSize, null, transformer);
     }
 
     public void addCommand(Pos pos, Command command) {
@@ -52,18 +52,21 @@ public class BaseArea implements Area {
 
     public void processFormulas() {
         Set<CellData> formulaCells = transformer.getFormulaCells();
-        for (Iterator<CellData> iterator = formulaCells.iterator(); iterator.hasNext(); ) {
-            CellData formulaCellData = iterator.next();
+        for (CellData formulaCellData : formulaCells) {
             String targetFormulaString = formulaCellData.getFormula();
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
-            for (int j = 0; j < formulaCellRefs.size(); j++) {
-                String cellRef = formulaCellRefs.get(j);
-                Pos pos = Pos.createFromCellRef(cellRef);
-                List<Pos> targetCellDataList = transformer.getTargetCells(pos.getSheet(), pos.getRow(), pos.getCol());
+            for (String cellRef : formulaCellRefs) {
+                Pos pos = new Pos(cellRef);
+                Set<Pos> targetCellDataList = transformer.getTargetPos(pos.getSheet(), pos.getRow(), pos.getCol());
                 String targetCellRef = Util.createTargetCellRef(targetCellDataList);
                 targetFormulaString = targetFormulaString.replaceAll(cellRef, targetCellRef);
             }
-            transformer.updateFormulaCell(new Cell(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol()), targetFormulaString);
+            Set<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol());
+            for (Iterator<Pos> iterator = targetFormulaCells.iterator(); iterator.hasNext(); ) {
+                Pos targetFormulaCell = iterator.next();
+                transformer.updateFormulaCell(new Pos(targetFormulaCell.getSheet(), targetFormulaCell.getRow(), targetFormulaCell.getCol()), targetFormulaString);
+            }
+
         }
     }
 
@@ -73,22 +76,22 @@ public class BaseArea implements Area {
     }
     
     private void createCellRange(){
-        cellRange = new CellRange(startCell, initialSize.getWidth(), initialSize.getHeight());
+        cellRange = new CellRange(startPos, initialSize.getWidth(), initialSize.getHeight());
         for(CommandData commandData: commandDataList){
             cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getCommand().getInitialSize().getWidth()-1,
                     commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight()-1);
         }
     }
 
-    public Size applyAt(Cell cell, Context context) {
-        logger.debug("Applying BaseArea at {} with {}", cell, context);
+    public Size applyAt(Pos pos, Context context) {
+        logger.debug("Applying BaseArea at {} with {}", pos, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
-            Cell newCell = new Cell(cell.getSheetIndex(), commandData.getStartPos().getRow() + cell.getRow(), commandData.getStartPos().getCol() + cell.getCol());
+            Pos newCell = new Pos(pos.getSheet(), commandData.getStartPos().getRow() + pos.getRow(), commandData.getStartPos().getCol() + pos.getCol());
             Size initialSize = commandData.getCommand().getInitialSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
@@ -108,8 +111,8 @@ public class BaseArea implements Area {
                 for (int j = i + 1; j < commandDataList.size(); j++) {
                     CommandData data = commandDataList.get(j);
                     Command command = data.getCommand();
-                    int newRow = data.getStartPos().getRow() + cell.getRow();
-                    int newCol = data.getStartPos().getCol() + cell.getCol();
+                    int newRow = data.getStartPos().getRow() + pos.getRow();
+                    int newCol = data.getStartPos().getCol() + pos.getCol();
                     if(newRow > newCell.getRow() && ((newCol >= newCell.getCol() && newCol <= newCell.getCol() + newSize.getWidth()) ||
                             (newCol + command.getInitialSize().getWidth() >= newCell.getCol() && newCol + command.getInitialSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
                             (newCell.getCol() >= newCol && newCell.getCol() <= newCol + command.getInitialSize().getWidth() )
@@ -129,25 +132,25 @@ public class BaseArea implements Area {
                 }
             }
         }
-        transformStaticCells(cell, context);
+        transformStaticCells(pos, context);
         return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
     }
 
-    private void transformStaticCells(Cell cell, Context context) {
+    private void transformStaticCells(Pos Pos, Context context) {
         for(int x = 0; x < initialSize.getWidth(); x++){
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(y, x) ){
-                    Cell relativeCell = cellRange.getCell(y, x);
-                    Cell srcCell = new Cell(startCell.getSheetIndex(), startCell.getRow() + y, startCell.getCol() + x);
-                    Cell targetCell = new Cell(cell.getSheetIndex(), relativeCell.getRow() + cell.getRow(), relativeCell.getCol() + cell.getCol());
+                    Pos relativeCell = cellRange.getCell(y, x);
+                    Pos srcCell = new Pos(startPos.getSheet(), startPos.getRow() + y, startPos.getCol() + x);
+                    Pos targetCell = new Pos(Pos.getSheet(), relativeCell.getRow() + Pos.getRow(), relativeCell.getCol() + Pos.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }
         }
     }
 
-    public Cell getStartCell() {
-        return startCell;
+    public Pos getStartPos() {
+        return startPos;
     }
 
     public Size getInitialSize() {

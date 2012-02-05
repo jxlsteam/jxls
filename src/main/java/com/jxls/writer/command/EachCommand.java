@@ -45,20 +45,20 @@ public class EachCommand extends AbstractCommand {
         this.direction = direction;
     }
 
-    public Size applyAt(Cell cell, Context context) {
+    public Size applyAt(Pos cell, Context context) {
         Collection itemsCollection = calculateItemsCollection(context);
-        Cell currentCell = cell;
+        Pos currentCell = cell;
         int width = 0;
         int height = 0;
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
             Size size = area.applyAt(currentCell, context);
             if( direction == Direction.DOWN ){
-                currentCell = new Cell(currentCell.getSheetIndex(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                currentCell = new Pos(currentCell.getSheet(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
             }else{
-                currentCell = new Cell(currentCell.getSheetIndex(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                currentCell = new Pos(currentCell.getSheet(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                 width += size.getWidth();
                 height = Math.max( height, size.getHeight() );
             }

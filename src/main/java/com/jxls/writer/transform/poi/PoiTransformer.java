@@ -1,6 +1,5 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.Cell;
 import com.jxls.writer.CellData;
 import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
@@ -11,10 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Leonid Vysochyn
@@ -79,35 +75,41 @@ public class PoiTransformer implements Transformer {
         return cellData[sheet][row][col];
     }
 
-    public List<Pos> getTargetCells(int sheet, int row, int col) {
-        return new ArrayList<Pos>();
+    public Set<Pos> getTargetPos(int sheet, int row, int col) {
+        CellData cellData = getCellData(sheet, row, col);
+        if( cellData != null ){
+            return cellData.getTargetPos();
+        }else{
+            return new LinkedHashSet<Pos>();
+        }
     }
 
-    public void transform(Cell pos, Cell newCell, Context context) {
-        if(cellData == null ||  cellData.length <= pos.getSheetIndex() || cellData[pos.getSheetIndex()] == null ||
-                cellData[pos.getSheetIndex()].length <= pos.getRow() || cellData[pos.getSheetIndex()][pos.getRow()] == null ||
-                cellData[pos.getSheetIndex()][pos.getRow()].length <= pos.getCol()) return;
-        PoiCellData cellData = this.cellData[pos.getSheetIndex()][pos.getRow()][pos.getCol()];
+    public void transform(Pos pos, Pos newPos, Context context) {
+        if(cellData == null ||  cellData.length <= pos.getSheet() || cellData[pos.getSheet()] == null ||
+                cellData[pos.getSheet()].length <= pos.getRow() || cellData[pos.getSheet()][pos.getRow()] == null ||
+                cellData[pos.getSheet()][pos.getRow()].length <= pos.getCol()) return;
+        PoiCellData cellData = this.cellData[pos.getSheet()][pos.getRow()][pos.getCol()];
         if(cellData != null){
+            cellData.addTargetPos(newPos);
             int numberOfSheets = workbook.getNumberOfSheets();
-            while(numberOfSheets <= newCell.getSheetIndex() ){
+            while(numberOfSheets <= newPos.getSheet() ){
                 workbook.createSheet();
                 numberOfSheets = workbook.getNumberOfSheets();
             }
-            Sheet destSheet = workbook.getSheetAt(newCell.getSheetIndex());
+            Sheet destSheet = workbook.getSheetAt(newPos.getSheet());
             if(!ignoreColumnProps){
-                destSheet.setColumnWidth(newCell.getCol(), sheetData[pos.getSheetIndex()].getColumnWidth(pos.getCol()));
+                destSheet.setColumnWidth(newPos.getCol(), sheetData[pos.getSheet()].getColumnWidth(pos.getCol()));
             }
-            Row destRow = destSheet.getRow(newCell.getRow());
+            Row destRow = destSheet.getRow(newPos.getRow());
             if (destRow == null) {
-                destRow = destSheet.createRow(newCell.getRow());
+                destRow = destSheet.createRow(newPos.getRow());
             }
             if(!ignoreRowProps){
-                destSheet.getRow(newCell.getRow()).setHeight( sheetData[pos.getSheetIndex()].getRowData(pos.getRow()).getHeight());
+                destSheet.getRow(newPos.getRow()).setHeight( sheetData[pos.getSheet()].getRowData(pos.getRow()).getHeight());
             }
-            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newCell.getCol());
+            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newPos.getCol());
             if (destCell == null) {
-                destCell = destRow.createCell(newCell.getCol());
+                destCell = destRow.createCell(newPos.getCol());
             }
             try{
                 destCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK);
@@ -118,18 +120,18 @@ public class PoiTransformer implements Transformer {
         }
     }
 
-    public void updateFormulaCell(Cell cell, String formulaString) {
-        Sheet sheet = workbook.getSheetAt(cell.getSheetIndex());
+    public void updateFormulaCell(Pos pos, String formulaString) {
+        Sheet sheet = workbook.getSheetAt(pos.getSheet());
         if( sheet == null){
             sheet = workbook.createSheet();
         }
-        Row row = sheet.getRow(cell.getRow());
+        Row row = sheet.getRow(pos.getRow());
         if( row == null ){
-            row = sheet.createRow(cell.getRow());
+            row = sheet.createRow(pos.getRow());
         }
-        org.apache.poi.ss.usermodel.Cell poiCell = row.getCell(cell.getCol());
+        org.apache.poi.ss.usermodel.Cell poiCell = row.getCell(pos.getCol());
         if( poiCell == null ){
-            poiCell = row.createCell(cell.getCol());
+            poiCell = row.createCell(pos.getCol());
         }
         poiCell.setCellFormula( formulaString );
     }

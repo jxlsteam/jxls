@@ -12,7 +12,7 @@ public class CellTest {
     @Test
     public void construction(){
         Cell cell = new Cell(1, 20, 10);
-        assertEquals("Cell sheet was set incorrectly", 1, cell.getSheetIndex());
+        assertEquals("Cell sheet was set incorrectly", 1, cell.getSheet());
         assertEquals("Cell row was set incorrectly", 20, cell.getRow() );
         assertEquals("Cell col was set incorrectly", 10, cell.getCol() );
     }

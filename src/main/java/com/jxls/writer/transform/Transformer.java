@@ -1,6 +1,6 @@
 package com.jxls.writer.transform;
 
-import com.jxls.writer.Cell;
+import com.jxls.writer.Pos;
 import com.jxls.writer.CellData;
 import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
@@ -13,9 +13,9 @@ import java.util.Set;
  *         Date: 1/23/12 1:24 PM
  */
 public interface Transformer {
-    void transform(Cell cell, Cell newCell, Context context);
-    void updateFormulaCell(Cell cell, String formulaString);
+    void transform(Pos pos, Pos newPos, Context context);
+    void updateFormulaCell(Pos pos, String formulaString);
     Set<CellData> getFormulaCells();
     CellData getCellData(int sheet, int row, int col);
-    List<Pos> getTargetCells(int sheet, int row, int col);
+    Set<Pos> getTargetPos(int sheet, int row, int col);
 }

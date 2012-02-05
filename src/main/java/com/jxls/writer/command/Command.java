@@ -11,6 +11,6 @@ public interface Command {
 
     Size getInitialSize();
 
-    Size applyAt(Cell cell, Context context);
+    Size applyAt(Pos cell, Context context);
 
 }
