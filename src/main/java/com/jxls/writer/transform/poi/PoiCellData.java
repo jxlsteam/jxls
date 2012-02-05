@@ -95,6 +95,8 @@ public class PoiCellData extends CellData {
             }else if(evaluationResult instanceof Boolean){
                 resultCellType = Cell.CELL_TYPE_BOOLEAN;
             }
+        }else if(matchCount == 0){
+            evaluationResult = strValue;
         }
     }
 

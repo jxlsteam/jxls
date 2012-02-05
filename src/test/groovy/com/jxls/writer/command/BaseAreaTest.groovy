@@ -32,9 +32,9 @@ class BaseAreaTest extends Specification{
             area.addCommand(new Pos(3, 2), innerCommand)
             innerCommand.getInitialSize() >> new Size(2,3)
         when:
-            area.applyAt(new Pos(5, 4), context)
+            area.applyAt(new Pos(1, 5, 4), context)
         then:
-            1 * innerCommand.applyAt(new Pos(8, 6), context) >> new Size(2,5)
+            1 * innerCommand.applyAt(new Pos(1, 8, 6), context) >> new Size(2,5)
     }
     
     def "test applyAt for simple area"(){
@@ -125,10 +125,9 @@ class BaseAreaTest extends Specification{
         when:
             area.processFormulas()
         then:
-
             1 * transformer.getFormulaCells() >> [new CellData(0, 1, 1, CellData.CellType.FORMULA, "A1+B3"),
                     new CellData(0, 3, 1, CellData.CellType.FORMULA, "D20 * E30"),
-                    new CellData(0, 2, 2, CellData.CellType.FORMULA, "SUM(F7)")]
+                    new CellData(0, 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')]
             1 * transformer.getTargetPos(0,0,0) >> [new Pos(0,0,0)]
             1 * transformer.getTargetPos(0,2,1) >> [new Pos("C5")]
             1 * transformer.getTargetPos(0,1,1) >> [new Pos(1,11,12)]

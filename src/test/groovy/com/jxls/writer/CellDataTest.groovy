@@ -46,5 +46,14 @@ class CellDataTest extends Specification{
         then:
             cellData.getPos() == new Pos(1,2,3)
     }
+    
+    def "test create with formula value"(){
+        expect:
+            new CellData(0, 1, 2, cellType, formula).getFormula() == formulaValue
+        where:
+            formula             | formulaValue      | cellType
+            "SUM(A1:A3)+B10"    | "SUM(A1:A3)+B10"  | CellData.CellType.FORMULA
+            '$[SUM(A3:A7)+B12]' | "SUM(A3:A7)+B12"  | CellData.CellType.STRING
+    }
 
 }

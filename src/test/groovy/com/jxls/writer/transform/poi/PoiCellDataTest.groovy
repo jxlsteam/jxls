@@ -23,6 +23,7 @@ class PoiCellDataTest extends Specification{
         row0.createCell(0).setCellValue(1.5)
         row0.createCell(1).setCellValue('${x}')
         row0.createCell(2).setCellValue('${x*y}')
+        row0.createCell(3).setCellValue('$[B2+B3]')
         Row row1 = sheet.createRow(1)
         row1.createCell(1).setCellFormula("SUM(A1:A3)")
         row1.createCell(2).setCellValue('${y*y}')
@@ -36,6 +37,7 @@ class PoiCellDataTest extends Specification{
         row2.createCell(4).setCellValue('${2*x}x and ${2*y} ${cur}')
         Sheet sheet2 = wb.createSheet("sheet 2")
         sheet2.createRow(0).createCell(0)
+        sheet2.createRow(1).createCell(1)
     }
 
     def "test get cell Value"(){
@@ -101,6 +103,16 @@ class PoiCellDataTest extends Specification{
         then:
             wb.getSheetAt(1).getRow(0).getCell(0).getNumericCellValue() == 35
     }
+
+    def "test write user formula"(){
+        setup:
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(3))
+            def context = new Context()
+        when:
+            cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(1), context)
+        then:
+            wb.getSheetAt(1).getRow(1).getCell(1).getCellFormula() == "B2+B3"
+    }
     
     def "test write parameterized formula cell"(){
         setup:
@@ -125,5 +137,7 @@ class PoiCellDataTest extends Specification{
             formulaCell1.isFormulaCell()
             formulaCell2.isFormulaCell()
     }
+
+
 
 }

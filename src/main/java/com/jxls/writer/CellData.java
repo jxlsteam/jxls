@@ -36,6 +36,8 @@ public class CellData {
         this.cellValue = cellValue;
         if( cellType == CellType.FORMULA ){
             formula = cellValue != null ? cellValue.toString() : "";
+        }else if( cellType == CellType.STRING && cellValue != null && isUserFormula(cellValue.toString())){
+            formula = cellValue.toString().substring(2, cellValue.toString().length() - 1);
         }
     }
 
