@@ -31,12 +31,7 @@ public class CellData {
     }
 
     public CellData(int sheet, int row, int col, CellType cellType, Object cellValue) {
-        this.sheet = sheet;
-        this.row = row;
-        this.col = col;
-        this.cellType = cellType;
-        this.cellValue = cellValue;
-        updateFormulaValue();
+        this(new Pos(sheet, row, col), cellType, cellValue);
     }
     
     public CellData(Pos pos, CellType cellType, Object cellValue) {
