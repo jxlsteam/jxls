@@ -40,7 +40,7 @@ class PoiTransformerTest extends Specification{
 
     def "test template cells storage"(){
         when:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             wb.removeSheetAt(0)
         then:
             assert wb.getNumberOfSheets() == 0
@@ -57,7 +57,7 @@ class PoiTransformerTest extends Specification{
 
     def "test transform string var"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
@@ -72,7 +72,7 @@ class PoiTransformerTest extends Specification{
 
     def "test transform numeric var"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             context.putVar("x", 3)
             context.putVar("y", 5)
@@ -87,7 +87,7 @@ class PoiTransformerTest extends Specification{
 
     def "test transform formula cell"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
         when:
             poiTransformer.transform(new Pos(1, 1), new Pos(7, 7), context)
@@ -100,7 +100,7 @@ class PoiTransformerTest extends Specification{
 
     def "test transform a cell to other sheet"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
@@ -116,7 +116,7 @@ class PoiTransformerTest extends Specification{
     
     def "test transform multiple times"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context1 = new Context()
             context1.putVar("x", "Abcde")
             def context2 = new Context()
@@ -134,7 +134,7 @@ class PoiTransformerTest extends Specification{
 
     def "test transform overridden cells"(){
         given:
-        def poiTransformer = new PoiTransformer(wb)
+        def poiTransformer = PoiTransformer.createTransformer(wb)
         def context1 = new Context()
         context1.putVar("x", "Abcde")
         def context2 = new Context()
@@ -154,7 +154,7 @@ class PoiTransformerTest extends Specification{
 
     def "test multiple expressions in a cell"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             context.putVar("x", 2)
             context.putVar("y", 3)
@@ -168,7 +168,7 @@ class PoiTransformerTest extends Specification{
 
     def "test ignore source column and row props"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             poiTransformer.setIgnoreColumnProps(true)
             poiTransformer.setIgnoreRowProps(true)
             def context = new Context()
@@ -183,7 +183,7 @@ class PoiTransformerTest extends Specification{
 
     def "test update formula value"(){
         given:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
         when:
             poiTransformer.updateFormulaCell(new Pos(1, 1), "SUM(B1:B5)")
         then:
@@ -192,7 +192,7 @@ class PoiTransformerTest extends Specification{
 
     def "test get formula cells"(){
         when:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             context.putVar("myvar", 2)
             context.putVar("myvar2", 4)
@@ -206,7 +206,7 @@ class PoiTransformerTest extends Specification{
 
     def "test get target cells"(){
         when:
-            def poiTransformer = new PoiTransformer(wb)
+            def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             poiTransformer.transform(new Pos(0,1,1), new Pos(0,10,10), context)
             poiTransformer.transform(new Pos(0,1,1), new Pos(0,10,12), context)

@@ -1,5 +1,7 @@
 package com.jxls.writer;
 
+import org.apache.poi.ss.usermodel.Cell;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -106,6 +108,10 @@ public class CellData {
 
     public void setFormula(String formula) {
         this.formula = formula;
+    }
+    
+    public boolean isFormulaCell(){
+        return formula != null;
     }
 
     public static boolean isUserFormula(String str) {

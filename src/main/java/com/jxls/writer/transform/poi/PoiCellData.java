@@ -25,15 +25,11 @@ public class PoiCellData extends CellData {
 
 
     RichTextString richTextString;
-    boolean booleanValue;
 
     int poiCellType;
     int resultCellType;
-    private Date dateValue;
-    private double doubleValue;
     private CellStyle style;
     private Hyperlink hyperlink;
-    private byte errorValue;
 
 
     public static PoiCellData createCellData(Cell cell){
@@ -43,11 +39,6 @@ public class PoiCellData extends CellData {
         return cellData;
     }
 
-    public boolean isFormulaCell(){
-        if(poiCellType == Cell.CELL_TYPE_FORMULA ) return true;
-        return richTextString != null && isUserFormula(richTextString.getString());
-    }
-    
     public Object evaluate(Context context){
         resultCellType = poiCellType;
         if( richTextString != null){
@@ -123,21 +114,18 @@ public class PoiCellData extends CellData {
                 cellType = CellType.STRING;
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
-                booleanValue = cell.getBooleanCellValue();
-                evaluationResult = booleanValue;
-                cellValue = booleanValue;
+                evaluationResult = cell.getBooleanCellValue();
+                cellValue = evaluationResult;
                 cellType = CellType.BOOLEAN;
                 break;
             case Cell.CELL_TYPE_NUMERIC:
                 if(DateUtil.isCellDateFormatted(cell)) {
-                    dateValue = cell.getDateCellValue();
-                    evaluationResult = dateValue;
-                    cellValue = dateValue;
+                    evaluationResult = cell.getDateCellValue();
+                    cellValue = evaluationResult;
                     cellType = CellType.DATE;
                 } else {
-                    doubleValue = cell.getNumericCellValue();
-                    evaluationResult = doubleValue;
-                    cellValue = doubleValue;
+                    evaluationResult = cell.getNumericCellValue();
+                    cellValue = evaluationResult;
                     cellType = CellType.NUMBER;
                 }
                 break;
@@ -148,9 +136,8 @@ public class PoiCellData extends CellData {
                 cellType = CellType.FORMULA;
                 break;
             case Cell.CELL_TYPE_ERROR:
-                errorValue = cell.getErrorCellValue();
-                evaluationResult = errorValue;
-                cellValue = errorValue;
+                evaluationResult = cell.getErrorCellValue();
+                cellValue = evaluationResult;
                 cellType = CellType.ERROR;
                 break;
         }
