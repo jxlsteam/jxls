@@ -32,7 +32,7 @@ public class Util {
         return cellRefs;
     }
 
-    public static String createTargetCellRef(Set<Pos> targetCellDataList) {
+    public static String createTargetCellRef(List<Pos> targetCellDataList) {
         String resultRef = "";
         if( targetCellDataList != null ){
             for (Iterator<Pos> iterator = targetCellDataList.iterator(); iterator.hasNext(); ) {

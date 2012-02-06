@@ -75,12 +75,12 @@ public class PoiTransformer implements Transformer {
         return cellData[sheet][row][col];
     }
 
-    public Set<Pos> getTargetPos(int sheet, int row, int col) {
+    public List<Pos> getTargetPos(int sheet, int row, int col) {
         CellData cellData = getCellData(sheet, row, col);
         if( cellData != null ){
             return cellData.getTargetPos();
         }else{
-            return new LinkedHashSet<Pos>();
+            return new ArrayList<Pos>();
         }
     }
 
@@ -133,16 +133,22 @@ public class PoiTransformer implements Transformer {
         if( poiCell == null ){
             poiCell = row.createCell(pos.getCol());
         }
-        poiCell.setCellFormula( formulaString );
+        try{
+            poiCell.setCellFormula( formulaString );
+        }catch (Exception e){
+            logger.error("Failed to set formula = " + formulaString + " into cell = " + pos.getCellName(), e);
+        }
     }
 
     public Set<CellData> getFormulaCells() {
         Set<CellData> formulaCells = new HashSet<CellData>();
         for(int sheetInd = 0; sheetInd < cellData.length; sheetInd++){
             for(int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++){
-                for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
-                    if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
-                        formulaCells.add(cellData[sheetInd][rowInd][colInd]);
+                if(cellData[sheetInd][rowInd] != null ){
+                    for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
+                        if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
+                            formulaCells.add(cellData[sheetInd][rowInd][colInd]);
+                        }
                     }
                 }
             }

@@ -1,6 +1,8 @@
 package com.jxls.writer;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,7 +25,7 @@ public class CellData {
     protected Object cellValue;
 
     protected CellType cellType;
-    Set<Pos> targetPos = new LinkedHashSet<Pos>();
+    List<Pos> targetPos = new ArrayList<Pos> ();
 
     public CellData() {
     }
@@ -34,6 +36,10 @@ public class CellData {
         this.col = col;
         this.cellType = cellType;
         this.cellValue = cellValue;
+        updateFormulaValue();
+    }
+
+    protected void updateFormulaValue() {
         if( cellType == CellType.FORMULA ){
             formula = cellValue != null ? cellValue.toString() : "";
         }else if( cellType == CellType.STRING && cellValue != null && isUserFormula(cellValue.toString())){
@@ -105,7 +111,7 @@ public class CellData {
         return targetPos.add(pos);
     }
     
-    public Set<Pos> getTargetPos(){
+    public List<Pos> getTargetPos(){
         return targetPos;
     }
 

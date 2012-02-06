@@ -17,5 +17,5 @@ public interface Transformer {
     void updateFormulaCell(Pos pos, String formulaString);
     Set<CellData> getFormulaCells();
     CellData getCellData(int sheet, int row, int col);
-    Set<Pos> getTargetPos(int sheet, int row, int col);
+    List<Pos> getTargetPos(int sheet, int row, int col);
 }

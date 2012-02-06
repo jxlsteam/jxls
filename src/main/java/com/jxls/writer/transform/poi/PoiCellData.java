@@ -39,6 +39,7 @@ public class PoiCellData extends CellData {
     public static PoiCellData createCellData(Cell cell){
         PoiCellData cellData = new PoiCellData();
         cellData.readCell(cell);
+        cellData.updateFormulaValue();
         return cellData;
     }
 

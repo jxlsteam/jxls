@@ -15,6 +15,6 @@ class UtilTest extends Specification{
 
     def "test create target cell ref"(){
         expect:
-            Util.createTargetCellRef([new Pos("A1"), new Pos("A5")] as Set) == "A1,A5"
+            Util.createTargetCellRef([new Pos("A1"), new Pos("A5")]) == "A1,A5"
     }
 }

@@ -5,10 +5,7 @@ import com.jxls.writer.transform.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Leonid Vysochyn
@@ -53,20 +50,28 @@ public class BaseArea implements Area {
     public void processFormulas() {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
-            String targetFormulaString = formulaCellData.getFormula();
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
+            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol());
+            Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
             for (String cellRef : formulaCellRefs) {
                 Pos pos = new Pos(cellRef);
-                Set<Pos> targetCellDataList = transformer.getTargetPos(pos.getSheet(), pos.getRow(), pos.getCol());
-                String targetCellRef = Util.createTargetCellRef(targetCellDataList);
-                targetFormulaString = targetFormulaString.replaceAll(cellRef, targetCellRef);
+                List<Pos> targetCellDataList = transformer.getTargetPos(pos.getSheet(), pos.getRow(), pos.getCol());
+                targetCellRefMap.put(pos, targetCellDataList);
             }
-            Set<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol());
-            for (Iterator<Pos> iterator = targetFormulaCells.iterator(); iterator.hasNext(); ) {
-                Pos targetFormulaCell = iterator.next();
-                transformer.updateFormulaCell(new Pos(targetFormulaCell.getSheet(), targetFormulaCell.getRow(), targetFormulaCell.getCol()), targetFormulaString);
+            for (int i = 0; i < targetFormulaCells.size(); i++) {
+                Pos targetFormulaPos = targetFormulaCells.get(i);
+                String targetFormulaString = formulaCellData.getFormula();
+                for (Map.Entry<Pos, List<Pos>> cellRefEntry : targetCellRefMap.entrySet()) {
+                    List<Pos> targetCells = cellRefEntry.getValue();
+                    if( targetCells.size() == targetFormulaCells.size() ){
+                        Pos targetCellRefPos = targetCells.get(i);
+                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
+                    }else{
+                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
+                    }
+                }
+                transformer.updateFormulaCell(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
             }
-
         }
     }
 

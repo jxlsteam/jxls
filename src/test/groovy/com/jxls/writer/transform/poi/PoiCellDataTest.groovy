@@ -132,10 +132,13 @@ class PoiCellDataTest extends Specification{
             PoiCellData notFormulaCell = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(1))
             PoiCellData formulaCell1 = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(1))
             PoiCellData formulaCell2 = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(4))
+            PoiCellData formulaCell3 = PoiCellData.createCellData(wb.getSheetAt(0).getRow(0).getCell(3))
         then:
             !notFormulaCell.isFormulaCell()
             formulaCell1.isFormulaCell()
             formulaCell2.isFormulaCell()
+            formulaCell3.isFormulaCell()
+            formulaCell3.getFormula() == "B2+B3"
     }
 
 
