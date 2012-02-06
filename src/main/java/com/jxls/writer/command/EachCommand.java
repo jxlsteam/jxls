@@ -16,7 +16,6 @@ public class EachCommand extends AbstractCommand {
     
     String var;
     String items;
-    boolean byRows = true;
     Command area;
     Direction direction = Direction.DOWN;
 
@@ -45,9 +44,9 @@ public class EachCommand extends AbstractCommand {
         this.direction = direction;
     }
 
-    public Size applyAt(Pos cell, Context context) {
+    public Size applyAt(Pos pos, Context context) {
         Collection itemsCollection = calculateItemsCollection(context);
-        Pos currentCell = cell;
+        Pos currentCell = pos;
         int width = 0;
         int height = 0;
         for( Object obj : itemsCollection){

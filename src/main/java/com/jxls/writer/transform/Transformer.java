@@ -16,6 +16,6 @@ public interface Transformer {
     void transform(Pos pos, Pos newPos, Context context);
     void updateFormulaCell(Pos pos, String formulaString);
     Set<CellData> getFormulaCells();
-    CellData getCellData(int sheet, int row, int col);
-    List<Pos> getTargetPos(int sheet, int row, int col);
+    CellData getCellData(Pos pos);
+    List<Pos> getTargetPos(Pos pos);
 }

@@ -44,7 +44,7 @@ class PoiTransformerTest extends Specification{
             wb.removeSheetAt(0)
         then:
             assert wb.getNumberOfSheets() == 0
-            assert poiTransformer.getCellData(0, row, col).getCellValue() == value
+            assert poiTransformer.getCellData(new Pos(0, row, col)).getCellValue() == value
         where:
             row | col   | value
             0   | 0     | new Double(1.5)
@@ -214,8 +214,8 @@ class PoiTransformerTest extends Specification{
             poiTransformer.transform(new Pos(0,2,1), new Pos(0,20,11), context)
             poiTransformer.transform(new Pos(0,2,1), new Pos(0,20,12), context)
         then:
-            poiTransformer.getTargetPos(0,1,1).toArray() == [new Pos(0,10,10), new Pos(0,10,12), new Pos(0,10,14)]
-            poiTransformer.getTargetPos(0,2,1).toArray() == [new Pos(0,20,11), new Pos(0,20,12)]
+            poiTransformer.getTargetPos(new Pos(0,1,1)).toArray() == [new Pos(0,10,10), new Pos(0,10,12), new Pos(0,10,14)]
+            poiTransformer.getTargetPos(new Pos(0,2,1)).toArray() == [new Pos(0,20,11), new Pos(0,20,12)]
     }
 
 }

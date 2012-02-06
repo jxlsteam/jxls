@@ -25,6 +25,17 @@ class CellDataTest extends Specification{
             10 == cellData.getCol()
             CellData.CellType.NUMBER == cellData.getCellType()
             1.2 == cellData.getCellValue()
+            new Pos(0,5,10) == cellData.getPos()
+    }
+    
+    def "test creation with (pos, type, value)"(){
+        when: 
+            CellData cellData = new CellData(new Pos(0,5,10), CellData.CellType.STRING, "Abc")
+        then:
+            new Pos(0,5,10) == cellData.getPos()
+            0 == cellData.getSheet()
+            5 == cellData.getRow()
+            10 == cellData.getCol()
     }
 
 

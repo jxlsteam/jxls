@@ -71,12 +71,12 @@ public class PoiTransformer implements Transformer {
         }
     }
     
-    public CellData getCellData(int sheet, int row, int col){
-        return cellData[sheet][row][col];
+    public CellData getCellData(Pos pos){
+        return cellData[pos.getSheet()][pos.getRow()][pos.getCol()];
     }
 
-    public List<Pos> getTargetPos(int sheet, int row, int col) {
-        CellData cellData = getCellData(sheet, row, col);
+    public List<Pos> getTargetPos(Pos pos) {
+        CellData cellData = getCellData(pos);
         if( cellData != null ){
             return cellData.getTargetPos();
         }else{

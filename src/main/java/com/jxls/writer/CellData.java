@@ -38,6 +38,16 @@ public class CellData {
         this.cellValue = cellValue;
         updateFormulaValue();
     }
+    
+    public CellData(Pos pos, CellType cellType, Object cellValue) {
+        this.sheet = pos.getSheet();
+        this.row = pos.getRow();
+        this.col = pos.getCol();
+        this.cellType = cellType;
+        this.cellValue = cellValue;
+        updateFormulaValue();
+    }
+    
 
     protected void updateFormulaValue() {
         if( cellType == CellType.FORMULA ){

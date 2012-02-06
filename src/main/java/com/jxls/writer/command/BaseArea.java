@@ -51,11 +51,11 @@ public class BaseArea implements Area {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
-            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getSheet(), formulaCellData.getRow(), formulaCellData.getCol());
+            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getPos());
             Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
             for (String cellRef : formulaCellRefs) {
                 Pos pos = new Pos(cellRef);
-                List<Pos> targetCellDataList = transformer.getTargetPos(pos.getSheet(), pos.getRow(), pos.getCol());
+                List<Pos> targetCellDataList = transformer.getTargetPos(pos);
                 targetCellRefMap.put(pos, targetCellDataList);
             }
             for (int i = 0; i < targetFormulaCells.size(); i++) {
