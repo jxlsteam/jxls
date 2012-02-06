@@ -138,9 +138,9 @@ class BaseAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos(0,6,5)) >> ([new Pos("R77"), new Pos("R78"), new Pos("R79")])
             1 * transformer.getTargetPos(new Pos(0,2,2)) >> [new Pos(0,31,35)]
             1 * transformer.getTargetPos(new Pos(0,3,1)) >> [new Pos(0,22,23)]
-            1 * transformer.updateFormulaCell(new Pos(0,22,23), "K10 * I20")
-            1 * transformer.updateFormulaCell(new Pos(1, 11, 12), "A1+C5")
-            1 * transformer.updateFormulaCell(new Pos(31, 35), "SUM(R77,R78,R79)")
+            1 * transformer.updateFormula(new Pos(0,22,23), "K10 * I20")
+            1 * transformer.updateFormula(new Pos(1, 11, 12), "A1+C5")
+            1 * transformer.updateFormula(new Pos(31, 35), "SUM(R77,R78,R79)")
             0 * _._
     }
 
@@ -158,9 +158,9 @@ class BaseAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos(0,1,1)) >> [new Pos("B2"), new Pos("B4"), new Pos("B6")]
             1 * transformer.getTargetPos(new Pos(0,4,2)) >> [new Pos("C10")]
             1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,1,2), new Pos(0, 3, 2), new Pos(0,5,2)]
-            1 * transformer.updateFormulaCell(new Pos(0,1,2), "A1+B2+C10")
-            1 * transformer.updateFormulaCell(new Pos(0,3,2), "A3+B4+C10")
-            1 * transformer.updateFormulaCell(new Pos(0,5,2), "A5+B6+C10")
+            1 * transformer.updateFormula(new Pos(0,1,2), "A1+B2+C10")
+            1 * transformer.updateFormula(new Pos(0,3,2), "A3+B4+C10")
+            1 * transformer.updateFormula(new Pos(0,5,2), "A5+B6+C10")
             0 * _._
     }
     @Ignore
@@ -177,9 +177,9 @@ class BaseAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
             1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15")]
             1 * transformer.getTargetPos(new Pos(0,19,1)) >> [new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
-            1 * transformer.updateFormulaCell(new Pos(0,5,2), "SUM(B1,B2,B3,B4)")
-            1 * transformer.updateFormulaCell(new Pos(0,10,2), "SUM(B8,B9,B10)")
-            1 * transformer.updateFormulaCell(new Pos(0,15,2), "SUM(B15,B16)")
+            1 * transformer.updateFormula(new Pos(0,5,2), "SUM(B1,B2,B3,B4)")
+            1 * transformer.updateFormula(new Pos(0,10,2), "SUM(B8,B9,B10)")
+            1 * transformer.updateFormula(new Pos(0,15,2), "SUM(B15,B16)")
     }
 
 

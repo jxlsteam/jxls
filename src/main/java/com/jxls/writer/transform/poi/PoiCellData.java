@@ -2,16 +2,10 @@ package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.CellData;
 import com.jxls.writer.command.Context;
-import com.jxls.writer.expression.ExpressionEvaluator;
-import com.jxls.writer.expression.JexlExpressionEvaluator;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Leonid Vysochyn
@@ -20,14 +14,7 @@ import java.util.regex.Pattern;
 public class PoiCellData extends CellData {
     static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
 
-    protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
-    protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
-
-
     RichTextString richTextString;
-
-    int poiCellType;
-    int resultCellType;
     private CellStyle style;
     private Hyperlink hyperlink;
 
@@ -39,59 +26,6 @@ public class PoiCellData extends CellData {
         return cellData;
     }
 
-    public Object evaluate(Context context){
-        resultCellType = poiCellType;
-        if( richTextString != null){
-            String strValue = richTextString.getString();
-            if( isUserFormula(strValue) ){
-                String formulaStr = strValue.substring(2, strValue.length()-1);
-                evaluate(formulaStr, context);
-                if( evaluationResult != null ){
-                    evaluationResult = evaluationResult.toString();
-                    resultCellType = Cell.CELL_TYPE_FORMULA;
-                }
-            }else{
-                evaluate(strValue, context);
-            }
-            if(evaluationResult == null){
-                resultCellType = Cell.CELL_TYPE_BLANK;
-            }
-        }
-        return evaluationResult;
-    }
-
-    void evaluate(String strValue, Context context) {
-        StringBuffer sb = new StringBuffer();
-        Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
-        ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
-        String matchedString;
-        String expression;
-        Object lastMatchEvalResult = null;
-        int matchCount = 0;
-        int endOffset = 0;
-        while(exprMatcher.find()){
-            endOffset = exprMatcher.end();
-            matchCount++;
-            matchedString = exprMatcher.group();
-            expression = matchedString.substring(2, matchedString.length() - 1);
-            lastMatchEvalResult = evaluator.evaluate(expression);
-            exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
-        }
-        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
-            exprMatcher.appendTail(sb);
-            evaluationResult = sb.toString();
-        }else if(matchCount == 1){
-            evaluationResult = lastMatchEvalResult;
-            if(evaluationResult instanceof Number){
-                resultCellType = Cell.CELL_TYPE_NUMERIC;
-            }else if(evaluationResult instanceof Boolean){
-                resultCellType = Cell.CELL_TYPE_BOOLEAN;
-            }
-        }else if(matchCount == 0){
-            evaluationResult = strValue;
-        }
-    }
-
     public void readCell(Cell cell){
         readCellGeneralInfo(cell);
         readCellContents(cell);
@@ -99,7 +33,6 @@ public class PoiCellData extends CellData {
     }
 
     private void readCellGeneralInfo(Cell cell) {
-        poiCellType = cell.getCellType();
         hyperlink = cell.getHyperlink();
         col = cell.getColumnIndex();
         row = cell.getRowIndex();
@@ -140,6 +73,11 @@ public class PoiCellData extends CellData {
                 cellValue = evaluationResult;
                 cellType = CellType.ERROR;
                 break;
+            case Cell.CELL_TYPE_BLANK:
+                evaluationResult = null;
+                cellValue = null;
+                cellType = CellType.BLANK;
+                break;
         }
     }
 
@@ -155,28 +93,51 @@ public class PoiCellData extends CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-        cell.setCellType( resultCellType );
+        cell.setCellType( getPoiCellType(targetCellType) );
         if( hyperlink != null ){
             cell.setHyperlink( hyperlink );
         }
     }
+    
+    static int getPoiCellType(CellType cellType){
+        if( cellType == null ){
+            return Cell.CELL_TYPE_BLANK;
+        }
+        switch (cellType){
+            case STRING: 
+                return Cell.CELL_TYPE_STRING;
+            case BOOLEAN: 
+                return Cell.CELL_TYPE_BOOLEAN;
+            case NUMBER:
+            case DATE:
+                return Cell.CELL_TYPE_NUMERIC;
+            case FORMULA:
+                return Cell.CELL_TYPE_FORMULA;
+            case ERROR:
+                return Cell.CELL_TYPE_ERROR;
+            case BLANK:
+                return Cell.CELL_TYPE_BLANK;
+            default:
+                return Cell.CELL_TYPE_BLANK;
+        }
+    }
 
     private void updateCellContents(Cell cell) {
-        switch( resultCellType ){
-            case Cell.CELL_TYPE_STRING:
+        switch( targetCellType ){
+            case STRING:
                 cell.setCellValue((String) evaluationResult);
                 break;
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 cell.setCellValue( (Boolean)evaluationResult );
                 break;
-            case Cell.CELL_TYPE_NUMERIC:
+            case NUMBER:
                     if( evaluationResult instanceof Integer){
                         cell.setCellValue(((Integer)evaluationResult).doubleValue());
                     }else{
                         cell.setCellValue((Double) evaluationResult);
                     }
                 break;
-            case Cell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 try{
                     cell.setCellFormula((String) evaluationResult);
                 }catch(FormulaParseException e){
@@ -191,7 +152,7 @@ public class PoiCellData extends CellData {
                     }
                 }
                 break;
-            case Cell.CELL_TYPE_ERROR:
+            case ERROR:
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
         }

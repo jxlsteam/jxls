@@ -185,7 +185,7 @@ class PoiTransformerTest extends Specification{
         given:
             def poiTransformer = PoiTransformer.createTransformer(wb)
         when:
-            poiTransformer.updateFormulaCell(new Pos(1, 1), "SUM(B1:B5)")
+            poiTransformer.updateFormula(new Pos(1, 1), "SUM(B1:B5)")
         then:
             wb.getSheetAt(0).getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
     }

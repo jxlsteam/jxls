@@ -93,7 +93,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    public void updateFormulaCell(Pos pos, String formulaString) {
+    public void updateFormula(Pos pos, String formulaString) {
         Sheet sheet = workbook.getSheetAt(pos.getSheet());
         if( sheet == null){
             sheet = workbook.createSheet();
@@ -113,19 +113,4 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    public Set<CellData> getFormulaCells() {
-        Set<CellData> formulaCells = new HashSet<CellData>();
-        for(int sheetInd = 0; sheetInd < cellData.length; sheetInd++){
-            for(int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++){
-                if(cellData[sheetInd][rowInd] != null ){
-                    for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
-                        if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
-                            formulaCells.add(cellData[sheetInd][rowInd][colInd]);
-                        }
-                    }
-                }
-            }
-        }
-        return formulaCells;
-    }
 }

@@ -70,7 +70,7 @@ public class BaseArea implements Area {
                         targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
                     }
                 }
-                transformer.updateFormulaCell(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
+                transformer.updateFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
             }
         }
     }

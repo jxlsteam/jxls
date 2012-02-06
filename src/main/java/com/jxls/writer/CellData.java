@@ -1,11 +1,16 @@
 package com.jxls.writer;
 
+import com.jxls.writer.command.Context;
+import com.jxls.writer.expression.ExpressionEvaluator;
+import com.jxls.writer.expression.JexlExpressionEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Leonid Vysochyn
@@ -14,6 +19,61 @@ import java.util.Set;
 public class CellData {
     public static final String USER_FORMULA_PREFIX = "$[";
     public static final String USER_FORMULA_SUFFIX = "]";
+    protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
+    protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
+
+    public Object evaluate(Context context){
+        targetCellType = cellType;
+        if( cellType == CellType.STRING && cellValue != null){
+            String strValue = cellValue.toString();
+            if( isUserFormula(strValue) ){
+                String formulaStr = strValue.substring(2, strValue.length()-1);
+                evaluate(formulaStr, context);
+                if( evaluationResult != null ){
+                    evaluationResult = evaluationResult.toString();
+                    targetCellType = CellType.FORMULA;
+                }
+            }else{
+                evaluate(strValue, context);
+            }
+            if(evaluationResult == null){
+                targetCellType = CellType.BLANK;
+            }
+        }
+        return evaluationResult;
+    }
+
+    void evaluate(String strValue, Context context) {
+        StringBuffer sb = new StringBuffer();
+        Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
+        ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
+        String matchedString;
+        String expression;
+        Object lastMatchEvalResult = null;
+        int matchCount = 0;
+        int endOffset = 0;
+        while(exprMatcher.find()){
+            endOffset = exprMatcher.end();
+            matchCount++;
+            matchedString = exprMatcher.group();
+            expression = matchedString.substring(2, matchedString.length() - 1);
+            lastMatchEvalResult = evaluator.evaluate(expression);
+            exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
+        }
+        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
+            exprMatcher.appendTail(sb);
+            evaluationResult = sb.toString();
+        }else if(matchCount == 1){
+            evaluationResult = lastMatchEvalResult;
+            if(evaluationResult instanceof Number){
+                targetCellType = CellType.NUMBER;
+            }else if(evaluationResult instanceof Boolean){
+                targetCellType = CellType.BOOLEAN;
+            }
+        }else if(matchCount == 0){
+            evaluationResult = strValue;
+        }
+    }
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
@@ -27,6 +87,8 @@ public class CellData {
     protected Object cellValue;
 
     protected CellType cellType;
+    protected CellType targetCellType;
+
     List<Pos> targetPos = new ArrayList<Pos> ();
 
     public CellData() {

@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public interface Transformer {
     void transform(Pos pos, Pos newPos, Context context);
-    void updateFormulaCell(Pos pos, String formulaString);
+    void updateFormula(Pos pos, String formulaString);
     Set<CellData> getFormulaCells();
     CellData getCellData(Pos pos);
     List<Pos> getTargetPos(Pos pos);

@@ -5,6 +5,7 @@ import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -45,5 +46,21 @@ public abstract class AbstractTransformer implements Transformer{
 
     public void setIgnoreRowProps(boolean ignoreRowProps) {
         this.ignoreRowProps = ignoreRowProps;
+    }
+
+    public Set<CellData> getFormulaCells() {
+        Set<CellData> formulaCells = new HashSet<CellData>();
+        for(int sheetInd = 0; sheetInd < cellData.length; sheetInd++){
+            for(int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++){
+                if(cellData[sheetInd][rowInd] != null ){
+                    for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
+                        if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
+                            formulaCells.add(cellData[sheetInd][rowInd][colInd]);
+                        }
+                    }
+                }
+            }
+        }
+        return formulaCells;
     }
 }
