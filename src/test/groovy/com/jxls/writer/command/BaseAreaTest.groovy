@@ -163,8 +163,25 @@ class BaseAreaTest extends Specification{
             1 * transformer.updateFormula(new Pos(0,5,2), "A5+B6+C10")
             0 * _._
     }
-    @Ignore
-    def "test formula processing for nested formulas"(){
+
+    def "test formula processing for nested cells formulas"(){
+        given:
+        def transformer = Mock(Transformer)
+        def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
+        Context context = new Context()
+        context.putVar("x", 1)
+        when:
+        area.processFormulas()
+        then:
+        1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
+        1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
+        1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15"), new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
+        1 * transformer.updateFormula(new Pos(0,5,2), "SUM(B1,B2,B3,B4)")
+        1 * transformer.updateFormula(new Pos(0,10,2), "SUM(B8,B9,B10)")
+        1 * transformer.updateFormula(new Pos(0,15,2), "SUM(B15,B16)")
+    }
+
+    def "test formula processing for nested mixed cells formulas"(){
         given:
             def transformer = Mock(Transformer)
             def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)

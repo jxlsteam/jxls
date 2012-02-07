@@ -4,7 +4,7 @@ package com.jxls.writer;
  * @author Leonid Vysochyn
  *         Date: 1/25/12 1:42 PM
  */
-public class Pos {
+public class Pos implements Comparable<Pos>{
 
     int col;
     int row;
@@ -124,10 +124,18 @@ public class Pos {
 
     @Override
     public String toString() {
-        return "Pos{" +
-                "sheet=" + sheet +
-                ", row=" + row +
-                ", col=" + col +
-                '}';
+        return getCellName();
+    }
+
+    public int compareTo(Pos pos) {
+        if( this == pos ) return 0;
+        if( pos == null ) return -1;
+        if( pos.getSheet() < sheet ) return 1;
+        if( pos.getSheet() > sheet ) return -1;
+        if( pos.getRow() < row ) return 1;
+        if( pos.getRow() > row ) return -1;
+        if( pos.getCol() > col ) return -1;
+        if( pos.getCol() < col ) return 1;
+        return 0;
     }
 }

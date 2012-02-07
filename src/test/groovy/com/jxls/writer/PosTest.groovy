@@ -21,4 +21,11 @@ class PosTest extends Specification {
         expect:
             new Pos(0,3,3).getCellName() == "D4"
     }
+
+    def "test sorting"(){
+        when:
+            def posList = [new Pos("B1"), new Pos("B5"), new Pos("B3"), new Pos("C2"), new Pos("D1"), new Pos("A4")]
+        then:
+            posList.sort() == [new Pos("B1"), new Pos("D1"), new Pos("C2"), new Pos("B3"), new Pos("A4"), new Pos("B5")]
+    }
 }

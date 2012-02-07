@@ -47,35 +47,6 @@ public class BaseArea implements Area {
         return transformer;
     }
 
-    public void processFormulas() {
-        Set<CellData> formulaCells = transformer.getFormulaCells();
-        for (CellData formulaCellData : formulaCells) {
-            List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
-            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getPos());
-            Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
-            for (String cellRef : formulaCellRefs) {
-                Pos pos = new Pos(cellRef);
-                List<Pos> targetCellDataList = transformer.getTargetPos(pos);
-                targetCellRefMap.put(pos, targetCellDataList);
-            }
-            for (int i = 0; i < targetFormulaCells.size(); i++) {
-                Pos targetFormulaPos = targetFormulaCells.get(i);
-                String targetFormulaString = formulaCellData.getFormula();
-                for (Map.Entry<Pos, List<Pos>> cellRefEntry : targetCellRefMap.entrySet()) {
-                    List<Pos> targetCells = cellRefEntry.getValue();
-                    if( targetCells.size() == targetFormulaCells.size() ){
-                        Pos targetCellRefPos = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
-                    }else{
-                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
-                    }
-                }
-                transformer.updateFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
-            }
-        }
-    }
-
-
     public void setTransformer(Transformer transformer) {
         this.transformer = transformer;
     }
@@ -160,6 +131,42 @@ public class BaseArea implements Area {
 
     public Size getInitialSize() {
         return initialSize;
+    }
+
+
+    public void processFormulas() {
+        Set<CellData> formulaCells = transformer.getFormulaCells();
+        for (CellData formulaCellData : formulaCells) {
+            List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
+            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getPos());
+            Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
+            for (String cellRef : formulaCellRefs) {
+                Pos pos = new Pos(cellRef);
+                List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+                targetCellRefMap.put(pos, targetCellDataList);
+            }
+            for (int i = 0; i < targetFormulaCells.size(); i++) {
+                Pos targetFormulaPos = targetFormulaCells.get(i);
+                String targetFormulaString = formulaCellData.getFormula();
+                for (Map.Entry<Pos, List<Pos>> cellRefEntry : targetCellRefMap.entrySet()) {
+                    List<Pos> targetCells = cellRefEntry.getValue();
+                    if( targetCells.size() == targetFormulaCells.size() ){
+                        Pos targetCellRefPos = targetCells.get(i);
+                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
+                    }else{
+                        List< List<Pos> > rangeList = Util.groupByRanges(targetCells);
+                        if( rangeList.size() == targetFormulaCells.size() ){
+                            List<Pos> range = rangeList.get(i);
+                            String replacementString = Util.createTargetCellRef( range );
+                            targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), replacementString);
+                        }else{
+                            targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
+                        }
+                    }
+                }
+                transformer.updateFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
+            }
+        }
     }
     
 }
