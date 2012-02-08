@@ -150,6 +150,9 @@ class PoiCellDataTest extends Specification{
             cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(1), context)
         then:
             wb.getSheetAt(1).getRow(1).getCell(1).getStringCellValue() == "SUM(U_(B1,B2)"
+    }
+
+    def "test write merged cell"(){
 
     }
 

@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Row
 import com.jxls.writer.command.Context
 import com.jxls.writer.CellData
 import com.jxls.writer.Pos
+import org.apache.poi.ss.util.CellRangeAddress
 
 /**
  * @author Leonid Vysochyn
@@ -24,6 +25,8 @@ class PoiTransformerTest extends Specification{
         row0.createCell(0).setCellValue(1.5)
         row0.createCell(1).setCellValue('${x}')
         row0.createCell(2).setCellValue('${x*y}')
+        row0.createCell(3).setCellValue('Merged value')
+        sheet.addMergedRegion(new CellRangeAddress(0,1,3,4))
         row0.setHeight((short)23)
         sheet.setColumnWidth(1, 123);
         Row row1 = sheet.createRow(1)
@@ -231,6 +234,18 @@ class PoiTransformerTest extends Specification{
         then:
             poiTransformer.getTargetPos(new Pos(0,1,1)).toArray() == [new Pos(0,10,12), new Pos(0,10,14)]
             poiTransformer.getTargetPos(new Pos(0,2,1)).toArray() == [new Pos(0,20,12)]
+    }
+
+    def "test transform merged cells"(){
+        when:
+            def poiTransformer = PoiTransformer.createTransformer(wb)
+            def context = new Context()
+            poiTransformer.transform(new Pos(0,0,3), new Pos(0,10,10), context)
+        then:
+            Sheet sheet = wb.getSheetAt(0)
+            sheet.getNumMergedRegions() == 2
+            sheet.getMergedRegion(1) == new CellRangeAddress(10,11,10,11)
+            
     }
 
 }

@@ -1,7 +1,9 @@
 package com.jxls.writer.transform.poi;
 
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+
+import java.util.List;
 
 /**
  * @author Leonid Vysochyn
@@ -12,6 +14,7 @@ public class SheetData {
     String sheetName;
     int[] columnWidth;
     RowData[] rowData;
+    List<CellRangeAddress> mergedRegions;
     
     public static SheetData createSheetData(Sheet sheet){
         SheetData sheetData = new SheetData();
@@ -24,6 +27,10 @@ public class SheetData {
         sheetData.rowData = new RowData[numberOfRows];
         for(int i = 0; i < numberOfRows; i++){
             sheetData.rowData[i] = RowData.createRowData(sheet.getRow(i));
+        }
+        for(int i = 0; i < sheet.getNumMergedRegions(); i++){
+            CellRangeAddress region = sheet.getMergedRegion(i);
+            sheetData.mergedRegions.add(region);
         }
         return sheetData;
     }

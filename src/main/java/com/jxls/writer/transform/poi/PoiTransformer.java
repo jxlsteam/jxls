@@ -88,10 +88,15 @@ public class PoiTransformer extends AbstractTransformer {
             try{
                 destCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK);
                 ((PoiCellData)cellData).writeToCell(destCell, context);
+                copyMergedRegions(cellData, destCell);
             }catch(Exception e){
                 logger.error("Failed to write a cell with " + cellData + " and " + context, e);
             }
         }
+    }
+
+    private void copyMergedRegions(CellData cellData, Cell destCell) {
+        SheetData sheetData = this.sheetData[cellData.getSheet()];
     }
 
     public void setFormula(Pos pos, String formulaString) {
