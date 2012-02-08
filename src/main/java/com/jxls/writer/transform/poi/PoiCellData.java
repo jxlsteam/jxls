@@ -1,6 +1,7 @@
 package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.CellData;
+import com.jxls.writer.Util;
 import com.jxls.writer.command.Context;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.*;
@@ -139,7 +140,11 @@ public class PoiCellData extends CellData {
                 break;
             case FORMULA:
                 try{
-                    cell.setCellFormula((String) evaluationResult);
+                    if( Util.formulaContainsJointedCellRef((String) evaluationResult) ){
+                        cell.setCellValue((String)evaluationResult);
+                    }else{
+                        cell.setCellFormula((String) evaluationResult);
+                    }
                 }catch(FormulaParseException e){
                     String formulaString = "";
                     try{

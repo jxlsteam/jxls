@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author Leonid Vysochyn
@@ -138,12 +139,24 @@ public class BaseArea implements Area {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
+            List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
             List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getPos());
             Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
+            Map<String, List<Pos>> jointedCellRefMap = new HashMap<String, List<Pos>>();
             for (String cellRef : formulaCellRefs) {
                 Pos pos = new Pos(cellRef);
                 List<Pos> targetCellDataList = transformer.getTargetPos(pos);
                 targetCellRefMap.put(pos, targetCellDataList);
+            }
+            for (String jointedCellRef : jointedCellRefs) {
+                List<String> nestedCellRefs = Util.getCellRefsFromJointedCellRef(jointedCellRef);
+                List<Pos> jointedPosList = new ArrayList<Pos>();
+                for (String cellRef : nestedCellRefs) {
+                    Pos pos = new Pos(cellRef);
+                    List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+                    jointedPosList.addAll(targetCellDataList);
+                }
+                jointedCellRefMap.put(jointedCellRef, jointedPosList);
             }
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 Pos targetFormulaPos = targetFormulaCells.get(i);
@@ -152,19 +165,30 @@ public class BaseArea implements Area {
                     List<Pos> targetCells = cellRefEntry.getValue();
                     if( targetCells.size() == targetFormulaCells.size() ){
                         Pos targetCellRefPos = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
+                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
                     }else{
-                        List< List<Pos> > rangeList = Util.groupByRanges(targetCells);
+                        List< List<Pos> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
                             List<Pos> range = rangeList.get(i);
                             String replacementString = Util.createTargetCellRef( range );
-                            targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), replacementString);
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), replacementString);
                         }else{
-                            targetFormulaString = targetFormulaString.replaceAll(cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
                         }
                     }
                 }
-                transformer.updateFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
+                for (Map.Entry<String, List<Pos>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
+                    List<Pos> targetPosList = jointedCellRefEntry.getValue();
+                    List< List<Pos> > rangeList = Util.groupByRanges(targetPosList, targetFormulaCells.size());
+                    if( rangeList.size() == targetFormulaCells.size() ){
+                        List<Pos> range = rangeList.get(i);
+                        String replacementString = Util.createTargetCellRef(range);
+                        targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
+                    }else{
+                        targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetPosList));
+                    }
+                }
+                transformer.setFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
             }
         }
     }

@@ -26,6 +26,6 @@ class PosTest extends Specification {
         when:
             def posList = [new Pos("B1"), new Pos("B5"), new Pos("B3"), new Pos("C2"), new Pos("D1"), new Pos("A4")]
         then:
-            posList.sort() == [new Pos("B1"), new Pos("D1"), new Pos("C2"), new Pos("B3"), new Pos("A4"), new Pos("B5")]
+            posList.sort() == [new Pos("A4"), new Pos("B1"), new Pos("B3"), new Pos("B5"), new Pos("C2"), new Pos("D1") ]
     }
 }

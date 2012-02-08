@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Leonid Vysochyn
  *         Date: 2/6/12 6:33 PM
  */
-public abstract class AbstractTransformer implements Transformer{
+public abstract class AbstractTransformer implements Transformer {
 
     protected CellData[][][] cellData;
     boolean ignoreColumnProps = false;
@@ -21,14 +21,30 @@ public abstract class AbstractTransformer implements Transformer{
 
     public List<Pos> getTargetPos(Pos pos) {
         CellData cellData = getCellData(pos);
-        if( cellData != null ){
+        if (cellData != null) {
             return cellData.getTargetPos();
-        }else{
+        } else {
             return new ArrayList<Pos>();
         }
     }
 
-    public CellData getCellData(Pos pos){
+    public void resetTargetCells() {
+        for (int sheet = 0; sheet < cellData.length; sheet++) {
+            if (cellData[sheet] != null) {
+                for (int row = 0; row < cellData[sheet].length; row++) {
+                    if (cellData[sheet][row] != null) {
+                        for (int col = 0; col < cellData[sheet][row].length; col++) {
+                            if (cellData[sheet][row][col] != null) {
+                                cellData[sheet][row][col].resetTargetPos();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public CellData getCellData(Pos pos) {
         return cellData[pos.getSheet()][pos.getRow()][pos.getCol()];
     }
 
@@ -50,11 +66,11 @@ public abstract class AbstractTransformer implements Transformer{
 
     public Set<CellData> getFormulaCells() {
         Set<CellData> formulaCells = new HashSet<CellData>();
-        for(int sheetInd = 0; sheetInd < cellData.length; sheetInd++){
-            for(int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++){
-                if(cellData[sheetInd][rowInd] != null ){
-                    for(int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++){
-                        if(cellData[sheetInd][rowInd][colInd]!= null && cellData[sheetInd][rowInd][colInd].isFormulaCell() ){
+        for (int sheetInd = 0; sheetInd < cellData.length; sheetInd++) {
+            for (int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++) {
+                if (cellData[sheetInd][rowInd] != null) {
+                    for (int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++) {
+                        if (cellData[sheetInd][rowInd][colInd] != null && cellData[sheetInd][rowInd][colInd].isFormulaCell()) {
                             formulaCells.add(cellData[sheetInd][rowInd][colInd]);
                         }
                     }

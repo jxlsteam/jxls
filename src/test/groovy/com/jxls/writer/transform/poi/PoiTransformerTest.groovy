@@ -185,7 +185,7 @@ class PoiTransformerTest extends Specification{
         given:
             def poiTransformer = PoiTransformer.createTransformer(wb)
         when:
-            poiTransformer.updateFormula(new Pos(1, 1), "SUM(B1:B5)")
+            poiTransformer.setFormula(new Pos(1, 1), "SUM(B1:B5)")
         then:
             wb.getSheetAt(0).getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
     }
@@ -216,6 +216,21 @@ class PoiTransformerTest extends Specification{
         then:
             poiTransformer.getTargetPos(new Pos(0,1,1)).toArray() == [new Pos(0,10,10), new Pos(0,10,12), new Pos(0,10,14)]
             poiTransformer.getTargetPos(new Pos(0,2,1)).toArray() == [new Pos(0,20,11), new Pos(0,20,12)]
+    }
+
+    def "test reset target cells"(){
+        when:
+            def poiTransformer = PoiTransformer.createTransformer(wb)
+            def context = new Context()
+            poiTransformer.transform(new Pos(0,1,1), new Pos(0,10,10), context)
+            poiTransformer.transform(new Pos(0,2,1), new Pos(0,20,11), context)
+            poiTransformer.resetTargetCells()
+            poiTransformer.transform(new Pos(0,1,1), new Pos(0,10,12), context)
+            poiTransformer.transform(new Pos(0,1,1), new Pos(0,10,14), context)
+            poiTransformer.transform(new Pos(0,2,1), new Pos(0,20,12), context)
+        then:
+            poiTransformer.getTargetPos(new Pos(0,1,1)).toArray() == [new Pos(0,10,12), new Pos(0,10,14)]
+            poiTransformer.getTargetPos(new Pos(0,2,1)).toArray() == [new Pos(0,20,12)]
     }
 
 }

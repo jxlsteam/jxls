@@ -66,5 +66,15 @@ class CellDataTest extends Specification{
             "SUM(A1:A3)+B10"    | "SUM(A1:A3)+B10"  | CellData.CellType.FORMULA
             '$[SUM(A3:A7)+B12]' | "SUM(A3:A7)+B12"  | CellData.CellType.STRING
     }
+    
+    def "test reset target pos"(){
+        when:
+            def cellData = new CellData(0,1,2, CellData.CellType.STRING, "Abc")
+            cellData.addTargetPos(new Pos(1,0,0))
+            cellData.addTargetPos(new Pos(1,1,1))
+            cellData.resetTargetPos()
+        then:
+            cellData.getTargetPos().isEmpty()
+    }
 
 }

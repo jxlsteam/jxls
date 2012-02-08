@@ -29,6 +29,7 @@ class PoiCellDataTest extends Specification{
         row1.createCell(2).setCellValue('${y*y}')
         row1.createCell(3).setCellValue('${x} words')
         row1.createCell(4).setCellValue('$[${myvar}*SUM(A1:A5) + ${myvar2}]')
+        row1.createCell(5).setCellValue('$[SUM(U_(B1,B2)]')
         Row row2 = sheet.createRow(2)
         row2.createCell(0).setCellValue("XYZ")
         row2.createCell(1).setCellValue('${2*y}')
@@ -141,6 +142,15 @@ class PoiCellDataTest extends Specification{
             formulaCell3.getFormula() == "B2+B3"
     }
 
+    def "test write formula with jointed cells"(){
+        setup:
+            PoiCellData cellData = PoiCellData.createCellData(wb.getSheetAt(0).getRow(1).getCell(5))
+            def context = new Context()
+        when:
+            cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(1), context)
+        then:
+            wb.getSheetAt(1).getRow(1).getCell(1).getStringCellValue() == "SUM(U_(B1,B2)"
 
+    }
 
 }

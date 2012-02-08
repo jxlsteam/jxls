@@ -4,6 +4,7 @@ import com.jxls.writer.CellData;
 import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.AbstractTransformer;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -93,7 +94,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    public void updateFormula(Pos pos, String formulaString) {
+    public void setFormula(Pos pos, String formulaString) {
         Sheet sheet = workbook.getSheetAt(pos.getSheet());
         if( sheet == null){
             sheet = workbook.createSheet();

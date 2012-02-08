@@ -132,10 +132,10 @@ public class Pos implements Comparable<Pos>{
         if( pos == null ) return -1;
         if( pos.getSheet() < sheet ) return 1;
         if( pos.getSheet() > sheet ) return -1;
-        if( pos.getRow() < row ) return 1;
-        if( pos.getRow() > row ) return -1;
         if( pos.getCol() > col ) return -1;
         if( pos.getCol() < col ) return 1;
+        if( pos.getRow() < row ) return 1;
+        if( pos.getRow() > row ) return -1;
         return 0;
     }
 }

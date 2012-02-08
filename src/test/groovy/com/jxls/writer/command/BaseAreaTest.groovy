@@ -7,7 +7,6 @@ import com.jxls.writer.Size
 import com.jxls.writer.transform.Transformer
 import com.jxls.writer.Pos
 import com.jxls.writer.CellData
-import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
@@ -138,9 +137,9 @@ class BaseAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos(0,6,5)) >> ([new Pos("R77"), new Pos("R78"), new Pos("R79")])
             1 * transformer.getTargetPos(new Pos(0,2,2)) >> [new Pos(0,31,35)]
             1 * transformer.getTargetPos(new Pos(0,3,1)) >> [new Pos(0,22,23)]
-            1 * transformer.updateFormula(new Pos(0,22,23), "K10 * I20")
-            1 * transformer.updateFormula(new Pos(1, 11, 12), "A1+C5")
-            1 * transformer.updateFormula(new Pos(31, 35), "SUM(R77,R78,R79)")
+            1 * transformer.setFormula(new Pos(0,22,23), "K10 * I20")
+            1 * transformer.setFormula(new Pos(1, 11, 12), "A1+C5")
+            1 * transformer.setFormula(new Pos(31, 35), "SUM(R77:R79)")
             0 * _._
     }
 
@@ -158,30 +157,13 @@ class BaseAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos(0,1,1)) >> [new Pos("B2"), new Pos("B4"), new Pos("B6")]
             1 * transformer.getTargetPos(new Pos(0,4,2)) >> [new Pos("C10")]
             1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,1,2), new Pos(0, 3, 2), new Pos(0,5,2)]
-            1 * transformer.updateFormula(new Pos(0,1,2), "A1+B2+C10")
-            1 * transformer.updateFormula(new Pos(0,3,2), "A3+B4+C10")
-            1 * transformer.updateFormula(new Pos(0,5,2), "A5+B6+C10")
+            1 * transformer.setFormula(new Pos(0,1,2), "A1+B2+C10")
+            1 * transformer.setFormula(new Pos(0,3,2), "A3+B4+C10")
+            1 * transformer.setFormula(new Pos(0,5,2), "A5+B6+C10")
             0 * _._
     }
 
     def "test formula processing for nested cells formulas"(){
-        given:
-        def transformer = Mock(Transformer)
-        def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
-        Context context = new Context()
-        context.putVar("x", 1)
-        when:
-        area.processFormulas()
-        then:
-        1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
-        1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
-        1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15"), new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
-        1 * transformer.updateFormula(new Pos(0,5,2), "SUM(B1,B2,B3,B4)")
-        1 * transformer.updateFormula(new Pos(0,10,2), "SUM(B8,B9,B10)")
-        1 * transformer.updateFormula(new Pos(0,15,2), "SUM(B15,B16)")
-    }
-
-    def "test formula processing for nested mixed cells formulas"(){
         given:
             def transformer = Mock(Transformer)
             def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
@@ -190,13 +172,48 @@ class BaseAreaTest extends Specification{
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(B1,B20)")]
+            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
+            1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
+            1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15"), new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
+            1 * transformer.setFormula(new Pos(0,5,2), "SUM(B1:B4)")
+            1 * transformer.setFormula(new Pos(0,10,2), "SUM(B8:B10)")
+            1 * transformer.setFormula(new Pos(0,15,2), "SUM(B15:B16)")
+    }
+
+    def "test formula processing for column formulas with joint cells"(){
+        given:
+            def transformer = Mock(Transformer)
+            def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
+            Context context = new Context()
+            context.putVar("x", 1)
+        when:
+            area.processFormulas()
+        then:
+            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
             1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
             1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15")]
             1 * transformer.getTargetPos(new Pos(0,19,1)) >> [new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
-            1 * transformer.updateFormula(new Pos(0,5,2), "SUM(B1,B2,B3,B4)")
-            1 * transformer.updateFormula(new Pos(0,10,2), "SUM(B8,B9,B10)")
-            1 * transformer.updateFormula(new Pos(0,15,2), "SUM(B15,B16)")
+            1 * transformer.setFormula(new Pos(0,5,2), "SUM(B1:B4)")
+            1 * transformer.setFormula(new Pos(0,10,2), "SUM(B8:B10)")
+            1 * transformer.setFormula(new Pos(0,15,2), "SUM(B15:B16)")
+    }
+
+    def "test formula processing for row formulas with joint cells"(){
+        given:
+            def transformer = Mock(Transformer)
+            def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
+            Context context = new Context()
+            context.putVar("x", 1)
+        when:
+            area.processFormulas()
+        then:
+            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
+            1 * transformer.getTargetPos(new Pos(0,1,2)) >> [new Pos(0,5,2), new Pos(0, 10, 2), new Pos(0, 15, 2)]
+            1 * transformer.getTargetPos(new Pos(0,0,1)) >> [new Pos("B2"), new Pos("A4"),  new Pos("D2"), new Pos("C2"), new Pos("B3")]
+            1 * transformer.getTargetPos(new Pos(0,19,1)) >> [new Pos("B4"), new Pos("E2")]
+            1 * transformer.setFormula(new Pos(0,5,2), "SUM(B2:E2)")
+            1 * transformer.setFormula(new Pos(0,10,2), "SUM(B3)")
+            1 * transformer.setFormula(new Pos(0,15,2), "SUM(A4:B4)")
     }
 
 
