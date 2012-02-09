@@ -13,6 +13,7 @@ public class Pos{
     String sheetName;
     boolean isColAbs;
     boolean isRowAbs;
+    boolean ignoreSheetNameInFormat = false;
 
     public Pos(String sheetName, int row, int col) {
         this.sheetName = sheetName;
@@ -60,7 +61,7 @@ public class Pos{
 
     public String getCellName(){
         StringBuffer sb = new StringBuffer(32);
-        if(sheetName != null) {
+        if(sheetName != null && !ignoreSheetNameInFormat) {
             CellRefUtil.appendFormat(sb, sheetName);
             sb.append(CellRefUtil.SHEET_NAME_DELIMITER);
         }
@@ -70,6 +71,18 @@ public class Pos{
 
     public String getSheetName() {
         return sheetName;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    public boolean isIgnoreSheetNameInFormat() {
+        return ignoreSheetNameInFormat;
+    }
+
+    public void setIgnoreSheetNameInFormat(boolean ignoreSheetNameInFormat) {
+        this.ignoreSheetNameInFormat = ignoreSheetNameInFormat;
     }
 
     /**
@@ -120,7 +133,7 @@ public class Pos{
 
         if (col != pos.col) return false;
         if (row != pos.row) return false;
-        if (sheet != pos.sheet) return false;
+        if (sheetName != null ? !sheetName.equals(pos.sheetName) : pos.sheetName != null) return false;
 
         return true;
     }
@@ -129,7 +142,7 @@ public class Pos{
     public int hashCode() {
         int result = col;
         result = 31 * result + row;
-        result = 31 * result + sheet;
+        result = 31 * result + (sheetName != null ? sheetName.hashCode() : 0);
         return result;
     }
 
@@ -138,15 +151,4 @@ public class Pos{
         return getCellName();
     }
 
-    public int compareTo(Pos pos) {
-        if( this == pos ) return 0;
-        if( pos == null ) return -1;
-        if( pos.getSheet() < sheet ) return 1;
-        if( pos.getSheet() > sheet ) return -1;
-        if( pos.getCol() > col ) return -1;
-        if( pos.getCol() < col ) return 1;
-        if( pos.getRow() < row ) return 1;
-        if( pos.getRow() > row ) return -1;
-        return 0;
-    }
 }

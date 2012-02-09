@@ -145,8 +145,12 @@ public class BaseArea implements Area {
             Map<String, List<Pos>> jointedCellRefMap = new HashMap<String, List<Pos>>();
             for (String cellRef : formulaCellRefs) {
                 Pos pos = new Pos(cellRef);
-                if( pos.getSheetName() != null ) pos.setSheet(transformer.getSheetIndex(pos.getSheetName()));
+                if(pos.getSheetName() == null ){
+                    pos.setSheetName( formulaCellData.getSheetName() );
+                    pos.setIgnoreSheetNameInFormat(true);
+                }
                 List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+
                 targetCellRefMap.put(pos, targetCellDataList);
             }
             for (String jointedCellRef : jointedCellRefs) {
@@ -154,8 +158,12 @@ public class BaseArea implements Area {
                 List<Pos> jointedPosList = new ArrayList<Pos>();
                 for (String cellRef : nestedCellRefs) {
                     Pos pos = new Pos(cellRef);
-                    if( pos.getSheetName() != null ) pos.setSheet(transformer.getSheetIndex(pos.getSheetName()));
+                    if(pos.getSheetName() == null ){
+                        pos.setSheetName(formulaCellData.getSheetName());
+                        pos.setIgnoreSheetNameInFormat(true);
+                    }
                     List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+
                     jointedPosList.addAll(targetCellDataList);
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedPosList);
@@ -167,15 +175,23 @@ public class BaseArea implements Area {
                     List<Pos> targetCells = cellRefEntry.getValue();
                     if( targetCells.size() == targetFormulaCells.size() ){
                         Pos targetCellRefPos = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
+//                        if(targetCellRefPos.getSheetName().equals(targetFormulaPos.getSheetName())){
+//                            targetCellRefPos.setIgnoreSheetNameInFormat(true);
+//                        }
+                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
                     }else{
                         List< List<Pos> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
                             List<Pos> range = rangeList.get(i);
+//                            for (Pos pos : range) {
+//                                if(pos.getSheetName().equals(targetFormulaPos.getSheetName())){
+//                                    pos.setIgnoreSheetNameInFormat(true);
+//                                }
+//                            }
                             String replacementString = Util.createTargetCellRef( range );
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), replacementString);
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+cellRefEntry.getKey().getCellName(), replacementString);
                         }else{
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
                         }
                     }
                 }

@@ -3,11 +3,10 @@ package com.jxls.writer.transform;
 import com.jxls.writer.CellData;
 import com.jxls.writer.Pos;
 import com.jxls.writer.command.Context;
+import com.jxls.writer.transform.poi.RowData;
+import com.jxls.writer.transform.poi.SheetData;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Leonid Vysochyn
@@ -15,9 +14,9 @@ import java.util.Set;
  */
 public abstract class AbstractTransformer implements Transformer {
 
-    protected CellData[][][] cellData;
     boolean ignoreColumnProps = false;
     boolean ignoreRowProps = false;
+    protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
 
     public List<Pos> getTargetPos(Pos pos) {
         CellData cellData = getCellData(pos);
@@ -29,14 +28,14 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     public void resetTargetCells() {
-        for (int sheet = 0; sheet < cellData.length; sheet++) {
-            if (cellData[sheet] != null) {
-                for (int row = 0; row < cellData[sheet].length; row++) {
-                    if (cellData[sheet][row] != null) {
-                        for (int col = 0; col < cellData[sheet][row].length; col++) {
-                            if (cellData[sheet][row][col] != null) {
-                                cellData[sheet][row][col].resetTargetPos();
-                            }
+        for (SheetData sheetData : sheetMap.values()) {
+            for (int i = 0; i < sheetData.getNumberOfRows(); i++) {
+                RowData rowData = sheetData.getRowData(i);
+                if (rowData != null) {
+                    for (int j = 0; j < rowData.getNumberOfCells(); j++) {
+                        CellData cellData = rowData.getCellData(j);
+                        if (cellData != null) {
+                            cellData.resetTargetPos();
                         }
                     }
                 }
@@ -45,7 +44,12 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     public CellData getCellData(Pos pos) {
-        return cellData[pos.getSheet()][pos.getRow()][pos.getCol()];
+        if (pos == null || pos.getSheetName() == null) return null;
+        SheetData sheetData = sheetMap.get(pos.getSheetName());
+        if (sheetData == null) return null;
+        RowData rowData = sheetData.getRowData(pos.getRow());
+        if (rowData == null) return null;
+        return rowData.getCellData(pos.getCol());
     }
 
     public boolean isIgnoreColumnProps() {
@@ -66,12 +70,14 @@ public abstract class AbstractTransformer implements Transformer {
 
     public Set<CellData> getFormulaCells() {
         Set<CellData> formulaCells = new HashSet<CellData>();
-        for (int sheetInd = 0; sheetInd < cellData.length; sheetInd++) {
-            for (int rowInd = 0; rowInd < cellData[sheetInd].length; rowInd++) {
-                if (cellData[sheetInd][rowInd] != null) {
-                    for (int colInd = 0; colInd < cellData[sheetInd][rowInd].length; colInd++) {
-                        if (cellData[sheetInd][rowInd][colInd] != null && cellData[sheetInd][rowInd][colInd].isFormulaCell()) {
-                            formulaCells.add(cellData[sheetInd][rowInd][colInd]);
+        for (SheetData sheetData : sheetMap.values()) {
+            for (int i = 0; i < sheetData.getNumberOfRows(); i++) {
+                RowData rowData = sheetData.getRowData(i);
+                if (rowData != null) {
+                    for (int j = 0; j < rowData.getNumberOfCells(); j++) {
+                        CellData cellData = rowData.getCellData(j);
+                        if (cellData != null && cellData.isFormulaCell()) {
+                            formulaCells.add(cellData);
                         }
                     }
                 }

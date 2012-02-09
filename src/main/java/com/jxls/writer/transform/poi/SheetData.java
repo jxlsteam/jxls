@@ -1,5 +1,6 @@
 package com.jxls.writer.transform.poi;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -11,10 +12,9 @@ import java.util.List;
  *         Date: 2/1/12 12:03 PM
  */
 public class SheetData {
-    
     String sheetName;
     int[] columnWidth;
-    RowData[] rowData;
+    List<RowData> rowDataList = new ArrayList<RowData>();
     List<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();
     
     public static SheetData createSheetData(Sheet sheet){
@@ -25,15 +25,18 @@ public class SheetData {
             sheetData.columnWidth[i] = sheet.getColumnWidth(i);
         }
         int numberOfRows = sheet.getLastRowNum() + 1;
-        sheetData.rowData = new RowData[numberOfRows];
         for(int i = 0; i < numberOfRows; i++){
-            sheetData.rowData[i] = RowData.createRowData(sheet.getRow(i));
+            sheetData.rowDataList.add(RowData.createRowData(sheet.getRow(i)));
         }
         for(int i = 0; i < sheet.getNumMergedRegions(); i++){
             CellRangeAddress region = sheet.getMergedRegion(i);
             sheetData.mergedRegions.add(region);
         }
         return sheetData;
+    }
+    
+    public int getNumberOfRows(){
+        return rowDataList.size();
     }
 
     public String getSheetName() {
@@ -44,8 +47,13 @@ public class SheetData {
         return columnWidth[col];
     }
     
-    public RowData getRowData(int rowIndex){
-        return rowData[rowIndex];
+    public RowData getRowData(int row){
+        if(row < rowDataList.size() ) return rowDataList.get(row);
+        else return null;
+    }
+    
+    public void addRowData(RowData rowData){
+        rowDataList.add(rowData);
     }
 
     public List<CellRangeAddress> getMergedRegions() {

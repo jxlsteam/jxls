@@ -10,12 +10,12 @@ class PosTest extends Specification {
         when:
             Pos pos = new Pos(cellref)
         then:
-            pos == new Pos(row, col)
+            pos == new Pos(sheetName, row, col)
         where:
-            cellref     | sheetName | row   | col
-            "A1"        | null      | 0     | 0
-            "C5"        | null      | 4     | 2
-            "Sheet2!D5" | null      | 4     | 3
+            cellref             | sheetName | row   | col
+            "sheet1!A1"         | "sheet1"  | 0     | 0
+            "sheet2!C5"         | "sheet2"  | 4     | 2
+            "Sheet2!D5"         | "Sheet2"  | 4     | 3
     }
     
     def "test get cell name"(){

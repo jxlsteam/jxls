@@ -92,7 +92,10 @@ public class CellData {
 
     List<Pos> targetPos = new ArrayList<Pos> ();
 
-    public CellData() {
+    public CellData(Pos pos) {
+        this.sheetName = pos.getSheetName();
+        this.row = pos.getRow();
+        this.col = pos.getCol();
     }
 
     public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
@@ -121,6 +124,8 @@ public class CellData {
     public CellData(String sheetName, int row, int col) {
         this(sheetName, row, col, CellType.BLANK, null);
     }
+
+
 
     public String getSheetName() {
         return sheetName;
@@ -199,6 +204,11 @@ public class CellData {
     }
     
     public List<Pos> getTargetPos(){
+//        List<Pos> targetPosList = new ArrayList<Pos>();
+//        for (Pos pos : targetPos) {
+//            targetPosList.add(new Pos(pos.getSheetName(), pos.getRow(), pos.getCol()));
+//        }
+//        return targetPosList;
         return targetPos;
     }
 

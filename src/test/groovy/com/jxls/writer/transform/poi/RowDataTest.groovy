@@ -40,10 +40,13 @@ class RowDataTest extends Specification{
 
     def "test createRowData"(){
         when:
-            def row0 = wb.getSheetAt(0).getRow(0)
-            def rowData = RowData.createRowData(row0);
+            def row1 = wb.getSheetAt(0).getRow(1)
+            def rowData = RowData.createRowData(row1);
         then:
-            rowData.getHeight() == row0.getHeight()
+            rowData.getHeight() == row1.getHeight()
+            rowData.getNumberOfCells() == 4
+            rowData.getCellData(2).getCellValue() == '${y*y}'
+            rowData.getCellData(2).getSheetName() == "sheet 1"
     }
     
     def "test createRowData for null row"(){

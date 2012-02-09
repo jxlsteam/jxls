@@ -47,5 +47,6 @@ class SheetDataTest extends Specification{
             sheet.getColumnWidth(2) == sheetData.getColumnWidth(2)
             sheet.getColumnWidth(1) == sheetData.getColumnWidth(1)
             sheet.getRow(0).getHeight() == sheetData.getRowData(0).getHeight()
+            3 == sheetData.getNumberOfRows()
     }
 }

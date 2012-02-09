@@ -1,6 +1,7 @@
 package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.CellData;
+import com.jxls.writer.Pos;
 import com.jxls.writer.Util;
 import com.jxls.writer.command.Context;
 import org.apache.poi.ss.formula.FormulaParseException;
@@ -19,9 +20,12 @@ public class PoiCellData extends CellData {
     private CellStyle style;
     private Hyperlink hyperlink;
 
+    public PoiCellData(Pos pos) {
+        super(pos);
+    }
 
-    public static PoiCellData createCellData(Cell cell){
-        PoiCellData cellData = new PoiCellData();
+    public static PoiCellData createCellData(Pos pos, Cell cell){
+        PoiCellData cellData = new PoiCellData(pos);
         cellData.readCell(cell);
         cellData.updateFormulaValue();
         return cellData;

@@ -22,7 +22,6 @@ public class PoiTransformer extends AbstractTransformer {
     static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
 
     Workbook workbook;
-    SheetData[] sheetData;
 
     private PoiTransformer(Workbook workbook) {
         this.workbook = workbook;
@@ -36,51 +35,38 @@ public class PoiTransformer extends AbstractTransformer {
 
     private void readCellData(){
         int numberOfSheets = workbook.getNumberOfSheets();
-        cellData = new PoiCellData[numberOfSheets][][];
-        sheetData = new SheetData[numberOfSheets];
-        for(int sheetIndex = 0; sheetIndex < numberOfSheets; sheetIndex++){
-            Sheet sheet = workbook.getSheetAt(sheetIndex);
-            sheetData[sheetIndex] = SheetData.createSheetData(sheet);
-            int numberOfRows = sheet.getLastRowNum() + 1;
-            cellData[sheetIndex] = new PoiCellData[numberOfRows][];
-            for(int rowIndex = 0; rowIndex < numberOfRows; rowIndex++){
-                Row row = sheet.getRow(rowIndex);
-                if( row != null ){
-                    int numberOfCells = row.getLastCellNum() + 1;
-                    cellData[sheetIndex][rowIndex] = new PoiCellData[numberOfCells];
-                    for(int cellIndex = 0; cellIndex < numberOfCells; cellIndex++){
-                        org.apache.poi.ss.usermodel.Cell cell = row.getCell(cellIndex);
-                        if(cell != null ){
-                            cellData[sheetIndex][rowIndex][cellIndex] = PoiCellData.createCellData(cell);
-                        }
-                    }
-                }
-            }
+        for(int i = 0; i < numberOfSheets; i++){
+            Sheet sheet = workbook.getSheetAt(i);
+            SheetData sheetData = SheetData.createSheetData(sheet);
+            sheetMap.put(sheetData.getSheetName(), sheetData);
         }
     }
 
     public void transform(Pos pos, Pos newPos, Context context) {
-        if(cellData == null ||  cellData.length <= pos.getSheet() || cellData[pos.getSheet()] == null ||
-                cellData[pos.getSheet()].length <= pos.getRow() || cellData[pos.getSheet()][pos.getRow()] == null ||
-                cellData[pos.getSheet()][pos.getRow()].length <= pos.getCol()) return;
+//        if(cellData == null ||  cellData.length <= pos.getSheet() || cellData[pos.getSheet()] == null ||
+//                cellData[pos.getSheet()].length <= pos.getRow() || cellData[pos.getSheet()][pos.getRow()] == null ||
+//                cellData[pos.getSheet()][pos.getRow()].length <= pos.getCol()) return;
         CellData cellData = this.getCellData(pos);
         if(cellData != null){
             cellData.addTargetPos(newPos);
-            int numberOfSheets = workbook.getNumberOfSheets();
-            while(numberOfSheets <= newPos.getSheet() ){
-                workbook.createSheet(newPos.getSheetName());
-                numberOfSheets = workbook.getNumberOfSheets();
+            if(newPos == null || newPos.getSheetName() == null){
+                logger.info("Target pos is null or has empty sheet name, pos=" + newPos);
+                return;
             }
-            Sheet destSheet = workbook.getSheetAt(newPos.getSheet());
+            Sheet destSheet = workbook.getSheet(newPos.getSheetName());
+            if(destSheet == null){
+                destSheet = workbook.createSheet(newPos.getSheetName());
+            }
+            SheetData sheetData = sheetMap.get(pos.getSheetName());
             if(!isIgnoreColumnProps()){
-                destSheet.setColumnWidth(newPos.getCol(), sheetData[pos.getSheet()].getColumnWidth(pos.getCol()));
+                destSheet.setColumnWidth(newPos.getCol(), sheetData.getColumnWidth(pos.getCol()));
             }
             Row destRow = destSheet.getRow(newPos.getRow());
             if (destRow == null) {
                 destRow = destSheet.createRow(newPos.getRow());
             }
             if(!isIgnoreRowProps()){
-                destSheet.getRow(newPos.getRow()).setHeight( sheetData[pos.getSheet()].getRowData(pos.getRow()).getHeight());
+                destSheet.getRow(newPos.getRow()).setHeight( sheetData.getRowData(pos.getRow()).getHeight());
             }
             org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newPos.getCol());
             if (destCell == null) {
@@ -97,7 +83,8 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     private void copyMergedRegions(CellData sourceCellData, Pos destCell) {
-        SheetData sheetData = this.sheetData[sourceCellData.getSheet()];
+        if(sourceCellData.getSheetName() == null ){ throw new IllegalArgumentException("Sheet name is null in copyMergedRegion");}
+        SheetData sheetData = sheetMap.get( sourceCellData.getSheetName() );
         CellRangeAddress cellMergedRegion = null;
         for (CellRangeAddress mergedRegion : sheetData.getMergedRegions()) {
             if(mergedRegion.getFirstRow() == sourceCellData.getRow() && mergedRegion.getFirstColumn() == sourceCellData.getCol()){

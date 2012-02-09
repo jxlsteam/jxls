@@ -7,6 +7,7 @@ import com.jxls.writer.Size
 import com.jxls.writer.transform.Transformer
 import com.jxls.writer.Pos
 import com.jxls.writer.CellData
+import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
@@ -126,8 +127,8 @@ class BaseAreaTest extends Specification{
             area.processFormulas()
         then:
             1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 1, CellData.CellType.FORMULA, "A1+B3"),
-                    new CellData(null, 3, 1, CellData.CellType.FORMULA, "D20 * E30"),
-                    new CellData(null, 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')]
+                    new CellData("sheet1", 3, 1, CellData.CellType.FORMULA, "D20 * E30"),
+                    new CellData("sheet1", 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')]
             1 * transformer.getTargetPos(new Pos("sheet1",0,0)) >> [new Pos("sheet1",0,0)]
             1 * transformer.getTargetPos(new Pos("sheet1",2,1)) >> [new Pos("C5")]
             1 * transformer.getTargetPos(new Pos("sheet1",1,1)) >> [new Pos("sheet2",11,12)]
@@ -152,14 +153,14 @@ class BaseAreaTest extends Specification{
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "A1+B2+C5")]
-            1 * transformer.getTargetPos(new Pos("sheet1",0,0)) >> [new Pos("A1"), new Pos("A3"), new Pos("A5")]
-            1 * transformer.getTargetPos(new Pos("sheet1",1,1)) >> [new Pos("B2"), new Pos("B4"), new Pos("B6")]
-            1 * transformer.getTargetPos(new Pos("sheet1",4,2)) >> [new Pos("C10")]
+            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "A1+B2+C5")]
+            1 * transformer.getTargetPos(new Pos("sheet1",0,0)) >> [new Pos("sheet1!A1"), new Pos("sheet1!A3"), new Pos("sheet1!A5")]
+            1 * transformer.getTargetPos(new Pos("sheet1",1,1)) >> [new Pos("sheet1!B2"), new Pos("sheet1!B4"), new Pos("sheet1!B6")]
+            1 * transformer.getTargetPos(new Pos("sheet1",4,2)) >> [new Pos("sheet1!C10")]
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",1,2), new Pos("sheet1", 3, 2), new Pos("sheet1",5,2)]
-            1 * transformer.setFormula(new Pos("sheet1",1,2), "A1+B2+C10")
-            1 * transformer.setFormula(new Pos("sheet1",3,2), "A3+B4+C10")
-            1 * transformer.setFormula(new Pos("sheet1",5,2), "A5+B6+C10")
+            1 * transformer.setFormula(new Pos("sheet1",1,2), "sheet1!A1+sheet1!B2+sheet1!C10")
+            1 * transformer.setFormula(new Pos("sheet1",3,2), "sheet1!A3+sheet1!B4+sheet1!C10")
+            1 * transformer.setFormula(new Pos("sheet1",5,2), "sheet1!A5+sheet1!B6+sheet1!C10")
             0 * _._
     }
 
@@ -172,7 +173,7 @@ class BaseAreaTest extends Specification{
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
+            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",5,2), new Pos("sheet1", 10, 2), new Pos("sheet1", 15, 2)]
             1 * transformer.getTargetPos(new Pos("sheet1",0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15"), new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
             1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(B1:B4)")
@@ -189,7 +190,7 @@ class BaseAreaTest extends Specification{
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData(0, 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
+            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",5,2), new Pos("sheet1", 10, 2), new Pos("sheet1", 15, 2)]
             1 * transformer.getTargetPos(new Pos("sheet1",0,1)) >> [new Pos("B2"), new Pos("B4"),  new Pos("B9"), new Pos("B10"), new Pos("B15")]
             1 * transformer.getTargetPos(new Pos("sheet1",19,1)) >> [new Pos("B1"), new Pos("B3"), new Pos("B8"), new Pos("B16")]
@@ -225,15 +226,13 @@ class BaseAreaTest extends Specification{
         when:
         area.processFormulas()
         then:
-        1 * transformer.getFormulaCells() >> [new CellData(0, 2, 1, CellData.CellType.FORMULA, "A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1")]
-        2 * transformer.getSheetIndex("Sheet2") >> 1
-        1 * transformer.getSheetIndex("Sheet 3") >> 2
+        1 * transformer.getFormulaCells() >> [new CellData("sheet1", 2, 1, CellData.CellType.FORMULA, "A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1")]
         1 * transformer.getTargetPos(new Pos("sheet1",2,1)) >> [new Pos("sheet1",5,5)]
         1 * transformer.getTargetPos(new Pos("sheet1",0,0)) >> [new Pos("sheet1",9,5)]
         1 * transformer.getTargetPos(new Pos("Sheet2",0,0)) >> [new Pos("Sheet2",2,1)]
         1 * transformer.getTargetPos(new Pos("Sheet 3",0,1)) >> [new Pos("sheet1",5,2)]
         1 * transformer.getTargetPos(new Pos("Sheet2",0,1)) >> [new Pos("Sheet 3",0,0)]
-        1 * transformer.setFormula(new Pos("sheet1",5,5), "F10+Sheet2!B3 + C6 + 'Sheet 3'!A1")
+        1 * transformer.setFormula(new Pos("sheet1",5,5), "sheet1!F10+Sheet2!B3 + sheet1!C6 + 'Sheet 3'!A1")
     }
 
 
