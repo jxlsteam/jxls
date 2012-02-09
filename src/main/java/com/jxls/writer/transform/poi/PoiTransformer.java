@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,15 +89,42 @@ public class PoiTransformer extends AbstractTransformer {
             try{
                 destCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK);
                 ((PoiCellData)cellData).writeToCell(destCell, context);
-                copyMergedRegions(cellData, destCell);
+                copyMergedRegions(cellData, newPos);
             }catch(Exception e){
                 logger.error("Failed to write a cell with " + cellData + " and " + context, e);
             }
         }
     }
 
-    private void copyMergedRegions(CellData cellData, Cell destCell) {
-        SheetData sheetData = this.sheetData[cellData.getSheet()];
+    private void copyMergedRegions(CellData sourceCellData, Pos destCell) {
+        SheetData sheetData = this.sheetData[sourceCellData.getSheet()];
+        CellRangeAddress cellMergedRegion = null;
+        for (CellRangeAddress mergedRegion : sheetData.getMergedRegions()) {
+            if(mergedRegion.getFirstRow() == sourceCellData.getRow() && mergedRegion.getFirstColumn() == sourceCellData.getCol()){
+                cellMergedRegion = mergedRegion;
+                break;
+            }
+        }
+        if( cellMergedRegion != null){
+            findAndRemoveExistingCellRegion(destCell);
+            Sheet destSheet = workbook.getSheetAt(destCell.getSheet());
+            destSheet.addMergedRegion(new CellRangeAddress(destCell.getRow(), destCell.getRow() + cellMergedRegion.getLastRow() - cellMergedRegion.getFirstRow(),
+                    destCell.getCol(), destCell.getCol() + cellMergedRegion.getLastColumn() - cellMergedRegion.getFirstColumn()));
+        }
+    }
+
+    private void findAndRemoveExistingCellRegion(Pos pos) {
+        Sheet destSheet = workbook.getSheetAt(pos.getSheet());
+        int numMergedRegions = destSheet.getNumMergedRegions();
+        List<Integer> regionsToRemove = new ArrayList<Integer>();
+        for(int i = 0; i < numMergedRegions; i++){
+            CellRangeAddress mergedRegion = destSheet.getMergedRegion(i);
+            if( mergedRegion.getFirstRow() <= pos.getRow() && mergedRegion.getLastRow() >= pos.getRow() &&
+                    mergedRegion.getFirstColumn() <= pos.getCol() && mergedRegion.getLastColumn() >= pos.getCol() ){
+                destSheet.removeMergedRegion(i);
+                break;
+            }
+        }
     }
 
     public void setFormula(Pos pos, String formulaString) {

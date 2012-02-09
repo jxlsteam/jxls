@@ -3,6 +3,7 @@ package com.jxls.writer.transform.poi;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class SheetData {
     String sheetName;
     int[] columnWidth;
     RowData[] rowData;
-    List<CellRangeAddress> mergedRegions;
+    List<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();
     
     public static SheetData createSheetData(Sheet sheet){
         SheetData sheetData = new SheetData();
@@ -47,4 +48,7 @@ public class SheetData {
         return rowData[rowIndex];
     }
 
+    public List<CellRangeAddress> getMergedRegions() {
+        return mergedRegions;
+    }
 }

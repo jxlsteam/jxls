@@ -240,12 +240,12 @@ class PoiTransformerTest extends Specification{
         when:
             def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
+            wb.getSheetAt(0).getNumMergedRegions() == 1
             poiTransformer.transform(new Pos(0,0,3), new Pos(0,10,10), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             sheet.getNumMergedRegions() == 2
-            sheet.getMergedRegion(1) == new CellRangeAddress(10,11,10,11)
-            
+            sheet.getMergedRegion(1).toString() == new CellRangeAddress(10,11,10,11).toString()
     }
 
 }
