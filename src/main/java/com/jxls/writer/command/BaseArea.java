@@ -68,7 +68,7 @@ public class BaseArea implements Area {
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
-            Pos newCell = new Pos(pos.getSheet(), commandData.getStartPos().getRow() + pos.getRow(), commandData.getStartPos().getCol() + pos.getCol());
+            Pos newCell = new Pos(pos.getSheetName(), commandData.getStartPos().getRow() + pos.getRow(), commandData.getStartPos().getCol() + pos.getCol());
             Size initialSize = commandData.getCommand().getInitialSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
@@ -118,8 +118,8 @@ public class BaseArea implements Area {
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(y, x) ){
                     Pos relativeCell = cellRange.getCell(y, x);
-                    Pos srcCell = new Pos(startPos.getSheet(), startPos.getRow() + y, startPos.getCol() + x);
-                    Pos targetCell = new Pos(Pos.getSheet(), relativeCell.getRow() + Pos.getRow(), relativeCell.getCol() + Pos.getCol());
+                    Pos srcCell = new Pos(startPos.getSheetName(), startPos.getRow() + y, startPos.getCol() + x);
+                    Pos targetCell = new Pos(Pos.getSheetName(), relativeCell.getRow() + Pos.getRow(), relativeCell.getCol() + Pos.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }
@@ -145,6 +145,7 @@ public class BaseArea implements Area {
             Map<String, List<Pos>> jointedCellRefMap = new HashMap<String, List<Pos>>();
             for (String cellRef : formulaCellRefs) {
                 Pos pos = new Pos(cellRef);
+                if( pos.getSheetName() != null ) pos.setSheet(transformer.getSheetIndex(pos.getSheetName()));
                 List<Pos> targetCellDataList = transformer.getTargetPos(pos);
                 targetCellRefMap.put(pos, targetCellDataList);
             }
@@ -153,6 +154,7 @@ public class BaseArea implements Area {
                 List<Pos> jointedPosList = new ArrayList<Pos>();
                 for (String cellRef : nestedCellRefs) {
                     Pos pos = new Pos(cellRef);
+                    if( pos.getSheetName() != null ) pos.setSheet(transformer.getSheetIndex(pos.getSheetName()));
                     List<Pos> targetCellDataList = transformer.getTargetPos(pos);
                     jointedPosList.addAll(targetCellDataList);
                 }
@@ -188,7 +190,7 @@ public class BaseArea implements Area {
                         targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetPosList));
                     }
                 }
-                transformer.setFormula(new Pos(targetFormulaPos.getSheet(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
+                transformer.setFormula(new Pos(targetFormulaPos.getSheetName(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
             }
         }
     }

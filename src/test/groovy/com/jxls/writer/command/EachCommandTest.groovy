@@ -28,7 +28,7 @@ class EachCommandTest extends Specification{
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3,2)
-            eachCommand.applyAt(new Pos(1, 2, 2), context)
+            eachCommand.applyAt(new Pos("sheet2", 2, 2), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
             1 * context.putVar("x", 1)
@@ -36,10 +36,10 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
             4 * context.removeVar("x")
-            1 * eachArea.applyAt(new Pos(1, 2, 2), context) >> new Size(3, 1)
-            1 * eachArea.applyAt(new Pos(1, 3, 2), context) >> new Size(3, 2)
-            1 * eachArea.applyAt(new Pos(1, 5, 2), context) >> new Size(4, 1)
-            1 * eachArea.applyAt(new Pos(1, 6, 2), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 2, 2), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 3, 2), context) >> new Size(3, 2)
+            1 * eachArea.applyAt(new Pos("sheet2", 5, 2), context) >> new Size(4, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 6, 2), context) >> new Size(3, 1)
             0 * _._
     }
     
@@ -59,7 +59,7 @@ class EachCommandTest extends Specification{
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3, 2)
-            eachCommand.applyAt(new Pos(1, 1, 1), context)
+            eachCommand.applyAt(new Pos("sheet2", 1, 1), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
             1 * context.putVar("x", 1)
@@ -67,10 +67,10 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
             4 * context.removeVar("x")
-            1 * eachArea.applyAt(new Pos(1, 1, 1), context) >> new Size(3, 1)
-            1 * eachArea.applyAt(new Pos(1, 1, 4), context) >> new Size(3, 2)
-            1 * eachArea.applyAt(new Pos(1, 1, 7), context) >> new Size(4, 1)
-            1 * eachArea.applyAt(new Pos(1, 1, 11), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 1, 1), context) >> new Size(3, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 1, 4), context) >> new Size(3, 2)
+            1 * eachArea.applyAt(new Pos("sheet2", 1, 7), context) >> new Size(4, 1)
+            1 * eachArea.applyAt(new Pos("sheet2", 1, 11), context) >> new Size(3, 1)
             //0 * _._
 
     }

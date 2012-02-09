@@ -10,16 +10,17 @@ class PosTest extends Specification {
         when:
             Pos pos = new Pos(cellref)
         then:
-            pos == new Pos(sheet, row, col)
+            pos == new Pos(row, col)
         where:
-            cellref | sheet | row   | col
-            "A1"    | 0     | 0     | 0
-            "C5"    | 0     | 4     | 2
+            cellref     | sheetName | row   | col
+            "A1"        | null      | 0     | 0
+            "C5"        | null      | 4     | 2
+            "Sheet2!D5" | null      | 4     | 3
     }
     
     def "test get cell name"(){
         expect:
-            new Pos(0,3,3).getCellName() == "D4"
+            new Pos("Sheet 3",3,3).getCellName() == "'Sheet 3'!D4"
     }
 
     def "test sorting"(){

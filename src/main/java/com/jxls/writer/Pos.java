@@ -4,14 +4,21 @@ package com.jxls.writer;
  * @author Leonid Vysochyn
  *         Date: 1/25/12 1:42 PM
  */
-public class Pos implements Comparable<Pos>{
+public class Pos{
 
     int col;
     int row;
     int sheet;
+
     String sheetName;
     boolean isColAbs;
     boolean isRowAbs;
+
+    public Pos(String sheetName, int row, int col) {
+        this.sheetName = sheetName;
+        this.row = row;
+        this.col = col;
+    }
 
     public Pos(int sheet, int row, int col) {
         this.sheet = sheet;
@@ -59,6 +66,10 @@ public class Pos implements Comparable<Pos>{
         }
         appendCellReference(sb);
         return sb.toString();
+    }
+
+    public String getSheetName() {
+        return sheetName;
     }
 
     /**

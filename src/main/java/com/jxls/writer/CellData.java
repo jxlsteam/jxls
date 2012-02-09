@@ -83,6 +83,7 @@ public class CellData {
     protected int col;
     protected int row;
     protected int sheet;
+    protected String sheetName;
     protected Object evaluationResult;
     protected Object cellValue;
 
@@ -94,19 +95,40 @@ public class CellData {
     public CellData() {
     }
 
+    public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
+        this.sheetName = sheetName;
+        this.row = row;
+        this.col = col;
+        this.cellType = cellType;
+        this.cellValue = cellValue;
+        updateFormulaValue();
+    }
+
     public CellData(int sheet, int row, int col, CellType cellType, Object cellValue) {
         this(new Pos(sheet, row, col), cellType, cellValue);
     }
     
     public CellData(Pos pos, CellType cellType, Object cellValue) {
         this.sheet = pos.getSheet();
+        this.sheetName = pos.getSheetName();
         this.row = pos.getRow();
         this.col = pos.getCol();
         this.cellType = cellType;
         this.cellValue = cellValue;
         updateFormulaValue();
     }
-    
+
+    public CellData(String sheetName, int row, int col) {
+        this(sheetName, row, col, CellType.BLANK, null);
+    }
+
+    public String getSheetName() {
+        return sheetName;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
 
     protected void updateFormulaValue() {
         if( cellType == CellType.FORMULA ){
@@ -116,16 +138,8 @@ public class CellData {
         }
     }
 
-    public CellData(int sheet, int row, int col) {
-        this(sheet, row, col, CellType.BLANK, null);
-    }
-
-    public CellData(int row, int col) {
-        this(0, row, col);
-    }
-    
     public Pos getPos(){
-        return new Pos(sheet, row, col);
+        return new Pos(sheetName, row, col);
     }
 
     public CellType getCellType() {

@@ -12,7 +12,7 @@ public class CellRange {
     boolean[][] changeMatrix;
 
     public CellRange(Pos startCell, int width, int height) {
-        int sheetIndex = startCell.getSheet();
+        String sheetName = startCell.getSheetName();
         this.startCell = startCell;
         this.width = width;
         this.height = height;
@@ -22,7 +22,7 @@ public class CellRange {
             cells[row] = new Pos[width];
             changeMatrix[row] = new boolean[width];
             for(int col = 0; col < width; col++){
-                cells[row][col] = new Pos(sheetIndex, row, col);
+                cells[row][col] = new Pos(sheetName, row, col);
             }
         }
     }

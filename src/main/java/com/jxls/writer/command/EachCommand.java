@@ -53,11 +53,11 @@ public class EachCommand extends AbstractCommand {
             context.putVar(var, obj);
             Size size = area.applyAt(currentCell, context);
             if( direction == Direction.DOWN ){
-                currentCell = new Pos(currentCell.getSheet(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                currentCell = new Pos(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
             }else{
-                currentCell = new Pos(currentCell.getSheet(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                currentCell = new Pos(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                 width += size.getWidth();
                 height = Math.max( height, size.getHeight() );
             }

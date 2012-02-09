@@ -19,4 +19,5 @@ public interface Transformer {
     CellData getCellData(Pos pos);
     List<Pos> getTargetPos(Pos pos);
     void resetTargetCells();
+    int getSheetIndex(String sheetName);
 }

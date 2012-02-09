@@ -68,7 +68,7 @@ public class PoiTransformer extends AbstractTransformer {
             cellData.addTargetPos(newPos);
             int numberOfSheets = workbook.getNumberOfSheets();
             while(numberOfSheets <= newPos.getSheet() ){
-                workbook.createSheet();
+                workbook.createSheet(newPos.getSheetName());
                 numberOfSheets = workbook.getNumberOfSheets();
             }
             Sheet destSheet = workbook.getSheetAt(newPos.getSheet());
@@ -145,6 +145,10 @@ public class PoiTransformer extends AbstractTransformer {
         }catch (Exception e){
             logger.error("Failed to set formula = " + formulaString + " into cell = " + pos.getCellName(), e);
         }
+    }
+
+    public int getSheetIndex(String sheetName) {
+        return workbook.getSheetIndex(sheetName);
     }
 
 }
