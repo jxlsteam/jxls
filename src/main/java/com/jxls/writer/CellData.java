@@ -3,12 +3,9 @@ package com.jxls.writer;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;
-import org.apache.poi.ss.usermodel.Cell;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +18,53 @@ public class CellData {
     public static final String USER_FORMULA_SUFFIX = "]";
     protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
     protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
+
+    public enum CellType {
+        STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
+    }
+
+    protected String formula;
+    protected int col;
+    protected int row;
+    protected String sheetName;
+    protected Object evaluationResult;
+    protected Object cellValue;
+
+    protected CellType cellType;
+    protected CellType targetCellType;
+
+    List<Pos> targetPos = new ArrayList<Pos> ();
+
+
+
+    public CellData(Pos pos) {
+        this.sheetName = pos.getSheetName();
+        this.row = pos.getRow();
+        this.col = pos.getCol();
+    }
+
+    public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
+        this.sheetName = sheetName;
+        this.row = row;
+        this.col = col;
+        this.cellType = cellType;
+        this.cellValue = cellValue;
+        updateFormulaValue();
+    }
+
+    public CellData(Pos pos, CellType cellType, Object cellValue) {
+        this.sheetName = pos.getSheetName();
+        this.row = pos.getRow();
+        this.col = pos.getCol();
+        this.cellType = cellType;
+        this.cellValue = cellValue;
+        updateFormulaValue();
+    }
+
+    public CellData(String sheetName, int row, int col) {
+        this(sheetName, row, col, CellType.BLANK, null);
+    }
+
 
     public Object evaluate(Context context){
         targetCellType = cellType;
@@ -75,53 +119,6 @@ public class CellData {
         }
     }
 
-    public enum CellType {
-        STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
-    }
-
-    protected String formula;
-    protected int col;
-    protected int row;
-    protected int sheet;
-    protected String sheetName;
-    protected Object evaluationResult;
-    protected Object cellValue;
-
-    protected CellType cellType;
-    protected CellType targetCellType;
-
-    List<Pos> targetPos = new ArrayList<Pos> ();
-
-    public CellData(Pos pos) {
-        this.sheetName = pos.getSheetName();
-        this.row = pos.getRow();
-        this.col = pos.getCol();
-    }
-
-    public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
-        this.sheetName = sheetName;
-        this.row = row;
-        this.col = col;
-        this.cellType = cellType;
-        this.cellValue = cellValue;
-        updateFormulaValue();
-    }
-
-    public CellData(Pos pos, CellType cellType, Object cellValue) {
-        this.sheet = pos.getSheet();
-        this.sheetName = pos.getSheetName();
-        this.row = pos.getRow();
-        this.col = pos.getCol();
-        this.cellType = cellType;
-        this.cellValue = cellValue;
-        updateFormulaValue();
-    }
-
-    public CellData(String sheetName, int row, int col) {
-        this(sheetName, row, col, CellType.BLANK, null);
-    }
-
-
 
     public String getSheetName() {
         return sheetName;
@@ -153,14 +150,6 @@ public class CellData {
     
     public Object getCellValue(){
         return cellValue;
-    }
-
-    public int getSheet() {
-        return sheet;
-    }
-
-    public void setSheet(int sheet) {
-        this.sheet = sheet;
     }
 
     public int getRow() {
@@ -200,11 +189,6 @@ public class CellData {
     }
     
     public List<Pos> getTargetPos(){
-//        List<Pos> targetPosList = new ArrayList<Pos>();
-//        for (Pos pos : targetPos) {
-//            targetPosList.add(new Pos(pos.getSheetName(), pos.getRow(), pos.getCol()));
-//        }
-//        return targetPosList;
         return targetPos;
     }
 
@@ -212,18 +196,19 @@ public class CellData {
         targetPos.clear();
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
+        if (!(o instanceof CellData)) return false;
 
         CellData cellData = (CellData) o;
 
         if (col != cellData.col) return false;
         if (row != cellData.row) return false;
-        if (sheet != cellData.sheet) return false;
         if (cellType != cellData.cellType) return false;
         if (cellValue != null ? !cellValue.equals(cellData.cellValue) : cellData.cellValue != null) return false;
+        if (sheetName != null ? !sheetName.equals(cellData.sheetName) : cellData.sheetName != null) return false;
 
         return true;
     }
@@ -232,7 +217,7 @@ public class CellData {
     public int hashCode() {
         int result = col;
         result = 31 * result + row;
-        result = 31 * result + sheet;
+        result = 31 * result + (sheetName != null ? sheetName.hashCode() : 0);
         result = 31 * result + (cellValue != null ? cellValue.hashCode() : 0);
         result = 31 * result + (cellType != null ? cellType.hashCode() : 0);
         return result;
@@ -241,7 +226,7 @@ public class CellData {
     @Override
     public String toString() {
         return "CellData{" +
-                "sheet=" + sheet +
+                "sheetName=" + sheetName +
                 ", row=" + row +
                 ", col=" + col +
                 ", cellType=" + cellType +

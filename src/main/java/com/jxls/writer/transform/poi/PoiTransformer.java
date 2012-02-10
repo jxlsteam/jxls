@@ -94,14 +94,14 @@ public class PoiTransformer extends AbstractTransformer {
         }
         if( cellMergedRegion != null){
             findAndRemoveExistingCellRegion(destCell);
-            Sheet destSheet = workbook.getSheetAt(destCell.getSheet());
+            Sheet destSheet = workbook.getSheet(destCell.getSheetName());
             destSheet.addMergedRegion(new CellRangeAddress(destCell.getRow(), destCell.getRow() + cellMergedRegion.getLastRow() - cellMergedRegion.getFirstRow(),
                     destCell.getCol(), destCell.getCol() + cellMergedRegion.getLastColumn() - cellMergedRegion.getFirstColumn()));
         }
     }
 
     private void findAndRemoveExistingCellRegion(Pos pos) {
-        Sheet destSheet = workbook.getSheetAt(pos.getSheet());
+        Sheet destSheet = workbook.getSheet(pos.getSheetName());
         int numMergedRegions = destSheet.getNumMergedRegions();
         List<Integer> regionsToRemove = new ArrayList<Integer>();
         for(int i = 0; i < numMergedRegions; i++){

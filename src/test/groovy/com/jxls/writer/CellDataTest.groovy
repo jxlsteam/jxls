@@ -7,13 +7,19 @@ import spock.lang.Specification
  * Date: 2/3/12 1:19 PM
  */
 class CellDataTest extends Specification{
-    def "test creation with (sheet, col, row) params"(){
+    def "test creation with (sheetName, col, row) params"(){
         when:
             CellData cellData = new CellData("sheet1", 2, 3)
         then:
             "sheet1" == cellData.getSheetName()
             2 == cellData.getRow()
             3 == cellData.getCol()
+    }
+
+    def "test equality"(){
+        expect:
+            new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc").equals( new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc"))
+            !new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc1").equals( new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc"))
     }
     
     def "test creation with (sheet, col, row, type, value)"(){

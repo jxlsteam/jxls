@@ -207,8 +207,8 @@ class PoiTransformerTest extends Specification{
             poiTransformer.transform(new Pos("sheet 1",2,4), new Pos("sheet 2", 10,10), context)
             def formulaCells = poiTransformer.getFormulaCells()
         then:
-            formulaCells.size() == 2 
-            formulaCells.contains(new CellData("sheet 1",1,1, CellData.CellType.FORMULA, "SUM(A1:A3)"))
+            formulaCells.size() == 2
+        formulaCells.contains(new CellData("sheet 1",1,1, CellData.CellType.FORMULA, "SUM(A1:A3)"))
             formulaCells.contains(new CellData("sheet 1",2,4, CellData.CellType.STRING, '$[${myvar}*SUM(A1:A5) + ${myvar2}]'))
     }
 

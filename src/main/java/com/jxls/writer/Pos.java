@@ -8,7 +8,6 @@ public class Pos{
 
     int col;
     int row;
-    int sheet;
 
     String sheetName;
     boolean isColAbs;
@@ -22,7 +21,6 @@ public class Pos{
     }
 
     public Pos(int sheet, int row, int col) {
-        this.sheet = sheet;
         this.row = row;
         this.col = col;
     }
@@ -98,14 +96,6 @@ public class Pos{
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
         sb.append(row+1);
-    }
-
-    public int getSheet() {
-        return sheet;
-    }
-
-    public void setSheet(int sheet) {
-        this.sheet = sheet;
     }
 
     public int getCol() {
