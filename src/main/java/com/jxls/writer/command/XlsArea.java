@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -179,15 +180,15 @@ public class XlsArea implements Area {
                     if( targetCells.isEmpty() ) continue;
                     if( targetCells.size() == targetFormulaCells.size() ){
                         Pos targetCellRefPos = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
+                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefPos.getCellName() ));
                     }else{
                         List< List<Pos> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
                             List<Pos> range = rangeList.get(i);
                             String replacementString = Util.createTargetCellRef( range );
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+cellRefEntry.getKey().getCellName(), replacementString);
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                         }else{
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+cellRefEntry.getKey().getCellName(), Util.createTargetCellRef(targetCells));
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(Util.createTargetCellRef(targetCells)));
                         }
                     }
                 }

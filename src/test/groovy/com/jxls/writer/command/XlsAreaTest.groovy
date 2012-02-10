@@ -223,14 +223,15 @@ class XlsAreaTest extends Specification{
         when:
         area.processFormulas()
         then:
-        1 * transformer.getFormulaCells() >> [new CellData("sheet1", 2, 1, CellData.CellType.FORMULA, "A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1")]
+        1 * transformer.getFormulaCells() >> [new CellData("sheet1", 2, 1, CellData.CellType.FORMULA, '''A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1 * '$ & test@.'!A5''')]
         1 * transformer.getTargetPos(new Pos("sheet1",2,1)) >> [new Pos("sheet1",5,5)]
         1 * transformer.getTargetPos(new Pos("sheet1",0,0)) >> [new Pos("sheet1",9,5)]
         1 * transformer.getTargetPos(new Pos("Sheet2",0,0)) >> []
         1 * transformer.getTargetPos(new Pos("Sheet 3",0,1)) >> [new Pos("sheet1",5,2)]
         1 * transformer.getTargetPos(new Pos("Sheet2",0,1)) >> [new Pos("Sheet 3",0,0)]
-        1 * transformer.setFormula(new Pos("sheet1",5,5), "F10+Sheet2!A1 + C6 + 'Sheet 3'!A1")
+        1 * transformer.getTargetPos(new Pos('$ & test@.', 4, 0)) >> [ new Pos('$ & test@.',4,1)]
+        1 * transformer.setFormula(new Pos("sheet1",5,5), '''F10+Sheet2!A1 + C6 + 'Sheet 3'!A1 * '$ & test@.'!B5''')
+        0 * _._
     }
-
 
 }
