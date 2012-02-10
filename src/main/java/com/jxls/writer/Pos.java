@@ -20,11 +20,6 @@ public class Pos{
         this.col = col;
     }
 
-    public Pos(int sheet, int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
-
     public Pos(int row, int col) {
         this(null, row, col);
     }

@@ -19,15 +19,13 @@ public class EachCommand extends AbstractCommand {
     Command area;
     Direction direction = Direction.DOWN;
 
-    public EachCommand(Size initialSize, String var, String items, Area area) {
-        super(initialSize);
+    public EachCommand(String var, String items, Area area) {
         this.var = var;
         this.items = items;
         this.area = area;
     }
     
-    public EachCommand(Size initialSize, String var, String items, Area area, Direction direction) {
-        super(initialSize);
+    public EachCommand(String var, String items, Area area, Direction direction) {
         this.var = var;
         this.items = items;
         this.area = area;

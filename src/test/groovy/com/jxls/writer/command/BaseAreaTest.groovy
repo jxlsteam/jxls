@@ -30,8 +30,8 @@ class BaseAreaTest extends Specification{
             def area = new BaseArea(new Pos("sheet1", 1, 1), new Size(10,15),Mock(Transformer))
             def innerCommand = Mock(Command)
             def context = new Context()
-            area.addCommand(new Pos("sheet1",3, 2), innerCommand)
-            innerCommand.getInitialSize() >> new Size(2,3)
+            area.addCommand(new Pos("sheet1",3, 2), new Size(2,3), innerCommand)
+            //innerCommand.getInitialSize() >> new Size(2,3)
         when:
             area.applyAt(new Pos("sheet2", 5, 4), context)
         then:
@@ -80,11 +80,9 @@ class BaseAreaTest extends Specification{
             def area = new BaseArea(new Pos("sheet1",1, 1), new Size(10,15), transformer)
             def innerCommand1 = Mock(Command)
             def context = new Context()
-            innerCommand1.getInitialSize() >> new Size(2,3)
-            area.addCommand(new Pos("sheet1",2, 1), innerCommand1)
+            area.addCommand(new Pos("sheet1",2, 1), new Size(2,3), innerCommand1)
             def innerCommand2 = Mock(Command)
-            innerCommand2.getInitialSize() >> new Size(4,5)
-            area.addCommand(new Pos("sheet1",6, 0), innerCommand2)
+            area.addCommand(new Pos("sheet1",6, 0), new Size(4,5), innerCommand2)
         when:
             area.applyAt(new Pos("sheet1",5, 4), context)
         then:

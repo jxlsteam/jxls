@@ -12,9 +12,8 @@ class EachCommandTest extends Specification{
     def "test init"(){
         when:
             def area = new BaseArea(new Pos(20, 20), new Size(4, 5))
-            def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
+            def eachCommand = new EachCommand( "x", "dataList", area)
         then:
-             eachCommand.initialSize == new Size(2,3)
              eachCommand.var == "x"
              eachCommand.items == "dataList"
              eachCommand.area == area
@@ -24,10 +23,9 @@ class EachCommandTest extends Specification{
     def "test applyAt"(){
         given:
             def eachArea = Mock(Area)
-            def eachCommand = new EachCommand(new Size(4, 2), "x", "items", eachArea)
+            def eachCommand = new EachCommand( "x", "items", eachArea)
             def context = Mock(Context)
         when:
-            eachArea.getInitialSize() >> new Size(3,2)
             eachCommand.applyAt(new Pos("sheet2", 2, 2), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
@@ -45,7 +43,7 @@ class EachCommandTest extends Specification{
     
     def "test set direction"(){
         def area = Mock(Area)
-        def eachCommand = new EachCommand(new Size(2,3), "x", "dataList", area)
+        def eachCommand = new EachCommand("x", "dataList", area)
         when:
             eachCommand.setDirection(EachCommand.Direction.RIGHT)
         then:
@@ -55,7 +53,7 @@ class EachCommandTest extends Specification{
     def "test applyAt with RIGHT direction"(){
         given:
             def eachArea = Mock(Area)
-            def eachCommand = new EachCommand(new Size(3, 2), "x", "items", eachArea, EachCommand.Direction.RIGHT)
+            def eachCommand = new EachCommand("x", "items", eachArea, EachCommand.Direction.RIGHT)
             def context = Mock(Context)
         when:
             eachArea.getInitialSize() >> new Size(3, 2)

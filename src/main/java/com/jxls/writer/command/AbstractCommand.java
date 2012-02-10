@@ -9,10 +9,6 @@ import com.jxls.writer.*;
 public abstract class AbstractCommand implements Command {
     Size initialSize;
 
-    protected AbstractCommand(Size initialSize) {
-        this.initialSize = initialSize;
-    }
-
     public Size getInitialSize() {
         return initialSize;
     }

@@ -40,8 +40,12 @@ public class BaseArea implements Area {
         this(startPos, initialSize, null, transformer);
     }
 
-    public void addCommand(Pos pos, Command command) {
-        commandDataList.add(new CommandData(pos, command));
+    public void addCommand(Pos pos, Size size, Command command){
+        commandDataList.add(new CommandData(pos, size, command));
+    }
+
+    public List<CommandData> getCommandDataList() {
+        return commandDataList;
     }
 
     public Transformer getTransformer() {
@@ -55,8 +59,8 @@ public class BaseArea implements Area {
     private void createCellRange(){
         cellRange = new CellRange(startPos, initialSize.getWidth(), initialSize.getHeight());
         for(CommandData commandData: commandDataList){
-            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getCommand().getInitialSize().getWidth()-1,
-                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight()-1);
+            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getSize().getWidth()-1,
+                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getSize().getHeight()-1);
         }
     }
 
@@ -69,7 +73,7 @@ public class BaseArea implements Area {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
             Pos newCell = new Pos(pos.getSheetName(), commandData.getStartPos().getRow() + pos.getRow(), commandData.getStartPos().getCol() + pos.getCol());
-            Size initialSize = commandData.getCommand().getInitialSize();
+            Size initialSize = commandData.getSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
             int heightChange = newSize.getHeight() - initialSize.getHeight();
@@ -78,12 +82,12 @@ public class BaseArea implements Area {
                 heightDelta += heightChange;
                 if( widthChange != 0 ){
                     cellRange.shiftCellsWithRowBlock(commandData.getStartPos().getRow(),
-                            commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight(),
+                            commandData.getStartPos().getRow() + commandData.getSize().getHeight(),
                             commandData.getStartPos().getCol() + initialSize.getWidth(), widthChange);
                 }
                 if( heightChange != 0 ){
                     cellRange.shiftCellsWithColBlock(commandData.getStartPos().getCol(),
-                            commandData.getStartPos().getCol() + newSize.getWidth()-1, commandData.getStartPos().getRow() + commandData.getCommand().getInitialSize().getHeight()-1, heightChange);
+                            commandData.getStartPos().getCol() + newSize.getWidth()-1, commandData.getStartPos().getRow() + commandData.getSize().getHeight()-1, heightChange);
                 }
                 for (int j = i + 1; j < commandDataList.size(); j++) {
                     CommandData data = commandDataList.get(j);
@@ -91,18 +95,18 @@ public class BaseArea implements Area {
                     int newRow = data.getStartPos().getRow() + pos.getRow();
                     int newCol = data.getStartPos().getCol() + pos.getCol();
                     if(newRow > newCell.getRow() && ((newCol >= newCell.getCol() && newCol <= newCell.getCol() + newSize.getWidth()) ||
-                            (newCol + command.getInitialSize().getWidth() >= newCell.getCol() && newCol + command.getInitialSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
-                            (newCell.getCol() >= newCol && newCell.getCol() <= newCol + command.getInitialSize().getWidth() )
+                            (newCol + data.getSize().getWidth() >= newCell.getCol() && newCol + data.getSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
+                            (newCell.getCol() >= newCol && newCell.getCol() <= newCol + data.getSize().getWidth() )
                     )){
                         cellRange.shiftCellsWithColBlock(data.getStartPos().getCol(),
-                                data.getStartPos().getCol() + data.getCommand().getInitialSize().getWidth()-1, data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1, heightChange);
+                                data.getStartPos().getCol() + data.getSize().getWidth()-1, data.getStartPos().getRow() + data.getSize().getHeight()-1, heightChange);
                         data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
-                   ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + command.getInitialSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
-                    newCell.getRow() >= newRow && newCell.getRow() <= newRow + command.getInitialSize().getHeight()) ){
+                   ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + data.getSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
+                    newCell.getRow() >= newRow && newCell.getRow() <= newRow + data.getSize().getHeight()) ){
                         cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
-                                data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1,
+                                data.getStartPos().getRow() + data.getSize().getHeight()-1,
                                 data.getStartPos().getCol() + initialSize.getWidth(), widthChange);
                         data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow(), data.getStartPos().getCol() + widthChange));
                     }
