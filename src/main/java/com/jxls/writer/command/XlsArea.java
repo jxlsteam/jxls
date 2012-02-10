@@ -104,7 +104,7 @@ public class XlsArea implements Area {
                         data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
-                   ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + data.getSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
+                   ( newRow + data.getSize().getHeight() >= newCell.getRow() && newRow + data.getSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
                     newCell.getRow() >= newRow && newCell.getRow() <= newRow + data.getSize().getHeight()) ){
                         cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
                                 data.getStartPos().getRow() + data.getSize().getHeight()-1,

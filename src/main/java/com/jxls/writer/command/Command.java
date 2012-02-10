@@ -9,8 +9,6 @@ import com.jxls.writer.*;
  */
 public interface Command {
 
-    Size getInitialSize();
-
     Size applyAt(Pos pos, Context context);
 
 }
