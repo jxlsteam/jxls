@@ -203,9 +203,12 @@ public class XlsArea implements Area {
                         targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetPosList));
                     }
                 }
+                String sheetNameReplacementRegex = targetFormulaPos.getFormattedSheetName() + "!";
+                targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 transformer.setFormula(new Pos(targetFormulaPos.getSheetName(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
             }
         }
     }
-    
+
+
 }

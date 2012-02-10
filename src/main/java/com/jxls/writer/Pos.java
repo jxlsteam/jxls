@@ -62,6 +62,12 @@ public class Pos{
         return sb.toString();
     }
 
+    public String getFormattedSheetName(){
+        StringBuffer sb = new StringBuffer(32);
+        CellRefUtil.appendFormat(sb, sheetName);
+        return sb.toString();
+    }
+
     public String getSheetName() {
         return sheetName;
     }

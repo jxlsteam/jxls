@@ -30,7 +30,6 @@ class XlsAreaTest extends Specification{
             def innerCommand = Mock(Command)
             def context = new Context()
             area.addCommand(new Pos("sheet1",3, 2), new Size(2,3), innerCommand)
-            //innerCommand.getInitialSize() >> new Size(2,3)
         when:
             area.applyAt(new Pos("sheet2", 5, 4), context)
         then:
@@ -135,9 +134,9 @@ class XlsAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos("sheet1",6,5)) >> ([new Pos("sheet1!R77"), new Pos("sheet1!R78"), new Pos("sheet1!R79")])
             1 * transformer.getTargetPos(new Pos("sheet1",2,2)) >> [new Pos("sheet1",31,35)]
             1 * transformer.getTargetPos(new Pos("sheet1",3,1)) >> [new Pos("sheet1",22,23)]
-            1 * transformer.setFormula(new Pos("sheet1",22,23), "sheet1!K10 * sheet1!I20")
+            1 * transformer.setFormula(new Pos("sheet1",22,23), "K10 * I20")
             1 * transformer.setFormula(new Pos("sheet2", 11, 12), "sheet1!A1+sheet1!C5")
-            1 * transformer.setFormula(new Pos("sheet1", 31, 35), "SUM(sheet1!R77:sheet1!R79)")
+            1 * transformer.setFormula(new Pos("sheet1", 31, 35), "SUM(R77:R79)")
             0 * _._
     }
 
@@ -155,9 +154,9 @@ class XlsAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos("sheet1",1,1)) >> [new Pos("sheet1!B2"), new Pos("sheet1!B4"), new Pos("sheet1!B6")]
             1 * transformer.getTargetPos(new Pos("sheet1",4,2)) >> [new Pos("sheet1!C10")]
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",1,2), new Pos("sheet1", 3, 2), new Pos("sheet1",5,2)]
-            1 * transformer.setFormula(new Pos("sheet1",1,2), "sheet1!A1+sheet1!B2+sheet1!C10")
-            1 * transformer.setFormula(new Pos("sheet1",3,2), "sheet1!A3+sheet1!B4+sheet1!C10")
-            1 * transformer.setFormula(new Pos("sheet1",5,2), "sheet1!A5+sheet1!B6+sheet1!C10")
+            1 * transformer.setFormula(new Pos("sheet1",1,2), "A1+B2+C10")
+            1 * transformer.setFormula(new Pos("sheet1",3,2), "A3+B4+C10")
+            1 * transformer.setFormula(new Pos("sheet1",5,2), "A5+B6+C10")
             0 * _._
     }
 
@@ -174,9 +173,9 @@ class XlsAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",5,2), new Pos("sheet1", 10, 2), new Pos("sheet1", 15, 2)]
             1 * transformer.getTargetPos(new Pos("sheet1",0,1)) >> [new Pos("sheet1!B2"), new Pos("sheet1!B4"),  new Pos("sheet1!B9"), new Pos("sheet1!B10"), new Pos("sheet1!B15"), new Pos("sheet1!B1"),
                     new Pos("sheet1!B3"), new Pos("sheet1!B8"), new Pos("sheet1!B16")]
-            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(sheet1!B1:sheet1!B4)")
-            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(sheet1!B8:sheet1!B10)")
-            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(sheet1!B15:sheet1!B16)")
+            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(B1:B4)")
+            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(B8:B10)")
+            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(B15:B16)")
     }
 
     def "test formula processing for column formulas with joint cells"(){
@@ -192,9 +191,9 @@ class XlsAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",5,2), new Pos("sheet1", 10, 2), new Pos("sheet1", 15, 2)]
             1 * transformer.getTargetPos(new Pos("sheet1",0,1)) >> [new Pos("sheet1!B2"), new Pos("sheet1!B4"),  new Pos("sheet1!B9"), new Pos("sheet1!B10"), new Pos("sheet1!B15")]
             1 * transformer.getTargetPos(new Pos("sheet1",19,1)) >> [new Pos("sheet1!B1"), new Pos("sheet1!B3"), new Pos("sheet1!B8"), new Pos("sheet1!B16")]
-            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(sheet1!B1:sheet1!B4)")
-            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(sheet1!B8:sheet1!B10)")
-            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(sheet1!B15:sheet1!B16)")
+            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(B1:B4)")
+            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(B8:B10)")
+            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(B15:B16)")
     }
 
     def "test formula processing for row formulas with joint cells"(){
@@ -210,9 +209,9 @@ class XlsAreaTest extends Specification{
             1 * transformer.getTargetPos(new Pos("sheet1",1,2)) >> [new Pos("sheet1",5,2), new Pos("sheet1", 10, 2), new Pos("sheet1", 15, 2)]
             1 * transformer.getTargetPos(new Pos("sheet1",0,1)) >> [new Pos("sheet1!B2"), new Pos("sheet1!A4"),  new Pos("sheet1!D2"), new Pos("sheet1!C2"), new Pos("sheet1!B3")]
             1 * transformer.getTargetPos(new Pos("sheet1",19,1)) >> [new Pos("sheet1!B4"), new Pos("sheet1!E2")]
-            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(sheet1!B2:sheet1!E2)")
-            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(sheet1!B3)")
-            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(sheet1!A4:sheet1!B4)")
+            1 * transformer.setFormula(new Pos("sheet1",5,2), "SUM(B2:E2)")
+            1 * transformer.setFormula(new Pos("sheet1",10,2), "SUM(B3)")
+            1 * transformer.setFormula(new Pos("sheet1",15,2), "SUM(A4:B4)")
     }
 
     def "test formulas with other sheet references"(){
@@ -230,7 +229,7 @@ class XlsAreaTest extends Specification{
         1 * transformer.getTargetPos(new Pos("Sheet2",0,0)) >> []
         1 * transformer.getTargetPos(new Pos("Sheet 3",0,1)) >> [new Pos("sheet1",5,2)]
         1 * transformer.getTargetPos(new Pos("Sheet2",0,1)) >> [new Pos("Sheet 3",0,0)]
-        1 * transformer.setFormula(new Pos("sheet1",5,5), "sheet1!F10+Sheet2!A1 + sheet1!C6 + 'Sheet 3'!A1")
+        1 * transformer.setFormula(new Pos("sheet1",5,5), "F10+Sheet2!A1 + C6 + 'Sheet 3'!A1")
     }
 
 

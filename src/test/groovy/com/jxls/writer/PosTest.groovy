@@ -29,4 +29,14 @@ class PosTest extends Specification {
         then:
             posList.sort() == [new Pos("A4"), new Pos("B1"), new Pos("B3"), new Pos("B5"), new Pos("C2"), new Pos("D1") ]
     }
+    
+    def "test get formatted sheet name"(){
+        expect:
+            new Pos(sheetName, 0, 0).getFormattedSheetName() == formattedSheetName
+        where:
+            sheetName   | formattedSheetName
+            "Sheet1"    | "Sheet1"
+            "Sheet 1"   | "'Sheet 1'"
+            "1a"        | "'1a'"
+    }
 }
