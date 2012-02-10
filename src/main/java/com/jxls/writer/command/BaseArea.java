@@ -150,7 +150,6 @@ public class BaseArea implements Area {
                     pos.setIgnoreSheetNameInFormat(true);
                 }
                 List<Pos> targetCellDataList = transformer.getTargetPos(pos);
-
                 targetCellRefMap.put(pos, targetCellDataList);
             }
             for (String jointedCellRef : jointedCellRefs) {
@@ -173,6 +172,7 @@ public class BaseArea implements Area {
                 String targetFormulaString = formulaCellData.getFormula();
                 for (Map.Entry<Pos, List<Pos>> cellRefEntry : targetCellRefMap.entrySet()) {
                     List<Pos> targetCells = cellRefEntry.getValue();
+                    if( targetCells.isEmpty() ) continue;
                     if( targetCells.size() == targetFormulaCells.size() ){
                         Pos targetCellRefPos = targetCells.get(i);
                         targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
@@ -189,6 +189,7 @@ public class BaseArea implements Area {
                 }
                 for (Map.Entry<String, List<Pos>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<Pos> targetPosList = jointedCellRefEntry.getValue();
+                    if( targetPosList.isEmpty() ) continue;
                     List< List<Pos> > rangeList = Util.groupByRanges(targetPosList, targetFormulaCells.size());
                     if( rangeList.size() == targetFormulaCells.size() ){
                         List<Pos> range = rangeList.get(i);
