@@ -22,7 +22,7 @@ class CellDataTest extends Specification{
             !new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc1").equals( new CellData("sheet1", 5, 10, CellData.CellType.STRING, "Abc"))
     }
     
-    def "test creation with (sheet, col, row, type, value)"(){
+    def "test creation with (sheetName, row, col, type, value)"(){
         when:
             CellData cellData = new CellData("Sheet1", 5, 10, CellData.CellType.NUMBER, 1.2)
         then:

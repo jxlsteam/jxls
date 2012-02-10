@@ -23,39 +23,29 @@ public class CellData {
         STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
     }
 
-    protected String formula;
-    protected int col;
-    protected int row;
-    protected String sheetName;
-    protected Object evaluationResult;
+    protected Pos pos;
     protected Object cellValue;
-
     protected CellType cellType;
+
+    protected String formula;
+    protected Object evaluationResult;
     protected CellType targetCellType;
 
     List<Pos> targetPos = new ArrayList<Pos> ();
 
-
-
     public CellData(Pos pos) {
-        this.sheetName = pos.getSheetName();
-        this.row = pos.getRow();
-        this.col = pos.getCol();
+        this.pos = pos;
     }
 
     public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
-        this.sheetName = sheetName;
-        this.row = row;
-        this.col = col;
+        this.pos = new Pos(sheetName, row, col);
         this.cellType = cellType;
         this.cellValue = cellValue;
         updateFormulaValue();
     }
 
     public CellData(Pos pos, CellType cellType, Object cellValue) {
-        this.sheetName = pos.getSheetName();
-        this.row = pos.getRow();
-        this.col = pos.getCol();
+        this.pos = pos;
         this.cellType = cellType;
         this.cellValue = cellValue;
         updateFormulaValue();
@@ -121,11 +111,7 @@ public class CellData {
 
 
     public String getSheetName() {
-        return sheetName;
-    }
-
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
+        return pos.getSheetName();
     }
 
     protected void updateFormulaValue() {
@@ -137,7 +123,7 @@ public class CellData {
     }
 
     public Pos getPos(){
-        return new Pos(sheetName, row, col);
+        return pos;
     }
 
     public CellType getCellType() {
@@ -153,19 +139,11 @@ public class CellData {
     }
 
     public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
+        return pos.getRow();
     }
 
     public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
+        return pos.getCol();
     }
 
     public String getFormula() {
@@ -204,20 +182,16 @@ public class CellData {
 
         CellData cellData = (CellData) o;
 
-        if (col != cellData.col) return false;
-        if (row != cellData.row) return false;
         if (cellType != cellData.cellType) return false;
         if (cellValue != null ? !cellValue.equals(cellData.cellValue) : cellData.cellValue != null) return false;
-        if (sheetName != null ? !sheetName.equals(cellData.sheetName) : cellData.sheetName != null) return false;
+        if (pos != null ? !pos.equals(cellData.pos) : cellData.pos != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = col;
-        result = 31 * result + row;
-        result = 31 * result + (sheetName != null ? sheetName.hashCode() : 0);
+        int result = pos != null ? pos.hashCode() : 0;
         result = 31 * result + (cellValue != null ? cellValue.hashCode() : 0);
         result = 31 * result + (cellType != null ? cellType.hashCode() : 0);
         return result;
@@ -226,9 +200,7 @@ public class CellData {
     @Override
     public String toString() {
         return "CellData{" +
-                "sheetName=" + sheetName +
-                ", row=" + row +
-                ", col=" + col +
+                pos +
                 ", cellType=" + cellType +
                 ", cellValue=" + cellValue +
                 '}';

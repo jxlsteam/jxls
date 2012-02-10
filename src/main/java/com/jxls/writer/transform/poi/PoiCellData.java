@@ -39,8 +39,6 @@ public class PoiCellData extends CellData {
 
     private void readCellGeneralInfo(Cell cell) {
         hyperlink = cell.getHyperlink();
-        col = cell.getColumnIndex();
-        row = cell.getRowIndex();
     }
 
     private void readCellContents(Cell cell) {
