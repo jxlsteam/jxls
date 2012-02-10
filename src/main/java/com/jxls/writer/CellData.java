@@ -107,10 +107,6 @@ public class CellData {
         updateFormulaValue();
     }
 
-    public CellData(int sheet, int row, int col, CellType cellType, Object cellValue) {
-        this(new Pos(sheet, row, col), cellType, cellValue);
-    }
-    
     public CellData(Pos pos, CellType cellType, Object cellValue) {
         this.sheet = pos.getSheet();
         this.sheetName = pos.getSheetName();

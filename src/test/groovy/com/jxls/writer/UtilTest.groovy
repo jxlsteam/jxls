@@ -39,61 +39,63 @@ class UtilTest extends Specification{
 
     def "test create target cell ref"(){
         expect:
-            Util.createTargetCellRef([new Pos("A1"), new Pos("A5")]) == "A1,A5"
-            Util.createTargetCellRef([new Pos("A1"), new Pos("A2"), new Pos("A3")]) == "A1:A3"
-            Util.createTargetCellRef([new Pos("A1"), new Pos("A2"), new Pos("A3"), new Pos("A5")]) == "A1,A2,A3,A5"
+            Util.createTargetCellRef([new Pos("sheet1!A1"), new Pos("sheet1!A5")]) == "sheet1!A1,sheet1!A5"
+            Util.createTargetCellRef([new Pos("sheet1!A1"), new Pos("sheet1!A2"), new Pos("sheet1!A3")]) == "sheet1!A1:sheet1!A3"
+            Util.createTargetCellRef([new Pos("sheet1!A1"), new Pos("sheet1!A2"), new Pos("sheet2!A3")]) == "sheet1!A1,sheet1!A2,sheet2!A3"
+            Util.createTargetCellRef([new Pos("sheet1!A1"), new Pos("sheet1!A2"),
+                    new Pos("sheet1!A3"), new Pos("sheet1!A5")]) == "sheet1!A1,sheet1!A2,sheet1!A3,sheet1!A5"
     }
     
     def "test group by col range"(){
         when:
-            def posList = [new Pos("B10"), new Pos("C5"), new Pos("B2"), new Pos("A8"), new Pos("B4"), new Pos("C7"),
-                    new Pos("B3"), new Pos("B11"), new Pos("D7"), new Pos("B1"), new Pos("E7")]
-            def posList2 = [new Pos("B2"), new Pos("C2"), new Pos("D2"), new Pos("B5"), new Pos("B4"), new Pos("A2")]
+            def posList = [new Pos("sh!B10"), new Pos("sh!C5"), new Pos("sh!B2"), new Pos("sh!A8"), new Pos("sh!B4"), new Pos("sh!C7"),
+                    new Pos("sh!B3"), new Pos("sh!B11"), new Pos("sh!D7"), new Pos("sh!B1"), new Pos("sh!E7")]
+            def posList2 = [new Pos("sh!B2"), new Pos("sh!C2"), new Pos("sh!D2"), new Pos("sh!B5"), new Pos("sh!B4"), new Pos("sh!A2")]
         then:
             Util.groupByColRange(posList) == [
-                    [new Pos("A8")],
-                    [new Pos("B1"), new Pos("B2"), new Pos("B3"), new Pos("B4")],
-                    [new Pos("B10"), new Pos("B11")],
-                    [new Pos("C5")],
-                    [new Pos("C7")],
-                    [new Pos("D7")],
-                    [new Pos("E7")]
+                    [new Pos("sh!A8")],
+                    [new Pos("sh!B1"), new Pos("sh!B2"), new Pos("sh!B3"), new Pos("sh!B4")],
+                    [new Pos("sh!B10"), new Pos("sh!B11")],
+                    [new Pos("sh!C5")],
+                    [new Pos("sh!C7")],
+                    [new Pos("sh!D7")],
+                    [new Pos("sh!E7")]
             ]
             Util.groupByColRange(posList2) == [
-                    [new Pos("A2")],
-                    [new Pos("B2")],
-                    [new Pos("B4"), new Pos("B5")],
-                    [new Pos("C2")],
-                    [new Pos("D2")]
+                    [new Pos("sh!A2")],
+                    [new Pos("sh!B2")],
+                    [new Pos("sh!B4"), new Pos("sh!B5")],
+                    [new Pos("sh!C2")],
+                    [new Pos("sh!D2")]
             ]
     }
 
     def "test group by row range"(){
         when:
-            def posList = [new Pos("B2"), new Pos("C2"), new Pos("D2"), new Pos("B5"), new Pos("B4"), new Pos("A2")]
+            def posList = [new Pos("sh!B2"), new Pos("sh!C2"), new Pos("sh!D2"), new Pos("sh!B5"), new Pos("sh!B4"), new Pos("sh!A2")]
         then:
             Util.groupByRowRange(posList) == [
-                    [new Pos("A2"), new Pos("B2"), new Pos("C2"), new Pos("D2")],
-                    [new Pos("B4")],
-                    [new Pos("B5")]
+                    [new Pos("sh!A2"), new Pos("sh!B2"), new Pos("sh!C2"), new Pos("sh!D2")],
+                    [new Pos("sh!B4")],
+                    [new Pos("sh!B5")]
             ]
     }
 
     def "test group by range with target range count setting"(){
         when:
-            def posList = [new Pos("B2"), new Pos("C2"), new Pos("D2"), new Pos("B5"), new Pos("B4"), new Pos("A2")]
+            def posList = [new Pos("sh!B2"), new Pos("sh!C2"), new Pos("sh!D2"), new Pos("sh!B5"), new Pos("sh!B4"), new Pos("sh!A2")]
         then:
             Util.groupByRanges(posList, 3) == [
-                    [new Pos("A2"), new Pos("B2"), new Pos("C2"), new Pos("D2")],
-                    [new Pos("B4")],
-                    [new Pos("B5")]
+                    [new Pos("sh!A2"), new Pos("sh!B2"), new Pos("sh!C2"), new Pos("sh!D2")],
+                    [new Pos("sh!B4")],
+                    [new Pos("sh!B5")]
             ]
             Util.groupByRanges(posList, 5) == [
-                    [new Pos("A2")],
-                    [new Pos("B2")],
-                    [new Pos("B4"), new Pos("B5")],
-                    [new Pos("C2")],
-                    [new Pos("D2")]
+                    [new Pos("sh!A2")],
+                    [new Pos("sh!B2")],
+                    [new Pos("sh!B4"), new Pos("sh!B5")],
+                    [new Pos("sh!C2")],
+                    [new Pos("sh!D2")]
             ]
 
     }

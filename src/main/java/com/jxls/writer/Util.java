@@ -53,12 +53,12 @@ public class Util {
             Iterator<Pos> iterator = targetCellDataList.iterator();
             Pos firstPos = iterator.next();
             cellRefs.add(firstPos.getCellName());
-            int sheet = firstPos.getSheet();
+            String sheetName = firstPos.getSheetName();
             int row = firstPos.getRow();
             int col = firstPos.getCol();
             for (; iterator.hasNext(); ) {
                 Pos pos = iterator.next();
-                if( (rowRange || colRange) && pos.getSheet() != sheet ){
+                if( (rowRange || colRange) && !pos.getSheetName().equals(sheetName) ){
                     rowRange = false;
                     colRange = false;
                 }
@@ -68,7 +68,7 @@ public class Util {
                 if( colRange && !(pos.getCol() - col == 1 && pos.getRow() == row)){
                     colRange = false;
                 }
-                sheet = pos.getSheet();
+                sheetName = pos.getSheetName();
                 row = pos.getRow();
                 col = pos.getCol();
                 cellRefs.add(pos.getCellName());
@@ -112,7 +112,7 @@ public class Util {
         List<Pos> posListCopy = new ArrayList<Pos>(posList);
         Collections.sort(posListCopy, new PosColPrecedenceComparator());
 
-        int sheet = posListCopy.get(0).getSheet();
+        String sheetName = posListCopy.get(0).getSheetName();
         int row = posListCopy.get(0).getRow();
         int col = posListCopy.get(0).getCol();
         List<Pos> currentRange = new ArrayList<Pos>();
@@ -120,7 +120,7 @@ public class Util {
         boolean rangeComplete = false;
         for (int i = 1; i < posListCopy.size(); i++) {
             Pos pos = posListCopy.get(i);
-            if(pos.getSheet() != sheet ){
+            if(!pos.getSheetName().equals( sheetName ) ){
                 rangeComplete = true;
             }else{
                 int rowDelta = pos.getRow() - row;
@@ -131,7 +131,7 @@ public class Util {
                     rangeComplete = true;
                 }
             }
-            sheet = pos.getSheet();
+            sheetName = pos.getSheetName();
             row = pos.getRow();
             col = pos.getCol();
             if( rangeComplete ){
@@ -153,7 +153,7 @@ public class Util {
         List<Pos> posListCopy = new ArrayList<Pos>(posList);
         Collections.sort(posListCopy, new PosRowPrecedenceComparator());
 
-        int sheet = posListCopy.get(0).getSheet();
+        String sheetName = posListCopy.get(0).getSheetName();
         int row = posListCopy.get(0).getRow();
         int col = posListCopy.get(0).getCol();
         List<Pos> currentRange = new ArrayList<Pos>();
@@ -161,7 +161,7 @@ public class Util {
         boolean rangeComplete = false;
         for (int i = 1; i < posListCopy.size(); i++) {
             Pos pos = posListCopy.get(i);
-            if(pos.getSheet() != sheet ){
+            if(!pos.getSheetName().equals(sheetName) ){
                 rangeComplete = true;
             }else{
                 int rowDelta = pos.getRow() - row;
@@ -172,64 +172,13 @@ public class Util {
                     rangeComplete = true;
                 }
             }
-            sheet = pos.getSheet();
+            sheetName = pos.getSheetName();
             row = pos.getRow();
             col = pos.getCol();
             if( rangeComplete ){
                 rangeList.add(currentRange);
                 currentRange = new ArrayList<Pos>();
                 currentRange.add(pos);
-                rangeComplete = false;
-            }
-        }
-        rangeList.add(currentRange);
-        return rangeList;
-    }
-
-    private static List<List<Pos>> groupByAnyRange(List<Pos> posList) {
-        List<List<Pos>> rangeList = new ArrayList<List<Pos>>();
-        int sheet = posList.get(0).getSheet();
-        int row = posList.get(0).getRow();
-        int col = posList.get(0).getCol();
-        List<Pos> currentRange = new ArrayList<Pos>();
-        currentRange.add(posList.get(0));
-        boolean rangeComplete = false;
-        boolean rowRange = false;
-        boolean colRange = false;
-        for (int i = 1; i < posList.size(); i++) {
-            Pos pos = posList.get(i);
-            if(pos.getSheet() != sheet ){
-                rangeComplete = true;
-            }else{
-                int rowDelta = pos.getRow() - row;
-                int colDelta = pos.getCol() - col;
-                if(rowDelta == 1 && colDelta == 0){
-                    if( !colRange ){
-                        rowRange = true;
-                        currentRange.add( pos );
-                    }else{
-                        rangeComplete = true;
-                    }
-                }else if( colDelta == 1 && rowDelta == 0){
-                    if( !rowRange ){
-                        colRange = true;
-                        currentRange.add( pos );
-                    }else{
-                        rangeComplete = true;
-                    }
-                }else{
-                    rangeComplete = true;
-                }
-            }
-            sheet = pos.getSheet();
-            row = pos.getRow();
-            col = pos.getCol();
-            if( rangeComplete ){
-                rangeList.add(currentRange);
-                currentRange = new ArrayList<Pos>();
-                currentRange.add(pos);
-                rowRange = false;
-                colRange = false;
                 rangeComplete = false;
             }
         }

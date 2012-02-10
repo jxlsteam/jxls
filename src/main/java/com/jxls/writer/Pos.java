@@ -28,7 +28,7 @@ public class Pos{
     }
 
     public Pos(int row, int col) {
-        this(0, row, col);
+        this(null, row, col);
     }
     
     public Pos(String cellRef){

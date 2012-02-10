@@ -115,9 +115,10 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     public void setFormula(Pos pos, String formulaString) {
-        Sheet sheet = workbook.getSheetAt(pos.getSheet());
+        if(pos == null || pos.getSheetName() == null ) return;
+        Sheet sheet = workbook.getSheet(pos.getSheetName());
         if( sheet == null){
-            sheet = workbook.createSheet();
+            sheet = workbook.createSheet(pos.getSheetName());
         }
         Row row = sheet.getRow(pos.getRow());
         if( row == null ){

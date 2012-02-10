@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class BaseArea implements Area {
     static Logger logger = LoggerFactory.getLogger(BaseArea.class);
 
-    public static final BaseArea EMPTY_AREA = new BaseArea(new Pos(0, 0), Size.ZERO_SIZE);
+    public static final BaseArea EMPTY_AREA = new BaseArea(new Pos(null,0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
     Transformer transformer;
@@ -96,7 +96,7 @@ public class BaseArea implements Area {
                     )){
                         cellRange.shiftCellsWithColBlock(data.getStartPos().getCol(),
                                 data.getStartPos().getCol() + data.getCommand().getInitialSize().getWidth()-1, data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1, heightChange);
-                        data.setStartPos(new Pos(data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
+                        data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
                    ( newRow + command.getInitialSize().getHeight() >= newCell.getRow() && newRow + command.getInitialSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
@@ -104,7 +104,7 @@ public class BaseArea implements Area {
                         cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
                                 data.getStartPos().getRow() + data.getCommand().getInitialSize().getHeight()-1,
                                 data.getStartPos().getCol() + initialSize.getWidth(), widthChange);
-                        data.setStartPos(new Pos(data.getStartPos().getRow(), data.getStartPos().getCol() + widthChange));
+                        data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow(), data.getStartPos().getCol() + widthChange));
                     }
                 }
             }
@@ -113,13 +113,13 @@ public class BaseArea implements Area {
         return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
     }
 
-    private void transformStaticCells(Pos Pos, Context context) {
+    private void transformStaticCells(Pos pos, Context context) {
         for(int x = 0; x < initialSize.getWidth(); x++){
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(y, x) ){
                     Pos relativeCell = cellRange.getCell(y, x);
                     Pos srcCell = new Pos(startPos.getSheetName(), startPos.getRow() + y, startPos.getCol() + x);
-                    Pos targetCell = new Pos(Pos.getSheetName(), relativeCell.getRow() + Pos.getRow(), relativeCell.getCol() + Pos.getCol());
+                    Pos targetCell = new Pos(pos.getSheetName(), relativeCell.getRow() + pos.getRow(), relativeCell.getCol() + pos.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }
@@ -175,19 +175,11 @@ public class BaseArea implements Area {
                     List<Pos> targetCells = cellRefEntry.getValue();
                     if( targetCells.size() == targetFormulaCells.size() ){
                         Pos targetCellRefPos = targetCells.get(i);
-//                        if(targetCellRefPos.getSheetName().equals(targetFormulaPos.getSheetName())){
-//                            targetCellRefPos.setIgnoreSheetNameInFormat(true);
-//                        }
                         targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ cellRefEntry.getKey().getCellName(), targetCellRefPos.getCellName());
                     }else{
                         List< List<Pos> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
                             List<Pos> range = rangeList.get(i);
-//                            for (Pos pos : range) {
-//                                if(pos.getSheetName().equals(targetFormulaPos.getSheetName())){
-//                                    pos.setIgnoreSheetNameInFormat(true);
-//                                }
-//                            }
                             String replacementString = Util.createTargetCellRef( range );
                             targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+cellRefEntry.getKey().getCellName(), replacementString);
                         }else{
