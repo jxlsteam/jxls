@@ -18,12 +18,12 @@ public class IfCommand extends AbstractCommand {
     
     public IfCommand(String condition, Area ifArea, Area elseArea){
         this.condition = condition;
-        this.ifArea = ifArea != null ? ifArea : BaseArea.EMPTY_AREA;
-        this.elseArea = elseArea != null ? elseArea : BaseArea.EMPTY_AREA;
+        this.ifArea = ifArea != null ? ifArea : XlsArea.EMPTY_AREA;
+        this.elseArea = elseArea != null ? elseArea : XlsArea.EMPTY_AREA;
     }
 
-    public IfCommand(String condition, BaseArea ifArea) {
-        this(condition, ifArea, BaseArea.EMPTY_AREA);
+    public IfCommand(String condition, XlsArea ifArea) {
+        this(condition, ifArea, XlsArea.EMPTY_AREA);
     }
 
     public Size applyAt(Pos pos, Context context) {

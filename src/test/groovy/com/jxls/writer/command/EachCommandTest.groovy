@@ -11,7 +11,7 @@ import com.jxls.writer.Size
 class EachCommandTest extends Specification{
     def "test init"(){
         when:
-            def area = new BaseArea(new Pos(20, 20), new Size(4, 5))
+            def area = new XlsArea(new Pos(20, 20), new Size(4, 5))
             def eachCommand = new EachCommand( "x", "dataList", area)
         then:
              eachCommand.var == "x"

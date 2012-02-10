@@ -12,8 +12,8 @@ import com.jxls.writer.Pos
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new BaseArea(new Pos(10, 5), new Size(5,5))
-            def elseArea = new BaseArea(new Pos(10, 10), new Size(3,3))
+            def ifArea = new XlsArea(new Pos(10, 5), new Size(5,5))
+            def elseArea = new XlsArea(new Pos(10, 10), new Size(3,3))
             def ifCommand = new IfCommand("2*x + 5 > 10",
                     ifArea, elseArea );
         then:
@@ -24,7 +24,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10",  new BaseArea(new Pos(10, 5), new Size(5,5)), new BaseArea(new Pos(10, 10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10",  new XlsArea(new Pos(10, 5), new Size(5,5)), new XlsArea(new Pos(10, 10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)

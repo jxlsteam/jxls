@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
  * @author Leonid Vysochyn
  * Date: 1/16/12 6:44 PM
  */
-public class BaseArea implements Area {
-    static Logger logger = LoggerFactory.getLogger(BaseArea.class);
+public class XlsArea implements Area {
+    static Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
-    public static final BaseArea EMPTY_AREA = new BaseArea(new Pos(null,0, 0), Size.ZERO_SIZE);
+    public static final XlsArea EMPTY_AREA = new XlsArea(new Pos(null,0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
     Transformer transformer;
@@ -25,18 +25,18 @@ public class BaseArea implements Area {
     Pos startPos;
     Size initialSize;
 
-    public BaseArea(Pos startPos, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
+    public XlsArea(Pos startPos, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
         this.startPos = startPos;
         this.initialSize = initialSize;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
     }
 
-    public BaseArea(Pos startPos, Size initialSize) {
+    public XlsArea(Pos startPos, Size initialSize) {
         this(startPos, initialSize, null, null);
     }
 
-    public BaseArea(Pos startPos, Size initialSize, Transformer transformer) {
+    public XlsArea(Pos startPos, Size initialSize, Transformer transformer) {
         this(startPos, initialSize, null, transformer);
     }
 
@@ -65,7 +65,7 @@ public class BaseArea implements Area {
     }
 
     public Size applyAt(Pos pos, Context context) {
-        logger.debug("Applying BaseArea at {} with {}", pos, context);
+        logger.debug("Applying XlsArea at {} with {}", pos, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();

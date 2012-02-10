@@ -7,18 +7,17 @@ import com.jxls.writer.Size
 import com.jxls.writer.transform.Transformer
 import com.jxls.writer.Pos
 import com.jxls.writer.CellData
-import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
  * Date: 1/18/12 6:25 PM
  */
-class BaseAreaTest extends Specification{
+class XlsAreaTest extends Specification{
     def "test init"(){
         given:
             def transformer = Mock(Transformer)
         when:
-            def area = new BaseArea(new Pos(1, 1), new Size(5,5), transformer)
+            def area = new XlsArea(new Pos(1, 1), new Size(5,5), transformer)
         then:
             area.startPos == new Pos(1, 1)
             area.initialSize == new Size(5,5)
@@ -27,7 +26,7 @@ class BaseAreaTest extends Specification{
 
     def "test applyAt with inner command"(){
         given:
-            def area = new BaseArea(new Pos("sheet1", 1, 1), new Size(10,15),Mock(Transformer))
+            def area = new XlsArea(new Pos("sheet1", 1, 1), new Size(10,15),Mock(Transformer))
             def innerCommand = Mock(Command)
             def context = new Context()
             area.addCommand(new Pos("sheet1",3, 2), new Size(2,3), innerCommand)
@@ -40,7 +39,7 @@ class BaseAreaTest extends Specification{
     
     def "test applyAt for simple area"(){
         given:
-            def area = new BaseArea(new Pos("sheet1", 1, 1), new Size(2,3))
+            def area = new XlsArea(new Pos("sheet1", 1, 1), new Size(2,3))
             def transformer = Mock(Transformer)
             def context = new Context()
             area.setTransformer(transformer)
@@ -58,7 +57,7 @@ class BaseAreaTest extends Specification{
     
     def "test applyAt for another sheet"(){
         given:
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(2,3))
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(2,3))
             def transformer = Mock(Transformer)
             def context = new Context()
             area.setTransformer(transformer)
@@ -77,7 +76,7 @@ class BaseAreaTest extends Specification{
     def "test applyAt with two inner commands"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(10,15), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(10,15), transformer)
             def innerCommand1 = Mock(Command)
             def context = new Context()
             area.addCommand(new Pos("sheet1",2, 1), new Size(2,3), innerCommand1)
@@ -99,7 +98,7 @@ class BaseAreaTest extends Specification{
     def "test applyAt multiple times"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(2,1), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(2,1), transformer)
             Context context1 = new Context()
             context1.putVar("x", 1)
             Context context2 = new Context()
@@ -118,7 +117,7 @@ class BaseAreaTest extends Specification{
     def "test formulas transformation"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(3,3), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(3,3), transformer)
             Context context = new Context()
             context.putVar("x", 1)
         when:
@@ -145,7 +144,7 @@ class BaseAreaTest extends Specification{
     def "test formula processing when transforming into multiple cells"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(3,3), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(3,3), transformer)
             Context context = new Context()
             context.putVar("x", 1)
         when:
@@ -165,7 +164,7 @@ class BaseAreaTest extends Specification{
     def "test formula processing for nested cells formulas"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
             Context context = new Context()
             context.putVar("x", 1)
         when:
@@ -183,7 +182,7 @@ class BaseAreaTest extends Specification{
     def "test formula processing for column formulas with joint cells"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
             Context context = new Context()
             context.putVar("x", 1)
         when:
@@ -201,7 +200,7 @@ class BaseAreaTest extends Specification{
     def "test formula processing for row formulas with joint cells"(){
         given:
             def transformer = Mock(Transformer)
-            def area = new BaseArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
+            def area = new XlsArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
             Context context = new Context()
             context.putVar("x", 1)
         when:
@@ -219,7 +218,7 @@ class BaseAreaTest extends Specification{
     def "test formulas with other sheet references"(){
         given:
         def transformer = Mock(Transformer)
-        def area = new BaseArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
+        def area = new XlsArea(new Pos("sheet1",1, 1), new Size(5,5), transformer)
         Context context = new Context()
         context.putVar("x", 1)
         when:
