@@ -60,6 +60,14 @@ public class XlsArea implements Area {
     public void addCommand(CellRef cellRef, Size size, Command command){
         commandDataList.add(new CommandData(cellRef, size, command));
     }
+    
+    public void addCommand(AreaRef areaRef, Command command){
+        commandDataList.add(new CommandData(areaRef, command));
+    }
+
+    public void addCommand(String areaRef, Command command){
+        commandDataList.add(new CommandData(areaRef, command));
+    }
 
     public List<CommandData> getCommandDataList() {
         return commandDataList;
@@ -76,8 +84,8 @@ public class XlsArea implements Area {
     private void createCellRange(){
         cellRange = new CellRange(startCellRef, initialSize.getWidth(), initialSize.getHeight());
         for(CommandData commandData: commandDataList){
-            cellRange.excludeCells(commandData.getStartCellRef().getCol(), commandData.getStartCellRef().getCol() + commandData.getSize().getWidth()-1,
-                    commandData.getStartCellRef().getRow(), commandData.getStartCellRef().getRow() + commandData.getSize().getHeight()-1);
+            cellRange.excludeCells(commandData.getStartCellRef().getCol() - startCellRef.getCol(), commandData.getStartCellRef().getCol() - startCellRef.getCol() + commandData.getSize().getWidth()-1,
+                    commandData.getStartCellRef().getRow() - startCellRef.getRow(), commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight()-1);
         }
     }
 
@@ -89,7 +97,7 @@ public class XlsArea implements Area {
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
-            CellRef newCell = new CellRef(cellRef.getSheetName(), commandData.getStartCellRef().getRow() + cellRef.getRow(), commandData.getStartCellRef().getCol() + cellRef.getCol());
+            CellRef newCell = new CellRef(cellRef.getSheetName(), commandData.getStartCellRef().getRow() - startCellRef.getRow() + cellRef.getRow(), commandData.getStartCellRef().getCol() - startCellRef.getCol() + cellRef.getCol());
             Size initialSize = commandData.getSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
@@ -98,33 +106,32 @@ public class XlsArea implements Area {
                 widthDelta += widthChange;
                 heightDelta += heightChange;
                 if( widthChange != 0 ){
-                    cellRange.shiftCellsWithRowBlock(commandData.getStartCellRef().getRow(),
-                            commandData.getStartCellRef().getRow() + commandData.getSize().getHeight(),
-                            commandData.getStartCellRef().getCol() + initialSize.getWidth(), widthChange);
+                    cellRange.shiftCellsWithRowBlock(commandData.getStartCellRef().getRow() - startCellRef.getRow(),
+                            commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight(),
+                            commandData.getStartCellRef().getCol() - startCellRef.getCol() + initialSize.getWidth(), widthChange);
                 }
                 if( heightChange != 0 ){
-                    cellRange.shiftCellsWithColBlock(commandData.getStartCellRef().getCol(),
-                            commandData.getStartCellRef().getCol() + newSize.getWidth()-1, commandData.getStartCellRef().getRow() + commandData.getSize().getHeight()-1, heightChange);
+                    cellRange.shiftCellsWithColBlock(commandData.getStartCellRef().getCol() - startCellRef.getCol(),
+                            commandData.getStartCellRef().getCol() - startCellRef.getCol() + newSize.getWidth()-1, commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight()-1, heightChange);
                 }
                 for (int j = i + 1; j < commandDataList.size(); j++) {
                     CommandData data = commandDataList.get(j);
-                    Command command = data.getCommand();
-                    int newRow = data.getStartCellRef().getRow() + cellRef.getRow();
-                    int newCol = data.getStartCellRef().getCol() + cellRef.getCol();
+                    int newRow = data.getStartCellRef().getRow() - startCellRef.getRow() + cellRef.getRow();
+                    int newCol = data.getStartCellRef().getCol() - startCellRef.getCol() + cellRef.getCol();
                     if(newRow > newCell.getRow() && ((newCol >= newCell.getCol() && newCol <= newCell.getCol() + newSize.getWidth()) ||
                             (newCol + data.getSize().getWidth() >= newCell.getCol() && newCol + data.getSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
                             (newCell.getCol() >= newCol && newCell.getCol() <= newCol + data.getSize().getWidth() )
                     )){
-                        cellRange.shiftCellsWithColBlock(data.getStartCellRef().getCol(),
-                                data.getStartCellRef().getCol() + data.getSize().getWidth()-1, data.getStartCellRef().getRow() + data.getSize().getHeight()-1, heightChange);
+                        cellRange.shiftCellsWithColBlock(data.getStartCellRef().getCol() - startCellRef.getCol(),
+                                data.getStartCellRef().getCol() - startCellRef.getCol() + data.getSize().getWidth()-1, data.getStartCellRef().getRow() - startCellRef.getRow() + data.getSize().getHeight()-1, heightChange);
                         data.setStartCellRef(new CellRef(data.getStartCellRef().getSheetName(), data.getStartCellRef().getRow() + heightChange, data.getStartCellRef().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
                    ( newRow + data.getSize().getHeight() >= newCell.getRow() && newRow + data.getSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
                     newCell.getRow() >= newRow && newCell.getRow() <= newRow + data.getSize().getHeight()) ){
-                        cellRange.shiftCellsWithRowBlock(data.getStartCellRef().getRow(),
-                                data.getStartCellRef().getRow() + data.getSize().getHeight()-1,
-                                data.getStartCellRef().getCol() + initialSize.getWidth(), widthChange);
+                        cellRange.shiftCellsWithRowBlock(data.getStartCellRef().getRow() - startCellRef.getRow(),
+                                data.getStartCellRef().getRow() - startCellRef.getRow() + data.getSize().getHeight()-1,
+                                data.getStartCellRef().getCol() - startCellRef.getCol() + initialSize.getWidth(), widthChange);
                         data.setStartCellRef(new CellRef(data.getStartCellRef().getSheetName(), data.getStartCellRef().getRow(), data.getStartCellRef().getCol() + widthChange));
                     }
                 }

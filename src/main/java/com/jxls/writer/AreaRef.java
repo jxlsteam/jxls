@@ -41,5 +41,10 @@ public class AreaRef {
     public CellRef getLastCellRef() {
         return lastCellRef;
     }
+    
+    public Size getSize(){
+        if( firstCellRef == null || lastCellRef == null ) return Size.ZERO_SIZE;
+        return new Size(lastCellRef.getCol() - firstCellRef.getCol() + 1, lastCellRef.getRow() - firstCellRef.getRow() + 1);
+    }
 
 }

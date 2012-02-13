@@ -8,6 +8,7 @@ import com.jxls.writer.transform.Transformer
 
 import com.jxls.writer.CellData
 import com.jxls.writer.CellRef
+import com.jxls.writer.AreaRef
 
 /**
  * @author Leonid Vysochyn
@@ -42,6 +43,48 @@ class XlsAreaTest extends Specification{
             area.startCellRef == new CellRef("sheet1!A1")
             area.initialSize == new Size(4,3)
     }
+    
+    def "test add command with cell ref, size"(){
+        given:
+            def xlsArea = new XlsArea("sheet1!A1:C4", Mock(Transformer))
+            def command = Mock(Command)
+        when:
+            xlsArea.addCommand(new CellRef("sheet1!A2"), new Size(2,1), command)
+        then:
+            xlsArea.getCommandDataList().size() == 1
+            CommandData commandData = xlsArea.getCommandDataList().get(0)
+            commandData.getStartCellRef() == new CellRef("sheet1!A2")
+            commandData.getSize() == new Size(2,1)
+            commandData.getCommand() == command
+    }
+
+    def "test add command with area ref instance"(){
+        given:
+        def xlsArea = new XlsArea("sheet1!A1:C4", Mock(Transformer))
+        def command = Mock(Command)
+        when:
+        xlsArea.addCommand(new AreaRef("sheet1!A2:B3"), command)
+        then:
+        xlsArea.getCommandDataList().size() == 1
+        CommandData commandData = xlsArea.getCommandDataList().get(0)
+        commandData.getStartCellRef() == new CellRef("sheet1!A2")
+        commandData.getSize() == new Size(2,2)
+        commandData.getCommand() == command
+    }
+
+    def "test add command with area ref"(){
+        given:
+        def xlsArea = new XlsArea("sheet1!A1:C4", Mock(Transformer))
+        def command = Mock(Command)
+        when:
+        xlsArea.addCommand("sheet1!A2:B3", command)
+        then:
+        xlsArea.getCommandDataList().size() == 1
+        CommandData commandData = xlsArea.getCommandDataList().get(0)
+        commandData.getStartCellRef() == new CellRef("sheet1!A2")
+        commandData.getSize() == new Size(2,2)
+        commandData.getCommand() == command
+    }
 
     def "test applyAt with inner command"(){
         given:
@@ -52,7 +95,7 @@ class XlsAreaTest extends Specification{
         when:
             area.applyAt(new CellRef("sheet2", 5, 4), context)
         then:
-            1 * innerCommand.applyAt(new CellRef("sheet2", 8, 6), context) >> new Size(2,5)
+            1 * innerCommand.applyAt(new CellRef("sheet2", 7, 5), context) >> new Size(2,5)
     }
     
     def "test applyAt for simple area"(){
@@ -93,24 +136,24 @@ class XlsAreaTest extends Specification{
 
     def "test applyAt with two inner commands"(){
         given:
-            def transformer = Mock(Transformer)
-            def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(10,15), transformer)
-            def innerCommand1 = Mock(Command)
-            def context = new Context()
-            area.addCommand(new CellRef("sheet1",2, 1), new Size(2,3), innerCommand1)
-            def innerCommand2 = Mock(Command)
-            area.addCommand(new CellRef("sheet1",6, 0), new Size(4,5), innerCommand2)
+        def transformer = Mock(Transformer)
+        def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(10,15), transformer)
+        def innerCommand1 = Mock(Command)
+        def context = new Context()
+        area.addCommand(new CellRef("sheet1",3, 2), new Size(2,3), innerCommand1)
+        def innerCommand2 = Mock(Command)
+        area.addCommand(new CellRef("sheet1",7, 1), new Size(4,5), innerCommand2)
         when:
-            area.applyAt(new CellRef("sheet1",5, 4), context)
+        area.applyAt(new CellRef("sheet1",5, 4), context)
         then:
-            1 * innerCommand1.applyAt(new CellRef("sheet1",7, 5), context) >> new Size(3,6)
-            1 * innerCommand2.applyAt(new CellRef("sheet1",14, 4), context) >> new Size(4,3)
-            1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",5, 4), context)
-            1 * transformer.transform(new CellRef("sheet1",6, 2), new CellRef("sheet1",13, 5), context)
-            1 * transformer.transform(new CellRef("sheet1",6, 3), new CellRef("sheet1",13, 6), context)
-            1 * transformer.transform(new CellRef("sheet1",3, 5), new CellRef("sheet1",7, 9), context)
-            1 * transformer.transform(new CellRef("sheet1",14, 2), new CellRef("sheet1",19, 5), context)
-            1 * transformer.transform(new CellRef("sheet1",14, 1), new CellRef("sheet1",19, 4), context)
+        1 * innerCommand1.applyAt(new CellRef("sheet1",7, 5), context) >> new Size(3,6)
+        1 * innerCommand2.applyAt(new CellRef("sheet1",14, 4), context) >> new Size(4,3)
+        1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",5, 4), context)
+        1 * transformer.transform(new CellRef("sheet1",6, 2), new CellRef("sheet1",13, 5), context)
+        1 * transformer.transform(new CellRef("sheet1",6, 3), new CellRef("sheet1",13, 6), context)
+        1 * transformer.transform(new CellRef("sheet1",3, 5), new CellRef("sheet1",7, 9), context)
+        1 * transformer.transform(new CellRef("sheet1",14, 2), new CellRef("sheet1",19, 5), context)
+        1 * transformer.transform(new CellRef("sheet1",14, 1), new CellRef("sheet1",19, 4), context)
     }
 
     def "test applyAt multiple times"(){

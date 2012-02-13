@@ -70,7 +70,6 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 4), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 7), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 11), context) >> new Size(3, 1)
-            //0 * _._
-
+            0 * _._
     }
 }

@@ -22,4 +22,11 @@ class AreaRefTest extends Specification{
             areaRef.getFirstCellRef() == new CellRef("B3")
             areaRef.getLastCellRef() == new CellRef("D5")
     }
+
+    def "test get area size"(){
+        when:
+            def areaRef = new AreaRef("A1:C4")
+        then:
+            areaRef.getSize() == new Size(3,4)
+    }
 }
