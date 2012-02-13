@@ -1,14 +1,16 @@
 <xlsarea>
-    <command name="Each" items="departments" var="department">
-        <area startCell="Template!A2" width="7" height="11">
-            <command name="Each" items="department.staff" var="employee">
-                <area startCell="A9" width="6" height="1">
-                    <command name="If" condition="">
-                        <area startCell="A9" width="6" height="1"/>
-                        <area startCell="A18" width="6" height="1"/>
-                    </command>
-                </area>
-            </command>
-        </area>
-    </command>
+    <area ref="Template!A1:G15">
+        <command class="EachCommand" items="departments" var="department">
+            <area ref="Template!A2:G12">
+                <command class="EachCommand" items="department.staff" var="employee">
+                    <area ref="Template!A9:F9">
+                        <command class="IfCommand" condition="employee.payment <= 2000">
+                            <area ref="Template!A18:F18"/>
+                            <area ref="Template!A9:F9"/>
+                        </command>
+                    </area>
+                </command>
+            </area>
+        </command>
+    </area>
 </xlsarea>
