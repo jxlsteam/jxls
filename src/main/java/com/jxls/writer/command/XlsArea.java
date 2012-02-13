@@ -18,7 +18,7 @@ public class XlsArea implements Area {
 
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null,0, 0), Size.ZERO_SIZE);
 
-    List<CommandData> commandDataList;
+    List<CommandData> commandDataList = new ArrayList<CommandData>();
     Transformer transformer;
     
     CellRange cellRange;
