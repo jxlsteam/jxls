@@ -5,12 +5,12 @@ import spock.lang.Specification
 /**
  * @author Leonid Vysochyn
  */
-class PosTest extends Specification {
+class CellRefTest extends Specification {
     def "test create from cell ref"(){
         when:
-            Pos pos = new Pos(cellref)
+            CellRef pos = new CellRef(cellref)
         then:
-            pos == new Pos(sheetName, row, col)
+            pos == new CellRef(sheetName, row, col)
         where:
             cellref             | sheetName | row   | col
             "sheet1!A1"         | "sheet1"  | 0     | 0
@@ -20,19 +20,19 @@ class PosTest extends Specification {
     
     def "test get cell name"(){
         expect:
-            new Pos("Sheet 3",3,3).getCellName() == "'Sheet 3'!D4"
+            new CellRef("Sheet 3",3,3).getCellName() == "'Sheet 3'!D4"
     }
 
     def "test sorting"(){
         when:
-            def posList = [new Pos("B1"), new Pos("B5"), new Pos("B3"), new Pos("C2"), new Pos("D1"), new Pos("A4")]
+            def posList = [new CellRef("B1"), new CellRef("B5"), new CellRef("B3"), new CellRef("C2"), new CellRef("D1"), new CellRef("A4")]
         then:
-            posList.sort() == [new Pos("A4"), new Pos("B1"), new Pos("B3"), new Pos("B5"), new Pos("C2"), new Pos("D1") ]
+            posList.sort() == [new CellRef("A4"), new CellRef("B1"), new CellRef("B3"), new CellRef("B5"), new CellRef("C2"), new CellRef("D1") ]
     }
     
     def "test get formatted sheet name"(){
         expect:
-            new Pos(sheetName, 0, 0).getFormattedSheetName() == formattedSheetName
+            new CellRef(sheetName, 0, 0).getFormattedSheetName() == formattedSheetName
         where:
             sheetName   | formattedSheetName
             "Sheet1"    | "Sheet1"

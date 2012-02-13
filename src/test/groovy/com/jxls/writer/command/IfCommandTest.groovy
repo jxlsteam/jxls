@@ -3,7 +3,7 @@ package com.jxls.writer.command
 import spock.lang.Specification
 
 import com.jxls.writer.Size
-import com.jxls.writer.Pos
+import com.jxls.writer.CellRef
 
 /**
  * @author Leonid Vysochyn
@@ -12,8 +12,8 @@ import com.jxls.writer.Pos
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new XlsArea(new Pos(10, 5), new Size(5,5))
-            def elseArea = new XlsArea(new Pos(10, 10), new Size(3,3))
+            def ifArea = new XlsArea(new CellRef(10, 5), new Size(5,5))
+            def elseArea = new XlsArea(new CellRef(10, 10), new Size(3,3))
             def ifCommand = new IfCommand("2*x + 5 > 10",
                     ifArea, elseArea );
         then:
@@ -24,7 +24,7 @@ class IfCommandTest extends Specification{
 
     def "test condition"(){
         given:
-            def ifCommand = new IfCommand("2*x + 5 > 10",  new XlsArea(new Pos(10, 5), new Size(5,5)), new XlsArea(new Pos(10, 10), new Size(3,3)))
+            def ifCommand = new IfCommand("2*x + 5 > 10",  new XlsArea(new CellRef(10, 5), new Size(5,5)), new XlsArea(new CellRef(10, 10), new Size(3,3)))
             def context = new Context()
         when:
             context.putVar("x", xValue)
@@ -44,9 +44,9 @@ class IfCommandTest extends Specification{
             def context = new Context()
         when:
             context.putVar("x", 2)
-            ifCommand.applyAt(new Pos(1, 1), context)
+            ifCommand.applyAt(new CellRef(1, 1), context)
         then:
-            1 * elseArea.applyAt(new Pos(1, 1), context)
+            1 * elseArea.applyAt(new CellRef(1, 1), context)
             0 * _._
     }
 
@@ -58,9 +58,9 @@ class IfCommandTest extends Specification{
             def context = new Context()
         when:
             context.putVar("x", 3)
-            ifCommand.applyAt(new Pos(1, 1), context)
+            ifCommand.applyAt(new CellRef(1, 1), context)
         then:
-            1 * ifArea.applyAt(new Pos(1, 1), context)
+            1 * ifArea.applyAt(new CellRef(1, 1), context)
             0 * _._
     }
 

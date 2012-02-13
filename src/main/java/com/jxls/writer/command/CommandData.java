@@ -1,6 +1,6 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.Pos;
+import com.jxls.writer.CellRef;
 import com.jxls.writer.Size;
 
 /**
@@ -8,23 +8,23 @@ import com.jxls.writer.Size;
  *         Date: 1/25/12 1:12 PM
  */
 public class CommandData {
-    Pos startPos;
+    CellRef startCellRef;
     Size size;
     Command command;
 
-    public CommandData(Pos startPos, Size size, Command command) {
-        this.startPos = startPos;
+    public CommandData(CellRef startCellRef, Size size, Command command) {
+        this.startCellRef = startCellRef;
         this.size = size;
         this.command = command;
     }
 
-    public CommandData(Pos startPos, Command command) {
-        this.startPos = startPos;
+    public CommandData(CellRef startCellRef, Command command) {
+        this.startCellRef = startCellRef;
         this.command = command;
     }
 
-    public Pos getStartPos() {
-        return startPos;
+    public CellRef getStartCellRef() {
+        return startCellRef;
     }
 
     public Size getSize() {
@@ -35,7 +35,7 @@ public class CommandData {
         return command;
     }
 
-    public void setStartPos(Pos startPos) {
-        this.startPos = startPos;
+    public void setStartCellRef(CellRef startCellRef) {
+        this.startCellRef = startCellRef;
     }
 }

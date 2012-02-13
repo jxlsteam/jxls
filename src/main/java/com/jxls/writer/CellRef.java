@@ -4,7 +4,7 @@ package com.jxls.writer;
  * @author Leonid Vysochyn
  *         Date: 1/25/12 1:42 PM
  */
-public class Pos{
+public class CellRef {
 
     int col;
     int row;
@@ -14,17 +14,17 @@ public class Pos{
     boolean isRowAbs;
     boolean ignoreSheetNameInFormat = false;
 
-    public Pos(String sheetName, int row, int col) {
+    public CellRef(String sheetName, int row, int col) {
         this.sheetName = sheetName;
         this.row = row;
         this.col = col;
     }
 
-    public Pos(int row, int col) {
+    public CellRef(int row, int col) {
         this(null, row, col);
     }
     
-    public Pos(String cellRef){
+    public CellRef(String cellRef){
         if(cellRef.endsWith("#REF!")) {
             throw new IllegalArgumentException("Cell reference invalid: " + cellRef);
         }
@@ -120,11 +120,11 @@ public class Pos{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Pos pos = (Pos) o;
+        CellRef cellRef = (CellRef) o;
 
-        if (col != pos.col) return false;
-        if (row != pos.row) return false;
-        if (sheetName != null ? !sheetName.equals(pos.sheetName) : pos.sheetName != null) return false;
+        if (col != cellRef.col) return false;
+        if (row != cellRef.row) return false;
+        if (sheetName != null ? !sheetName.equals(cellRef.sheetName) : cellRef.sheetName != null) return false;
 
         return true;
     }

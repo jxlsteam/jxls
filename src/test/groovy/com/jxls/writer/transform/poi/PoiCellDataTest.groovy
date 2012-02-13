@@ -7,7 +7,8 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
 import com.jxls.writer.command.Context
 import org.apache.poi.ss.usermodel.Cell
-import com.jxls.writer.Pos
+
+import com.jxls.writer.CellRef
 
 /**
  * @author Leonid Vysochyn
@@ -43,7 +44,7 @@ class PoiCellDataTest extends Specification{
 
     def "test get cell Value"(){
         when:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", row, col), wb.getSheetAt(0).getRow(row).getCell(col) )
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", row, col), wb.getSheetAt(0).getRow(row).getCell(col) )
         then:
             assert cellData.getCellValue() == value
         where:
@@ -57,7 +58,7 @@ class PoiCellDataTest extends Specification{
 
     def "test evaluate simple expression"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 0, 1), wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 0, 1), wb.getSheetAt(0).getRow(0).getCell(1))
             def context = new Context()
             context.putVar("x", 35)
         expect:
@@ -66,7 +67,7 @@ class PoiCellDataTest extends Specification{
     
     def "test evaluate multiple regex"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 2, 3),wb.getSheetAt(0).getRow(2).getCell(3))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 2, 3),wb.getSheetAt(0).getRow(2).getCell(3))
             def context = new Context()
             context.putVar("x", 2)
             context.putVar("y", 3)
@@ -76,7 +77,7 @@ class PoiCellDataTest extends Specification{
 
     def "test evaluate single expression constant string concatenation"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 1, 3),wb.getSheetAt(0).getRow(1).getCell(3))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 1, 3),wb.getSheetAt(0).getRow(1).getCell(3))
             def context = new Context()
             context.putVar("x", 35)
         expect:
@@ -84,7 +85,7 @@ class PoiCellDataTest extends Specification{
     }
 
     def "test evaluate regex with dollar sign"(){
-        PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 2, 4), wb.getSheetAt(0).getRow(2).getCell(4))
+        PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 2, 4), wb.getSheetAt(0).getRow(2).getCell(4))
         def context = new Context()
         context.putVar("x", 2)
         context.putVar("y", 3)
@@ -95,7 +96,7 @@ class PoiCellDataTest extends Specification{
 
     def "test write to another sheet"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 0, 1),wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 0, 1),wb.getSheetAt(0).getRow(0).getCell(1))
             def context = new Context()
             context.putVar("x", 35)
             Cell targetCell = wb.getSheetAt(1).getRow(0).getCell(0)
@@ -107,7 +108,7 @@ class PoiCellDataTest extends Specification{
 
     def "test write user formula"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 0, 3),wb.getSheetAt(0).getRow(0).getCell(3))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 0, 3),wb.getSheetAt(0).getRow(0).getCell(3))
             def context = new Context()
         when:
             cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(1), context)
@@ -117,7 +118,7 @@ class PoiCellDataTest extends Specification{
     
     def "test write parameterized formula cell"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 1, 4),wb.getSheetAt(0).getRow(1).getCell(4))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 1, 4),wb.getSheetAt(0).getRow(1).getCell(4))
             def context = new Context()
             context.putVar("myvar", 2)
             context.putVar("myvar2", 3)
@@ -130,10 +131,10 @@ class PoiCellDataTest extends Specification{
     
     def "test formula cell check"(){
         when:
-            PoiCellData notFormulaCell = PoiCellData.createCellData(new Pos("sheet 1", 0, 1), wb.getSheetAt(0).getRow(0).getCell(1))
-            PoiCellData formulaCell1 = PoiCellData.createCellData(new Pos("sheet 1", 1, 1), wb.getSheetAt(0).getRow(1).getCell(1))
-            PoiCellData formulaCell2 = PoiCellData.createCellData(new Pos("sheet 1", 1, 4), wb.getSheetAt(0).getRow(1).getCell(4))
-            PoiCellData formulaCell3 = PoiCellData.createCellData(new Pos("sheet 1", 0, 3), wb.getSheetAt(0).getRow(0).getCell(3))
+            PoiCellData notFormulaCell = PoiCellData.createCellData(new CellRef("sheet 1", 0, 1), wb.getSheetAt(0).getRow(0).getCell(1))
+            PoiCellData formulaCell1 = PoiCellData.createCellData(new CellRef("sheet 1", 1, 1), wb.getSheetAt(0).getRow(1).getCell(1))
+            PoiCellData formulaCell2 = PoiCellData.createCellData(new CellRef("sheet 1", 1, 4), wb.getSheetAt(0).getRow(1).getCell(4))
+            PoiCellData formulaCell3 = PoiCellData.createCellData(new CellRef("sheet 1", 0, 3), wb.getSheetAt(0).getRow(0).getCell(3))
         then:
             !notFormulaCell.isFormulaCell()
             formulaCell1.isFormulaCell()
@@ -144,7 +145,7 @@ class PoiCellDataTest extends Specification{
 
     def "test write formula with jointed cells"(){
         setup:
-            PoiCellData cellData = PoiCellData.createCellData(new Pos("sheet 1", 1, 5), wb.getSheetAt(0).getRow(1).getCell(5))
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 1", 1, 5), wb.getSheetAt(0).getRow(1).getCell(5))
             def context = new Context()
         when:
             cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(1), context)

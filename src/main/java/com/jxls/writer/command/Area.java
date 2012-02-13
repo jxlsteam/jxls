@@ -1,6 +1,6 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.Pos;
+import com.jxls.writer.CellRef;
 import com.jxls.writer.Size;
 import com.jxls.writer.transform.Transformer;
 
@@ -9,7 +9,7 @@ import com.jxls.writer.transform.Transformer;
  *         Date: 1/18/12 5:20 PM
  */
 public interface Area extends Command{
-    Pos getStartPos();
+    CellRef getStartCellRef();
     Transformer getTransformer();
     void processFormulas();
 

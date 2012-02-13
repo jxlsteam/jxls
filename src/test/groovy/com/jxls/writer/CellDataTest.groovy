@@ -31,14 +31,14 @@ class CellDataTest extends Specification{
             10 == cellData.getCol()
             CellData.CellType.NUMBER == cellData.getCellType()
             1.2 == cellData.getCellValue()
-            new Pos("Sheet1",5,10) == cellData.getPos()
+            new CellRef("Sheet1",5,10) == cellData.getCellRef()
     }
     
     def "test creation with (pos, type, value)"(){
         when: 
-            CellData cellData = new CellData(new Pos("Sheet1",5,10), CellData.CellType.STRING, "Abc")
+            CellData cellData = new CellData(new CellRef("Sheet1",5,10), CellData.CellType.STRING, "Abc")
         then:
-            new Pos("Sheet1",5,10) == cellData.getPos()
+            new CellRef("Sheet1",5,10) == cellData.getCellRef()
             "Sheet1" == cellData.getSheetName()
             5 == cellData.getRow()
             10 == cellData.getCol()
@@ -48,20 +48,20 @@ class CellDataTest extends Specification{
     def "test add target pos"(){
         when:
             CellData cellData = new CellData("sheet1", 2, 3)
-            cellData.addTargetPos(new Pos("sheet1",2,3))
-            cellData.addTargetPos(new Pos("sheet2",3,4))
+            cellData.addTargetPos(new CellRef("sheet1",2,3))
+            cellData.addTargetPos(new CellRef("sheet2",3,4))
             def targetPos = cellData.getTargetPos()
         then:
             targetPos.size() == 2
-            targetPos.contains(new Pos("sheet1", 2,3))
-            targetPos.contains(new Pos("sheet2",3,4))
+            targetPos.contains(new CellRef("sheet1", 2,3))
+            targetPos.contains(new CellRef("sheet2",3,4))
     }    
     
     def "test get pos"(){
         when:
             CellData cellData = new CellData("sheet1",2,3)
         then:
-            cellData.getPos() == new Pos("sheet1",2,3)
+            cellData.getCellRef() == new CellRef("sheet1",2,3)
     }
     
     def "test create with formula value"(){
@@ -76,8 +76,8 @@ class CellDataTest extends Specification{
     def "test reset target pos"(){
         when:
             def cellData = new CellData("sheet1",1,2, CellData.CellType.STRING, "Abc")
-            cellData.addTargetPos(new Pos("sheet2",0,0))
-            cellData.addTargetPos(new Pos("sheet1",1,1))
+            cellData.addTargetPos(new CellRef("sheet2",0,0))
+            cellData.addTargetPos(new CellRef("sheet1",1,1))
             cellData.resetTargetPos()
         then:
             cellData.getTargetPos().isEmpty()

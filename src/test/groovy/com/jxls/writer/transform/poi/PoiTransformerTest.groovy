@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.Row
 
 import com.jxls.writer.command.Context
 import com.jxls.writer.CellData
-import com.jxls.writer.Pos
+import com.jxls.writer.CellRef
 import org.apache.poi.ss.util.CellRangeAddress
 
 /**
@@ -47,7 +47,7 @@ class PoiTransformerTest extends Specification{
             wb.removeSheetAt(0)
         then:
             assert wb.getNumberOfSheets() == 0
-            assert poiTransformer.getCellData(new Pos("sheet 1", row, col)).getCellValue() == value
+            assert poiTransformer.getCellData(new CellRef("sheet 1", row, col)).getCellValue() == value
         where:
             row | col   | value
             0   | 0     | new Double(1.5)
@@ -64,7 +64,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 1",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 1",7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
@@ -80,7 +80,7 @@ class PoiTransformerTest extends Specification{
             context.putVar("x", 3)
             context.putVar("y", 5)
         when:
-            poiTransformer.transform(new Pos("sheet 1",0, 2), new Pos("sheet 2",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",0, 2), new CellRef("sheet 2",7, 7), context)
         then:
             Sheet sheet = wb.getSheet("sheet 2")
             Row row7 = sheet.getRow(7)
@@ -93,7 +93,7 @@ class PoiTransformerTest extends Specification{
             def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
         when:
-            poiTransformer.transform(new Pos("sheet 1",1, 1), new Pos("sheet 2",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",1, 1), new CellRef("sheet 2",7, 7), context)
         then:
             Sheet sheet = wb.getSheet("sheet 2")
             Row row7 = sheet.getRow(7)
@@ -107,7 +107,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet2", 7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet2", 7, 7), context)
         then:
             Sheet sheet = wb.getSheet("sheet 1")
             Row row = sheet.getRow(7)
@@ -126,8 +126,8 @@ class PoiTransformerTest extends Specification{
             def context2 = new Context()
             context2.putVar("x", "Fghij")
         when:
-            poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 1",5, 1), context1)
-            poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 2",10, 1), context2)
+            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 1",5, 1), context1)
+            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 2",10, 1), context2)
         then:
             Sheet sheet = wb.getSheet("sheet 1")
             Sheet sheet2 = wb.getSheet("sheet 2")
@@ -145,9 +145,9 @@ class PoiTransformerTest extends Specification{
         def context2 = new Context()
         context2.putVar("x", "Fghij")
         when:
-        poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 1",5, 1), context1)
-        poiTransformer.transform(new Pos("sheet 1",0, 0), new Pos("sheet 2",0, 1), context1)
-        poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 2",10, 1), context2)
+        poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 1",5, 1), context1)
+        poiTransformer.transform(new CellRef("sheet 1",0, 0), new CellRef("sheet 2",0, 1), context1)
+        poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 2",10, 1), context2)
         then:
         Sheet sheet = wb.getSheet("sheet 1")
         Row row5 = sheet.getRow(5)
@@ -166,7 +166,7 @@ class PoiTransformerTest extends Specification{
             context.putVar("x", 2)
             context.putVar("y", 3)
         when:
-            poiTransformer.transform(new Pos("sheet 1",2, 3), new Pos("sheet 2",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",2, 3), new CellRef("sheet 2",7, 7), context)
         then:
             Sheet sheet = wb.getSheet("sheet 2")
             Row row7 = sheet.getRow(7)
@@ -181,7 +181,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new Pos("sheet 1",0, 1), new Pos("sheet 2",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 2",7, 7), context)
         then:
             Sheet sheet1 = wb.getSheet("sheet 1")
             Sheet sheet2 = wb.getSheet("sheet 2")
@@ -193,7 +193,7 @@ class PoiTransformerTest extends Specification{
         given:
             def poiTransformer = PoiTransformer.createTransformer(wb)
         when:
-            poiTransformer.setFormula(new Pos("sheet 2",1, 1), "SUM(B1:B5)")
+            poiTransformer.setFormula(new CellRef("sheet 2",1, 1), "SUM(B1:B5)")
         then:
             wb.getSheet("sheet 2").getRow(1).getCell(1).getCellFormula() == "SUM(B1:B5)"
     }
@@ -204,7 +204,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("myvar", 2)
             context.putVar("myvar2", 4)
-            poiTransformer.transform(new Pos("sheet 1",2,4), new Pos("sheet 2", 10,10), context)
+            poiTransformer.transform(new CellRef("sheet 1",2,4), new CellRef("sheet 2", 10,10), context)
             def formulaCells = poiTransformer.getFormulaCells()
         then:
             formulaCells.size() == 2
@@ -216,29 +216,29 @@ class PoiTransformerTest extends Specification{
         when:
             def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 2",10,10), context)
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 1",10,12), context)
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 1",10,14), context)
-            poiTransformer.transform(new Pos("sheet 1",2,1), new Pos("sheet 2",20,11), context)
-            poiTransformer.transform(new Pos("sheet 1",2,1), new Pos("sheet 1",20,12), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 2",10,10), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,12), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,14), context)
+            poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 2",20,11), context)
+            poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,12), context)
         then:
-            poiTransformer.getTargetPos(new Pos("sheet 1",1,1)).toArray() == [new Pos("sheet 2",10,10), new Pos("sheet 1",10,12), new Pos("sheet 1",10,14)]
-            poiTransformer.getTargetPos(new Pos("sheet 1",2,1)).toArray() == [new Pos("sheet 2",20,11), new Pos("sheet 1",20,12)]
+            poiTransformer.getTargetPos(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,10), new CellRef("sheet 1",10,12), new CellRef("sheet 1",10,14)]
+            poiTransformer.getTargetPos(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 2",20,11), new CellRef("sheet 1",20,12)]
     }
 
     def "test reset target cells"(){
         when:
             def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 1",10,10), context)
-            poiTransformer.transform(new Pos("sheet 1",2,1), new Pos("sheet 1",20,11), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,10), context)
+            poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,11), context)
             poiTransformer.resetTargetCells()
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 2",10,12), context)
-            poiTransformer.transform(new Pos("sheet 1",1,1), new Pos("sheet 1",10,14), context)
-            poiTransformer.transform(new Pos("sheet 1",2,1), new Pos("sheet 1",20,12), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 2",10,12), context)
+            poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,14), context)
+            poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,12), context)
         then:
-            poiTransformer.getTargetPos(new Pos("sheet 1",1,1)).toArray() == [new Pos("sheet 2",10,12), new Pos("sheet 1",10,14)]
-            poiTransformer.getTargetPos(new Pos("sheet 1",2,1)).toArray() == [new Pos("sheet 1",20,12)]
+            poiTransformer.getTargetPos(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,12), new CellRef("sheet 1",10,14)]
+            poiTransformer.getTargetPos(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 1",20,12)]
     }
 
     def "test transform merged cells"(){
@@ -246,7 +246,7 @@ class PoiTransformerTest extends Specification{
             def poiTransformer = PoiTransformer.createTransformer(wb)
             def context = new Context()
             wb.getSheetAt(0).getNumMergedRegions() == 1
-            poiTransformer.transform(new Pos("sheet 1",0,3), new Pos("sheet 1",10,10), context)
+            poiTransformer.transform(new CellRef("sheet 1",0,3), new CellRef("sheet 1",10,10), context)
         then:
             Sheet sheet = wb.getSheet("sheet 1")
             sheet.getNumMergedRegions() == 2

@@ -20,6 +20,8 @@ public class CellRefUtil {
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("([A-Za-z]+)([0-9]+)");
     /** The character (!) that separates sheet names from cell references */
     static final char SHEET_NAME_DELIMITER = '!';
+    /** The character (:) that separates the two cell references in a multi-cell area reference */
+    private static final char CELL_DELIMITER = ':';
     /** The character ($) that signifies a row or column value is absolute instead of relative */
     static final char ABSOLUTE_REFERENCE_MARKER = '$';
     /** The character (') used to quote sheet names when they contain special characters */
@@ -296,5 +298,83 @@ public class CellRefUtil {
             throw new RuntimeException("Bad sheet name quote escaping: (" + reference + ")");
         }
         return sb.toString();
+    }
+
+    /**
+     * Separates Area refs in two parts and returns them as separate elements in a String array,
+     * each qualified with the sheet name (if present)
+     *
+     * @return array with one or two elements. never <code>null</code>
+     */
+    public static String[] separateAreaRefs(String reference) {
+        int len = reference.length();
+        int delimiterPos = -1;
+        boolean insideDelimitedName = false;
+        for(int i=0; i<len; i++) {
+            switch(reference.charAt(i)) {
+                case CELL_DELIMITER:
+                    if(!insideDelimitedName) {
+                        if(delimiterPos >=0) {
+                            throw new IllegalArgumentException("More than one cell delimiter '"
+                                    + CELL_DELIMITER + "' appears in area reference '" + reference + "'");
+                        }
+                        delimiterPos = i;
+                    }
+                default:
+                    continue;
+                case SPECIAL_NAME_DELIMITER:
+                    // fall through
+            }
+            if(!insideDelimitedName) {
+                insideDelimitedName = true;
+                continue;
+            }
+
+            if(i >= len-1) {
+                // reference ends with the delimited name.
+                // Assume names like: "Sheet1!'A1'" are never legal.
+                throw new IllegalArgumentException("Area reference '" + reference
+                        + "' ends with special name delimiter '"  + SPECIAL_NAME_DELIMITER + "'");
+            }
+            if(reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
+                // two consecutive quotes is the escape sequence for a single one
+                i++; // skip this and keep parsing the special name
+            } else {
+                // this is the end of the delimited name
+                insideDelimitedName = false;
+            }
+        }
+        if(delimiterPos < 0) {
+            return new String[] { reference, };
+        }
+
+        String partA = reference.substring(0, delimiterPos);
+        String partB = reference.substring(delimiterPos+1);
+        if(partB.indexOf(SHEET_NAME_DELIMITER) >=0) {
+            throw new RuntimeException("Unexpected " + SHEET_NAME_DELIMITER
+                    + " in second cell reference of '" + reference + "'");
+        }
+
+        int plingPos = partA.lastIndexOf(SHEET_NAME_DELIMITER);
+        if(plingPos < 0) {
+            return new String [] { partA, partB, };
+        }
+
+        String sheetName = partA.substring(0, plingPos + 1); // +1 to include delimiter
+
+        return new String [] { partA, sheetName + partB, };
+    }
+
+    public static boolean isPlainColumn(String refPart) {
+        for(int i=refPart.length()-1; i>=0; i--) {
+            int ch = refPart.charAt(i);
+            if (ch == '$' && i==0) {
+                continue;
+            }
+            if (ch < 'A' || ch > 'Z') {
+                return false;
+            }
+        }
+        return true;
     }
 }

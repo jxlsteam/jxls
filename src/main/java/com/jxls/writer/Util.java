@@ -44,35 +44,35 @@ public class Util {
         return regexJointedCellRefPattern.matcher(formula).find();
     }
 
-    public static String createTargetCellRef(List<Pos> targetCellDataList) {
+    public static String createTargetCellRef(List<CellRef> targetCellDataList) {
         String resultRef = "";
         if( targetCellDataList != null && !targetCellDataList.isEmpty()){
             List<String> cellRefs = new ArrayList<String>();
             boolean rowRange = true;
             boolean colRange = true;
-            Iterator<Pos> iterator = targetCellDataList.iterator();
-            Pos firstPos = iterator.next();
-            cellRefs.add(firstPos.getCellName());
-            String sheetName = firstPos.getSheetName();
-            int row = firstPos.getRow();
-            int col = firstPos.getCol();
+            Iterator<CellRef> iterator = targetCellDataList.iterator();
+            CellRef firstCellRef = iterator.next();
+            cellRefs.add(firstCellRef.getCellName());
+            String sheetName = firstCellRef.getSheetName();
+            int row = firstCellRef.getRow();
+            int col = firstCellRef.getCol();
             for (; iterator.hasNext(); ) {
-                Pos pos = iterator.next();
-                if( (rowRange || colRange) && !pos.getSheetName().equals(sheetName) ){
+                CellRef cellRef = iterator.next();
+                if( (rowRange || colRange) && !cellRef.getSheetName().equals(sheetName) ){
                     rowRange = false;
                     colRange = false;
                 }
-                if( rowRange && !(pos.getRow() - row == 1 && pos.getCol() == col )){
+                if( rowRange && !(cellRef.getRow() - row == 1 && cellRef.getCol() == col )){
                     rowRange = false;
                 }
-                if( colRange && !(pos.getCol() - col == 1 && pos.getRow() == row)){
+                if( colRange && !(cellRef.getCol() - col == 1 && cellRef.getRow() == row)){
                     colRange = false;
                 }
-                sheetName = pos.getSheetName();
-                row = pos.getRow();
-                col = pos.getCol();
-                cellRefs.add(pos.getCellName());
-//                resultRef += pos.getCellName();
+                sheetName = cellRef.getSheetName();
+                row = cellRef.getRow();
+                col = cellRef.getCol();
+                cellRefs.add(cellRef.getCellName());
+//                resultRef += cellRef.getCellName();
 //                if(iterator.hasNext()){
 //                    resultRef += ",";
 //                }
@@ -96,48 +96,48 @@ public class Util {
         return sb.toString();
     }
 
-    public static List<List<Pos>> groupByRanges(List<Pos> posList, int targetRangeCount) {
-        List<List<Pos>> colRanges = groupByColRange(posList);
+    public static List<List<CellRef>> groupByRanges(List<CellRef> cellRefList, int targetRangeCount) {
+        List<List<CellRef>> colRanges = groupByColRange(cellRefList);
         if( targetRangeCount == 0 || colRanges.size() == targetRangeCount) return colRanges;
-        List<List<Pos>> rowRanges = groupByRowRange(posList);
+        List<List<CellRef>> rowRanges = groupByRowRange(cellRefList);
         if( rowRanges.size() == targetRangeCount ) return rowRanges;
         else return colRanges;
     }
 
-    public static List<List<Pos>> groupByColRange(List<Pos> posList) {
-        List<List<Pos>> rangeList = new ArrayList<List<Pos>>();
-        if(posList == null || posList.size() == 0){
+    public static List<List<CellRef>> groupByColRange(List<CellRef> cellRefList) {
+        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        if(cellRefList == null || cellRefList.size() == 0){
             return rangeList;
         }
-        List<Pos> posListCopy = new ArrayList<Pos>(posList);
-        Collections.sort(posListCopy, new PosColPrecedenceComparator());
+        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        Collections.sort(cellRefListCopy, new PosColPrecedenceComparator());
 
-        String sheetName = posListCopy.get(0).getSheetName();
-        int row = posListCopy.get(0).getRow();
-        int col = posListCopy.get(0).getCol();
-        List<Pos> currentRange = new ArrayList<Pos>();
-        currentRange.add(posListCopy.get(0));
+        String sheetName = cellRefListCopy.get(0).getSheetName();
+        int row = cellRefListCopy.get(0).getRow();
+        int col = cellRefListCopy.get(0).getCol();
+        List<CellRef> currentRange = new ArrayList<CellRef>();
+        currentRange.add(cellRefListCopy.get(0));
         boolean rangeComplete = false;
-        for (int i = 1; i < posListCopy.size(); i++) {
-            Pos pos = posListCopy.get(i);
-            if(!pos.getSheetName().equals( sheetName ) ){
+        for (int i = 1; i < cellRefListCopy.size(); i++) {
+            CellRef cellRef = cellRefListCopy.get(i);
+            if(!cellRef.getSheetName().equals( sheetName ) ){
                 rangeComplete = true;
             }else{
-                int rowDelta = pos.getRow() - row;
-                int colDelta = pos.getCol() - col;
+                int rowDelta = cellRef.getRow() - row;
+                int colDelta = cellRef.getCol() - col;
                 if(rowDelta == 1 && colDelta == 0){
-                        currentRange.add( pos );
+                        currentRange.add(cellRef);
                 }else {
                     rangeComplete = true;
                 }
             }
-            sheetName = pos.getSheetName();
-            row = pos.getRow();
-            col = pos.getCol();
+            sheetName = cellRef.getSheetName();
+            row = cellRef.getRow();
+            col = cellRef.getCol();
             if( rangeComplete ){
                 rangeList.add(currentRange);
-                currentRange = new ArrayList<Pos>();
-                currentRange.add(pos);
+                currentRange = new ArrayList<CellRef>();
+                currentRange.add(cellRef);
                 rangeComplete = false;
             }
         }
@@ -145,40 +145,40 @@ public class Util {
         return rangeList;
     }
 
-    public static List<List<Pos>> groupByRowRange(List<Pos> posList) {
-        List<List<Pos>> rangeList = new ArrayList<List<Pos>>();
-        if(posList == null || posList.size() == 0){
+    public static List<List<CellRef>> groupByRowRange(List<CellRef> cellRefList) {
+        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        if(cellRefList == null || cellRefList.size() == 0){
             return rangeList;
         }
-        List<Pos> posListCopy = new ArrayList<Pos>(posList);
-        Collections.sort(posListCopy, new PosRowPrecedenceComparator());
+        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        Collections.sort(cellRefListCopy, new PosRowPrecedenceComparator());
 
-        String sheetName = posListCopy.get(0).getSheetName();
-        int row = posListCopy.get(0).getRow();
-        int col = posListCopy.get(0).getCol();
-        List<Pos> currentRange = new ArrayList<Pos>();
-        currentRange.add(posListCopy.get(0));
+        String sheetName = cellRefListCopy.get(0).getSheetName();
+        int row = cellRefListCopy.get(0).getRow();
+        int col = cellRefListCopy.get(0).getCol();
+        List<CellRef> currentRange = new ArrayList<CellRef>();
+        currentRange.add(cellRefListCopy.get(0));
         boolean rangeComplete = false;
-        for (int i = 1; i < posListCopy.size(); i++) {
-            Pos pos = posListCopy.get(i);
-            if(!pos.getSheetName().equals(sheetName) ){
+        for (int i = 1; i < cellRefListCopy.size(); i++) {
+            CellRef cellRef = cellRefListCopy.get(i);
+            if(!cellRef.getSheetName().equals(sheetName) ){
                 rangeComplete = true;
             }else{
-                int rowDelta = pos.getRow() - row;
-                int colDelta = pos.getCol() - col;
+                int rowDelta = cellRef.getRow() - row;
+                int colDelta = cellRef.getCol() - col;
                 if(colDelta == 1 && rowDelta == 0){
-                        currentRange.add( pos );
+                        currentRange.add(cellRef);
                 }else {
                     rangeComplete = true;
                 }
             }
-            sheetName = pos.getSheetName();
-            row = pos.getRow();
-            col = pos.getCol();
+            sheetName = cellRef.getSheetName();
+            row = cellRef.getRow();
+            col = cellRef.getCol();
             if( rangeComplete ){
                 rangeList.add(currentRange);
-                currentRange = new ArrayList<Pos>();
-                currentRange.add(pos);
+                currentRange = new ArrayList<CellRef>();
+                currentRange.add(cellRef);
                 rangeComplete = false;
             }
         }

@@ -1,7 +1,7 @@
 package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.CellData;
-import com.jxls.writer.Pos;
+import com.jxls.writer.CellRef;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class RowData {
         for(int cellIndex = 0; cellIndex < numberOfCells; cellIndex++){
             org.apache.poi.ss.usermodel.Cell cell = row.getCell(cellIndex);
             if(cell != null ){
-                CellData cellData = PoiCellData.createCellData(new Pos(row.getSheet().getSheetName(), row.getRowNum(), cellIndex), cell);
+                CellData cellData = PoiCellData.createCellData(new CellRef(row.getSheet().getSheetName(), row.getRowNum(), cellIndex), cell);
                 rowData.addCellData(cellData);
             }else{
                 rowData.addCellData(null);

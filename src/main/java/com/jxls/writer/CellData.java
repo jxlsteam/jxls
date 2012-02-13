@@ -23,7 +23,7 @@ public class CellData {
         STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
     }
 
-    protected Pos pos;
+    protected CellRef cellRef;
     protected Object cellValue;
     protected CellType cellType;
 
@@ -31,21 +31,21 @@ public class CellData {
     protected Object evaluationResult;
     protected CellType targetCellType;
 
-    List<Pos> targetPos = new ArrayList<Pos> ();
+    List<CellRef> targetPos = new ArrayList<CellRef> ();
 
-    public CellData(Pos pos) {
-        this.pos = pos;
+    public CellData(CellRef cellRef) {
+        this.cellRef = cellRef;
     }
 
     public CellData(String sheetName, int row, int col, CellType cellType, Object cellValue) {
-        this.pos = new Pos(sheetName, row, col);
+        this.cellRef = new CellRef(sheetName, row, col);
         this.cellType = cellType;
         this.cellValue = cellValue;
         updateFormulaValue();
     }
 
-    public CellData(Pos pos, CellType cellType, Object cellValue) {
-        this.pos = pos;
+    public CellData(CellRef cellRef, CellType cellType, Object cellValue) {
+        this.cellRef = cellRef;
         this.cellType = cellType;
         this.cellValue = cellValue;
         updateFormulaValue();
@@ -111,7 +111,7 @@ public class CellData {
 
 
     public String getSheetName() {
-        return pos.getSheetName();
+        return cellRef.getSheetName();
     }
 
     protected void updateFormulaValue() {
@@ -122,8 +122,8 @@ public class CellData {
         }
     }
 
-    public Pos getPos(){
-        return pos;
+    public CellRef getCellRef(){
+        return cellRef;
     }
 
     public CellType getCellType() {
@@ -139,11 +139,11 @@ public class CellData {
     }
 
     public int getRow() {
-        return pos.getRow();
+        return cellRef.getRow();
     }
 
     public int getCol() {
-        return pos.getCol();
+        return cellRef.getCol();
     }
 
     public String getFormula() {
@@ -162,11 +162,11 @@ public class CellData {
         return str.startsWith(CellData.USER_FORMULA_PREFIX) && str.endsWith(CellData.USER_FORMULA_SUFFIX);
     }
     
-    public boolean addTargetPos(Pos pos){
-        return targetPos.add(pos);
+    public boolean addTargetPos(CellRef cellRef){
+        return targetPos.add(cellRef);
     }
     
-    public List<Pos> getTargetPos(){
+    public List<CellRef> getTargetPos(){
         return targetPos;
     }
 
@@ -184,14 +184,14 @@ public class CellData {
 
         if (cellType != cellData.cellType) return false;
         if (cellValue != null ? !cellValue.equals(cellData.cellValue) : cellData.cellValue != null) return false;
-        if (pos != null ? !pos.equals(cellData.pos) : cellData.pos != null) return false;
+        if (cellRef != null ? !cellRef.equals(cellData.cellRef) : cellData.cellRef != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = pos != null ? pos.hashCode() : 0;
+        int result = cellRef != null ? cellRef.hashCode() : 0;
         result = 31 * result + (cellValue != null ? cellValue.hashCode() : 0);
         result = 31 * result + (cellType != null ? cellType.hashCode() : 0);
         return result;
@@ -200,7 +200,7 @@ public class CellData {
     @Override
     public String toString() {
         return "CellData{" +
-                pos +
+                cellRef +
                 ", cellType=" + cellType +
                 ", cellValue=" + cellValue +
                 '}';

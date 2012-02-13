@@ -1,8 +1,7 @@
 package com.jxls.writer.transform;
 
 import com.jxls.writer.CellData;
-import com.jxls.writer.Pos;
-import com.jxls.writer.command.Context;
+import com.jxls.writer.CellRef;
 import com.jxls.writer.transform.poi.RowData;
 import com.jxls.writer.transform.poi.SheetData;
 
@@ -18,12 +17,12 @@ public abstract class AbstractTransformer implements Transformer {
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
 
-    public List<Pos> getTargetPos(Pos pos) {
-        CellData cellData = getCellData(pos);
+    public List<CellRef> getTargetPos(CellRef cellRef) {
+        CellData cellData = getCellData(cellRef);
         if (cellData != null) {
             return cellData.getTargetPos();
         } else {
-            return new ArrayList<Pos>();
+            return new ArrayList<CellRef>();
         }
     }
 
@@ -43,13 +42,13 @@ public abstract class AbstractTransformer implements Transformer {
         }
     }
 
-    public CellData getCellData(Pos pos) {
-        if (pos == null || pos.getSheetName() == null) return null;
-        SheetData sheetData = sheetMap.get(pos.getSheetName());
+    public CellData getCellData(CellRef cellRef) {
+        if (cellRef == null || cellRef.getSheetName() == null) return null;
+        SheetData sheetData = sheetMap.get(cellRef.getSheetName());
         if (sheetData == null) return null;
-        RowData rowData = sheetData.getRowData(pos.getRow());
+        RowData rowData = sheetData.getRowData(cellRef.getRow());
         if (rowData == null) return null;
-        return rowData.getCellData(pos.getCol());
+        return rowData.getCellData(cellRef.getCol());
     }
 
     public boolean isIgnoreColumnProps() {

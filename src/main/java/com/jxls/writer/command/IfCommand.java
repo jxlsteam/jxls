@@ -26,12 +26,12 @@ public class IfCommand extends AbstractCommand {
         this(condition, ifArea, XlsArea.EMPTY_AREA);
     }
 
-    public Size applyAt(Pos pos, Context context) {
+    public Size applyAt(CellRef cellRef, Context context) {
         conditionResult = isConditionTrue(context);
         if( conditionResult ){
-            return ifArea.applyAt(pos, context);
+            return ifArea.applyAt(cellRef, context);
         }else{
-            return elseArea.applyAt(pos, context);
+            return elseArea.applyAt(cellRef, context);
         }
     }
 

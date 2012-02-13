@@ -1,10 +1,9 @@
 package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.CellData;
-import com.jxls.writer.Pos;
+import com.jxls.writer.CellRef;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.AbstractTransformer;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,47 +41,47 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    public void transform(Pos pos, Pos newPos, Context context) {
-//        if(cellData == null ||  cellData.length <= pos.getSheet() || cellData[pos.getSheet()] == null ||
-//                cellData[pos.getSheet()].length <= pos.getRow() || cellData[pos.getSheet()][pos.getRow()] == null ||
-//                cellData[pos.getSheet()][pos.getRow()].length <= pos.getCol()) return;
-        CellData cellData = this.getCellData(pos);
+    public void transform(CellRef cellRef, CellRef newCellRef, Context context) {
+//        if(cellData == null ||  cellData.length <= cellRef.getSheet() || cellData[cellRef.getSheet()] == null ||
+//                cellData[cellRef.getSheet()].length <= cellRef.getRow() || cellData[cellRef.getSheet()][cellRef.getRow()] == null ||
+//                cellData[cellRef.getSheet()][cellRef.getRow()].length <= cellRef.getCol()) return;
+        CellData cellData = this.getCellData(cellRef);
         if(cellData != null){
-            cellData.addTargetPos(newPos);
-            if(newPos == null || newPos.getSheetName() == null){
-                logger.info("Target pos is null or has empty sheet name, pos=" + newPos);
+            cellData.addTargetPos(newCellRef);
+            if(newCellRef == null || newCellRef.getSheetName() == null){
+                logger.info("Target cellRef is null or has empty sheet name, cellRef=" + newCellRef);
                 return;
             }
-            Sheet destSheet = workbook.getSheet(newPos.getSheetName());
+            Sheet destSheet = workbook.getSheet(newCellRef.getSheetName());
             if(destSheet == null){
-                destSheet = workbook.createSheet(newPos.getSheetName());
+                destSheet = workbook.createSheet(newCellRef.getSheetName());
             }
-            SheetData sheetData = sheetMap.get(pos.getSheetName());
+            SheetData sheetData = sheetMap.get(cellRef.getSheetName());
             if(!isIgnoreColumnProps()){
-                destSheet.setColumnWidth(newPos.getCol(), sheetData.getColumnWidth(pos.getCol()));
+                destSheet.setColumnWidth(newCellRef.getCol(), sheetData.getColumnWidth(cellRef.getCol()));
             }
-            Row destRow = destSheet.getRow(newPos.getRow());
+            Row destRow = destSheet.getRow(newCellRef.getRow());
             if (destRow == null) {
-                destRow = destSheet.createRow(newPos.getRow());
+                destRow = destSheet.createRow(newCellRef.getRow());
             }
             if(!isIgnoreRowProps()){
-                destSheet.getRow(newPos.getRow()).setHeight( sheetData.getRowData(pos.getRow()).getHeight());
+                destSheet.getRow(newCellRef.getRow()).setHeight( sheetData.getRowData(cellRef.getRow()).getHeight());
             }
-            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newPos.getCol());
+            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newCellRef.getCol());
             if (destCell == null) {
-                destCell = destRow.createCell(newPos.getCol());
+                destCell = destRow.createCell(newCellRef.getCol());
             }
             try{
                 destCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK);
                 ((PoiCellData)cellData).writeToCell(destCell, context);
-                copyMergedRegions(cellData, newPos);
+                copyMergedRegions(cellData, newCellRef);
             }catch(Exception e){
                 logger.error("Failed to write a cell with " + cellData + " and " + context, e);
             }
         }
     }
 
-    private void copyMergedRegions(CellData sourceCellData, Pos destCell) {
+    private void copyMergedRegions(CellData sourceCellData, CellRef destCell) {
         if(sourceCellData.getSheetName() == null ){ throw new IllegalArgumentException("Sheet name is null in copyMergedRegion");}
         SheetData sheetData = sheetMap.get( sourceCellData.getSheetName() );
         CellRangeAddress cellMergedRegion = null;
@@ -100,38 +99,38 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    private void findAndRemoveExistingCellRegion(Pos pos) {
-        Sheet destSheet = workbook.getSheet(pos.getSheetName());
+    private void findAndRemoveExistingCellRegion(CellRef cellRef) {
+        Sheet destSheet = workbook.getSheet(cellRef.getSheetName());
         int numMergedRegions = destSheet.getNumMergedRegions();
         List<Integer> regionsToRemove = new ArrayList<Integer>();
         for(int i = 0; i < numMergedRegions; i++){
             CellRangeAddress mergedRegion = destSheet.getMergedRegion(i);
-            if( mergedRegion.getFirstRow() <= pos.getRow() && mergedRegion.getLastRow() >= pos.getRow() &&
-                    mergedRegion.getFirstColumn() <= pos.getCol() && mergedRegion.getLastColumn() >= pos.getCol() ){
+            if( mergedRegion.getFirstRow() <= cellRef.getRow() && mergedRegion.getLastRow() >= cellRef.getRow() &&
+                    mergedRegion.getFirstColumn() <= cellRef.getCol() && mergedRegion.getLastColumn() >= cellRef.getCol() ){
                 destSheet.removeMergedRegion(i);
                 break;
             }
         }
     }
 
-    public void setFormula(Pos pos, String formulaString) {
-        if(pos == null || pos.getSheetName() == null ) return;
-        Sheet sheet = workbook.getSheet(pos.getSheetName());
+    public void setFormula(CellRef cellRef, String formulaString) {
+        if(cellRef == null || cellRef.getSheetName() == null ) return;
+        Sheet sheet = workbook.getSheet(cellRef.getSheetName());
         if( sheet == null){
-            sheet = workbook.createSheet(pos.getSheetName());
+            sheet = workbook.createSheet(cellRef.getSheetName());
         }
-        Row row = sheet.getRow(pos.getRow());
+        Row row = sheet.getRow(cellRef.getRow());
         if( row == null ){
-            row = sheet.createRow(pos.getRow());
+            row = sheet.createRow(cellRef.getRow());
         }
-        org.apache.poi.ss.usermodel.Cell poiCell = row.getCell(pos.getCol());
+        org.apache.poi.ss.usermodel.Cell poiCell = row.getCell(cellRef.getCol());
         if( poiCell == null ){
-            poiCell = row.createCell(pos.getCol());
+            poiCell = row.createCell(cellRef.getCol());
         }
         try{
             poiCell.setCellFormula( formulaString );
         }catch (Exception e){
-            logger.error("Failed to set formula = " + formulaString + " into cell = " + pos.getCellName(), e);
+            logger.error("Failed to set formula = " + formulaString + " into cell = " + cellRef.getCellName(), e);
         }
     }
 

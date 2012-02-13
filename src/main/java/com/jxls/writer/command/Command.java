@@ -9,6 +9,6 @@ import com.jxls.writer.*;
  */
 public interface Command {
 
-    Size applyAt(Pos pos, Context context);
+    Size applyAt(CellRef cellRef, Context context);
 
 }

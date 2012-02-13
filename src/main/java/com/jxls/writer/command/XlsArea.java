@@ -16,33 +16,49 @@ import java.util.regex.Pattern;
 public class XlsArea implements Area {
     static Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
-    public static final XlsArea EMPTY_AREA = new XlsArea(new Pos(null,0, 0), Size.ZERO_SIZE);
+    public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null,0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList;
     Transformer transformer;
     
     CellRange cellRange;
     
-    Pos startPos;
+    CellRef startCellRef;
     Size initialSize;
+    
+    public XlsArea(AreaRef areaRef, Transformer transformer){
+        CellRef startCell = areaRef.getFirstCellRef();
+        CellRef endCell = areaRef.getLastCellRef();
+        this.startCellRef = startCell;
+        this.initialSize = new Size(endCell.getCol() - startCell.getCol() + 1, endCell.getRow() - startCell.getRow() + 1);
+        this.transformer = transformer;
+    }
+    
+    public XlsArea(String areaRef, Transformer transformer){
+        this(new AreaRef(areaRef), transformer);
+    }
+    
+    public XlsArea(CellRef startCell, CellRef endCell, Transformer transformer){
+        this(new AreaRef(startCell, endCell), transformer);
+    }
 
-    public XlsArea(Pos startPos, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
-        this.startPos = startPos;
+    public XlsArea(CellRef startCellRef, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
+        this.startCellRef = startCellRef;
         this.initialSize = initialSize;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
     }
 
-    public XlsArea(Pos startPos, Size initialSize) {
-        this(startPos, initialSize, null, null);
+    public XlsArea(CellRef startCellRef, Size initialSize) {
+        this(startCellRef, initialSize, null, null);
     }
 
-    public XlsArea(Pos startPos, Size initialSize, Transformer transformer) {
-        this(startPos, initialSize, null, transformer);
+    public XlsArea(CellRef startCellRef, Size initialSize, Transformer transformer) {
+        this(startCellRef, initialSize, null, transformer);
     }
 
-    public void addCommand(Pos pos, Size size, Command command){
-        commandDataList.add(new CommandData(pos, size, command));
+    public void addCommand(CellRef cellRef, Size size, Command command){
+        commandDataList.add(new CommandData(cellRef, size, command));
     }
 
     public List<CommandData> getCommandDataList() {
@@ -58,22 +74,22 @@ public class XlsArea implements Area {
     }
     
     private void createCellRange(){
-        cellRange = new CellRange(startPos, initialSize.getWidth(), initialSize.getHeight());
+        cellRange = new CellRange(startCellRef, initialSize.getWidth(), initialSize.getHeight());
         for(CommandData commandData: commandDataList){
-            cellRange.excludeCells(commandData.getStartPos().getCol(), commandData.getStartPos().getCol() + commandData.getSize().getWidth()-1,
-                    commandData.getStartPos().getRow(), commandData.getStartPos().getRow() + commandData.getSize().getHeight()-1);
+            cellRange.excludeCells(commandData.getStartCellRef().getCol(), commandData.getStartCellRef().getCol() + commandData.getSize().getWidth()-1,
+                    commandData.getStartCellRef().getRow(), commandData.getStartCellRef().getRow() + commandData.getSize().getHeight()-1);
         }
     }
 
-    public Size applyAt(Pos pos, Context context) {
-        logger.debug("Applying XlsArea at {} with {}", pos, context);
+    public Size applyAt(CellRef cellRef, Context context) {
+        logger.debug("Applying XlsArea at {} with {}", cellRef, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
-            Pos newCell = new Pos(pos.getSheetName(), commandData.getStartPos().getRow() + pos.getRow(), commandData.getStartPos().getCol() + pos.getCol());
+            CellRef newCell = new CellRef(cellRef.getSheetName(), commandData.getStartCellRef().getRow() + cellRef.getRow(), commandData.getStartCellRef().getCol() + cellRef.getCol());
             Size initialSize = commandData.getSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = newSize.getWidth() - initialSize.getWidth();
@@ -82,57 +98,57 @@ public class XlsArea implements Area {
                 widthDelta += widthChange;
                 heightDelta += heightChange;
                 if( widthChange != 0 ){
-                    cellRange.shiftCellsWithRowBlock(commandData.getStartPos().getRow(),
-                            commandData.getStartPos().getRow() + commandData.getSize().getHeight(),
-                            commandData.getStartPos().getCol() + initialSize.getWidth(), widthChange);
+                    cellRange.shiftCellsWithRowBlock(commandData.getStartCellRef().getRow(),
+                            commandData.getStartCellRef().getRow() + commandData.getSize().getHeight(),
+                            commandData.getStartCellRef().getCol() + initialSize.getWidth(), widthChange);
                 }
                 if( heightChange != 0 ){
-                    cellRange.shiftCellsWithColBlock(commandData.getStartPos().getCol(),
-                            commandData.getStartPos().getCol() + newSize.getWidth()-1, commandData.getStartPos().getRow() + commandData.getSize().getHeight()-1, heightChange);
+                    cellRange.shiftCellsWithColBlock(commandData.getStartCellRef().getCol(),
+                            commandData.getStartCellRef().getCol() + newSize.getWidth()-1, commandData.getStartCellRef().getRow() + commandData.getSize().getHeight()-1, heightChange);
                 }
                 for (int j = i + 1; j < commandDataList.size(); j++) {
                     CommandData data = commandDataList.get(j);
                     Command command = data.getCommand();
-                    int newRow = data.getStartPos().getRow() + pos.getRow();
-                    int newCol = data.getStartPos().getCol() + pos.getCol();
+                    int newRow = data.getStartCellRef().getRow() + cellRef.getRow();
+                    int newCol = data.getStartCellRef().getCol() + cellRef.getCol();
                     if(newRow > newCell.getRow() && ((newCol >= newCell.getCol() && newCol <= newCell.getCol() + newSize.getWidth()) ||
                             (newCol + data.getSize().getWidth() >= newCell.getCol() && newCol + data.getSize().getWidth() <= newCell.getCol() + newSize.getWidth()) ||
                             (newCell.getCol() >= newCol && newCell.getCol() <= newCol + data.getSize().getWidth() )
                     )){
-                        cellRange.shiftCellsWithColBlock(data.getStartPos().getCol(),
-                                data.getStartPos().getCol() + data.getSize().getWidth()-1, data.getStartPos().getRow() + data.getSize().getHeight()-1, heightChange);
-                        data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow() + heightChange, data.getStartPos().getCol()));
+                        cellRange.shiftCellsWithColBlock(data.getStartCellRef().getCol(),
+                                data.getStartCellRef().getCol() + data.getSize().getWidth()-1, data.getStartCellRef().getRow() + data.getSize().getHeight()-1, heightChange);
+                        data.setStartCellRef(new CellRef(data.getStartCellRef().getSheetName(), data.getStartCellRef().getRow() + heightChange, data.getStartCellRef().getCol()));
                     }else
                     if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + newSize.getHeight()) ||
                    ( newRow + data.getSize().getHeight() >= newCell.getRow() && newRow + data.getSize().getHeight() <= newCell.getRow() + newSize.getHeight()) ||
                     newCell.getRow() >= newRow && newCell.getRow() <= newRow + data.getSize().getHeight()) ){
-                        cellRange.shiftCellsWithRowBlock(data.getStartPos().getRow(),
-                                data.getStartPos().getRow() + data.getSize().getHeight()-1,
-                                data.getStartPos().getCol() + initialSize.getWidth(), widthChange);
-                        data.setStartPos(new Pos(data.getStartPos().getSheetName(), data.getStartPos().getRow(), data.getStartPos().getCol() + widthChange));
+                        cellRange.shiftCellsWithRowBlock(data.getStartCellRef().getRow(),
+                                data.getStartCellRef().getRow() + data.getSize().getHeight()-1,
+                                data.getStartCellRef().getCol() + initialSize.getWidth(), widthChange);
+                        data.setStartCellRef(new CellRef(data.getStartCellRef().getSheetName(), data.getStartCellRef().getRow(), data.getStartCellRef().getCol() + widthChange));
                     }
                 }
             }
         }
-        transformStaticCells(pos, context);
+        transformStaticCells(cellRef, context);
         return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
     }
 
-    private void transformStaticCells(Pos pos, Context context) {
+    private void transformStaticCells(CellRef cellRef, Context context) {
         for(int x = 0; x < initialSize.getWidth(); x++){
             for(int y = 0; y < initialSize.getHeight(); y++){
                 if( !cellRange.isExcluded(y, x) ){
-                    Pos relativeCell = cellRange.getCell(y, x);
-                    Pos srcCell = new Pos(startPos.getSheetName(), startPos.getRow() + y, startPos.getCol() + x);
-                    Pos targetCell = new Pos(pos.getSheetName(), relativeCell.getRow() + pos.getRow(), relativeCell.getCol() + pos.getCol());
+                    CellRef relativeCell = cellRange.getCell(y, x);
+                    CellRef srcCell = new CellRef(startCellRef.getSheetName(), startCellRef.getRow() + y, startCellRef.getCol() + x);
+                    CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
             }
         }
     }
 
-    public Pos getStartPos() {
-        return startPos;
+    public CellRef getStartCellRef() {
+        return startCellRef;
     }
 
     public Size getInitialSize() {
@@ -145,46 +161,46 @@ public class XlsArea implements Area {
         for (CellData formulaCellData : formulaCells) {
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
             List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
-            List<Pos> targetFormulaCells = transformer.getTargetPos(formulaCellData.getPos());
-            Map<Pos, List<Pos>> targetCellRefMap = new HashMap<Pos, List<Pos>>();
-            Map<String, List<Pos>> jointedCellRefMap = new HashMap<String, List<Pos>>();
+            List<CellRef> targetFormulaCells = transformer.getTargetPos(formulaCellData.getCellRef());
+            Map<CellRef, List<CellRef>> targetCellRefMap = new HashMap<CellRef, List<CellRef>>();
+            Map<String, List<CellRef>> jointedCellRefMap = new HashMap<String, List<CellRef>>();
             for (String cellRef : formulaCellRefs) {
-                Pos pos = new Pos(cellRef);
+                CellRef pos = new CellRef(cellRef);
                 if(pos.getSheetName() == null ){
                     pos.setSheetName( formulaCellData.getSheetName() );
                     pos.setIgnoreSheetNameInFormat(true);
                 }
-                List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+                List<CellRef> targetCellDataList = transformer.getTargetPos(pos);
                 targetCellRefMap.put(pos, targetCellDataList);
             }
             for (String jointedCellRef : jointedCellRefs) {
                 List<String> nestedCellRefs = Util.getCellRefsFromJointedCellRef(jointedCellRef);
-                List<Pos> jointedPosList = new ArrayList<Pos>();
+                List<CellRef> jointedCellRefList = new ArrayList<CellRef>();
                 for (String cellRef : nestedCellRefs) {
-                    Pos pos = new Pos(cellRef);
+                    CellRef pos = new CellRef(cellRef);
                     if(pos.getSheetName() == null ){
                         pos.setSheetName(formulaCellData.getSheetName());
                         pos.setIgnoreSheetNameInFormat(true);
                     }
-                    List<Pos> targetCellDataList = transformer.getTargetPos(pos);
+                    List<CellRef> targetCellDataList = transformer.getTargetPos(pos);
 
-                    jointedPosList.addAll(targetCellDataList);
+                    jointedCellRefList.addAll(targetCellDataList);
                 }
-                jointedCellRefMap.put(jointedCellRef, jointedPosList);
+                jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
             }
             for (int i = 0; i < targetFormulaCells.size(); i++) {
-                Pos targetFormulaPos = targetFormulaCells.get(i);
+                CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
-                for (Map.Entry<Pos, List<Pos>> cellRefEntry : targetCellRefMap.entrySet()) {
-                    List<Pos> targetCells = cellRefEntry.getValue();
+                for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
+                    List<CellRef> targetCells = cellRefEntry.getValue();
                     if( targetCells.isEmpty() ) continue;
                     if( targetCells.size() == targetFormulaCells.size() ){
-                        Pos targetCellRefPos = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefPos.getCellName() ));
+                        CellRef targetCellRefCellRef = targetCells.get(i);
+                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefCellRef.getCellName() ));
                     }else{
-                        List< List<Pos> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
+                        List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
-                            List<Pos> range = rangeList.get(i);
+                            List<CellRef> range = rangeList.get(i);
                             String replacementString = Util.createTargetCellRef( range );
                             targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                         }else{
@@ -192,21 +208,21 @@ public class XlsArea implements Area {
                         }
                     }
                 }
-                for (Map.Entry<String, List<Pos>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
-                    List<Pos> targetPosList = jointedCellRefEntry.getValue();
-                    if( targetPosList.isEmpty() ) continue;
-                    List< List<Pos> > rangeList = Util.groupByRanges(targetPosList, targetFormulaCells.size());
+                for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
+                    List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
+                    if( targetCellRefList.isEmpty() ) continue;
+                    List< List<CellRef> > rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
                     if( rangeList.size() == targetFormulaCells.size() ){
-                        List<Pos> range = rangeList.get(i);
+                        List<CellRef> range = rangeList.get(i);
                         String replacementString = Util.createTargetCellRef(range);
                         targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
                     }else{
-                        targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetPosList));
+                        targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetCellRefList));
                     }
                 }
-                String sheetNameReplacementRegex = targetFormulaPos.getFormattedSheetName() + "!";
+                String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + "!";
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
-                transformer.setFormula(new Pos(targetFormulaPos.getSheetName(), targetFormulaPos.getRow(), targetFormulaPos.getCol()), targetFormulaString);
+                transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
             }
         }
     }
