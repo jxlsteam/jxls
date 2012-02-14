@@ -8,6 +8,7 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.jxls.writer.builder.AreaBuilder;
 import com.jxls.writer.command.Area;
+import com.jxls.writer.transform.Transformer;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -18,11 +19,16 @@ import java.util.Map;
  *         Date: 2/14/12 11:50 AM
  */
 public class XlsAreaXmlBuilder implements AreaBuilder{
+    Transformer transformer;
+
+    public XlsAreaXmlBuilder(Transformer transformer) {
+        this.transformer = transformer;
+    }
 
     public Area build(InputStream is) {
         Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
 
-        AreaAction areaAction = new AreaAction();
+        AreaAction areaAction = new AreaAction(transformer);
         ruleMap.put(new Pattern("*/area"), areaAction);
         ruleMap.put(new Pattern("*/each"), new EachAction());
         ruleMap.put(new Pattern("*/if"), new IfAction());

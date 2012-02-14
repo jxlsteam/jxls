@@ -6,6 +6,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import com.jxls.writer.command.Area;
 import com.jxls.writer.command.Command;
 import com.jxls.writer.command.XlsArea;
+import com.jxls.writer.transform.Transformer;
 import org.xml.sax.Attributes;
 
 /**
@@ -15,11 +16,16 @@ import org.xml.sax.Attributes;
 public class AreaAction extends Action {
     public static final String REF_ATTR = "ref";
     Area area;
+    Transformer transformer;
+
+    public AreaAction(Transformer transformer) {
+        this.transformer = transformer;
+    }
 
     @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
         String ref = attributes.getValue( REF_ATTR );
-        Area area = new XlsArea(ref, null);
+        Area area = new XlsArea(ref, transformer);
         if(!ic.isEmpty()){
             Object object = ic.peekObject();
             if( object instanceof Command){

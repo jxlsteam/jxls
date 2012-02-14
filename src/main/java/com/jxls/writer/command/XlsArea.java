@@ -25,7 +25,7 @@ public class XlsArea implements Area {
     
     CellRef startCellRef;
     Size initialSize;
-    
+
     public XlsArea(AreaRef areaRef, Transformer transformer){
         CellRef startCell = areaRef.getFirstCellRef();
         CellRef endCell = areaRef.getLastCellRef();

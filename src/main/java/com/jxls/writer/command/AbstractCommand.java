@@ -10,12 +10,7 @@ import java.util.List;
  *         Date: 21.03.2009
  */
 public abstract class AbstractCommand implements Command {
-    Size initialSize;
     List<Area> areaList = new ArrayList<Area>();
-
-    public Size getInitialSize() {
-        return initialSize;
-    }
 
     public void addArea(Area area) {
         areaList.add(area);

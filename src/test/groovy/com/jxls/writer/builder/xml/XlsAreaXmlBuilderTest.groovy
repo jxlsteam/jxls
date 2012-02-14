@@ -5,6 +5,7 @@ import com.jxls.writer.CellRef
 import com.jxls.writer.Size
 import com.jxls.writer.command.EachCommand
 import com.jxls.writer.command.IfCommand
+import com.jxls.writer.transform.Transformer
 
 /**
  * @author Leonid Vysochyn
@@ -13,13 +14,15 @@ import com.jxls.writer.command.IfCommand
 class XlsAreaXmlBuilderTest extends Specification{
     def "test build"(){
         InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("xlsarea.xml")
+        Transformer transformer = Mock(Transformer)
         assert is != null
         when:
-            def xlsArea = new XlsAreaXmlBuilder().build(is)
+            def xlsArea = new XlsAreaXmlBuilder(transformer).build(is)
         then:
             xlsArea != null
             xlsArea.getStartCellRef() == new CellRef("Template!A1")
             xlsArea.getInitialSize() == new Size(7,15)
+            xlsArea.getTransformer() == transformer
             def commandDataList1 = xlsArea.getCommandDataList()
             commandDataList1.size() == 1
             commandDataList1.get(0).startCellRef == new CellRef("Template!A2")
@@ -33,6 +36,7 @@ class XlsAreaXmlBuilderTest extends Specification{
             def eachArea = command1.getAreaList().get(0)
             eachArea.getStartCellRef() == new CellRef("Template!A2")
             eachArea.getInitialSize() == new Size(7,11)
+            eachArea.getTransformer() == transformer
             def commandDataList2 = eachArea.getCommandDataList()
             commandDataList2.size() == 1
             commandDataList2.get(0).startCellRef == new CellRef("Template!A9")
@@ -46,6 +50,7 @@ class XlsAreaXmlBuilderTest extends Specification{
             def eachArea2 = command2.getAreaList().get(0)
             eachArea2.getStartCellRef() == new CellRef("Template!A9")
             eachArea2.getInitialSize() == new Size(6,1)
+            eachArea2.getTransformer() == transformer
             def commandDataList3 = eachArea2.getCommandDataList()
             commandDataList3.size() == 1
             commandDataList3.get(0).startCellRef == new CellRef("Template!A9")
@@ -60,8 +65,10 @@ class XlsAreaXmlBuilderTest extends Specification{
             ifArea.getStartCellRef() == new CellRef("Template!A18")
             ifArea.getInitialSize() == new Size(6,1)
             ifArea.getCommandDataList().isEmpty()
+            ifArea.getTransformer() == transformer
             elseArea.getStartCellRef() == new CellRef("Template!A9")
             elseArea.getInitialSize() == new Size(6,1)
             elseArea.getCommandDataList().isEmpty()
+            elseArea.getTransformer() == transformer
     }
 }
