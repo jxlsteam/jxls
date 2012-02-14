@@ -24,8 +24,8 @@ public class IfCommand extends AbstractCommand {
         this.condition = condition;
         this.ifArea = ifArea != null ? ifArea : XlsArea.EMPTY_AREA;
         this.elseArea = elseArea != null ? elseArea : XlsArea.EMPTY_AREA;
-        addArea(this.ifArea);
-        addArea(this.elseArea);
+        super.addArea(this.ifArea);
+        super.addArea(this.elseArea);
     }
 
     public IfCommand(String condition, XlsArea ifArea) {
@@ -38,6 +38,19 @@ public class IfCommand extends AbstractCommand {
 
     public String getCondition() {
         return condition;
+    }
+
+    @Override
+    public void addArea(Area area) {
+        if( areaList.size() >= 2 ){
+            throw new IllegalArgumentException("Cannot add any more areas to this IfCommand. You can add only 1 area for 'if' part and 1 area for 'else' part");
+        }
+        if(areaList.isEmpty()){
+            ifArea = area;
+        }else {
+            elseArea = area;
+        }
+        super.addArea(area);
     }
 
     public Size applyAt(CellRef cellRef, Context context) {

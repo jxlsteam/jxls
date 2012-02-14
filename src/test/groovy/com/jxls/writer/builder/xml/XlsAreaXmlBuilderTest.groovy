@@ -17,8 +17,10 @@ class XlsAreaXmlBuilderTest extends Specification{
         Transformer transformer = Mock(Transformer)
         assert is != null
         when:
-            def xlsArea = new XlsAreaXmlBuilder(transformer).build(is)
+            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
         then:
+            xlsAreaList.size() == 2
+            def xlsArea = xlsAreaList.get(0)
             xlsArea != null
             xlsArea.getStartCellRef() == new CellRef("Template!A1")
             xlsArea.getInitialSize() == new Size(7,15)
@@ -70,5 +72,10 @@ class XlsAreaXmlBuilderTest extends Specification{
             elseArea.getInitialSize() == new Size(6,1)
             elseArea.getCommandDataList().isEmpty()
             elseArea.getTransformer() == transformer
+            def xlsArea2 = xlsAreaList.get(1)
+            xlsArea2.getStartCellRef() == new CellRef("Template!A2")
+            xlsArea2.getInitialSize() == new Size(7,11)
+            xlsArea2.getCommandDataList().isEmpty()
+            xlsArea2.getTransformer() == transformer
     }
 }

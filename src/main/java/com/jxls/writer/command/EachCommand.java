@@ -57,6 +57,15 @@ public class EachCommand extends AbstractCommand {
         return items;
     }
 
+    @Override
+    public void addArea(Area area) {
+        if( areaList.size() >= 1){
+            throw new IllegalArgumentException("You can add only a single area to 'Each' command");
+        }
+        super.addArea(area);    
+        this.area = area;
+    }
+
     public Size applyAt(CellRef cellRef, Context context) {
         Collection itemsCollection = calculateItemsCollection(context);
         CellRef currentCell = cellRef;

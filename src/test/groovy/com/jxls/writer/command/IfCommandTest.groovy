@@ -12,14 +12,37 @@ import com.jxls.writer.CellRef
 class IfCommandTest extends Specification{
     def "test init" (){
         when:
-            def ifArea = new XlsArea(new CellRef(10, 5), new Size(5,5))
-            def elseArea = new XlsArea(new CellRef(10, 10), new Size(3,3))
+            def ifArea = Mock(Area)
+            def elseArea = Mock(Area)
             def ifCommand = new IfCommand("2*x + 5 > 10",
                     ifArea, elseArea );
         then:
              ifCommand.condition == "2*x + 5 > 10"
              ifCommand.ifArea == ifArea
              ifCommand.elseArea == elseArea
+    }
+    
+    def "test add area"(){
+        def ifArea = Mock(Area)
+        def elseArea = Mock(Area)
+        when:
+            def ifCommand = new IfCommand("a > b")
+            ifCommand.addArea(ifArea)
+            ifCommand.addArea(elseArea)
+        then:
+            ifCommand.condition == "a > b"
+            ifCommand.ifArea == ifArea
+            ifCommand.elseArea == elseArea
+    }
+
+    def "test add excessive number of areas"(){
+        def ifCommand = new IfCommand("a > b")
+        ifCommand.addArea(Mock(Area))
+        ifCommand.addArea(Mock(Area))
+        when:
+            ifCommand.addArea(Mock(Area))
+        then:
+            thrown(IllegalArgumentException)
     }
 
     def "test condition"(){

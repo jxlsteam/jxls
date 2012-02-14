@@ -12,6 +12,7 @@ import com.jxls.writer.transform.Transformer;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ public class XlsAreaXmlBuilder implements AreaBuilder{
         this.transformer = transformer;
     }
 
-    public Area build(InputStream is) {
+    public List<Area> build(InputStream is) {
         Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
 
         AreaAction areaAction = new AreaAction(transformer);
@@ -42,7 +43,7 @@ public class XlsAreaXmlBuilder implements AreaBuilder{
         } catch (JoranException e) {
             printOccurredErrors(context);
         }
-        return areaAction.getArea();
+        return areaAction.getAreaList();
     }
 
     private void printOccurredErrors(Context context) {

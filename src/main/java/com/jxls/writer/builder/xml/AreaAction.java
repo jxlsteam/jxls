@@ -9,13 +9,16 @@ import com.jxls.writer.command.XlsArea;
 import com.jxls.writer.transform.Transformer;
 import org.xml.sax.Attributes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Leonid Vysochyn
  *         Date: 2/14/12 1:24 PM
  */
 public class AreaAction extends Action {
     public static final String REF_ATTR = "ref";
-    Area area;
+    List<Area> areaList = new ArrayList<Area>();
     Transformer transformer;
 
     public AreaAction(Transformer transformer) {
@@ -42,10 +45,13 @@ public class AreaAction extends Action {
 
     @Override
     public void end(InterpretationContext ic, String name) throws ActionException {
-        area = (Area) ic.popObject();
+        Area area = (Area) ic.popObject();
+        if(ic.isEmpty()){
+            areaList.add(area);
+        }
     }
 
-    public Area getArea() {
-        return area;
+    public List<Area> getAreaList() {
+        return areaList;
     }
 }

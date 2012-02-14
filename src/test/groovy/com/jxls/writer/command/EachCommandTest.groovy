@@ -20,6 +20,27 @@ class EachCommandTest extends Specification{
              eachCommand.area == area
              eachCommand.direction == EachCommand.Direction.DOWN
     }
+    
+    def "test add area"(){
+        def area = Mock(Area)
+        when:
+            def command = new EachCommand("x", "list", EachCommand.Direction.DOWN)
+            command.addArea(area)
+        then:
+            command.var == "x"
+            command.items == "list"
+            command.area == area
+            command.areaList.size() == 1
+    }
+    
+    def "test excessive number areas"(){
+        def command = new EachCommand("x", "list", EachCommand.Direction.DOWN)
+        command.addArea(Mock(Area))
+        when:
+            command.addArea(Mock(Area))
+        then:
+            thrown(IllegalArgumentException)
+    }
 
     def "test applyAt"(){
         given:

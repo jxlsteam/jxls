@@ -13,4 +13,5 @@
             </area>
         </each>
     </area>
+    <area ref="Template!A2:G12"/>
 </xlsarea>
