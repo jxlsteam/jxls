@@ -16,13 +16,17 @@ public class EachCommand extends AbstractCommand {
     
     String var;
     String items;
-    Command area;
+    Area area;
     Direction direction = Direction.DOWN;
 
-    public EachCommand(String var, String items, Area area) {
+    public EachCommand(String var, String items, Direction direction) {
         this.var = var;
         this.items = items;
-        this.area = area;
+        this.direction = direction;
+    }
+
+    public EachCommand(String var, String items, Area area) {
+        this(var, items, area, null);
     }
     
     public EachCommand(String var, String items, Area area, Direction direction) {
@@ -30,9 +34,8 @@ public class EachCommand extends AbstractCommand {
         this.items = items;
         this.area = area;
         this.direction = direction == null ? Direction.DOWN : direction;
+        addArea(this.area);
     }
-    
-    
 
     public Direction getDirection() {
         return direction;
@@ -40,6 +43,18 @@ public class EachCommand extends AbstractCommand {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public String getName() {
+        return "each";
+    }
+
+    public String getVar() {
+        return var;
+    }
+
+    public String getItems() {
+        return items;
     }
 
     public Size applyAt(CellRef cellRef, Context context) {

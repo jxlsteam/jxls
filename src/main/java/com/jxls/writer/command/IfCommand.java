@@ -13,17 +13,31 @@ public class IfCommand extends AbstractCommand {
 
     String condition;
     Boolean conditionResult;
-    Command ifArea;
-    Command elseArea;
-    
+    Area ifArea;
+    Area elseArea;
+
+    public IfCommand(String condition) {
+        this.condition = condition;
+    }
+
     public IfCommand(String condition, Area ifArea, Area elseArea){
         this.condition = condition;
         this.ifArea = ifArea != null ? ifArea : XlsArea.EMPTY_AREA;
         this.elseArea = elseArea != null ? elseArea : XlsArea.EMPTY_AREA;
+        addArea(this.ifArea);
+        addArea(this.elseArea);
     }
 
     public IfCommand(String condition, XlsArea ifArea) {
         this(condition, ifArea, XlsArea.EMPTY_AREA);
+    }
+
+    public String getName() {
+        return "if";
+    }
+
+    public String getCondition() {
+        return condition;
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
