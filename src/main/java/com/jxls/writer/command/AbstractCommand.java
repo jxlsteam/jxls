@@ -1,6 +1,6 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.*;
+import com.jxls.writer.area.Area;
 
 import java.util.ArrayList;
 import java.util.List;

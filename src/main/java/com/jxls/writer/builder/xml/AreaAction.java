@@ -3,9 +3,9 @@ package com.jxls.writer.builder.xml;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import com.jxls.writer.command.Area;
+import com.jxls.writer.area.Area;
+import com.jxls.writer.area.XlsArea;
 import com.jxls.writer.command.Command;
-import com.jxls.writer.command.XlsArea;
 import com.jxls.writer.transform.Transformer;
 import org.xml.sax.Attributes;
 

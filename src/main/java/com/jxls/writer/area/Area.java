@@ -1,5 +1,7 @@
-package com.jxls.writer.command;
+package com.jxls.writer.area;
 
+import com.jxls.writer.command.Command;
+import com.jxls.writer.common.Context;
 import com.jxls.writer.common.Size;
 import com.jxls.writer.common.AreaRef;
 import com.jxls.writer.common.CellRef;

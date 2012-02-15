@@ -4,6 +4,7 @@ import spock.lang.Specification
 import com.jxls.writer.common.AreaRef
 import com.jxls.writer.common.CellRef
 import com.jxls.writer.common.Size
+import com.jxls.writer.area.CommandData
 
 /**
  * @author Leonid Vysochyn

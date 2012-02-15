@@ -1,4 +1,4 @@
-package com.jxls.writer.command
+package com.jxls.writer.area
 
 import spock.lang.Specification
 
@@ -9,6 +9,10 @@ import com.jxls.writer.transform.Transformer
 import com.jxls.writer.common.CellData
 import com.jxls.writer.common.CellRef
 import com.jxls.writer.common.AreaRef
+import com.jxls.writer.area.XlsArea
+import com.jxls.writer.common.Context
+import com.jxls.writer.area.CommandData
+import com.jxls.writer.command.Command
 
 /**
  * @author Leonid Vysochyn

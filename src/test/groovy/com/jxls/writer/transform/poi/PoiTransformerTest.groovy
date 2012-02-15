@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Row
 
-import com.jxls.writer.command.Context
+import com.jxls.writer.common.Context
 import com.jxls.writer.common.CellData
 import com.jxls.writer.common.CellRef
 import org.apache.poi.ss.util.CellRangeAddress

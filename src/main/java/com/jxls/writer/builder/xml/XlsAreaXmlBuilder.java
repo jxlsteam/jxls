@@ -6,8 +6,8 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
+import com.jxls.writer.area.Area;
 import com.jxls.writer.builder.AreaBuilder;
-import com.jxls.writer.command.Area;
 import com.jxls.writer.transform.Transformer;
 
 import java.io.InputStream;

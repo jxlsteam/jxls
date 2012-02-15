@@ -1,6 +1,9 @@
 package com.jxls.writer.command;
 
+import com.jxls.writer.area.Area;
+import com.jxls.writer.area.XlsArea;
 import com.jxls.writer.common.CellRef;
+import com.jxls.writer.common.Context;
 import com.jxls.writer.common.Size;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;

@@ -5,7 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Workbook
-import com.jxls.writer.command.Context
+import com.jxls.writer.common.Context
 import org.apache.poi.ss.usermodel.Cell
 
 import com.jxls.writer.common.CellRef
