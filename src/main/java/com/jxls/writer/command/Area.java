@@ -15,7 +15,7 @@ public interface Area{
     Size applyAt(CellRef cellRef, Context context);
 
     CellRef getStartCellRef();
-    Size getInitialSize();
+    Size getSize();
 
     List<CommandData> getCommandDataList();
     void addCommand(AreaRef ref, Command command);

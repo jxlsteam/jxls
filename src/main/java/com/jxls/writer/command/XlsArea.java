@@ -158,7 +158,7 @@ public class XlsArea implements Area {
         return startCellRef;
     }
 
-    public Size getInitialSize() {
+    public Size getSize() {
         return initialSize;
     }
 

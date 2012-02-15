@@ -22,7 +22,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef(1, 1), new Size(5,5), transformer)
         then:
             area.startCellRef == new CellRef(1, 1)
-            area.initialSize == new Size(5,5)
+            area.size == new Size(5,5)
             area.transformer == transformer
     }
 
@@ -32,7 +32,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1!A1"), new CellRef("sheet1!D3"), transformer)
         then:
             area.startCellRef == new CellRef("sheet1!A1")
-            area.initialSize == new Size(4,3)
+            area.size == new Size(4,3)
             area.transformer == transformer
     }
     
@@ -41,7 +41,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea("sheet1!A1:D3", Mock(Transformer))
         then:
             area.startCellRef == new CellRef("sheet1!A1")
-            area.initialSize == new Size(4,3)
+            area.size == new Size(4,3)
     }
     
     def "test add command with cell ref, size"(){

@@ -78,7 +78,7 @@ class EachCommandTest extends Specification{
             def eachCommand = new EachCommand("x", "items", eachArea, EachCommand.Direction.RIGHT)
             def context = Mock(Context)
         when:
-            eachArea.getInitialSize() >> new Size(3, 2)
+            eachArea.getSize() >> new Size(3, 2)
             eachCommand.applyAt(new CellRef("sheet2", 1, 1), context)
         then:
             context.toMap() >> ["items": [1,2,3,4]]
