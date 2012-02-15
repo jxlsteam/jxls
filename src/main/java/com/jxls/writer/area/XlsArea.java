@@ -28,13 +28,13 @@ public class XlsArea implements Area {
     CellRange cellRange;
     
     CellRef startCellRef;
-    Size initialSize;
+    Size size;
 
     public XlsArea(AreaRef areaRef, Transformer transformer){
         CellRef startCell = areaRef.getFirstCellRef();
         CellRef endCell = areaRef.getLastCellRef();
         this.startCellRef = startCell;
-        this.initialSize = new Size(endCell.getCol() - startCell.getCol() + 1, endCell.getRow() - startCell.getRow() + 1);
+        this.size = new Size(endCell.getCol() - startCell.getCol() + 1, endCell.getRow() - startCell.getRow() + 1);
         this.transformer = transformer;
     }
     
@@ -46,19 +46,19 @@ public class XlsArea implements Area {
         this(new AreaRef(startCell, endCell), transformer);
     }
 
-    public XlsArea(CellRef startCellRef, Size initialSize, List<CommandData> commandDataList, Transformer transformer) {
+    public XlsArea(CellRef startCellRef, Size size, List<CommandData> commandDataList, Transformer transformer) {
         this.startCellRef = startCellRef;
-        this.initialSize = initialSize;
+        this.size = size;
         this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
         this.transformer = transformer;
     }
 
-    public XlsArea(CellRef startCellRef, Size initialSize) {
-        this(startCellRef, initialSize, null, null);
+    public XlsArea(CellRef startCellRef, Size size) {
+        this(startCellRef, size, null, null);
     }
 
-    public XlsArea(CellRef startCellRef, Size initialSize, Transformer transformer) {
-        this(startCellRef, initialSize, null, transformer);
+    public XlsArea(CellRef startCellRef, Size size, Transformer transformer) {
+        this(startCellRef, size, null, transformer);
     }
 
     public void addCommand(CellRef cellRef, Size size, Command command){
@@ -86,7 +86,7 @@ public class XlsArea implements Area {
     }
     
     private void createCellRange(){
-        cellRange = new CellRange(startCellRef, initialSize.getWidth(), initialSize.getHeight());
+        cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
         for(CommandData commandData: commandDataList){
             cellRange.excludeCells(commandData.getStartCellRef().getCol() - startCellRef.getCol(), commandData.getStartCellRef().getCol() - startCellRef.getCol() + commandData.getSize().getWidth()-1,
                     commandData.getStartCellRef().getRow() - startCellRef.getRow(), commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight()-1);
@@ -142,15 +142,30 @@ public class XlsArea implements Area {
             }
         }
         transformStaticCells(cellRef, context);
-        return new Size(initialSize.getWidth() + widthDelta, initialSize.getHeight() + heightDelta);
+        return new Size(size.getWidth() + widthDelta, size.getHeight() + heightDelta);
+    }
+
+    public void clearCells() {
+        String sheetName = startCellRef.getSheetName();
+        int startRow = startCellRef.getRow();
+        int startCol = startCellRef.getCol();
+        for(int row = 0; row < size.getHeight(); row++){
+            for(int col = 0; col < size.getWidth(); col++){
+                CellRef cellRef = new CellRef(sheetName, startRow + row, startCol + col);
+                transformer.clearCell(cellRef);
+            }
+        }
     }
 
     private void transformStaticCells(CellRef cellRef, Context context) {
-        for(int x = 0; x < initialSize.getWidth(); x++){
-            for(int y = 0; y < initialSize.getHeight(); y++){
-                if( !cellRange.isExcluded(y, x) ){
-                    CellRef relativeCell = cellRange.getCell(y, x);
-                    CellRef srcCell = new CellRef(startCellRef.getSheetName(), startCellRef.getRow() + y, startCellRef.getCol() + x);
+        String sheetName = startCellRef.getSheetName();
+        int startRow = startCellRef.getRow();
+        int startCol = startCellRef.getCol();
+        for(int col = 0; col < size.getWidth(); col++){
+            for(int row = 0; row < size.getHeight(); row++){
+                if( !cellRange.isExcluded(row, col) ){
+                    CellRef relativeCell = cellRange.getCell(row, col);
+                    CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     transformer.transform(srcCell, targetCell, context);
                 }
@@ -163,7 +178,7 @@ public class XlsArea implements Area {
     }
 
     public Size getSize() {
-        return initialSize;
+        return size;
     }
 
 

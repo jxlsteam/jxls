@@ -15,6 +15,7 @@ import java.util.List;
  */
 public interface Area{
     Size applyAt(CellRef cellRef, Context context);
+    void clearCells();
 
     CellRef getStartCellRef();
     Size getSize();

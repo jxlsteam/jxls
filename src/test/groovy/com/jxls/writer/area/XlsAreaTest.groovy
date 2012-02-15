@@ -89,6 +89,19 @@ class XlsAreaTest extends Specification{
         commandData.getSize() == new Size(2,2)
         commandData.getCommand() == command
     }
+    
+    def "test clear cells"(){
+        given:
+            def transformer = Mock(Transformer)
+            def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
+        when:
+            area.clearCells()
+        then:
+            1 * transformer.clearCell(new CellRef("sheet1", 1, 1))
+            1 * transformer.clearCell(new CellRef("sheet1", 1, 2))
+            1 * transformer.clearCell(new CellRef("sheet1", 2, 1))
+            1 * transformer.clearCell(new CellRef("sheet1", 2, 2))
+    }
 
     def "test applyAt with inner command"(){
         given:
