@@ -47,9 +47,4 @@ public class SimpleConfigurator extends GenericConfigurator {
         }
     }
 
-    public InterpretationContext getInterpretationContext(){
-        if( this.interpreter != null ) return this.interpreter.getInterpretationContext();
-        else return null;
-    }
-
 }
