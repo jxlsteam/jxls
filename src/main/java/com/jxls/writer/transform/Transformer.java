@@ -17,5 +17,6 @@ public interface Transformer {
     Set<CellData> getFormulaCells();
     CellData getCellData(CellRef cellRef);
     List<CellRef> getTargetCellRef(CellRef cellRef);
-    void resetTargetCells();
+    void resetTargetCellRefs();
+    void clearCell(CellRef cellRef);
 }

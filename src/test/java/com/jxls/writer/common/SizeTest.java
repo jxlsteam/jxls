@@ -1,6 +1,4 @@
 package com.jxls.writer.common;
-
-import com.jxls.writer.common.Size;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 

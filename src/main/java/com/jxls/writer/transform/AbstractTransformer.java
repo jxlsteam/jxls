@@ -26,7 +26,7 @@ public abstract class AbstractTransformer implements Transformer {
         }
     }
 
-    public void resetTargetCells() {
+    public void resetTargetCellRefs() {
         for (SheetData sheetData : sheetMap.values()) {
             for (int i = 0; i < sheetData.getNumberOfRows(); i++) {
                 RowData rowData = sheetData.getRowData(i);

@@ -4,6 +4,7 @@ import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.AbstractTransformer;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -132,6 +133,17 @@ public class PoiTransformer extends AbstractTransformer {
         }catch (Exception e){
             logger.error("Failed to set formula = " + formulaString + " into cell = " + cellRef.getCellName(), e);
         }
+    }
+
+    public void clearCell(CellRef cellRef) {
+        if(cellRef == null || cellRef.getSheetName() == null ) return;
+        Sheet sheet = workbook.getSheet(cellRef.getSheetName());
+        if( sheet == null ) return;
+        Row row = sheet.getRow(cellRef.getRow());
+        if( row == null ) return;
+        Cell cell = row.getCell(cellRef.getCol());
+        if( cell == null ) return;
+        cell.setCellType(Cell.CELL_TYPE_BLANK);
     }
 
 }

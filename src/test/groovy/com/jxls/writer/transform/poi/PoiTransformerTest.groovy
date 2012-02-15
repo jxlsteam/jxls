@@ -10,6 +10,7 @@ import com.jxls.writer.command.Context
 import com.jxls.writer.common.CellData
 import com.jxls.writer.common.CellRef
 import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.ss.usermodel.Cell
 
 /**
  * @author Leonid Vysochyn
@@ -111,7 +112,6 @@ class PoiTransformerTest extends Specification{
         then:
             Sheet sheet = wb.getSheet("sheet 1")
             Row row = sheet.getRow(7)
-        //TODO
             row == null
             Sheet sheet1 = wb.getSheet("sheet2")
             Row row1 = sheet1.getRow(7)
@@ -232,7 +232,7 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,10), context)
             poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,11), context)
-            poiTransformer.resetTargetCells()
+            poiTransformer.resetTargetCellRefs()
             poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 2",10,12), context)
             poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,14), context)
             poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,12), context)
@@ -251,6 +251,15 @@ class PoiTransformerTest extends Specification{
             Sheet sheet = wb.getSheet("sheet 1")
             sheet.getNumMergedRegions() == 2
             sheet.getMergedRegion(1).toString() == new CellRangeAddress(10,11,10,11).toString()
+    }
+
+    def "test clear cell"(){
+        when:
+            def poiTransformer = PoiTransformer.createTransformer(wb)
+            poiTransformer.clearCell(new CellRef("'sheet 1'!B1"))
+        then:
+            wb.getSheetAt(0).getRow(0).getCell(1).cellType == Cell.CELL_TYPE_BLANK
+            wb.getSheetAt(0).getRow(0).getCell(1).stringCellValue == ""
     }
 
 }
