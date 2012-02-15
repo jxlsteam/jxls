@@ -43,9 +43,6 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context) {
-//        if(cellData == null ||  cellData.length <= cellRef.getSheet() || cellData[cellRef.getSheet()] == null ||
-//                cellData[cellRef.getSheet()].length <= cellRef.getRow() || cellData[cellRef.getSheet()][cellRef.getRow()] == null ||
-//                cellData[cellRef.getSheet()][cellRef.getRow()].length <= cellRef.getCol()) return;
         CellData cellData = this.getCellData(srcCellRef);
         if(cellData != null){
             cellData.addTargetPos(targetCellRef);
@@ -144,6 +141,7 @@ public class PoiTransformer extends AbstractTransformer {
         Cell cell = row.getCell(cellRef.getCol());
         if( cell == null ) return;
         cell.setCellType(Cell.CELL_TYPE_BLANK);
+        cell.setCellStyle(workbook.getCellStyleAt((short) 0));
     }
 
 }

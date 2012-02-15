@@ -30,6 +30,9 @@ public class XlsArea implements Area {
     CellRef startCellRef;
     Size size;
 
+    boolean clearCellsBeforeApply = false;
+    private boolean cellsCleared = false;
+
     public XlsArea(AreaRef areaRef, Transformer transformer){
         CellRef startCell = areaRef.getFirstCellRef();
         CellRef endCell = areaRef.getLastCellRef();
@@ -93,11 +96,22 @@ public class XlsArea implements Area {
         }
     }
 
+    public boolean isClearCellsBeforeApply() {
+        return clearCellsBeforeApply;
+    }
+
+    public void setClearCellsBeforeApply(boolean clearCellsBeforeApply) {
+        this.clearCellsBeforeApply = clearCellsBeforeApply;
+    }
+
     public Size applyAt(CellRef cellRef, Context context) {
         logger.debug("Applying XlsArea at {} with {}", cellRef, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
+        if( clearCellsBeforeApply ){
+            clearCells();
+        }
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
@@ -146,6 +160,7 @@ public class XlsArea implements Area {
     }
 
     public void clearCells() {
+        if( cellsCleared ) return;
         String sheetName = startCellRef.getSheetName();
         int startRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
@@ -155,6 +170,7 @@ public class XlsArea implements Area {
                 transformer.clearCell(cellRef);
             }
         }
+        cellsCleared = true;
     }
 
     private void transformStaticCells(CellRef cellRef, Context context) {

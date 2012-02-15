@@ -11,6 +11,9 @@ import com.jxls.writer.common.CellData
 import com.jxls.writer.common.CellRef
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.Font
 
 /**
  * @author Leonid Vysochyn
@@ -18,13 +21,23 @@ import org.apache.poi.ss.usermodel.Cell
  */
 class PoiTransformerTest extends Specification{
     Workbook wb;
+    CellStyle customStyle;
 
     def setup(){
         wb = new HSSFWorkbook();
+        customStyle = wb.createCellStyle();
+        customStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex())
+        customStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex())
+        Font font = wb.createFont();
+        font.setFontHeightInPoints((short)24);
+        font.setFontName("Courier New");
+        font.setItalic(true);
+        customStyle.setFont( font );
         Sheet sheet = wb.createSheet("sheet 1")
         Row row0 = sheet.createRow(0)
         row0.createCell(0).setCellValue(1.5)
         row0.createCell(1).setCellValue('${x}')
+        row0.getCell(1).setCellStyle( customStyle )
         row0.createCell(2).setCellValue('${x*y}')
         row0.createCell(3).setCellValue('Merged value')
         sheet.addMergedRegion(new CellRangeAddress(0,1,3,4))
@@ -48,6 +61,9 @@ class PoiTransformerTest extends Specification{
             wb.removeSheetAt(0)
         then:
             assert wb.getNumberOfSheets() == 0
+            CellData cellData = poiTransformer.getCellData(new CellRef("sheet 1", 0, 1))
+            cellData instanceof PoiCellData
+            ((PoiCellData)cellData).getCellStyle() == customStyle
             assert poiTransformer.getCellData(new CellRef("sheet 1", row, col)).getCellValue() == value
         where:
             row | col   | value
@@ -65,13 +81,14 @@ class PoiTransformerTest extends Specification{
             def context = new Context()
             context.putVar("x", "Abcde")
         when:
-            poiTransformer.transform(new CellRef("sheet 1",0, 1), new CellRef("sheet 1",7, 7), context)
+            poiTransformer.transform(new CellRef("sheet 1", 0, 1), new CellRef("sheet 1", 7, 7), context)
         then:
             Sheet sheet = wb.getSheetAt(0)
             Row row7 = sheet.getRow(7)
             row7.getCell(7).getStringCellValue() == "Abcde"
             sheet.getColumnWidth(7) == 123
             sheet.getRow(7).getHeight() == 23
+            sheet.getRow(7).getCell(7).getCellStyle() == customStyle
     }
 
     def "test transform numeric var"(){
@@ -258,8 +275,11 @@ class PoiTransformerTest extends Specification{
             def poiTransformer = PoiTransformer.createTransformer(wb)
             poiTransformer.clearCell(new CellRef("'sheet 1'!B1"))
         then:
-            wb.getSheetAt(0).getRow(0).getCell(1).cellType == Cell.CELL_TYPE_BLANK
-            wb.getSheetAt(0).getRow(0).getCell(1).stringCellValue == ""
+            def cell = wb.getSheetAt(0).getRow(0).getCell(1)
+            cell.cellType == Cell.CELL_TYPE_BLANK
+            cell.stringCellValue == ""
+            cell.cellStyle != customStyle
+            cell.cellStyle == wb.getCellStyleAt((short)0)
     }
 
 }

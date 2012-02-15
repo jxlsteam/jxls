@@ -17,7 +17,7 @@ public class PoiCellData extends CellData {
     static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
 
     RichTextString richTextString;
-    private CellStyle style;
+    private CellStyle cellStyle;
     private Hyperlink hyperlink;
 
     public PoiCellData(CellRef cellRef) {
@@ -39,6 +39,10 @@ public class PoiCellData extends CellData {
 
     private void readCellGeneralInfo(Cell cell) {
         hyperlink = cell.getHyperlink();
+    }
+
+    public CellStyle getCellStyle() {
+        return cellStyle;
     }
 
     private void readCellContents(Cell cell) {
@@ -85,7 +89,7 @@ public class PoiCellData extends CellData {
     }
 
     private void readCellStyle(Cell cell) {
-        style = cell.getCellStyle();
+        cellStyle = cell.getCellStyle();
     }
 
     public void writeToCell(Cell cell, Context context){
@@ -166,7 +170,7 @@ public class PoiCellData extends CellData {
     }
 
     private void updateCellStyle(Cell cell) {
-        cell.setCellStyle( style );
+        cell.setCellStyle(cellStyle);
     }
 
 }

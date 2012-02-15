@@ -6,6 +6,7 @@ import com.jxls.writer.common.Size
 import com.jxls.writer.command.EachCommand
 import com.jxls.writer.command.IfCommand
 import com.jxls.writer.transform.Transformer
+import com.jxls.writer.area.XlsArea
 
 /**
  * @author Leonid Vysochyn
@@ -22,9 +23,11 @@ class XlsAreaXmlBuilderTest extends Specification{
             xlsAreaList.size() == 2
             def xlsArea = xlsAreaList.get(0)
             xlsArea != null
+            xlsArea instanceof XlsArea
             xlsArea.getStartCellRef() == new CellRef("Template!A1")
             xlsArea.getSize() == new Size(7,15)
             xlsArea.getTransformer() == transformer
+            ((XlsArea)xlsArea).clearCellsBeforeApply
             def commandDataList1 = xlsArea.getCommandDataList()
             commandDataList1.size() == 1
             commandDataList1.get(0).startCellRef == new CellRef("Template!A2")
@@ -39,6 +42,7 @@ class XlsAreaXmlBuilderTest extends Specification{
             eachArea.getStartCellRef() == new CellRef("Template!A2")
             eachArea.getSize() == new Size(7,11)
             eachArea.getTransformer() == transformer
+            !((XlsArea)eachArea).clearCellsBeforeApply
             def commandDataList2 = eachArea.getCommandDataList()
             commandDataList2.size() == 1
             commandDataList2.get(0).startCellRef == new CellRef("Template!A9")
@@ -68,10 +72,12 @@ class XlsAreaXmlBuilderTest extends Specification{
             ifArea.getSize() == new Size(6,1)
             ifArea.getCommandDataList().isEmpty()
             ifArea.getTransformer() == transformer
+            ((XlsArea)ifArea).clearCellsBeforeApply
             elseArea.getStartCellRef() == new CellRef("Template!A9")
             elseArea.getSize() == new Size(6,1)
             elseArea.getCommandDataList().isEmpty()
             elseArea.getTransformer() == transformer
+            !((XlsArea)elseArea).clearCellsBeforeApply
             def xlsArea2 = xlsAreaList.get(1)
             xlsArea2.getStartCellRef() == new CellRef("Template!A2")
             xlsArea2.getSize() == new Size(7,11)
