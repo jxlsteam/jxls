@@ -1,4 +1,4 @@
-package com.jxls.writer;
+package com.jxls.writer.common;
 
 /**
  * Date: Mar 13, 2009

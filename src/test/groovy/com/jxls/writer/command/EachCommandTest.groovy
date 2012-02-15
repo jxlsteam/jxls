@@ -2,8 +2,8 @@ package com.jxls.writer.command
 
 import spock.lang.Specification
 
-import com.jxls.writer.Size
-import com.jxls.writer.CellRef
+import com.jxls.writer.common.Size
+import com.jxls.writer.common.CellRef
 
 /**
  * @author Leonid Vysochyn

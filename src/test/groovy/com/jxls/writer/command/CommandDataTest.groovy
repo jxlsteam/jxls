@@ -1,9 +1,9 @@
 package com.jxls.writer.command
 
 import spock.lang.Specification
-import com.jxls.writer.AreaRef
-import com.jxls.writer.CellRef
-import com.jxls.writer.Size
+import com.jxls.writer.common.AreaRef
+import com.jxls.writer.common.CellRef
+import com.jxls.writer.common.Size
 
 /**
  * @author Leonid Vysochyn

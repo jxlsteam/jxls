@@ -1,8 +1,8 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.CellData;
-import com.jxls.writer.CellRef;
-import com.jxls.writer.Util;
+import com.jxls.writer.common.CellData;
+import com.jxls.writer.common.CellRef;
+import com.jxls.writer.util.Util;
 import com.jxls.writer.command.Context;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.*;

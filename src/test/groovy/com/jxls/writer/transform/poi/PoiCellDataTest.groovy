@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import com.jxls.writer.command.Context
 import org.apache.poi.ss.usermodel.Cell
 
-import com.jxls.writer.CellRef
+import com.jxls.writer.common.CellRef
 
 /**
  * @author Leonid Vysochyn

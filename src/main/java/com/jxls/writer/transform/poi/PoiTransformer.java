@@ -1,7 +1,7 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.CellData;
-import com.jxls.writer.CellRef;
+import com.jxls.writer.common.CellData;
+import com.jxls.writer.common.CellRef;
 import com.jxls.writer.command.Context;
 import com.jxls.writer.transform.AbstractTransformer;
 import org.apache.poi.ss.usermodel.Row;
@@ -41,40 +41,40 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
-    public void transform(CellRef cellRef, CellRef newCellRef, Context context) {
+    public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context) {
 //        if(cellData == null ||  cellData.length <= cellRef.getSheet() || cellData[cellRef.getSheet()] == null ||
 //                cellData[cellRef.getSheet()].length <= cellRef.getRow() || cellData[cellRef.getSheet()][cellRef.getRow()] == null ||
 //                cellData[cellRef.getSheet()][cellRef.getRow()].length <= cellRef.getCol()) return;
-        CellData cellData = this.getCellData(cellRef);
+        CellData cellData = this.getCellData(srcCellRef);
         if(cellData != null){
-            cellData.addTargetPos(newCellRef);
-            if(newCellRef == null || newCellRef.getSheetName() == null){
-                logger.info("Target cellRef is null or has empty sheet name, cellRef=" + newCellRef);
+            cellData.addTargetPos(targetCellRef);
+            if(targetCellRef == null || targetCellRef.getSheetName() == null){
+                logger.info("Target cellRef is null or has empty sheet name, cellRef=" + targetCellRef);
                 return;
             }
-            Sheet destSheet = workbook.getSheet(newCellRef.getSheetName());
+            Sheet destSheet = workbook.getSheet(targetCellRef.getSheetName());
             if(destSheet == null){
-                destSheet = workbook.createSheet(newCellRef.getSheetName());
+                destSheet = workbook.createSheet(targetCellRef.getSheetName());
             }
-            SheetData sheetData = sheetMap.get(cellRef.getSheetName());
+            SheetData sheetData = sheetMap.get(srcCellRef.getSheetName());
             if(!isIgnoreColumnProps()){
-                destSheet.setColumnWidth(newCellRef.getCol(), sheetData.getColumnWidth(cellRef.getCol()));
+                destSheet.setColumnWidth(targetCellRef.getCol(), sheetData.getColumnWidth(srcCellRef.getCol()));
             }
-            Row destRow = destSheet.getRow(newCellRef.getRow());
+            Row destRow = destSheet.getRow(targetCellRef.getRow());
             if (destRow == null) {
-                destRow = destSheet.createRow(newCellRef.getRow());
+                destRow = destSheet.createRow(targetCellRef.getRow());
             }
             if(!isIgnoreRowProps()){
-                destSheet.getRow(newCellRef.getRow()).setHeight( sheetData.getRowData(cellRef.getRow()).getHeight());
+                destSheet.getRow(targetCellRef.getRow()).setHeight( sheetData.getRowData(srcCellRef.getRow()).getHeight());
             }
-            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(newCellRef.getCol());
+            org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(targetCellRef.getCol());
             if (destCell == null) {
-                destCell = destRow.createCell(newCellRef.getCol());
+                destCell = destRow.createCell(targetCellRef.getCol());
             }
             try{
                 destCell.setCellType(org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK);
                 ((PoiCellData)cellData).writeToCell(destCell, context);
-                copyMergedRegions(cellData, newCellRef);
+                copyMergedRegions(cellData, targetCellRef);
             }catch(Exception e){
                 logger.error("Failed to write a cell with " + cellData + " and " + context, e);
             }
@@ -132,10 +132,6 @@ public class PoiTransformer extends AbstractTransformer {
         }catch (Exception e){
             logger.error("Failed to set formula = " + formulaString + " into cell = " + cellRef.getCellName(), e);
         }
-    }
-
-    public int getSheetIndex(String sheetName) {
-        return workbook.getSheetIndex(sheetName);
     }
 
 }

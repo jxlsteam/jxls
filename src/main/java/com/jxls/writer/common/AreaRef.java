@@ -1,4 +1,6 @@
-package com.jxls.writer;
+package com.jxls.writer.common;
+
+import com.jxls.writer.util.CellRefUtil;
 
 /**
  * @author Leonid Vysochyn
@@ -14,7 +16,7 @@ public class AreaRef {
     }
     
     public AreaRef(String areaRef){
-        String[] parts = CellRefUtil.separateAreaRefs( areaRef );
+        String[] parts = CellRefUtil.separateAreaRefs(areaRef);
         String part0 = parts[0];
         if (parts.length == 1) {
             firstCellRef = new CellRef(part0);

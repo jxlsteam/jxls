@@ -1,7 +1,9 @@
 package com.jxls.writer.command;
 
-import com.jxls.writer.*;
+import com.jxls.writer.common.*;
 import com.jxls.writer.transform.Transformer;
+import com.jxls.writer.util.CellRefUtil;
+import com.jxls.writer.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,7 +170,7 @@ public class XlsArea implements Area {
         for (CellData formulaCellData : formulaCells) {
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
             List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
-            List<CellRef> targetFormulaCells = transformer.getTargetPos(formulaCellData.getCellRef());
+            List<CellRef> targetFormulaCells = transformer.getTargetCellRef(formulaCellData.getCellRef());
             Map<CellRef, List<CellRef>> targetCellRefMap = new HashMap<CellRef, List<CellRef>>();
             Map<String, List<CellRef>> jointedCellRefMap = new HashMap<String, List<CellRef>>();
             for (String cellRef : formulaCellRefs) {
@@ -177,7 +179,7 @@ public class XlsArea implements Area {
                     pos.setSheetName( formulaCellData.getSheetName() );
                     pos.setIgnoreSheetNameInFormat(true);
                 }
-                List<CellRef> targetCellDataList = transformer.getTargetPos(pos);
+                List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
                 targetCellRefMap.put(pos, targetCellDataList);
             }
             for (String jointedCellRef : jointedCellRefs) {
@@ -189,7 +191,7 @@ public class XlsArea implements Area {
                         pos.setSheetName(formulaCellData.getSheetName());
                         pos.setIgnoreSheetNameInFormat(true);
                     }
-                    List<CellRef> targetCellDataList = transformer.getTargetPos(pos);
+                    List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
 
                     jointedCellRefList.addAll(targetCellDataList);
                 }
@@ -203,15 +205,15 @@ public class XlsArea implements Area {
                     if( targetCells.isEmpty() ) continue;
                     if( targetCells.size() == targetFormulaCells.size() ){
                         CellRef targetCellRefCellRef = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefCellRef.getCellName() ));
+                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefCellRef.getCellName() ));
                     }else{
                         List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
                         if( rangeList.size() == targetFormulaCells.size() ){
                             List<CellRef> range = rangeList.get(i);
                             String replacementString = Util.createTargetCellRef( range );
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                         }else{
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"")+ Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(Util.createTargetCellRef(targetCells)));
+                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(Util.createTargetCellRef(targetCells)));
                         }
                     }
                 }
@@ -227,11 +229,15 @@ public class XlsArea implements Area {
                         targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetCellRefList));
                     }
                 }
-                String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + "!";
+                String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
             }
         }
+    }
+
+    private String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
+        return (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"");
     }
 
 

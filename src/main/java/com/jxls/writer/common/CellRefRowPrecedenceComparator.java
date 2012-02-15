@@ -1,4 +1,6 @@
-package com.jxls.writer;
+package com.jxls.writer.common;
+
+import com.jxls.writer.common.CellRef;
 
 import java.util.Comparator;
 
@@ -6,7 +8,7 @@ import java.util.Comparator;
  * @author Leonid Vysochyn
  *         Date: 2/8/12 5:22 PM
  */
-public class PosRowPrecedenceComparator implements Comparator<CellRef>{
+public class CellRefRowPrecedenceComparator implements Comparator<CellRef>{
 
     public int compare(CellRef cellRef1, CellRef cellRef2) {
         if( cellRef1 == cellRef2) return 0;

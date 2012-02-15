@@ -1,4 +1,4 @@
-package com.jxls.writer;
+package com.jxls.writer.util;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.CellReference;
@@ -19,11 +19,11 @@ public class CellRefUtil {
      */
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("([A-Za-z]+)([0-9]+)");
     /** The character (!) that separates sheet names from cell references */
-    static final char SHEET_NAME_DELIMITER = '!';
+    public static final char SHEET_NAME_DELIMITER = '!';
     /** The character (:) that separates the two cell references in a multi-cell area reference */
     private static final char CELL_DELIMITER = ':';
     /** The character ($) that signifies a row or column value is absolute instead of relative */
-    static final char ABSOLUTE_REFERENCE_MARKER = '$';
+    public static final char ABSOLUTE_REFERENCE_MARKER = '$';
     /** The character (') used to quote sheet names when they contain special characters */
     private static final char SPECIAL_NAME_DELIMITER = '\'';
 
@@ -53,7 +53,7 @@ public class CellRefUtil {
         return colRef;
     }
 
-    static void appendFormat(StringBuffer out, String rawSheetName) {
+    public static void appendFormat(StringBuffer out, String rawSheetName) {
         boolean needsQuotes = needsDelimiting(rawSheetName);
         if(needsQuotes) {
             out.append(DELIMITER);

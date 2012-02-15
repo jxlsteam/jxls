@@ -1,7 +1,7 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.CellData;
-import com.jxls.writer.CellRef;
+import com.jxls.writer.common.CellData;
+import com.jxls.writer.common.CellRef;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.ArrayList;

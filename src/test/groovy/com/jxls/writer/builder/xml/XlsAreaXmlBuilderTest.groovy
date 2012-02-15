@@ -1,8 +1,8 @@
 package com.jxls.writer.builder.xml
 
 import spock.lang.Specification
-import com.jxls.writer.CellRef
-import com.jxls.writer.Size
+import com.jxls.writer.common.CellRef
+import com.jxls.writer.common.Size
 import com.jxls.writer.command.EachCommand
 import com.jxls.writer.command.IfCommand
 import com.jxls.writer.transform.Transformer

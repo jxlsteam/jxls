@@ -1,4 +1,4 @@
-package com.jxls.writer;
+package com.jxls.writer.common;
 
 import java.util.HashMap;
 import java.util.Map;

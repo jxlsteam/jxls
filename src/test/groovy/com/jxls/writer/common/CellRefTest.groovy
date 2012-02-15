@@ -1,6 +1,7 @@
-package com.jxls.writer
+package com.jxls.writer.common
 
 import spock.lang.Specification
+import com.jxls.writer.common.CellRef
 
 /**
  * @author Leonid Vysochyn

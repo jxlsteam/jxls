@@ -1,7 +1,7 @@
 package com.jxls.writer.transform;
 
-import com.jxls.writer.CellData;
-import com.jxls.writer.CellRef;
+import com.jxls.writer.common.CellData;
+import com.jxls.writer.common.CellRef;
 import com.jxls.writer.transform.poi.RowData;
 import com.jxls.writer.transform.poi.SheetData;
 
@@ -17,7 +17,7 @@ public abstract class AbstractTransformer implements Transformer {
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
 
-    public List<CellRef> getTargetPos(CellRef cellRef) {
+    public List<CellRef> getTargetCellRef(CellRef cellRef) {
         CellData cellData = getCellData(cellRef);
         if (cellData != null) {
             return cellData.getTargetPos();

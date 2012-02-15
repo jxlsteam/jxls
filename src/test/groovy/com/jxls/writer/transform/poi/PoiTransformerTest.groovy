@@ -7,8 +7,8 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Row
 
 import com.jxls.writer.command.Context
-import com.jxls.writer.CellData
-import com.jxls.writer.CellRef
+import com.jxls.writer.common.CellData
+import com.jxls.writer.common.CellRef
 import org.apache.poi.ss.util.CellRangeAddress
 
 /**
@@ -222,8 +222,8 @@ class PoiTransformerTest extends Specification{
             poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 2",20,11), context)
             poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,12), context)
         then:
-            poiTransformer.getTargetPos(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,10), new CellRef("sheet 1",10,12), new CellRef("sheet 1",10,14)]
-            poiTransformer.getTargetPos(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 2",20,11), new CellRef("sheet 1",20,12)]
+            poiTransformer.getTargetCellRef(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,10), new CellRef("sheet 1",10,12), new CellRef("sheet 1",10,14)]
+            poiTransformer.getTargetCellRef(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 2",20,11), new CellRef("sheet 1",20,12)]
     }
 
     def "test reset target cells"(){
@@ -237,8 +237,8 @@ class PoiTransformerTest extends Specification{
             poiTransformer.transform(new CellRef("sheet 1",1,1), new CellRef("sheet 1",10,14), context)
             poiTransformer.transform(new CellRef("sheet 1",2,1), new CellRef("sheet 1",20,12), context)
         then:
-            poiTransformer.getTargetPos(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,12), new CellRef("sheet 1",10,14)]
-            poiTransformer.getTargetPos(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 1",20,12)]
+            poiTransformer.getTargetCellRef(new CellRef("sheet 1",1,1)).toArray() == [new CellRef("sheet 2",10,12), new CellRef("sheet 1",10,14)]
+            poiTransformer.getTargetCellRef(new CellRef("sheet 1",2,1)).toArray() == [new CellRef("sheet 1",20,12)]
     }
 
     def "test transform merged cells"(){

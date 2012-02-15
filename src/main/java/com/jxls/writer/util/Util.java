@@ -1,4 +1,8 @@
-package com.jxls.writer;
+package com.jxls.writer.util;
+
+import com.jxls.writer.common.CellRef;
+import com.jxls.writer.common.CellRefColPrecedenceComparator;
+import com.jxls.writer.common.CellRefRowPrecedenceComparator;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -110,7 +114,7 @@ public class Util {
             return rangeList;
         }
         List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
-        Collections.sort(cellRefListCopy, new PosColPrecedenceComparator());
+        Collections.sort(cellRefListCopy, new CellRefColPrecedenceComparator());
 
         String sheetName = cellRefListCopy.get(0).getSheetName();
         int row = cellRefListCopy.get(0).getRow();
@@ -151,7 +155,7 @@ public class Util {
             return rangeList;
         }
         List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
-        Collections.sort(cellRefListCopy, new PosRowPrecedenceComparator());
+        Collections.sort(cellRefListCopy, new CellRefRowPrecedenceComparator());
 
         String sheetName = cellRefListCopy.get(0).getSheetName();
         int row = cellRefListCopy.get(0).getRow();
