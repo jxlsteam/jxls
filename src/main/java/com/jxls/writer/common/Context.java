@@ -11,8 +11,22 @@ import java.util.Map;
 public class Context {
     Map<String, Object> varMap = new HashMap<String, Object>();
 
+    public Context() {
+    }
+
+    public Context(Map<String, Object> varMap) {
+        for (Map.Entry<String, Object> entry : varMap.entrySet()) {
+            this.varMap.put(entry.getKey(), entry.getValue());
+        }
+    }
+
     public Map<String, Object> toMap(){
         return varMap;
+    }
+    
+    public Object getVar(String name){
+        if( varMap.containsKey(name) ) return varMap.get(name);
+        else return null;
     }
 
     public void putVar(String name, Object value) {

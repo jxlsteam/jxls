@@ -2,6 +2,7 @@ package com.jxls.writer.common;
 
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
@@ -42,5 +43,16 @@ public class ContextTest {
         context.putVar("x", 1);
         context.putVar("y", "Abc");
         assertEquals("Context{y=Abc, x=1}", context.toString() );
+    }
+
+    @Test
+    public void testCreateFromMap(){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("x", "Abc");
+        map.put("y", 10);
+        Context context = new Context(map);
+        map.clear();
+        assertEquals( "Abc", context.getVar("x"));
+        assertEquals( 10, context.getVar("y") );
     }
 }

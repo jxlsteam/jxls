@@ -29,6 +29,7 @@ public class XlsArea implements Area {
     
     CellRef startCellRef;
     Size size;
+    List<AreaListener> areaListeners = new ArrayList<AreaListener>();
 
     boolean clearCellsBeforeApply = false;
     private boolean cellsCleared = false;
@@ -104,8 +105,10 @@ public class XlsArea implements Area {
         this.clearCellsBeforeApply = clearCellsBeforeApply;
     }
 
+
     public Size applyAt(CellRef cellRef, Context context) {
         logger.debug("Applying XlsArea at {} with {}", cellRef, context);
+        fireBeforeApplyEvent(cellRef, context);
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
@@ -156,8 +159,22 @@ public class XlsArea implements Area {
             }
         }
         transformStaticCells(cellRef, context);
+        fireAfterApplyEvent(cellRef, context);
         return new Size(size.getWidth() + widthDelta, size.getHeight() + heightDelta);
     }
+
+    private void fireBeforeApplyEvent(CellRef cellRef, Context context) {
+        for (AreaListener areaListener : areaListeners) {
+            areaListener.beforeApplyAtCell(cellRef, context);
+        }
+    }
+
+    private void fireAfterApplyEvent(CellRef cellRef, Context context) {
+        for (AreaListener areaListener : areaListeners) {
+            areaListener.afterApplyAtCell(cellRef, context);
+        }
+    }
+
 
     public void clearCells() {
         if( cellsCleared ) return;
@@ -183,9 +200,23 @@ public class XlsArea implements Area {
                     CellRef relativeCell = cellRange.getCell(row, col);
                     CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
+                    fireBeforeTransformCell(srcCell, targetCell, context);
                     transformer.transform(srcCell, targetCell, context);
+                    fireAfterTransformCell(srcCell, targetCell, context);
                 }
             }
+        }
+    }
+
+    private void fireBeforeTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
+        for (AreaListener areaListener : areaListeners) {
+            areaListener.beforeTransformCell(srcCell, targetCell, context);
+        }
+    }
+
+    private void fireAfterTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
+        for (AreaListener areaListener : areaListeners) {
+            areaListener.afterTransformCell(srcCell, targetCell, context);
         }
     }
 
@@ -267,6 +298,14 @@ public class XlsArea implements Area {
                 transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
             }
         }
+    }
+
+    public void addAreaListener(AreaListener listener) {
+        areaListeners.add(listener);
+    }
+
+    public List<AreaListener> getAreaListeners() {
+        return areaListeners;
     }
 
     private String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {

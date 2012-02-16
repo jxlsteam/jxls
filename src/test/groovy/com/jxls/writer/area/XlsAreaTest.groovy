@@ -13,6 +13,7 @@ import com.jxls.writer.area.XlsArea
 import com.jxls.writer.common.Context
 import com.jxls.writer.area.CommandData
 import com.jxls.writer.command.Command
+import com.jxls.writer.common.AreaListener
 
 /**
  * @author Leonid Vysochyn
@@ -346,6 +347,53 @@ class XlsAreaTest extends Specification{
         1 * transformer.getTargetCellRef(new CellRef('$ & test@.', 4, 0)) >> [ new CellRef('$ & test@.',4,1)]
         1 * transformer.setFormula(new CellRef("sheet1",5,5), '''F10+Sheet2!A1 + C6 + 'Sheet 3'!A1 * '$ & test@.'!B5''')
         0 * _._
+    }
+    
+    def "test add/get area listener"(){
+        given:
+            def area = new XlsArea("sheet1!A1:C3", Mock(Transformer))
+            def listener1 = Mock(AreaListener)
+            def listener2 = Mock(AreaListener)
+        when:
+            area.addAreaListener(listener1)
+            area.addAreaListener(listener2)
+        then:
+            area.getAreaListeners() == [listener1, listener2]
+    }
+    
+    def "test invoke area listener"(){
+        given:
+            def transformer = Mock(Transformer)
+            def area = new XlsArea(new CellRef("sheet1",1,1), new Size(2,2), transformer)
+            def listener1 = Mock(AreaListener)
+            def context1 = new Context()
+            def context2 = new Context()
+        when:
+            area.addAreaListener(listener1)
+            area.applyAt(new CellRef("sheet1", 3,3), context1)
+            area.applyAt(new CellRef("sheet2", 1,2), context2)
+        then:
+            1 * listener1.beforeApplyAtCell(new CellRef("sheet1", 3,3), context1)
+            1 * listener1.afterApplyAtCell(new CellRef("sheet1", 3,3), context1)
+            1 * listener1.beforeApplyAtCell(new CellRef("sheet2", 1,2), context2)
+            1 * listener1.afterApplyAtCell(new CellRef("sheet2", 1,2), context2)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 1,1), new CellRef("sheet1", 3,3), context1)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 1,2), new CellRef("sheet1", 3,4), context1)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 2,1), new CellRef("sheet1", 4,3), context1)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 2,2), new CellRef("sheet1", 4,4), context1)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 1,1), new CellRef("sheet1", 3,3), context1)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 1,2), new CellRef("sheet1", 3,4), context1)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 2,1), new CellRef("sheet1", 4,3), context1)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 2,2), new CellRef("sheet1", 4,4), context1)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 1,1), new CellRef("sheet2", 1,2), context2)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 1,2), new CellRef("sheet2", 1,3), context2)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 2,1), new CellRef("sheet2", 2,2), context2)
+            1 * listener1.beforeTransformCell(new CellRef("sheet1", 2,2), new CellRef("sheet2", 2,3), context2)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 1,1), new CellRef("sheet2", 1,2), context2)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 1,2), new CellRef("sheet2", 1,3), context2)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 2,1), new CellRef("sheet2", 2,2), context2)
+            1 * listener1.afterTransformCell(new CellRef("sheet1", 2,2), new CellRef("sheet2", 2,3), context2)
+            0 * listener1._
     }
 
 }
