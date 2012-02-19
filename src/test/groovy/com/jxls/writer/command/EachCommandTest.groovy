@@ -24,6 +24,18 @@ class EachCommandTest extends Specification{
              eachCommand.direction == EachCommand.Direction.DOWN
     }
     
+    def "test create with CellRefGenerator"(){
+        def cellRefGen = Mock(CellRefGenerator)
+        def area = Mock(Area)
+        when:
+            def eachCommand = new EachCommand("item", "items", area, cellRefGen)
+        then:
+            eachCommand.var == "item"
+            eachCommand.items == "items"
+            eachCommand.area == area
+            eachCommand.cellRefGenerator == cellRefGen
+    }
+    
     def "test add area"(){
         def area = Mock(Area)
         when:
@@ -95,5 +107,26 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 7), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 11), context) >> new Size(3, 1)
             0 * _._
+    }
+
+    def "test applyAt with CellRefGenerator"(){
+        given:
+        def area = Mock(Area)
+        def cellRefGenerator = Mock(CellRefGenerator)
+        def eachSheetCommand = new EachCommand("x", "list", area, cellRefGenerator)
+        def context = Mock(Context)
+        when:
+        eachSheetCommand.applyAt(new CellRef("sheet2", 2,3), context)
+        then:
+        1 * context.toMap() >> ["list":[2,4,5]]
+        1 * context.putVar("x", 2)
+        1 * context.putVar("x", 4)
+        1 * context.putVar("x", 5)
+        1 * cellRefGenerator.generateCellRef(0, context) >> new CellRef("abc!A2")
+        1 * cellRefGenerator.generateCellRef(1, context) >> new CellRef("def!B2")
+        1 * cellRefGenerator.generateCellRef(2, context) >> new CellRef("ghi!C2")
+        1 * area.applyAt(new CellRef("abc!A2"), context) >> new Size(3,5)
+        1 * area.applyAt(new CellRef("def!B2"), context) >> new Size(2,3)
+        1 * area.applyAt(new CellRef("ghi!C2"), context) >> new Size(4,3)
     }
 }

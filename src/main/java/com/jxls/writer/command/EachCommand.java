@@ -21,6 +21,7 @@ public class EachCommand extends AbstractCommand {
     String items;
     Area area;
     Direction direction = Direction.DOWN;
+    CellRefGenerator cellRefGenerator;
 
     public EachCommand(String var, String items, Direction direction) {
         this.var = var;
@@ -29,7 +30,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public EachCommand(String var, String items, Area area) {
-        this(var, items, area, null);
+        this(var, items, area, Direction.DOWN);
     }
     
     public EachCommand(String var, String items, Area area, Direction direction) {
@@ -40,12 +41,28 @@ public class EachCommand extends AbstractCommand {
         addArea(this.area);
     }
 
+    public EachCommand(String var, String items, Area area, CellRefGenerator cellRefGenerator) {
+        this.var = var;
+        this.items = items;
+        this.area = area;
+        this.cellRefGenerator = cellRefGenerator;
+        addArea(area);
+    }
+
     public Direction getDirection() {
         return direction;
     }
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public CellRefGenerator getCellRefGenerator() {
+        return cellRefGenerator;
+    }
+
+    public void setCellRefGenerator(CellRefGenerator cellRefGenerator) {
+        this.cellRefGenerator = cellRefGenerator;
     }
 
     public String getName() {
@@ -71,13 +88,19 @@ public class EachCommand extends AbstractCommand {
 
     public Size applyAt(CellRef cellRef, Context context) {
         Collection itemsCollection = calculateItemsCollection(context);
-        CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;
+        int index = 0;
+        CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
             Size size = area.applyAt(currentCell, context);
-            if( direction == Direction.DOWN ){
+            index++;
+            if( cellRefGenerator != null ){
+                width = Math.max(width, size.getWidth());
+                height = Math.max(height, size.getHeight());
+                currentCell = cellRefGenerator.generateCellRef(index, context);
+            }else if( direction == Direction.DOWN ){
                 currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
