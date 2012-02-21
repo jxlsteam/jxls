@@ -10,6 +10,9 @@ import com.jxls.writer.command.EachCommand;
 import com.jxls.writer.common.AreaRef;
 import org.xml.sax.Attributes;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * @author Leonid Vysochyn
  *         Date: 2/21/12 5:37 PM
@@ -39,6 +42,11 @@ public class UserCommandAction extends Action {
             addError("Could not instantiate class [" + commandClassName + "]", e);
             throw new IllegalStateException(e);
         }
+        try{
+            initPropertiesFromAttributes(command, attributes);
+        }catch (Exception e){
+            addWarn("Could not set an attribute");
+        }
         Object object = ic.peekObject();
         if( object instanceof Area){
             Area area = (Area) object;
@@ -49,6 +57,22 @@ public class UserCommandAction extends Action {
             throw new IllegalArgumentException(errMsg);
         }
         ic.pushObject(command);
+    }
+
+    private void initPropertiesFromAttributes(Object obj, Attributes attributes) {
+        int attrLength = attributes.getLength();
+        for(int i = 0; i < attrLength; i++){
+            try {
+                setObjectProperty(obj, attributes.getLocalName(i), attributes.getValue(i));
+            } catch (Exception e) {
+                addWarn("Could not set an attribute attr=" + attributes.getLocalName(i) + ", value=" + attributes.getValue(i));
+            }
+        }
+    }
+
+    private void setObjectProperty(Object obj, String propertyName, String propertyValue) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = obj.getClass().getMethod("set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1), new Class[]{String.class} );
+        method.invoke(obj, new String[]{propertyValue});
     }
 
     @Override
