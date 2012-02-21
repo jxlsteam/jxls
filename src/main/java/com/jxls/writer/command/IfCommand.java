@@ -5,8 +5,7 @@ import com.jxls.writer.area.XlsArea;
 import com.jxls.writer.common.CellRef;
 import com.jxls.writer.common.Context;
 import com.jxls.writer.common.Size;
-import com.jxls.writer.expression.ExpressionEvaluator;
-import com.jxls.writer.expression.JexlExpressionEvaluator;
+import com.jxls.writer.util.Util;
 
 /**
  * Date: Sep 11, 2009
@@ -16,7 +15,6 @@ import com.jxls.writer.expression.JexlExpressionEvaluator;
 public class IfCommand extends AbstractCommand {
 
     String condition;
-    Boolean conditionResult;
     Area ifArea;
     Area elseArea;
 
@@ -58,7 +56,7 @@ public class IfCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        conditionResult = isConditionTrue(context);
+        Boolean conditionResult = Util.isConditionTrue(condition, context);
         if( conditionResult ){
             return ifArea.applyAt(cellRef, context);
         }else{
@@ -66,12 +64,4 @@ public class IfCommand extends AbstractCommand {
         }
     }
 
-    public Boolean isConditionTrue(Context context){
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
-        Object conditionResult = expressionEvaluator.evaluate(condition);
-        if( !(conditionResult instanceof Boolean) ){
-            throw new RuntimeException("If command condition is not a boolean value - " + condition);
-        }
-        return (Boolean)conditionResult;
-    }
 }

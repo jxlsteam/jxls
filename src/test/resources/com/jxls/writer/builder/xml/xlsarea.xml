@@ -1,4 +1,6 @@
-<xlsarea>
+<xls>
+    <user-command pattern="*/custom" actionClass="com.jxls.writer.builder.xml.CustomCommand"/>
+
     <area ref="Template!A1:G15" clearCells="true">
         <each items="departments" var="department" ref="Template!A2:F12">
             <area ref="Template!A2:G12">
@@ -13,5 +15,5 @@
             </area>
         </each>
     </area>
-    <area ref="Template!A2:G12"/>
-</xlsarea>
+    <area ref="Template!A2:G12"></area>
+</xls>

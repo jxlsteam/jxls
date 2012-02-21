@@ -3,6 +3,7 @@ package com.jxls.writer.util
 import spock.lang.Specification
 import com.jxls.writer.common.CellRef
 import com.jxls.writer.util.Util
+import com.jxls.writer.common.Context
 
 /**
  * @author Leonid Vysochyn
@@ -98,6 +99,18 @@ class UtilTest extends Specification{
                     [new CellRef("sh!C2")],
                     [new CellRef("sh!D2")]
             ]
+    }
 
+    def "test boolean condition calculation"(){
+        given:
+        def context = new Context()
+        when:
+            context.putVar("x", xValue)
+        then:
+            Util.isConditionTrue("2*x + 5 > 10", context) == result
+        where:
+            xValue  | result
+            2       | false
+            3       | true
     }
 }

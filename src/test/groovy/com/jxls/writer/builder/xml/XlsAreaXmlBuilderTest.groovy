@@ -84,4 +84,50 @@ class XlsAreaXmlBuilderTest extends Specification{
             xlsArea2.getCommandDataList().isEmpty()
             xlsArea2.getTransformer() == transformer
     }
+
+    def "test build with custom action"(){
+            InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("useraction.xml")
+            Transformer transformer = Mock(Transformer)
+            assert is != null
+        when:
+            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
+        then:
+            xlsAreaList.size() == 1
+            def xlsArea = xlsAreaList.get(0)
+            xlsArea.getCommandDataList().size() == 1
+            def eachCommand = xlsArea.getCommandDataList().get(0).getCommand();
+            def eachArea = eachCommand.getAreaList().get(0);
+            eachArea.getCommandDataList().size() == 1
+            def customCommand = eachArea.getCommandDataList().get(0).getCommand()
+            customCommand.getName() == "custom"
+            customCommand instanceof com.jxls.writer.builder.xml.CustomCommand
+            ((com.jxls.writer.builder.xml.CustomCommand)customCommand).getAttr() == "CustomValue"
+            customCommand.getAreaList().size() == 1
+            def customArea = customCommand.getAreaList().get(0)
+            customArea.getCommandDataList().size() == 1
+    }
+
+    def "test build with user command"(){
+            InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("usercommand.xml")
+            Transformer transformer = Mock(Transformer)
+            assert is != null
+        when:
+            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
+        then:
+            xlsAreaList.size() == 1
+            def xlsArea = xlsAreaList.get(0)
+            xlsArea.getCommandDataList().size() == 1
+            def eachCommand = xlsArea.getCommandDataList().get(0).getCommand();
+            def eachArea = eachCommand.getAreaList().get(0);
+            eachArea.getCommandDataList().size() == 1
+            def customCommand = eachArea.getCommandDataList().get(0).getCommand()
+            customCommand.getName() == "custom"
+            customCommand instanceof com.jxls.writer.builder.xml.CustomCommand
+            ((com.jxls.writer.builder.xml.CustomCommand)customCommand).getAttr() == "CustomValue"
+            customCommand.getAreaList().size() == 1
+            def customArea = customCommand.getAreaList().get(0)
+            customArea.getCommandDataList().size() == 1
+    }
+
+
 }

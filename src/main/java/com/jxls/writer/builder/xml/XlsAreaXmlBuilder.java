@@ -3,6 +3,7 @@ package com.jxls.writer.builder.xml;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -33,6 +34,9 @@ public class XlsAreaXmlBuilder implements AreaBuilder{
         ruleMap.put(new Pattern("*/area"), areaAction);
         ruleMap.put(new Pattern("*/each"), new EachAction());
         ruleMap.put(new Pattern("*/if"), new IfAction());
+        ruleMap.put(new Pattern("*/user-command"), new UserCommandAction());
+
+        ruleMap.put(new Pattern("*/user-action"), new NewRuleAction());
 
         Context context = new ContextBase();
         SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);

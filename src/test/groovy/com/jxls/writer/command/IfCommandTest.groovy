@@ -7,6 +7,7 @@ import com.jxls.writer.common.CellRef
 import com.jxls.writer.area.XlsArea
 import com.jxls.writer.area.Area
 import com.jxls.writer.common.Context
+import com.jxls.writer.util.Util
 
 /**
  * @author Leonid Vysochyn
@@ -48,20 +49,6 @@ class IfCommandTest extends Specification{
             thrown(IllegalArgumentException)
     }
 
-    def "test condition"(){
-        given:
-            def ifCommand = new IfCommand("2*x + 5 > 10",  new XlsArea(new CellRef(10, 5), new Size(5,5)), new XlsArea(new CellRef(10, 10), new Size(3,3)))
-            def context = new Context()
-        when:
-            context.putVar("x", xValue)
-        then:
-            ifCommand.isConditionTrue(context) == result
-        where:
-            xValue  | result
-            2       | false
-            3       | true
-    }
-    
     def "test applyAt when condition is false"(){
         given:
             def ifArea = Mock(Area)

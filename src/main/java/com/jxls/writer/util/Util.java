@@ -3,6 +3,9 @@ package com.jxls.writer.util;
 import com.jxls.writer.common.CellRef;
 import com.jxls.writer.common.CellRefColPrecedenceComparator;
 import com.jxls.writer.common.CellRefRowPrecedenceComparator;
+import com.jxls.writer.common.Context;
+import com.jxls.writer.expression.ExpressionEvaluator;
+import com.jxls.writer.expression.JexlExpressionEvaluator;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -190,4 +193,12 @@ public class Util {
         return rangeList;
     }
 
+    public static Boolean isConditionTrue(String condition, Context context){
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
+        Object conditionResult = expressionEvaluator.evaluate(condition);
+        if( !(conditionResult instanceof Boolean) ){
+            throw new RuntimeException("Condition result is not a boolean value - " + condition);
+        }
+        return (Boolean)conditionResult;
+    }
 }
