@@ -20,10 +20,16 @@ import java.util.Map;
  * @author Leonid Vysochyn
  *         Date: 2/14/12 11:50 AM
  */
-public class XlsAreaXmlBuilder implements AreaBuilder{
+public class XmlAreaBuilder implements AreaBuilder{
     Transformer transformer;
+    InputStream xmlInputStream;
 
-    public XlsAreaXmlBuilder(Transformer transformer) {
+    public XmlAreaBuilder(Transformer transformer) {
+        this.transformer = transformer;
+    }
+
+    public XmlAreaBuilder(InputStream xmlInputStream, Transformer transformer) {
+        this.xmlInputStream = xmlInputStream;
         this.transformer = transformer;
     }
 
@@ -48,6 +54,10 @@ public class XlsAreaXmlBuilder implements AreaBuilder{
             printOccurredErrors(context);
         }
         return areaAction.getAreaList();
+    }
+
+    public List<Area> build() {
+        return build(xmlInputStream);
     }
 
     private void printOccurredErrors(Context context) {

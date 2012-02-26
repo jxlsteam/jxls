@@ -5,13 +5,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 2/1/12 12:03 PM
  */
-public class SheetData {
+public class SheetData implements Iterable<RowData>{
     String sheetName;
     int[] columnWidth;
     List<RowData> rowDataList = new ArrayList<RowData>();
@@ -58,5 +59,9 @@ public class SheetData {
 
     public List<CellRangeAddress> getMergedRegions() {
         return mergedRegions;
+    }
+
+    public Iterator<RowData> iterator() {
+        return rowDataList.iterator();
     }
 }

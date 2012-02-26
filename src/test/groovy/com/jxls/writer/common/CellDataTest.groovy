@@ -85,4 +85,12 @@ class CellDataTest extends Specification{
             cellData.getTargetPos().isEmpty()
     }
 
+    def "test set/get comment"(){
+        when:
+            def cellData = new CellData("sheet1", 1,2, CellData.CellType.STRING, "Abc")
+            cellData.setCellComment("Test comment")
+        then:
+            cellData.getCellComment() == "Test comment"
+    }
+
 }

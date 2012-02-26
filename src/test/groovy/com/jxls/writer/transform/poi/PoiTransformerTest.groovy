@@ -39,12 +39,14 @@ class PoiTransformerTest extends Specification{
         row0.createCell(1).setCellValue('${x}')
         row0.getCell(1).setCellStyle( customStyle )
         row0.createCell(2).setCellValue('${x*y}')
+        PoiUtil.setCellComment( row0.getCell(2), "comment 1", "leo", null )
         row0.createCell(3).setCellValue('Merged value')
         sheet.addMergedRegion(new CellRangeAddress(0,1,3,4))
         row0.setHeight((short)23)
         sheet.setColumnWidth(1, 123);
         Row row1 = sheet.createRow(1)
         row1.createCell(1).setCellFormula("SUM(A1:A3)")
+        PoiUtil.setCellComment( row1.getCell(1), "comment 2", "leo", null )
         row1.createCell(2).setCellValue('${y*y}')
         row1.setHeight((short)456)
         Row row2 = sheet.createRow(2)
@@ -280,6 +282,16 @@ class PoiTransformerTest extends Specification{
             cell.stringCellValue == ""
             cell.cellStyle != customStyle
             cell.cellStyle == wb.getCellStyleAt((short)0)
+    }
+
+    def "test get commented cells"(){
+        when:
+            def transformer = PoiTransformer.createTransformer(wb)
+            def commentedCells = transformer.getCommentedCells()
+        then:
+            commentedCells.size() == 2
+            commentedCells.get(0).getCellComment() == "comment 1"
+            commentedCells.get(1).getCellComment() == "comment 2"
     }
 
 }

@@ -10,5 +10,5 @@ import java.util.List;
  *         Date: 2/14/12 11:51 AM
  */
 public interface AreaBuilder {
-    List<Area> build(InputStream is);
+    List<Area> build();
 }

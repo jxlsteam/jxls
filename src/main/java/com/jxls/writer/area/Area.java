@@ -10,7 +10,7 @@ import java.util.List;
  * @author Leonid Vysochyn
  *         Date: 1/18/12 5:20 PM
  */
-public interface Area{
+public interface Area {
     Size applyAt(CellRef cellRef, Context context);
     void clearCells();
 

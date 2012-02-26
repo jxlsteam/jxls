@@ -5,13 +5,14 @@ import com.jxls.writer.common.CellRef;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 2/1/12 2:01 PM
  */
-public class RowData {
+public class RowData implements Iterable<CellData>{
     short height;
     List<CellData> cellDataList = new ArrayList<CellData>();
 
@@ -49,4 +50,7 @@ public class RowData {
         return height;
     }
 
+    public Iterator<CellData> iterator() {
+        return cellDataList.iterator();
+    }
 }

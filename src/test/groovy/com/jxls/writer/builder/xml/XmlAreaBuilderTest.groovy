@@ -12,13 +12,13 @@ import com.jxls.writer.area.XlsArea
  * @author Leonid Vysochyn
  * Date: 2/14/12 11:55 AM
  */
-class XlsAreaXmlBuilderTest extends Specification{
+class XmlAreaBuilderTest extends Specification{
     def "test build"(){
-        InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("xlsarea.xml")
+        InputStream is = XmlAreaBuilderTest.class.getResourceAsStream("xlsarea.xml")
         Transformer transformer = Mock(Transformer)
         assert is != null
         when:
-            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
+            def xlsAreaList = new XmlAreaBuilder(is, transformer).build()
         then:
             xlsAreaList.size() == 2
             def xlsArea = xlsAreaList.get(0)
@@ -86,11 +86,11 @@ class XlsAreaXmlBuilderTest extends Specification{
     }
 
     def "test build with custom action"(){
-            InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("useraction.xml")
+            InputStream is = XmlAreaBuilderTest.class.getResourceAsStream("useraction.xml")
             Transformer transformer = Mock(Transformer)
             assert is != null
         when:
-            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
+            def xlsAreaList = new XmlAreaBuilder(is, transformer).build()
         then:
             xlsAreaList.size() == 1
             def xlsArea = xlsAreaList.get(0)
@@ -108,11 +108,11 @@ class XlsAreaXmlBuilderTest extends Specification{
     }
 
     def "test build with user command"(){
-            InputStream is = XlsAreaXmlBuilderTest.class.getResourceAsStream("usercommand.xml")
+            InputStream is = XmlAreaBuilderTest.class.getResourceAsStream("usercommand.xml")
             Transformer transformer = Mock(Transformer)
             assert is != null
         when:
-            def xlsAreaList = new XlsAreaXmlBuilder(transformer).build(is)
+            def xlsAreaList = new XmlAreaBuilder(is, transformer).build()
         then:
             xlsAreaList.size() == 1
             def xlsArea = xlsAreaList.get(0)

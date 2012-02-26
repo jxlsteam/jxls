@@ -25,6 +25,7 @@ public class CellData {
     protected CellRef cellRef;
     protected Object cellValue;
     protected CellType cellType;
+    protected String cellComment;
 
     protected String formula;
     protected Object evaluationResult;
@@ -108,6 +109,13 @@ public class CellData {
         }
     }
 
+    public String getCellComment() {
+        return cellComment;
+    }
+
+    public void setCellComment(String cellComment) {
+        this.cellComment = cellComment;
+    }
 
     public String getSheetName() {
         return cellRef.getSheetName();

@@ -4,14 +4,14 @@ import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
 import com.jxls.writer.common.Context;
 import com.jxls.writer.transform.AbstractTransformer;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -25,6 +25,11 @@ public class PoiTransformer extends AbstractTransformer {
 
     private PoiTransformer(Workbook workbook) {
         this.workbook = workbook;
+    }
+    
+    public static PoiTransformer createTransformer(InputStream is) throws IOException, InvalidFormatException {
+        Workbook workbook = WorkbookFactory.create(is);
+        return createTransformer(workbook);
     }
 
     public static PoiTransformer createTransformer(Workbook workbook) {
@@ -146,6 +151,20 @@ public class PoiTransformer extends AbstractTransformer {
         if( cell == null ) return;
         cell.setCellType(Cell.CELL_TYPE_BLANK);
         cell.setCellStyle(workbook.getCellStyleAt((short) 0));
+    }
+
+    public List<CellData> getCommentedCells() {
+        List<CellData> commentedCells = new ArrayList<CellData>();
+        for (SheetData sheetData : sheetMap.values()) {
+            for (RowData rowData : sheetData) {
+                for (CellData cellData : rowData) {
+                    if(cellData != null && cellData.getCellComment() != null ){
+                        commentedCells.add(cellData);
+                    }
+                }
+            }
+        }
+        return commentedCells;
     }
 
 }
