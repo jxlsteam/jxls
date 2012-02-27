@@ -6,7 +6,11 @@ import com.jxls.writer.common.CellRefRowPrecedenceComparator;
 import com.jxls.writer.common.Context;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +20,7 @@ import java.util.regex.Pattern;
  *         Date: 2/3/12 4:26 PM
  */
 public class Util {
+    static Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     private static final String regexCellRef = "([a-zA-Z]+[a-zA-Z0-9]*![a-zA-Z]+[0-9]+|[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
     private static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
@@ -200,5 +205,24 @@ public class Util {
             throw new RuntimeException("Condition result is not a boolean value - " + condition);
         }
         return (Boolean)conditionResult;
+    }
+
+    public static void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
+        try {
+            setObjectProperty(obj, propertyName, propertyValue);
+        } catch (Exception e) {
+            String msg = "failed to set attribute '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
+            if( ignoreNonExisting ){
+                logger.info(msg);
+            }else{
+                logger.warn(msg);
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+
+    public static void setObjectProperty(Object obj, String propertyName, String propertyValue) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = obj.getClass().getMethod("set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1), new Class[]{String.class} );
+        method.invoke(obj, new String[]{propertyValue});
     }
 }

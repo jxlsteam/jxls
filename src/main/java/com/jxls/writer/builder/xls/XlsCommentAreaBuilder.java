@@ -5,8 +5,13 @@ import com.jxls.writer.area.CommandData;
 import com.jxls.writer.area.XlsArea;
 import com.jxls.writer.builder.AreaBuilder;
 import com.jxls.writer.command.Command;
+import com.jxls.writer.command.EachCommand;
+import com.jxls.writer.command.IfCommand;
+import com.jxls.writer.common.AreaRef;
 import com.jxls.writer.common.CellData;
+import com.jxls.writer.common.CellRef;
 import com.jxls.writer.transform.Transformer;
+import com.jxls.writer.util.Util;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -15,10 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -31,13 +33,25 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
+    
+    private static Map<String, Class> commandMap = new HashMap<String, Class>();
+    private static final String LAST_CELL_ATTR_NAME = "lastCell";
+
+    static{
+        commandMap.put("each", EachCommand.class);
+        commandMap.put("if", IfCommand.class);
+    }
 
     Transformer transformer;
 
     public XlsCommentAreaBuilder(Transformer transformer) {
         this.transformer = transformer;
     }
-
+    
+    public static void addCommandEntry(String commandName, Class clazz){
+        commandMap.put(commandName, clazz);
+    }
+    
     public List<Area> build() {
         List<Area> areas = new ArrayList<Area>();
         List<CellData> commentedCells = transformer.getCommentedCells();
@@ -45,11 +59,15 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         for (CellData cellData : commentedCells) {
             String comment = cellData.getCellComment();
             List<CommandData> commandDatas = buildCommands(cellData, comment);
-            if( currentArea == null ){
-                // todo
+            if( currentArea == null || !currentArea.getStartCellRef().getSheetName().equals( cellData.getSheetName() )){
+                if( currentArea != null ){
+                    areas.add(currentArea);
+                }
+                // todo: replace hardcoded cols and rows with values returned from proper Transformer methods
+                currentArea = new XlsArea(new AreaRef(new CellRef(cellData.getSheetName(), 0,0), new CellRef(cellData.getSheetName(), 100, 100)), transformer);
             }
             for (CommandData commandData : commandDatas) {
-                
+                currentArea.addCommand(new AreaRef(commandData.getStartCellRef(), commandData.getSize()), commandData.getCommand());
             }
         }
         return areas;
@@ -76,8 +94,10 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                 }
                 String attrString = commandLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
                 Map<String, String> attrMap = parseCommandAttributes(attrString);
-                CommandData commandData = createCommandData(commandName, attrMap);
-                commands.add(commandData);
+                CommandData commandData = createCommandData(cellData, commandName, attrMap);
+                if( commandData != null ){
+                    commands.add(commandData);
+                }
             }else{
                 logger.info("Command line does not start with command prefix '" + COMMAND_PREFIX + "'. Skipping it.");
             }
@@ -85,8 +105,31 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return commands;
     }
 
-    private CommandData createCommandData(String commandName, Map<String, String> attrMap) {
-        return null;
+    private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
+        Class clazz = commandMap.get(commandName);
+        if( clazz == null ){
+            logger.warn("Failed to find Command class mapped to command name '" + commandName + "'");
+            return null;
+        }
+        try {
+            Command command = (Command) clazz.newInstance();
+            for (Map.Entry<String, String> attr : attrMap.entrySet()) {
+                Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);
+            }
+            String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);
+            if( lastCellRef == null ){
+                logger.warn("Failed to find last cell ref attribute '" + LAST_CELL_ATTR_NAME + "' for command '" + commandName + "' in cell " + cellData.getCellRef());
+                return null;
+            }
+            CellRef lastCell = new CellRef(lastCellRef);
+            if( lastCell.getSheetName() == null || lastCell.getSheetName().trim().length() == 0 ){
+                lastCell.setSheetName( cellData.getSheetName() );
+            }
+            return new CommandData(new AreaRef(cellData.getCellRef(), lastCell),  command);
+        } catch (Exception e) {
+            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'");
+            return null;
+        }
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {

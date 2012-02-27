@@ -15,6 +15,11 @@ public class AreaRef {
         this.lastCellRef = lastCellRef;
     }
     
+    public AreaRef(CellRef cellRef, Size size){
+        firstCellRef = cellRef;
+        lastCellRef = new CellRef( cellRef.getSheetName(), cellRef.getRow() + size.getHeight(), cellRef.getCol() + size.getWidth());
+    }
+    
     public AreaRef(String areaRef){
         String[] parts = CellRefUtil.separateAreaRefs(areaRef);
         String part0 = parts[0];

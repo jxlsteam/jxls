@@ -6,12 +6,9 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 import com.jxls.writer.area.Area;
 import com.jxls.writer.command.Command;
-import com.jxls.writer.command.EachCommand;
 import com.jxls.writer.common.AreaRef;
+import com.jxls.writer.util.Util;
 import org.xml.sax.Attributes;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * @author Leonid Vysochyn
@@ -63,16 +60,11 @@ public class UserCommandAction extends Action {
         int attrLength = attributes.getLength();
         for(int i = 0; i < attrLength; i++){
             try {
-                setObjectProperty(obj, attributes.getLocalName(i), attributes.getValue(i));
+                Util.setObjectProperty(obj, attributes.getLocalName(i), attributes.getValue(i));
             } catch (Exception e) {
                 addWarn("Could not set an attribute attr=" + attributes.getLocalName(i) + ", value=" + attributes.getValue(i));
             }
         }
-    }
-
-    private void setObjectProperty(Object obj, String propertyName, String propertyValue) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = obj.getClass().getMethod("set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1), new Class[]{String.class} );
-        method.invoke(obj, new String[]{propertyValue});
     }
 
     @Override
