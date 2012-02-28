@@ -69,6 +69,8 @@ class XlsCommentAreaBuilderTest extends Specification {
 
     def "unit test for build"(){
             def transformer = Mock(Transformer)
+            def cellData0 = new CellData(new CellRef("sheet1!B1"))
+            cellData0.setCellComment("jx:area(lastCell='G8')")
             def cellData1 = new CellData(new CellRef("sheet1!B2"))
             cellData1.setCellComment("jx:each(items='departments', var='department', lastCell='F13')")
             def cellData2 = new CellData(new CellRef("sheet1!C2"))
@@ -78,7 +80,9 @@ class XlsCommentAreaBuilderTest extends Specification {
                 jx:each(items='department.staff' var="employee"      lastCell="F9")
                 jx:if(condition="employee.payment <= 2000", lastCell="F9",  areas=["A9:F9","A18:F18"])""" )
             def cellData4 = new CellData(new CellRef("sheet2!B2"))
-            cellData4.setCellComment('jx:each(items="myItems"    var="mywar"      lastCell="D2" areas=["C9:F9"])')
+            cellData4.setCellComment('''
+                    jx:area(lastCell = "K10")
+                    jx:each(items="myItems"    var="mywar"      lastCell="D2" areas=["C9:F9"])''')
             def cellData5 = new CellData(new CellRef("sheet2", 1, 7))
             cellData5.setCellComment('jx:if(condition="myvar.value==2" lastCell="K2" )')
             def cellData6 = new CellData(new CellRef("sheet2", 4, 0))
@@ -88,7 +92,7 @@ class XlsCommentAreaBuilderTest extends Specification {
             List<Area> areas = areaBuilder.build()
         then:
             transformer.getCommentedCells() >> [cellData1, cellData2, cellData3, cellData4, cellData5, cellData6]
-            areas.size() == 3
+            areas.size() == 2
 
     }
 

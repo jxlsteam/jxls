@@ -12,14 +12,9 @@ import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
 import com.jxls.writer.transform.Transformer;
 import com.jxls.writer.util.Util;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +37,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     static{
         commandMap.put("each", EachCommand.class);
         commandMap.put("if", IfCommand.class);
+        commandMap.put("area", AreaCommand.class);
     }
 
     Transformer transformer;
@@ -61,15 +57,17 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         for (CellData cellData : commentedCells) {
             String comment = cellData.getCellComment();
             List<CommandData> commandDatas = buildCommands(cellData, comment);
-            if( currentArea == null || !currentArea.getStartCellRef().getSheetName().equals( cellData.getSheetName() )){
-                if( currentArea != null ){
-                    areas.add(currentArea);
-                }
-                // todo: replace hardcoded cols and rows with values returned from proper Transformer methods
-                currentArea = new XlsArea(new AreaRef(new CellRef(cellData.getSheetName(), 0,0), new CellRef(cellData.getSheetName(), 100, 100)), transformer);
-            }
             for (CommandData commandData : commandDatas) {
-                currentArea.addCommand(new AreaRef(commandData.getStartCellRef(), commandData.getSize()), commandData.getCommand());
+                if( commandData.getCommand() instanceof AreaCommand ){
+                    if( currentArea != null ){
+                        areas.add(currentArea);
+                    }
+                    currentArea = new XlsArea(commandData.getAreaRef(), transformer);
+                }else{
+                    if( currentArea != null ){
+                        currentArea.addCommand(new AreaRef(commandData.getStartCellRef(), commandData.getSize()), commandData.getCommand());
+                    }
+                }
             }
         }
         if( currentArea != null ){
@@ -79,35 +77,37 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     }
 
     private List<CommandData> buildCommands(CellData cellData, String text) {
-        String[] commandLines = text.split("\\n");
+        String[] commentLines = text.split("\\n");
         List<CommandData> commands = new ArrayList<CommandData>();
-        for (int i = 0; i < commandLines.length; i++) {
-            String commandLine = commandLines[i].trim();
-            if(commandLine.startsWith(COMMAND_PREFIX)){
-                int nameEndIndex = commandLine.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
+        for (int i = 0; i < commentLines.length; i++) {
+            String commentLine = commentLines[i].trim();
+            if(commentLine.startsWith(COMMAND_PREFIX)){
+                int nameEndIndex = commentLine.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
                 if( nameEndIndex < 0 ){
-                    String errMsg = "Failed to parse command line [" + commandLine + "]. Expected '" + ATTR_PREFIX + "' symbol.";
+                    String errMsg = "Failed to parse command line [" + commentLine + "]. Expected '" + ATTR_PREFIX + "' symbol.";
                     logger.error(errMsg);
                     throw new IllegalStateException(errMsg);
                 }
-                String commandName = commandLine.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
-                int paramsEndIndex = commandLine.lastIndexOf(ATTR_SUFFIX);
-                if(paramsEndIndex < 0 ){
-                    String errMsg = "Failed to parse command line [" + commandLine + "]. Expected '" + ATTR_SUFFIX + "' symbol.";
-                    logger.error(errMsg);
-                    throw new IllegalArgumentException(errMsg);
-                }
-                String attrString = commandLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
-                Map<String, String> attrMap = parseCommandAttributes(attrString);
+                String commandName = commentLine.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
+                Map<String, String> attrMap = buildAttrMap(commentLine, nameEndIndex);
                 CommandData commandData = createCommandData(cellData, commandName, attrMap);
                 if( commandData != null ){
                     commands.add(commandData);
                 }
-            }else{
-                logger.info("Command line does not start with command prefix '" + COMMAND_PREFIX + "' in cell " + cellData.getCellRef() + ". Skipping it.");
             }
         }
         return commands;
+    }
+
+    private Map<String, String> buildAttrMap(String commandLine, int nameEndIndex) {
+        int paramsEndIndex = commandLine.lastIndexOf(ATTR_SUFFIX);
+        if(paramsEndIndex < 0 ){
+            String errMsg = "Failed to parse command line [" + commandLine + "]. Expected '" + ATTR_SUFFIX + "' symbol.";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+        String attrString = commandLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
+        return parseCommandAttributes(attrString);
     }
 
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {

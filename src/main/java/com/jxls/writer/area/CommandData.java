@@ -29,6 +29,10 @@ public class CommandData {
         this.size = size;
         this.command = command;
     }
+    
+    public AreaRef getAreaRef(){
+        return new AreaRef(startCellRef, size);
+    }
 
     public CellRef getStartCellRef() {
         return startCellRef;
