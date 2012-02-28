@@ -213,7 +213,7 @@ public class Util {
         } catch (Exception e) {
             String msg = "failed to set attribute '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
             if( ignoreNonExisting ){
-                logger.info(msg);
+                logger.info(msg, e);
             }else{
                 logger.warn(msg);
                 throw new IllegalArgumentException(e);

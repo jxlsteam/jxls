@@ -18,6 +18,9 @@ public class IfCommand extends AbstractCommand {
     Area ifArea;
     Area elseArea;
 
+    public IfCommand() {
+    }
+
     public IfCommand(String condition) {
         this.condition = condition;
     }
@@ -40,6 +43,10 @@ public class IfCommand extends AbstractCommand {
 
     public String getCondition() {
         return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     @Override

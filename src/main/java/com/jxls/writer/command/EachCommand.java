@@ -23,6 +23,9 @@ public class EachCommand extends AbstractCommand {
     Direction direction = Direction.DOWN;
     CellRefGenerator cellRefGenerator;
 
+    public EachCommand() {
+    }
+
     public EachCommand(String var, String items, Direction direction) {
         this.var = var;
         this.items = items;
@@ -73,8 +76,16 @@ public class EachCommand extends AbstractCommand {
         return var;
     }
 
+    public void setVar(String var) {
+        this.var = var;
+    }
+
     public String getItems() {
         return items;
+    }
+
+    public void setItems(String items) {
+        this.items = items;
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -33,6 +34,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
+    private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     
     private static Map<String, Class> commandMap = new HashMap<String, Class>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
@@ -70,6 +72,9 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                 currentArea.addCommand(new AreaRef(commandData.getStartCellRef(), commandData.getSize()), commandData.getCommand());
             }
         }
+        if( currentArea != null ){
+            areas.add(currentArea);
+        }
         return areas;
     }
 
@@ -99,7 +104,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                     commands.add(commandData);
                 }
             }else{
-                logger.info("Command line does not start with command prefix '" + COMMAND_PREFIX + "'. Skipping it.");
+                logger.info("Command line does not start with command prefix '" + COMMAND_PREFIX + "' in cell " + cellData.getCellRef() + ". Skipping it.");
             }
         }
         return commands;
@@ -114,7 +119,9 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         try {
             Command command = (Command) clazz.newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
-                Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);
+                if( !attr.getKey().equals(LAST_CELL_ATTR_NAME) ){
+                    Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);
+                }
             }
             String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);
             if( lastCellRef == null ){
@@ -127,16 +134,16 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
             return new CommandData(new AreaRef(cellData.getCellRef(), lastCell),  command);
         } catch (Exception e) {
-            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'");
+            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'",e);
             return null;
         }
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {
         Map<String,String> attrMap = new LinkedHashMap<String, String>();
-        String[] attrDatas = attrString.split(ATTR_REGEX);
-        for (int i = 0; i < attrDatas.length; i++) {
-            String attrData = attrDatas[i].trim();
+        Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
+        while(attrMatcher.find()){
+            String attrData = attrMatcher.group();
             int attrNameEndIndex = attrData.indexOf("=");
             String attrName = attrData.substring(0, attrNameEndIndex).trim();
             String attrValuePart = attrData.substring(attrNameEndIndex + 1).trim();
