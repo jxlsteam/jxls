@@ -65,11 +65,11 @@ public class XlsArea implements Area {
         this(startCellRef, size, null, transformer);
     }
 
-    public void addCommand(CellRef cellRef, Size size, Command command){
-        commandDataList.add(new CommandData(cellRef, size, command));
-    }
-    
     public void addCommand(AreaRef areaRef, Command command){
+        AreaRef thisAreaRef = new AreaRef(startCellRef, size);
+        if( !thisAreaRef.contains(areaRef) ){
+            throw new IllegalArgumentException("Cannot add command '" + command.getName() + "' to area " + thisAreaRef + " at " + areaRef);
+        }
         commandDataList.add(new CommandData(areaRef, command));
     }
 

@@ -29,7 +29,7 @@ class XlsAreaTest extends Specification{
             area.startCellRef == new CellRef(1, 1)
             area.size == new Size(5,5)
             area.transformer == transformer
-            area.clearCellsBeforeApply == false
+            !area.clearCellsBeforeApply
     }
 
     def "test create from two cell refs"(){
@@ -55,7 +55,7 @@ class XlsAreaTest extends Specification{
             def xlsArea = new XlsArea("sheet1!A1:C4", Mock(Transformer))
             def command = Mock(Command)
         when:
-            xlsArea.addCommand(new CellRef("sheet1!A2"), new Size(2,1), command)
+            xlsArea.addCommand(new AreaRef( new CellRef("sheet1!A2"), new Size(2,1)), command)
         then:
             xlsArea.getCommandDataList().size() == 1
             CommandData commandData = xlsArea.getCommandDataList().get(0)
@@ -147,7 +147,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(10,15),Mock(Transformer))
             def innerCommand = Mock(Command)
             def context = new Context()
-            area.addCommand(new CellRef("sheet1",3, 2), new Size(2,3), innerCommand)
+            area.addCommand(new AreaRef(new CellRef("sheet1",3, 2), new Size(2,3)), innerCommand)
         when:
             area.applyAt(new CellRef("sheet2", 5, 4), context)
         then:
@@ -194,9 +194,9 @@ class XlsAreaTest extends Specification{
         def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(10,15), transformer)
         def innerCommand1 = Mock(Command)
         def context = new Context()
-        area.addCommand(new CellRef("sheet1",3, 2), new Size(2,3), innerCommand1)
+        area.addCommand(new AreaRef(new CellRef("sheet1",3, 2), new Size(2,3)), innerCommand1)
         def innerCommand2 = Mock(Command)
-        area.addCommand(new CellRef("sheet1",7, 1), new Size(4,5), innerCommand2)
+        area.addCommand(new AreaRef(new CellRef("sheet1",7, 1), new Size(4,5)), innerCommand2)
         when:
         area.applyAt(new CellRef("sheet1",5, 4), context)
         then:
@@ -394,6 +394,19 @@ class XlsAreaTest extends Specification{
             1 * listener1.afterTransformCell(new CellRef("sheet1", 2,1), new CellRef("sheet2", 2,2), context2)
             1 * listener1.afterTransformCell(new CellRef("sheet1", 2,2), new CellRef("sheet2", 2,3), context2)
             0 * listener1._
+    }
+    
+    def "test adding commands outside area"(){
+        def transformer = Mock(Transformer)
+        def area = new XlsArea(new AreaRef("sheet1!C5:F10"), transformer)
+        def command1 = Mock(Command)
+        command1.getName() >> "command 1"
+        when:
+            area.addCommand(new AreaRef("sheet1!A4:C4"), command1)
+        then:
+            def e = thrown(IllegalArgumentException)
+            e.cause == null
+            e.message == "Cannot add command 'command 1' to area sheet1!C5:F10 at sheet1!A4:C4"
     }
 
 }

@@ -138,6 +138,14 @@ public class CellRef {
         result = 31 * result + (sheetName != null ? sheetName.hashCode() : 0);
         return result;
     }
+    
+    public String toString(boolean ignoreSheetName){
+        boolean currentIgnoreSheetValue = ignoreSheetNameInFormat;
+        ignoreSheetNameInFormat = ignoreSheetName;
+        String result = getCellName();
+        ignoreSheetNameInFormat = currentIgnoreSheetValue;
+        return result;
+    }
 
     @Override
     public String toString() {

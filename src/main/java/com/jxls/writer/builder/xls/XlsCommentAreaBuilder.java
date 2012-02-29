@@ -65,7 +65,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                     currentArea = new XlsArea(commandData.getAreaRef(), transformer);
                 }else{
                     if( currentArea != null ){
-                        currentArea.addCommand(new AreaRef(commandData.getStartCellRef(), commandData.getSize()), commandData.getCommand());
+                        currentArea.addCommand(commandData.getAreaRef(), commandData.getCommand());
                     }
                 }
             }
@@ -79,19 +79,19 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private List<CommandData> buildCommands(CellData cellData, String text) {
         String[] commentLines = text.split("\\n");
         List<CommandData> commands = new ArrayList<CommandData>();
-        for (int i = 0; i < commentLines.length; i++) {
-            String commentLine = commentLines[i].trim();
-            if(commentLine.startsWith(COMMAND_PREFIX)){
-                int nameEndIndex = commentLine.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
-                if( nameEndIndex < 0 ){
-                    String errMsg = "Failed to parse command line [" + commentLine + "]. Expected '" + ATTR_PREFIX + "' symbol.";
+        for (String commentLine : commentLines) {
+            String line = commentLine.trim();
+            if (line.startsWith(COMMAND_PREFIX)) {
+                int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
+                if (nameEndIndex < 0) {
+                    String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
                     logger.error(errMsg);
                     throw new IllegalStateException(errMsg);
                 }
-                String commandName = commentLine.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
-                Map<String, String> attrMap = buildAttrMap(commentLine, nameEndIndex);
+                String commandName = line.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
+                Map<String, String> attrMap = buildAttrMap(line, nameEndIndex);
                 CommandData commandData = createCommandData(cellData, commandName, attrMap);
-                if( commandData != null ){
+                if (commandData != null) {
                     commands.add(commandData);
                 }
             }

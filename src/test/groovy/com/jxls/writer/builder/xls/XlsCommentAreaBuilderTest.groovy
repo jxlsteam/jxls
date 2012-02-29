@@ -91,7 +91,7 @@ class XlsCommentAreaBuilderTest extends Specification {
             def areaBuilder = new XlsCommentAreaBuilder(transformer)
             List<Area> areas = areaBuilder.build()
         then:
-            transformer.getCommentedCells() >> [cellData1, cellData2, cellData3, cellData4, cellData5, cellData6]
+            transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6]
             areas.size() == 2
 
     }
