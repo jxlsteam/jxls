@@ -77,7 +77,7 @@ public class AreaRef {
     public boolean contains(AreaRef areaRef){
         if( areaRef == null ) return true;
         if( (getSheetName() == null && areaRef.getSheetName() == null) ||
-                getSheetName().equalsIgnoreCase(areaRef.getSheetName())){
+                (getSheetName() != null && getSheetName().equalsIgnoreCase(areaRef.getSheetName()))){
             return contains(areaRef.getFirstCellRef()) && contains( areaRef.getLastCellRef() );
         }else{
             return false;
@@ -87,5 +87,26 @@ public class AreaRef {
     @Override
     public String toString() {
         return firstCellRef.toString() + ":" + lastCellRef.toString(true);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AreaRef areaRef = (AreaRef) o;
+
+        if (firstCellRef != null ? !firstCellRef.equals(areaRef.firstCellRef) : areaRef.firstCellRef != null)
+            return false;
+        if (lastCellRef != null ? !lastCellRef.equals(areaRef.lastCellRef) : areaRef.lastCellRef != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = firstCellRef != null ? firstCellRef.hashCode() : 0;
+        result = 31 * result + (lastCellRef != null ? lastCellRef.hashCode() : 0);
+        return result;
     }
 }

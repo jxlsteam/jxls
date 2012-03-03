@@ -22,11 +22,14 @@ import java.util.regex.Pattern;
 public class Util {
     static Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
-    private static final String regexCellRef = "([a-zA-Z]+[a-zA-Z0-9]*![a-zA-Z]+[0-9]+|[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
-    private static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
+    public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
+    public static final String regexCellRef = "([a-zA-Z]+[a-zA-Z0-9]*![a-zA-Z]+[0-9]+|[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
+    public static final String regexAreaRef = regexCellRef + ":" + regexSimpleCellRef;
+    public static final Pattern regexAreaRefPattern = Pattern.compile( regexAreaRef );
+    public static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
     private static final Pattern regexCellRefExcludingJointedPattern = Pattern.compile(regexCellRefExcludingJointed);
     private static final Pattern regexCellRefPattern = Pattern.compile(regexCellRef);
-    private static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
+    public static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
     private static final Pattern regexJointedCellRefPattern = Pattern.compile(regexJointedCellRef);
 
     public static List<String> getFormulaCellRefs(String formula){
@@ -84,10 +87,6 @@ public class Util {
                 row = cellRef.getRow();
                 col = cellRef.getCol();
                 cellRefs.add(cellRef.getCellName());
-//                resultRef += cellRef.getCellName();
-//                if(iterator.hasNext()){
-//                    resultRef += ",";
-//                }
             }
             if( (rowRange || colRange) && cellRefs.size() > 1 ){
                 resultRef = cellRefs.get(0) + ":" + cellRefs.get( cellRefs.size() -1 );
@@ -223,6 +222,6 @@ public class Util {
 
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = obj.getClass().getMethod("set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1), new Class[]{String.class} );
-        method.invoke(obj, new String[]{propertyValue});
+        method.invoke(obj, propertyValue);
     }
 }

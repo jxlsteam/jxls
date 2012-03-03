@@ -227,6 +227,10 @@ public class XlsArea implements Area {
     public Size getSize() {
         return size;
     }
+    
+    public AreaRef getAreaRef(){
+        return new AreaRef(startCellRef, size);
+    }
 
 
     public void processFormulas() {

@@ -16,6 +16,8 @@ public interface Area {
 
     CellRef getStartCellRef();
     Size getSize();
+    
+    AreaRef getAreaRef();
 
     List<CommandData> getCommandDataList();
     void addCommand(AreaRef ref, Command command);
