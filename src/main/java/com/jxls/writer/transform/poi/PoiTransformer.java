@@ -19,9 +19,12 @@ import java.util.*;
  *         Date: 1/23/12 2:36 PM
  */
 public class PoiTransformer extends AbstractTransformer {
+    public static final int MAX_COLUMN_TO_READ_COMMENT = 10; 
+    
     static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
-
+    
     Workbook workbook;
+    
 
     private PoiTransformer(Workbook workbook) {
         this.workbook = workbook;
@@ -151,20 +154,43 @@ public class PoiTransformer extends AbstractTransformer {
         if( cell == null ) return;
         cell.setCellType(Cell.CELL_TYPE_BLANK);
         cell.setCellStyle(workbook.getCellStyleAt((short) 0));
+//  todo: after removing cell comment MS Excel displays warning 'File Error: data may have been lost' when opening the file  (seems like POI issue)
+//        if( cell.getCellComment() != null ){
+//            cell.removeCellComment();
+//        }
     }
 
     public List<CellData> getCommentedCells() {
         List<CellData> commentedCells = new ArrayList<CellData>();
         for (SheetData sheetData : sheetMap.values()) {
             for (RowData rowData : sheetData) {
+                if( rowData == null ) continue;
                 for (CellData cellData : rowData) {
                     if(cellData != null && cellData.getCellComment() != null ){
                         commentedCells.add(cellData);
                     }
                 }
+                if( rowData.getNumberOfCells() == 0 ){
+                    List<CellData> commentedCellData = readCommentsFromSheet(sheetData.getSheet(), rowData.getRow());
+                    commentedCells.addAll( commentedCellData );
+                }
             }
         }
         return commentedCells;
+    }
+
+    private List<CellData> readCommentsFromSheet(Sheet sheet, Row row) {
+        List<CellData> commentDataCells = new ArrayList<CellData>();
+        int rowNum = row.getRowNum();
+        for(int i = 0; i <= MAX_COLUMN_TO_READ_COMMENT; i++){
+            Comment comment = sheet.getCellComment(rowNum, i);
+            if( comment != null && comment.getString() != null ){
+                CellData cellData = new CellData( new CellRef(sheet.getSheetName(), rowNum, i) );
+                cellData.setCellComment( comment.getString().getString() );
+                commentDataCells.add( cellData );
+            }
+        }
+        return commentDataCells;
     }
 
 }

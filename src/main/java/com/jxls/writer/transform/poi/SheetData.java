@@ -17,9 +17,11 @@ public class SheetData implements Iterable<RowData>{
     int[] columnWidth;
     List<RowData> rowDataList = new ArrayList<RowData>();
     List<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();
+    Sheet sheet;
     
     public static SheetData createSheetData(Sheet sheet){
         SheetData sheetData = new SheetData();
+        sheetData.sheet = sheet;
         sheetData.sheetName = sheet.getSheetName();
         sheetData.columnWidth = new int[256];
         for(int i = 0; i < 256; i++){
@@ -63,5 +65,9 @@ public class SheetData implements Iterable<RowData>{
 
     public Iterator<RowData> iterator() {
         return rowDataList.iterator();
+    }
+
+    public Sheet getSheet() {
+        return sheet;
     }
 }

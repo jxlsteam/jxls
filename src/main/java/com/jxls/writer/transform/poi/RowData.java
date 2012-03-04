@@ -15,10 +15,12 @@ import java.util.List;
 public class RowData implements Iterable<CellData>{
     short height;
     List<CellData> cellDataList = new ArrayList<CellData>();
+    Row row;
 
     public static RowData createRowData(Row row){
         if( row == null ) return null;
         RowData rowData = new RowData();
+        rowData.row = row;
         rowData.height = row.getHeight();
         int numberOfCells = row.getLastCellNum();
         for(int cellIndex = 0; cellIndex < numberOfCells; cellIndex++){
@@ -52,5 +54,9 @@ public class RowData implements Iterable<CellData>{
 
     public Iterator<CellData> iterator() {
         return cellDataList.iterator();
+    }
+
+    public Row getRow() {
+        return row;
     }
 }
