@@ -13,6 +13,9 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class AreaCommand extends AbstractCommand {
+
+    String clearCells;
+
     public String getName() {
         return "area";
     }
@@ -21,4 +24,11 @@ public class AreaCommand extends AbstractCommand {
         return Size.ZERO_SIZE;
     }
 
+    public String getClearCells() {
+        return clearCells;
+    }
+
+    public void setClearCells(String clearCells) {
+        this.clearCells = clearCells;
+    }
 }

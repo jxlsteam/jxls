@@ -21,6 +21,7 @@ import com.jxls.writer.common.CellRef
 import com.jxls.writer.common.AreaRef
 import com.jxls.writer.command.EachCommand
 import com.jxls.writer.command.IfCommand
+import com.jxls.writer.area.XlsArea
 
 /**
  * @author Leonid Vysochyn
@@ -68,7 +69,7 @@ class XlsCommentAreaBuilderTest extends Specification {
     def "unit test for build"(){
             def transformer = Mock(Transformer)
             def cellData0 = new CellData(new CellRef("sheet1!B1"))
-            cellData0.setCellComment("jx:area(lastCell='G8')")
+            cellData0.setCellComment("jx:area(lastCell='G8' clearCells='true')")
             def cellData1 = new CellData(new CellRef("sheet1!B2"))
             cellData1.setCellComment("jx:each(items='departments', var='department', lastCell='G7')")
             def cellData2 = new CellData(new CellRef("sheet1!C3"))
@@ -94,6 +95,8 @@ class XlsCommentAreaBuilderTest extends Specification {
             // area at sheet1 checks
             def area1 = areas[0]
             area1.getAreaRef() == new AreaRef("sheet1!B1:G8")
+            area1 instanceof  XlsArea
+            ((XlsArea)area1).clearCellsBeforeApply == true
             def commandDataList = area1.getCommandDataList()
             commandDataList.size() == 1
             commandDataList[0].getAreaRef() == new AreaRef("sheet1!B2:G7")
