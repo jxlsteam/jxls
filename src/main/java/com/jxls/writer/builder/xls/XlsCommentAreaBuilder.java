@@ -77,20 +77,9 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             AreaRef commandAreaRef = commandData.getAreaRef();
             List<Area> commandAreas = commandData.getCommand().getAreaList();
             Area minArea = null;
-            for (Area area : allAreas) {
-                if( commandAreas.contains( area ) || !area.getAreaRef().contains(commandAreaRef)) continue;
-                if( minArea == null || minArea.getAreaRef().contains(area.getAreaRef())){
-                    minArea = area;
-                }
-            }
-            if( minArea == null ) continue;
             List<Area> minAreas = new ArrayList<Area>();
             for (Area area : allAreas) {
-                if( minArea.getAreaRef().equals(area.getAreaRef())){
-                    minAreas.add(area);
-                }
-            }
-            for (Area area : minAreas) {
+                if( commandAreas.contains( area ) || !area.getAreaRef().contains(commandAreaRef)) continue;
                 boolean belongsToNextCommand = false;
                 for (int j = i + 1; j < allCommands.size(); j++) {
                     CommandData nextCommand = allCommands.get(j);
@@ -99,9 +88,17 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                         break;
                     }
                 }
-                if( !belongsToNextCommand ){
-                    area.addCommand( commandData.getAreaRef(), commandData.getCommand() );
+                if( belongsToNextCommand || (minArea != null && !minArea.getAreaRef().contains(area.getAreaRef())) ) continue;
+                if( minArea != null && minArea.equals( area ) ){
+                    minAreas.add( area );
+                }else{
+                    minArea = area;
+                    minAreas.clear();
+                    minAreas.add( minArea );
                 }
+            }
+            for (Area area : minAreas) {
+                area.addCommand( commandData.getAreaRef(), commandData.getCommand() );
             }
         }
         return userAreas;
