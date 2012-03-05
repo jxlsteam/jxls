@@ -1,9 +1,9 @@
 package com.jxls.writer.transform.poi;
 
-import com.jxls.writer.common.CellData;
-import com.jxls.writer.common.CellRef;
-import com.jxls.writer.common.Context;
+import com.jxls.writer.common.*;
 import com.jxls.writer.transform.AbstractTransformer;
+import com.jxls.writer.common.RowData;
+import com.jxls.writer.common.SheetData;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -49,7 +49,7 @@ public class PoiTransformer extends AbstractTransformer {
         int numberOfSheets = workbook.getNumberOfSheets();
         for(int i = 0; i < numberOfSheets; i++){
             Sheet sheet = workbook.getSheetAt(i);
-            SheetData sheetData = SheetData.createSheetData(sheet);
+            SheetData sheetData = PoiSheetData.createSheetData(sheet);
             sheetMap.put(sheetData.getSheetName(), sheetData);
         }
     }
@@ -93,7 +93,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     private void copyMergedRegions(CellData sourceCellData, CellRef destCell) {
         if(sourceCellData.getSheetName() == null ){ throw new IllegalArgumentException("Sheet name is null in copyMergedRegion");}
-        SheetData sheetData = sheetMap.get( sourceCellData.getSheetName() );
+        PoiSheetData sheetData = (PoiSheetData)sheetMap.get( sourceCellData.getSheetName() );
         CellRangeAddress cellMergedRegion = null;
         for (CellRangeAddress mergedRegion : sheetData.getMergedRegions()) {
             if(mergedRegion.getFirstRow() == sourceCellData.getRow() && mergedRegion.getFirstColumn() == sourceCellData.getCol()){
@@ -112,7 +112,6 @@ public class PoiTransformer extends AbstractTransformer {
     private void findAndRemoveExistingCellRegion(CellRef cellRef) {
         Sheet destSheet = workbook.getSheet(cellRef.getSheetName());
         int numMergedRegions = destSheet.getNumMergedRegions();
-        List<Integer> regionsToRemove = new ArrayList<Integer>();
         for(int i = 0; i < numMergedRegions; i++){
             CellRangeAddress mergedRegion = destSheet.getMergedRegion(i);
             if( mergedRegion.getFirstRow() <= cellRef.getRow() && mergedRegion.getLastRow() >= cellRef.getRow() &&
@@ -171,7 +170,7 @@ public class PoiTransformer extends AbstractTransformer {
                     }
                 }
                 if( rowData.getNumberOfCells() == 0 ){
-                    List<CellData> commentedCellData = readCommentsFromSheet(sheetData.getSheet(), rowData.getRow());
+                    List<CellData> commentedCellData = readCommentsFromSheet(((PoiSheetData)sheetData).getSheet(), ((PoiRowData)rowData).getRow());
                     commentedCells.addAll( commentedCellData );
                 }
             }

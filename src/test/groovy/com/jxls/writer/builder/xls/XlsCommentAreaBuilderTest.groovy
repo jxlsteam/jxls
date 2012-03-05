@@ -27,46 +27,8 @@ import com.jxls.writer.area.XlsArea
  * @author Leonid Vysochyn
  */
 class XlsCommentAreaBuilderTest extends Specification {
-    Workbook wb;
-    
-    def setup(){
-        wb = new HSSFWorkbook()
-        Sheet sheet = wb.createSheet("sheet1")
-        Row row0 = sheet.createRow(0)
-        row0.createCell(0).setCellValue(1.5)
-        Row row1 = sheet.createRow(1)
-        setCellComment(row1.createCell(1),"jx:each(items='departments', var='department', lastCell='F13')")
-        setCellComment(row1.createCell(2), "each(items='items', var='item', lastCell='E2')")
-        Row row2 = sheet.createRow(2)
-        row2.createCell(0).setCellValue("XYZ")
-        row2.createCell(1).setCellValue('${2*x}')
-        Row row4 = sheet.createRow(4)
-        row4.createCell(0).setCellValue('${department.chief.name}')
-        Row row8 = sheet.createRow(8)
-        Cell cell = row8.createCell(0)
-        cell.setCellValue('${employee.name}')
-        setCellComment(cell, """
-        jx:each(items='department.staff' var="employee"      lastCell="F9")
-        jx:if(condition="employee.payment <= 2000", lastCell="F9",  areas=["A9:F9","A18:F18"])""")
-        sheet.createRow(9).createCell(0).setCellValue("Totals")
-        sheet.createRow(11).createCell(5).setCellValue('$[F5+F10]')
-        sheet.createRow(17).createCell(0).setCellValue('${employee.name}')
-        Sheet sheet2 = wb.createSheet("sheet2")
-        setCellComment(sheet2.createRow(1).createCell(1), 'jx:each(items="myItems"    var="mywar"      lastCell="D2" areas=["C9:F9"])')
-        setCellComment(sheet2.createRow(1).createCell(7), 'jx:if(condition="myvar.value==2" lastCell="K2" )')
-        setCellComment(sheet2.createRow(4).createCell(0), ' jx:each( items = "employees" var="employee" lastCell="D5") ')
-    }
-    @Ignore
-    def "integration test for build"(){
-        def transformer = PoiTransformer.createTransformer(wb);
-        when:
-            def areaBuilder = new XlsCommentAreaBuilder(transformer)
-            List<Area> areas = areaBuilder.build()
-        then:
-            areas.size() == 3
-    }
 
-    def "unit test for build"(){
+    def "test build"(){
             def transformer = Mock(Transformer)
             def cellData0 = new CellData(new CellRef("sheet1!B1"))
             cellData0.setCellComment("jx:area(lastCell='G8' clearCells='true')")

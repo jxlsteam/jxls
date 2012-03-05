@@ -2,9 +2,8 @@ package com.jxls.writer.transform;
 
 import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
-import com.jxls.writer.transform.poi.PoiCellData;
-import com.jxls.writer.transform.poi.RowData;
-import com.jxls.writer.transform.poi.SheetData;
+import com.jxls.writer.common.RowData;
+import com.jxls.writer.common.SheetData;
 
 import java.util.*;
 
@@ -43,13 +42,13 @@ public abstract class AbstractTransformer implements Transformer {
         }
     }
 
-    public PoiCellData getCellData(CellRef cellRef) {
+    public CellData getCellData(CellRef cellRef) {
         if (cellRef == null || cellRef.getSheetName() == null) return null;
         SheetData sheetData = sheetMap.get(cellRef.getSheetName());
         if (sheetData == null) return null;
         RowData rowData = sheetData.getRowData(cellRef.getRow());
         if (rowData == null) return null;
-        return (PoiCellData)rowData.getCellData(cellRef.getCol());
+        return rowData.getCellData(cellRef.getCol());
     }
 
     public boolean isIgnoreColumnProps() {

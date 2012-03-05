@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Row
  * @author Leonid Vysochyn
  * Date: 2/1/12 2:03 PM
  */
-class RowDataTest extends Specification{
+class PoiRowDataTest extends Specification{
     Workbook wb;
 
     def setup(){
@@ -41,7 +41,7 @@ class RowDataTest extends Specification{
     def "test createRowData"(){
         when:
             def row1 = wb.getSheetAt(0).getRow(1)
-            def rowData = RowData.createRowData(row1);
+            def rowData = PoiRowData.createRowData(row1);
         then:
             rowData.getHeight() == row1.getHeight()
             rowData.getNumberOfCells() == 4
@@ -53,6 +53,6 @@ class RowDataTest extends Specification{
         given:
             def row5 = wb.getSheetAt(0).getRow(5)
         expect:
-            RowData.createRowData(row5) == null
+            PoiRowData.createRowData(row5) == null
     }
 }

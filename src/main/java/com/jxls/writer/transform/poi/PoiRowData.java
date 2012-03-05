@@ -2,24 +2,19 @@ package com.jxls.writer.transform.poi;
 
 import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
+import com.jxls.writer.common.RowData;
 import org.apache.poi.ss.usermodel.Row;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 2/1/12 2:01 PM
  */
-public class RowData implements Iterable<CellData>{
-    short height;
-    List<CellData> cellDataList = new ArrayList<CellData>();
+public class PoiRowData extends RowData {
     Row row;
 
     public static RowData createRowData(Row row){
         if( row == null ) return null;
-        RowData rowData = new RowData();
+        PoiRowData rowData = new PoiRowData();
         rowData.row = row;
         rowData.height = row.getHeight();
         int numberOfCells = row.getLastCellNum();
@@ -33,27 +28,6 @@ public class RowData implements Iterable<CellData>{
             }
         }
         return rowData;
-    }
-    
-    public int getNumberOfCells(){
-        return cellDataList.size();
-    }
-    
-    public CellData getCellData(int col){
-        if( col < cellDataList.size() ) return cellDataList.get(col);
-        else return null;
-    }
-    
-    public void addCellData(CellData cellData){
-        cellDataList.add(cellData);
-    }
-
-    public short getHeight() {
-        return height;
-    }
-
-    public Iterator<CellData> iterator() {
-        return cellDataList.iterator();
     }
 
     public Row getRow() {

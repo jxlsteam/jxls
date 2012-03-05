@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Row
  * @author Leonid Vysochyn
  * Date: 2/1/12 12:05 PM
  */
-class SheetDataTest extends Specification{
+class PoiSheetDataTest extends Specification{
     Workbook wb;
 
     def setup(){
@@ -41,7 +41,7 @@ class SheetDataTest extends Specification{
     def "test read sheet data"(){
         when:
             Sheet sheet = wb.getSheetAt(0)
-            SheetData sheetData = SheetData.createSheetData(sheet)
+            PoiSheetData sheetData = PoiSheetData.createSheetData(sheet)
         then:
             sheet.getSheetName() == sheetData.getSheetName()
             sheet.getColumnWidth(2) == sheetData.getColumnWidth(2)
