@@ -140,6 +140,6 @@ class EachCommandTest extends Specification{
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
-            0 * _
+            0 * _._
     }
 }
