@@ -6,6 +6,7 @@ import com.jxls.writer.common.Context;
 import com.jxls.writer.common.Size;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;
+import com.jxls.writer.util.Util;
 
 import java.util.Collection;
 
@@ -19,6 +20,7 @@ public class EachCommand extends AbstractCommand {
     
     String var;
     String items;
+    String select;
     Area area;
     Direction direction = Direction.DOWN;
     CellRefGenerator cellRefGenerator;
@@ -88,10 +90,18 @@ public class EachCommand extends AbstractCommand {
         this.items = items;
     }
 
+    public String getSelect() {
+        return select;
+    }
+
+    public void setSelect(String select) {
+        this.select = select;
+    }
+
     @Override
     public void addArea(Area area) {
         if( areaList.size() >= 1){
-            throw new IllegalArgumentException("You can add only a single area to 'Each' command");
+            throw new IllegalArgumentException("You can add only a single area to 'each' command");
         }
         super.addArea(area);    
         this.area = area;
@@ -105,6 +115,12 @@ public class EachCommand extends AbstractCommand {
         CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
+            if( select != null ){
+                if( !Util.isConditionTrue( select, context )) {
+                    context.removeVar(var);
+                    continue;
+                }
+            }
             Size size = area.applyAt(currentCell, context);
             index++;
             if( cellRefGenerator != null ){

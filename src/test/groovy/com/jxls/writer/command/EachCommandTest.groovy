@@ -129,4 +129,17 @@ class EachCommandTest extends Specification{
         1 * area.applyAt(new CellRef("def!B2"), context) >> new Size(2,3)
         1 * area.applyAt(new CellRef("ghi!C2"), context) >> new Size(4,3)
     }
+
+    def "test select attribute"(){
+        def eachArea = Mock(Area)
+        def context = new Context()
+        context.putVar("items", [0,1,2,3,4,5,1])
+        def eachCommand = new EachCommand("var", "items", eachArea)
+        when:
+            eachCommand.setSelect(" var % 2 ==0")
+            eachCommand.applyAt(new CellRef("sheet1!A1"), context)
+        then:
+            3 * eachArea.applyAt(_, context ) >> new Size(1,2)
+            0 * _
+    }
 }
