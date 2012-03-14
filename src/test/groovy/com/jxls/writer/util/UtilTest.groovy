@@ -4,6 +4,7 @@ import spock.lang.Specification
 import com.jxls.writer.common.CellRef
 import com.jxls.writer.util.Util
 import com.jxls.writer.common.Context
+import com.jxls.writer.expression.Dummy
 
 /**
  * @author Leonid Vysochyn
@@ -112,5 +113,33 @@ class UtilTest extends Specification{
             xValue  | result
             2       | false
             3       | true
+    }
+
+    def "test get object property"(){
+        expect:
+            Util.getObjectProperty(new Dummy(str, val), prop) == result
+        where:
+            str  |  val | prop      | result
+            "Abc"| 0    | "strValue"| "Abc"
+            "x y"| 0    | "strValue"| "x y"
+            null | 0    | "strValue"| null
+            null | -5   | "intValue"| -5
+            ""   | 100  | "intValue"| 100
+    }
+    
+    def "test group collection"(){
+        def list = [new Dummy("abc", 1), new Dummy("ab", 2), new Dummy("abc", 3), new Dummy("bc", 2), new Dummy("ac", 4), new Dummy("ab", 1)]
+        when:
+            def groups = Util.groupCollection( list, "strValue", "asc" )
+        then:
+            groups.size() == 4
+            groups[0].item == new Dummy("ab", 2)
+            groups[0].items == [ new Dummy("ab", 2), new Dummy("ab", 1) ]
+            groups[1].item == new Dummy("abc", 1)
+            groups[1].items == [ new Dummy("abc", 1), new Dummy("abc", 3)]
+            groups[2].item == new Dummy("ac", 4)
+            groups[2].items == [ new Dummy("ac", 4) ]
+            groups[3].item == new Dummy("bc", 2)
+            groups[3].items == [new Dummy("bc", 2)]
     }
 }

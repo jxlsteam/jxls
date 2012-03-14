@@ -113,10 +113,14 @@ public class EachCommand extends AbstractCommand {
         int height = 0;
         int index = 0;
         CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
+        JexlExpressionEvaluator selectEvaluator = null;
+        if( select != null ){
+            selectEvaluator = new JexlExpressionEvaluator( select );
+        }
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
-            if( select != null ){
-                if( !Util.isConditionTrue( select, context )) {
+            if( selectEvaluator != null ){
+                if( !Util.isConditionTrue( selectEvaluator, context )) {
                     context.removeVar(var);
                     continue;
                 }

@@ -8,7 +8,6 @@ import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.MapContext;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -17,23 +16,37 @@ import java.util.Map;
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluator implements ExpressionEvaluator{
-    Map<String, Object> context;
+    private Expression jexlExpression;
+    private static JexlEngine jexl = new JexlEngine();
+    JexlContext jexlContext;
+
+    public JexlExpressionEvaluator(String expression) {
+        jexlExpression = jexl.createExpression( expression );
+    }
 
     public JexlExpressionEvaluator(Map<String, Object> context) {
-        this.context = context;
+        jexlContext = new MapContext(context);
     }
 
     public Object evaluate(String expression) {
         try {
-            JexlEngine jexl = new JexlEngine();
-            Expression jexlExpression = jexl.createExpression( expression );
-            JexlContext jexlContext = new MapContext();
-            for(Map.Entry<String, Object> entry : context.entrySet()){
-                jexlContext.set(entry.getKey(), entry.getValue());
-            }
+            jexlExpression = jexl.createExpression( expression );
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
         }
+    }
+    
+    public Object evaluate(Map<String, Object> context){
+        jexlContext = new MapContext(context);
+        try {
+            return jexlExpression.evaluate( jexlContext );
+        } catch (Exception e) {
+            throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getExpression(), e);
+        }
+    }
+
+    public Expression getJexlExpression() {
+        return jexlExpression;
     }
 }

@@ -1,9 +1,6 @@
 package com.jxls.writer.util;
 
-import com.jxls.writer.common.CellRef;
-import com.jxls.writer.common.CellRefColPrecedenceComparator;
-import com.jxls.writer.common.CellRefRowPrecedenceComparator;
-import com.jxls.writer.common.Context;
+import com.jxls.writer.common.*;
 import com.jxls.writer.expression.ExpressionEvaluator;
 import com.jxls.writer.expression.JexlExpressionEvaluator;
 import org.slf4j.Logger;
@@ -206,11 +203,19 @@ public class Util {
         return (Boolean)conditionResult;
     }
 
+    public static Boolean isConditionTrue(JexlExpressionEvaluator evaluator, Context context){
+        Object conditionResult = evaluator.evaluate(context.toMap());
+        if( !(conditionResult instanceof Boolean) ){
+            throw new RuntimeException("Condition result is not a boolean value - " + evaluator.getJexlExpression().getExpression());
+        }
+        return (Boolean)conditionResult;
+    }
+
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
         try {
             setObjectProperty(obj, propertyName, propertyValue);
         } catch (Exception e) {
-            String msg = "failed to set attribute '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
+            String msg = "failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
             if( ignoreNonExisting ){
                 logger.info(msg, e);
             }else{
@@ -224,4 +229,57 @@ public class Util {
         Method method = obj.getClass().getMethod("set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1), new Class[]{String.class} );
         method.invoke(obj, propertyValue);
     }
+    
+    public static Object getObjectProperty(Object obj, String propertyName, boolean failSilently){
+        try {
+            return getObjectProperty(obj, propertyName);
+        } catch (Exception e) {
+            String msg = "failed to get property '" + propertyName + "' of object " + obj;
+            if( failSilently ){
+                logger.info(msg, e);
+                return null;
+            }else{
+                logger.warn(msg);
+                throw new IllegalArgumentException(e);
+            }
+        }
+    }
+    
+    public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = obj.getClass().getMethod("get" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1));
+        return method.invoke(obj);
+    }
+    
+    public static Collection<GroupData> groupCollection(Collection collection, String groupProperty, String groupOrder){
+        Collection<GroupData> result = new ArrayList<GroupData>();
+        if( collection != null ){
+
+            Set groupByValues;
+            if (groupOrder != null) {
+                if ("desc".equalsIgnoreCase(groupOrder)) {
+                    groupByValues = new TreeSet(Collections.reverseOrder());
+                } else {
+                    groupByValues = new TreeSet();
+                }
+            } else {
+                groupByValues = new LinkedHashSet();
+            }
+            for (Object bean : collection) {
+                groupByValues.add(getObjectProperty(bean, groupProperty, true));
+            }
+            for (Iterator iterator = groupByValues.iterator(); iterator.hasNext();) {
+                Object groupValue = iterator.next();
+                List groupItems = new ArrayList();
+                for (Object bean : collection) {
+                    if( groupValue.equals(getObjectProperty(bean, groupProperty, true)) ){
+                        groupItems.add( bean );
+                    }
+                }
+                GroupData groupData = new GroupData( groupItems.get(0), groupItems );
+                result.add(groupData);
+            }
+        }
+        return result;
+    }
+    
 }
