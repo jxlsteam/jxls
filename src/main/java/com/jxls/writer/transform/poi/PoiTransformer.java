@@ -178,6 +178,50 @@ public class PoiTransformer extends AbstractTransformer {
         return commentedCells;
     }
 
+    public void addImage(AreaRef areaRef, int imageIdx) {
+        CreationHelper helper = workbook.getCreationHelper();
+        Sheet sheet = workbook.getSheet(areaRef.getSheetName());
+        Drawing drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = helper.createClientAnchor();
+        anchor.setCol1(areaRef.getFirstCellRef().getCol());
+        anchor.setRow1(areaRef.getFirstCellRef().getRow());
+        anchor.setCol2(areaRef.getLastCellRef().getCol());
+        anchor.setRow2(areaRef.getLastCellRef().getRow());
+        drawing.createPicture(anchor, imageIdx);
+    }
+
+    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
+        int poiPictureType = findPoiPictureTypeByImageType(imageType);
+        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
+        addImage(areaRef, pictureIdx);
+    }
+
+
+    private int findPoiPictureTypeByImageType(ImageType imageType){
+        int poiType = -1;
+        switch (imageType){
+            case PNG:
+                poiType = Workbook.PICTURE_TYPE_PNG;
+                break;
+            case JPEG:
+                poiType = Workbook.PICTURE_TYPE_JPEG;
+                break;
+            case EMF:
+                poiType = Workbook.PICTURE_TYPE_EMF;
+                break;
+            case WMF:
+                poiType = Workbook.PICTURE_TYPE_WMF;
+                break;
+            case DIB:
+                poiType = Workbook.PICTURE_TYPE_DIB;
+                break;
+            case PICT:
+                poiType = Workbook.PICTURE_TYPE_PICT;
+                break;
+        }
+        return poiType;
+    }
+
     private List<CellData> readCommentsFromSheet(Sheet sheet, Row row) {
         List<CellData> commentDataCells = new ArrayList<CellData>();
         int rowNum = row.getRowNum();

@@ -1,6 +1,7 @@
 package com.jxls.writer.command;
 
 import com.jxls.writer.area.Area;
+import com.jxls.writer.transform.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,17 @@ import java.util.List;
 public abstract class AbstractCommand implements Command {
     List<Area> areaList = new ArrayList<Area>();
 
-    public void addArea(Area area) {
+    public Command addArea(Area area) {
         areaList.add(area);
+        return this;
     }
 
     public List<Area> getAreaList() {
         return areaList;
+    }
+
+    protected Transformer getTransformer(){
+        if( areaList.isEmpty() ) return null;
+        return areaList.get(0).getTransformer();
     }
 }

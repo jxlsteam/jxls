@@ -50,7 +50,7 @@ public class IfCommand extends AbstractCommand {
     }
 
     @Override
-    public void addArea(Area area) {
+    public Command addArea(Area area) {
         if( areaList.size() >= 2 ){
             throw new IllegalArgumentException("Cannot add any more areas to this IfCommand. You can add only 1 area for 'if' part and 1 area for 'else' part");
         }
@@ -59,7 +59,7 @@ public class IfCommand extends AbstractCommand {
         }else {
             elseArea = area;
         }
-        super.addArea(area);
+        return super.addArea(area);
     }
 
     public Size applyAt(CellRef cellRef, Context context) {

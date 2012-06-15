@@ -16,7 +16,7 @@ public interface Command {
 
     String getName();
     List<Area> getAreaList();
-    void addArea(Area area);
+    Command addArea(Area area);
 
     Size applyAt(CellRef cellRef, Context context);
 

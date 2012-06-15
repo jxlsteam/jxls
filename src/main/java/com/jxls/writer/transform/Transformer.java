@@ -1,8 +1,6 @@
 package com.jxls.writer.transform;
 
-import com.jxls.writer.common.CellRef;
-import com.jxls.writer.common.CellData;
-import com.jxls.writer.common.Context;
+import com.jxls.writer.common.*;
 
 import java.util.List;
 import java.util.Set;
@@ -20,4 +18,6 @@ public interface Transformer {
     void resetTargetCellRefs();
     void clearCell(CellRef cellRef);
     List<CellData> getCommentedCells();
+    void addImage(AreaRef areaRef, int imageIdx);
+    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
 }

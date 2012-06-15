@@ -99,12 +99,12 @@ public class EachCommand extends AbstractCommand {
     }
 
     @Override
-    public void addArea(Area area) {
+    public Command addArea(Area area) {
         if( areaList.size() >= 1){
             throw new IllegalArgumentException("You can add only a single area to 'each' command");
         }
-        super.addArea(area);    
         this.area = area;
+        return super.addArea(area);
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
