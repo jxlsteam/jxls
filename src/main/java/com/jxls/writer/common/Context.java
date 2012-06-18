@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Leonid Vysochyn
  */
 public class Context {
-    Map<String, Object> varMap = new HashMap<String, Object>();
+    protected Map<String, Object> varMap = new HashMap<String, Object>();
 
     public Context() {
     }

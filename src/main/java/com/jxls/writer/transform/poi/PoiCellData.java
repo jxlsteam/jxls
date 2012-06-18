@@ -99,9 +99,13 @@ public class PoiCellData extends CellData {
 
     public void writeToCell(Cell cell, Context context){
         evaluate(context);
-        updateCellGeneralInfo(cell);
-        updateCellContents( cell );
-        updateCellStyle( cell );
+        if( evaluationResult != null && evaluationResult instanceof WritableCellValue){
+            ((WritableCellValue)evaluationResult).writeToCell(cell, context);
+        }else{
+            updateCellGeneralInfo(cell);
+            updateCellContents( cell );
+            updateCellStyle( cell );
+        }
     }
 
     private void updateCellGeneralInfo(Cell cell) {

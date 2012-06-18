@@ -23,4 +23,12 @@ public class PoiUtil {
         comment.setAuthor(commentAuthor != null ? commentAuthor : "");
         cell.setCellComment( comment );
     }
+
+    public WritableCellValue hyperlink(String address, String link, String linkTypeString){
+        return new WritableHyperlink(address, link, linkTypeString);
+    }
+
+    public WritableCellValue hyperlink(String address, String linkTypeString){
+        return new WritableHyperlink(address, linkTypeString);
+    }
 }

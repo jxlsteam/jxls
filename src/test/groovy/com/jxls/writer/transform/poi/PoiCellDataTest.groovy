@@ -9,6 +9,8 @@ import com.jxls.writer.common.Context
 import org.apache.poi.ss.usermodel.Cell
 
 import com.jxls.writer.common.CellRef
+import spock.lang.Ignore
+import org.apache.poi.common.usermodel.Hyperlink
 
 /**
  * @author Leonid Vysochyn
@@ -39,7 +41,9 @@ class PoiCellDataTest extends Specification{
         row2.createCell(4).setCellValue('${2*x}x and ${2*y} ${cur}')
         Sheet sheet2 = wb.createSheet("sheet 2")
         sheet2.createRow(0).createCell(0)
-        sheet2.createRow(1).createCell(1)
+        sheet2.createRow(1).createCell(1);
+//        sheet2.getRow(1).createCell(2).setCellValue('''${poi.hyperlink('http://google.com/', 'URL')}''')
+        sheet2.getRow(1).createCell(2).setCellValue('''${poi.hyperlink('http://google.com/', 'Google', 'URL')}''')
     }
 
     def "test get cell Value"(){
@@ -153,8 +157,24 @@ class PoiCellDataTest extends Specification{
             wb.getSheetAt(1).getRow(1).getCell(1).getStringCellValue() == "SUM(U_(B1,B2)"
     }
 
+    // todo:
+    @Ignore("Not implemented yet")
     def "test write merged cell"(){
 
+    }
+
+    def "test hyperlink cell"(){
+        setup:
+            PoiCellData cellData = PoiCellData.createCellData(new CellRef("sheet 2", 1, 2), wb.getSheetAt(1).getRow(1).getCell(2))
+            def poiContext = new PoiContext()
+        when:
+            cellData.writeToCell(wb.getSheetAt(1).getRow(1).getCell(2), poiContext)
+        then:
+            def hyperlink = wb.getSheetAt(1).getRow(1).getCell(2).getHyperlink()
+            hyperlink != null
+            hyperlink.address == "http://google.com/"
+            wb.getSheetAt(1).getRow(1).getCell(2).getStringCellValue() == "Google"
+            hyperlink.type == Hyperlink.LINK_URL
     }
 
 }
