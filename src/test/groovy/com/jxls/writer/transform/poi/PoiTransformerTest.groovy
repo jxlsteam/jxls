@@ -14,6 +14,10 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.usermodel.Font
+import org.apache.poi.util.IOUtils
+import com.jxls.writer.common.AreaRef
+import com.jxls.writer.common.ImageType
+import spock.lang.Ignore
 
 /**
  * @author Leonid Vysochyn
@@ -292,6 +296,19 @@ class PoiTransformerTest extends Specification{
             commentedCells.size() == 2
             commentedCells.get(0).getCellComment() == "comment 1"
             commentedCells.get(1).getCellComment() == "comment 2"
+    }
+
+    @Ignore("the test does not work with dynamically created workbook for some reason")
+    def "test addImage"(){
+        given:
+            InputStream imageInputStream = PoiTransformerTest.class.getResourceAsStream("ja.png");
+            byte[] imageBytes = IOUtils.toByteArray(imageInputStream);
+        when:
+            def transformer = PoiTransformer.createTransformer(wb)
+            transformer.addImage(new AreaRef("'sheet 1'!A1:C10"), imageBytes, ImageType.PNG);
+        then:
+            def pictures = wb.getAllPictures()
+            pictures.size() == 1
     }
 
 }
