@@ -7,6 +7,7 @@ import com.jxls.writer.builder.AreaBuilder;
 import com.jxls.writer.command.Command;
 import com.jxls.writer.command.EachCommand;
 import com.jxls.writer.command.IfCommand;
+import com.jxls.writer.command.ImageCommand;
 import com.jxls.writer.common.AreaRef;
 import com.jxls.writer.common.CellData;
 import com.jxls.writer.common.CellRef;
@@ -40,6 +41,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put("each", EachCommand.class);
         commandMap.put("if", IfCommand.class);
         commandMap.put("area", AreaCommand.class);
+        commandMap.put("image", ImageCommand.class);
     }
 
     Transformer transformer;

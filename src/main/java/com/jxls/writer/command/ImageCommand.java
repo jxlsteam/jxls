@@ -40,6 +40,10 @@ public class ImageCommand extends AbstractCommand {
         this.imgBean = imgBean;
     }
 
+    public void setImageType(String strType){
+        imageType = ImageType.valueOf(strType);
+    }
+
     @Override
     public Command addArea(Area area) {
         if( areaList.size() >= 1){

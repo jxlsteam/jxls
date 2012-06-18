@@ -199,6 +199,9 @@ public class PoiTransformer extends AbstractTransformer {
 
     private int findPoiPictureTypeByImageType(ImageType imageType){
         int poiType = -1;
+        if( imageType == null ){
+            throw new IllegalArgumentException("Image type is undefined");
+        }
         switch (imageType){
             case PNG:
                 poiType = Workbook.PICTURE_TYPE_PNG;
