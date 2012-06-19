@@ -10,6 +10,9 @@ import com.jxls.writer.common.CellRef;
  *         Date: 1/25/12 1:12 PM
  */
 public class CommandData {
+    private CellRef startCellRefCopy;
+    private Size sizeCopy;
+
     CellRef startCellRef;
     Size size;
     Command command;
@@ -18,6 +21,8 @@ public class CommandData {
         startCellRef = areaRef.getFirstCellRef();
         size = areaRef.getSize();
         this.command = command;
+        startCellRefCopy = startCellRef;
+        sizeCopy = size;
     }
     
     public CommandData(String areaRef, Command command){
@@ -48,5 +53,11 @@ public class CommandData {
 
     public void setStartCellRef(CellRef startCellRef) {
         this.startCellRef = startCellRef;
+    }
+
+    void reset(){
+        startCellRef = startCellRefCopy;
+        size = sizeCopy;
+        command.reset();
     }
 }

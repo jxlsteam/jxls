@@ -312,6 +312,23 @@ public class XlsArea implements Area {
         return areaListeners;
     }
 
+    public List<Command> findCommandByName(String name) {
+        List<Command> commands = new ArrayList<Command>();
+        for (CommandData commandData : commandDataList) {
+            if( name != null && name.equals(commandData.getCommand().getName()) ){
+                commands.add(commandData.getCommand());
+            }
+        }
+        return commands;
+    }
+
+    public void reset() {
+        for (CommandData commandData : commandDataList) {
+            commandData.reset();
+        }
+        transformer.resetTargetCellRefs();
+    }
+
     private String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
         return (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"");
     }

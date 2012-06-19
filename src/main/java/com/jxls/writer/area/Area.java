@@ -27,4 +27,8 @@ public interface Area {
     
     void addAreaListener(AreaListener listener);
     List<AreaListener> getAreaListeners();
+
+    List<Command> findCommandByName(String name);
+
+    void reset();
 }

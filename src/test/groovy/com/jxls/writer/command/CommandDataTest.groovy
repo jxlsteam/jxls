@@ -39,4 +39,5 @@ class CommandDataTest extends Specification{
             commandData.getStartCellRef() == new CellRef("sheet1!A1")
             commandData.getSize() == new Size(3,4)
     }
+
 }

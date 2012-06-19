@@ -11,8 +11,12 @@ import com.jxls.writer.util.Util;
 import java.util.Collection;
 
 /**
+ * Implements iteration over collection of items
+ * 'items' is a bean name of the collection in context
+ * 'var' is a name of a collection item to put into the context during the iteration
+ * 'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.
+ * 'cellRefGenerator' defines custom strategy for target cell references.
  * Date: Nov 10, 2009
- *
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
@@ -28,10 +32,15 @@ public class EachCommand extends AbstractCommand {
     public EachCommand() {
     }
 
+    /**
+     * @param var name of the key in the context to contain each collection items during iteration
+     * @param items name of the collection bean in the context
+     * @param direction defines processing by rows (DOWN - default) or columns (RIGHT)
+     */
     public EachCommand(String var, String items, Direction direction) {
         this.var = var;
         this.items = items;
-        this.direction = direction;
+        this.direction = direction == null ? Direction.DOWN : direction;
     }
 
     public EachCommand(String var, String items, Area area) {
@@ -39,19 +48,23 @@ public class EachCommand extends AbstractCommand {
     }
     
     public EachCommand(String var, String items, Area area, Direction direction) {
-        this.var = var;
-        this.items = items;
-        this.area = area;
-        this.direction = direction == null ? Direction.DOWN : direction;
-        addArea(this.area);
+        this( var, items, direction );
+        if( area != null ){
+            this.area = area;
+            addArea(this.area);
+        }
     }
 
+    /**
+     *
+     * @param var name of the key in the context to contain each collection items during iteration
+     * @param items name of the collection bean in the context
+     * @param area body area for this command
+     * @param cellRefGenerator generates target cell ref for each collection item during iteration
+     */
     public EachCommand(String var, String items, Area area, CellRefGenerator cellRefGenerator) {
-        this.var = var;
-        this.items = items;
-        this.area = area;
+        this(var, items, area, (Direction)null );
         this.cellRefGenerator = cellRefGenerator;
-        addArea(area);
     }
 
     public Direction getDirection() {
@@ -100,6 +113,9 @@ public class EachCommand extends AbstractCommand {
 
     @Override
     public Command addArea(Area area) {
+        if( area == null ){
+            return this;
+        }
         if( areaList.size() >= 1){
             throw new IllegalArgumentException("You can add only a single area to 'each' command");
         }

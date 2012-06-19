@@ -8,8 +8,8 @@ import com.jxls.writer.common.Size;
 import com.jxls.writer.util.Util;
 
 /**
+ * Implements if-else logic
  * Date: Sep 11, 2009
- *
  * @author Leonid Vysochyn
  */
 public class IfCommand extends AbstractCommand {
@@ -21,6 +21,9 @@ public class IfCommand extends AbstractCommand {
     public IfCommand() {
     }
 
+    /**
+     * @param condition JEXL expression for boolean condition to evaluate
+     */
     public IfCommand(String condition) {
         this.condition = condition;
     }
