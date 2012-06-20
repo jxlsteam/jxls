@@ -7,8 +7,9 @@ import com.jxls.writer.transform.Transformer;
 import java.util.List;
 
 /**
+ * Generic interface for excel area processing
  * @author Leonid Vysochyn
- *         Date: 1/18/12 5:20 PM
+ *         Date: 1/18/12
  */
 public interface Area {
     Size applyAt(CellRef cellRef, Context context);

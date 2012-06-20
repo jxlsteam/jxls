@@ -28,6 +28,10 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
         jexlContext = new MapContext(context);
     }
 
+    public JexlExpressionEvaluator(JexlContext jexlContext) {
+        this.jexlContext = jexlContext;
+    }
+
     public Object evaluate(String expression) {
         try {
             jexlExpression = jexl.createExpression( expression );

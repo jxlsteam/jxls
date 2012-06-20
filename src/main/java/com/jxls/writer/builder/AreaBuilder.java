@@ -2,12 +2,12 @@ package com.jxls.writer.builder;
 
 import com.jxls.writer.area.Area;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
+ * An area builder interface
  * @author Leonid Vysochyn
- *         Date: 2/14/12 11:51 AM
+ *         Date: 2/14/12
  */
 public interface AreaBuilder {
     List<Area> build();

@@ -3,11 +3,11 @@ package com.jxls.writer.common;
 import com.jxls.writer.util.CellRefUtil;
 
 /**
+ * Represents cell reference
  * @author Leonid Vysochyn
- *         Date: 1/25/12 1:42 PM
+ *         Date: 1/25/12
  */
 public class CellRef {
-
     int col;
     int row;
 

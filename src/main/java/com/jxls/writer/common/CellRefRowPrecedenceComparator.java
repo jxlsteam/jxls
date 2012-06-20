@@ -5,8 +5,9 @@ import com.jxls.writer.common.CellRef;
 import java.util.Comparator;
 
 /**
+ * Cell comparator used to order cell by rows first and then by columns
  * @author Leonid Vysochyn
- *         Date: 2/8/12 5:22 PM
+ *         Date: 2/8/12
  */
 public class CellRefRowPrecedenceComparator implements Comparator<CellRef>{
 

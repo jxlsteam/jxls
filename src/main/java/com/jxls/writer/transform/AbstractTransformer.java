@@ -8,8 +8,9 @@ import com.jxls.writer.common.SheetData;
 import java.util.*;
 
 /**
+ * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
  * @author Leonid Vysochyn
- *         Date: 2/6/12 6:33 PM
+ *         Date: 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
 

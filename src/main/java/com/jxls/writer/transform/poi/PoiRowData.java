@@ -6,8 +6,9 @@ import com.jxls.writer.common.RowData;
 import org.apache.poi.ss.usermodel.Row;
 
 /**
+ * Row data wrapper for POI row
  * @author Leonid Vysochyn
- *         Date: 2/1/12 2:01 PM
+ *         Date: 2/1/12
  */
 public class PoiRowData extends RowData {
     Row row;

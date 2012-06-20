@@ -5,6 +5,8 @@ import com.jxls.writer.common.*;
 import com.jxls.writer.transform.Transformer;
 
 /**
+ * Implements image rendering
+ * Image is specified with image index in the workbook or by providing image bytes and type
  * @author Leonid Vysochyn
  */
 public class ImageCommand extends AbstractCommand {
@@ -13,6 +15,9 @@ public class ImageCommand extends AbstractCommand {
     ImageType imageType;
     Area area;
     Integer imageIdx;
+    /**
+     * Image bean name in the context
+     */
     String imgBean;
 
     public ImageCommand() {
@@ -32,10 +37,16 @@ public class ImageCommand extends AbstractCommand {
         this.imageType = imageType;
     }
 
+    /**
+     * @return image bean name in the context
+     */
     public String getImgBean() {
         return imgBean;
     }
 
+    /**
+     * @param imgBean image bean name in the context
+     */
     public void setImgBean(String imgBean) {
         this.imgBean = imgBean;
     }

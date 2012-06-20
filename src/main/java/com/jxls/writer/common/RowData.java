@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Represents an excel row data holder
  * @author Leonid Vysochyn
  */
 public class RowData implements Iterable<CellData> {

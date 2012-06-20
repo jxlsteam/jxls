@@ -67,14 +67,26 @@ public class EachCommand extends AbstractCommand {
         this.cellRefGenerator = cellRefGenerator;
     }
 
+    /**
+     * Gets iteration directino
+     * @return current direction for iteration
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     * Sets iteration direction
+     * @param direction
+     */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
+    /**
+     * Gets defined cell ref generator
+     * @return current {@link CellRefGenerator} instance or null
+     */
     public CellRefGenerator getCellRefGenerator() {
         return cellRefGenerator;
     }
@@ -87,26 +99,50 @@ public class EachCommand extends AbstractCommand {
         return "each";
     }
 
+    /**
+     * Gets current variable name for collection item in the context during iteration
+     * @return collection item key name in the context
+     */
     public String getVar() {
         return var;
     }
 
+    /**
+     * Sets current variable name for collection item in the context during iteration
+     * @param var
+     */
     public void setVar(String var) {
         this.var = var;
     }
 
+    /**
+     * Gets collection bean name
+     * @return collection bean name in the context
+     */
     public String getItems() {
         return items;
     }
 
+    /**
+     * Sets collection bean name
+     * @param items collection bean name in the context
+     */
     public void setItems(String items) {
         this.items = items;
     }
 
+    /**
+     * Gets current 'select' expression for filtering out collection items
+     * @return current 'select' expression or null if undefined
+     */
     public String getSelect() {
         return select;
     }
 
+    /**
+     * Sets current 'select' expression for filtering collection
+     * @param select filtering expression
+     */
     public void setSelect(String select) {
         this.select = select;
     }

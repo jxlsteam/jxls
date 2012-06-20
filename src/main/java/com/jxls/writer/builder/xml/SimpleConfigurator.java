@@ -3,7 +3,6 @@ package com.jxls.writer.builder.xml;
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -12,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Configurator used by XmlAreaBuilder to configure building rules
  * @author Leonid Vysochyn
- *         Date: 2/14/12 11:53 AM
+ *         Date: 2/14/12
  */
 public class SimpleConfigurator extends GenericConfigurator {
 

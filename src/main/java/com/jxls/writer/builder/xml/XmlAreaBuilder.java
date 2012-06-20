@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Creates an area through  XML definition
  * @author Leonid Vysochyn
  *         Date: 2/14/12 11:50 AM
  */

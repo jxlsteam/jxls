@@ -6,6 +6,7 @@ import com.jxls.writer.common.AreaRef;
 import com.jxls.writer.common.CellRef;
 
 /**
+ * A command holder class
  * @author Leonid Vysochyn
  *         Date: 1/25/12 1:12 PM
  */

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Represents an excel sheet data holder
  * @author Leonid Vysochyn
  */
 public class SheetData implements Iterable<RowData> {

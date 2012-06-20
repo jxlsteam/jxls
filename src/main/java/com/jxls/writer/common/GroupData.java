@@ -3,6 +3,7 @@ package com.jxls.writer.common;
 import java.util.Collection;
 
 /**
+ * Used in collection grouping to hold group data
  * @author Leonid Vysochyn
  */
 public class GroupData {

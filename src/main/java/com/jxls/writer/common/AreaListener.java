@@ -3,8 +3,9 @@ package com.jxls.writer.common;
 import com.jxls.writer.area.Area;
 
 /**
+ * Defines callback methods to be called during area processing
  * @author Leonid Vysochyn
- *         Date: 2/16/12 4:45 PM
+ *         Date: 2/16/12
  */
 public interface AreaListener {
     void beforeApplyAtCell(CellRef cellRef, Context context);

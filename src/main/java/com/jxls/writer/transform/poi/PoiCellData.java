@@ -10,8 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Cell data wrapper for POI cell
  * @author Leonid Vysochyn
- *         Date: 1/23/12 6:39 PM
+ *         Date: 1/23/12
  */
 public class PoiCellData extends CellData {
     static Logger logger = LoggerFactory.getLogger(PoiCellData.class);

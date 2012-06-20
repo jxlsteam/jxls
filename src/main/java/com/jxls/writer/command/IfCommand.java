@@ -44,12 +44,36 @@ public class IfCommand extends AbstractCommand {
         return "if";
     }
 
+    /**
+     * Gets test condition as JEXL expression string
+     * @return test condition
+     */
     public String getCondition() {
         return condition;
     }
 
+    /**
+     * Sets test condition as JEXL expression string
+     * @param condition condition to test
+     */
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    /**
+     * Gets an area to render when the condition is evaluated to 'true'
+     * @return
+     */
+    public Area getIfArea() {
+        return ifArea;
+    }
+
+    /**
+     * Gets an area to render when the condition is evaluated to 'false'
+     * @return
+     */
+    public Area getElseArea() {
+        return elseArea;
     }
 
     @Override

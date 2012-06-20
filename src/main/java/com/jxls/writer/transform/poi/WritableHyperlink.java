@@ -4,8 +4,9 @@ import com.jxls.writer.common.Context;
 import org.apache.poi.ss.usermodel.*;
 
 /**
+ * Writable cell value implementation for Hyperlink
  * @author Leonid Vysochyn
- *         Date: 6/18/12 4:01 PM
+ *         Date: 6/18/12
  */
 public class WritableHyperlink implements WritableCellValue {
     public static final String LINK_URL = "URL";

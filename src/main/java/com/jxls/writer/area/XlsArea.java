@@ -14,8 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Core implementation of {@link Area} interface
  * @author Leonid Vysochyn
- * Date: 1/16/12 6:44 PM
+ * Date: 1/16/12
  */
 public class XlsArea implements Area {
     static Logger logger = LoggerFactory.getLogger(XlsArea.class);

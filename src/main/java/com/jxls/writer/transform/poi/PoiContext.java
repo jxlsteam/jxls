@@ -5,8 +5,10 @@ import com.jxls.writer.common.Context;
 import java.util.Map;
 
 /**
+ * Context wrapper for POI
+ * Automatically adds {@link PoiUtil} class to the context
  * @author Leonid Vysochyn
- *         Date: 6/18/12 5:10 PM
+ *         Date: 6/18/12
  */
 public class PoiContext extends Context {
 

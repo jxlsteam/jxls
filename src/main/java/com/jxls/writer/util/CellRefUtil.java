@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * This is a class to convert Excel cell names to (sheet,row,col) representations and vice versa
  * The current code is taken from Apache POI CellReference class (@link http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html)
  * @author Leonid Vysochyn
- *         Date: 2/6/12 6:19 PM
+ *         Date: 2/6/12
  */
 public class CellRefUtil {
     private static final char DELIMITER = '\'';

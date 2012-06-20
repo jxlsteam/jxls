@@ -1,8 +1,9 @@
 package com.jxls.writer.common;
 
 /**
+ * Represents an excel cell range
  * @author Leonid Vysochyn
- *         Date: 1/26/12 1:43 PM
+ *         Date: 1/26/12
  */
 public class CellRange {
     CellRef startCell;

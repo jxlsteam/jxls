@@ -13,8 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Utility class with various helper methods used by other classes
  * @author Leonid Vysochyn
- *         Date: 2/3/12 4:26 PM
+ *         Date: 2/3/12
  */
 public class Util {
     static Logger logger = LoggerFactory.getLogger(Util.class);

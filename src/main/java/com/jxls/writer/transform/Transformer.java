@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Defines interface methods for excel operations
  * @author Leonid Vysochyn
- *         Date: 1/23/12 1:24 PM
+ *         Date: 1/23/12
  */
 public interface Transformer {
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context);

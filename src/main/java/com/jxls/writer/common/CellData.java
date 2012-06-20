@@ -9,8 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Represents an excel cell data holder and cell value evaluator
  * @author Leonid Vysochyn
- *         Date: 2/3/12 12:18 PM
+ *         Date: 2/3/12
  */
 public class CellData {
     public static final String USER_FORMULA_PREFIX = "$[";

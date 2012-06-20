@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Sheet data wrapper for POI sheet
  * @author Leonid Vysochyn
- *         Date: 2/1/12 12:03 PM
+ *         Date: 2/1/12
  */
 public class PoiSheetData extends SheetData {
     List<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();

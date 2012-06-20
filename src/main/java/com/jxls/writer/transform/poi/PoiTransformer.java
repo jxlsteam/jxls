@@ -15,8 +15,9 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
+ * POI implementation of {@link com.jxls.writer.transform.Transformer} interface
  * @author Leonid Vysochyn
- *         Date: 1/23/12 2:36 PM
+ *         Date: 1/23/12
  */
 public class PoiTransformer extends AbstractTransformer {
     public static final int MAX_COLUMN_TO_READ_COMMENT = 10; 

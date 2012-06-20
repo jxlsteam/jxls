@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Builds {@link AreaCommand} from XML
  * @author Leonid Vysochyn
- *         Date: 2/14/12 1:24 PM
+ *         Date: 2/14/12
  */
 public class AreaAction extends Action {
     public static final String REF_ATTR = "ref";

@@ -10,8 +10,9 @@ import com.jxls.writer.command.EachCommand;
 import org.xml.sax.Attributes;
 
 /**
+ * Builds {@link EachCommand} from XML
  * @author Leonid Vysochyn
- *         Date: 2/14/12 1:25 PM
+ *         Date: 2/14/12
  */
 public class EachAction extends Action {
     public static final String ITEMS_ATTR = "items";

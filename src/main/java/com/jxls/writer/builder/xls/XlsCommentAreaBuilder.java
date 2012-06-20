@@ -21,6 +21,57 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Builds {@link XlsArea} from excel comments in the excel template
+ * A command is specified in a cell comment like the following
+ * jx:COMMAND_NAME(attr1="value1" attr2="value2" ... attrN="valueN" lastCell="LAST_CELL" areas=["AREA_REF1", "AREA_REF2", ... , "AREA_REFN"])
+ * where
+ * COMMAND_NAME - the name of the command
+ *
+ * attr1, attr2, ... attrN, value1, value2, ... , valueN - command attributes and their values
+ *
+ * lastCell, LAST_CELL - attribute name and cell reference value specifying the last cell where this command is placed
+ * in the parent area. The first cell is defined by the cell where the comment is defined.
+ * If there is no "areas" attribute defined it also defines the single area for this command to operate on.
+ *
+ * AREA_REF1, AREA_REF2, ... , AREA_REFN - additional area references for this command (if supported by the command)
+ * 'areas' attribute is optional and only needed for commands which work with more than one area.
+ * If there is only a single area for the command it is usually enough to define just lastCell attribute
+ *
+ * Top areas are defined by specifying "area" ({@link AreaCommand}
+ *
+ * Multiple commands can be specified in a single cell comment separated by new lines.
+ * In this case the area of the first command will contain the second command and so on
+ *
+ *
+ * The class defines following pre-defined mappings between the command names and classes
+ * "jx:each" - {@link EachCommand}
+ * "jx:if" - {@link IfCommand}
+ * "jx:image" - {@link ImageCommand}
+ * "jx:area" - {@link AreaCommand}
+ *
+ * Custom command classes mapping can be added using addCommandMapping(String commandName, Class clazz) method
+ *
+ * Command examples:
+ *
+ * jx:if(condition="employee.payment <= 2000", lastCell="F9", areas=["A9:F9","A30:F30"])
+ *
+ * Here we define {@link IfCommand} with a condition expression 'employee.payment <= 2000' and first area (if-area) "A9:F9"
+ * and second area (else-area) "A30:F30". The command is added to the parent area covering a range from the cell where
+ * the comment is placed and to the cell defined in lastCell attribute "F9".
+ *
+ * jx:each(items="department.staff", var="employee", lastCell="F9")
+ *
+ * Here we define {@link EachCommand} with items attribute set to 'department.staff' and var attribute set to 'employee'.
+ * The command area is defined from the cell where the comment is defined and till the lastCell "F9"
+ *
+ * jx:area(lastCell="G26" clearCells="true")
+ *
+ * Specifies the top area range with {@link AreaCommand} starting from the cell where the comment is defined and in
+ * the cell defined in lastCell("G26"). clearCells attribute defines if it is required to clear area cell values after processing
+ *
+ * Note: Clearing comments from the cells appears to have some issues in POI so should be used with caution.
+ * The easiest approach will be just removing the template sheet.
+ *
  * @author Leonid Vysochyn
  */
 public class XlsCommentAreaBuilder implements AreaBuilder {
@@ -53,7 +104,12 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     public static void addCommandMapping(String commandName, Class clazz){
         commandMap.put(commandName, clazz);
     }
-    
+
+    /**
+     * Builds a list of {@link XlsArea} objects defined by top level AreaCommand markup ("jx:area")
+     * containing a tree of all nested commands
+     * @return
+     */
     public List<Area> build() {
         List<Area> userAreas = new ArrayList<Area>();
         List<CellData> commentedCells = transformer.getCommentedCells();

@@ -11,8 +11,9 @@ import com.jxls.writer.util.Util;
 import org.xml.sax.Attributes;
 
 /**
+ * Builds custom user command from XML
  * @author Leonid Vysochyn
- *         Date: 2/21/12 5:37 PM
+ *         Date: 2/21/12
  */
 public class UserCommandAction extends Action {
     public static final String ATTR = "attr";

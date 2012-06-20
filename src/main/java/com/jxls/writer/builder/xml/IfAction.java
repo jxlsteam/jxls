@@ -10,6 +10,7 @@ import com.jxls.writer.command.IfCommand;
 import org.xml.sax.Attributes;
 
 /**
+ * Builds {@link IfCommand} from XML
  * @author Leonid Vysochyn
  *         Date: 2/14/12 1:23 PM
  */

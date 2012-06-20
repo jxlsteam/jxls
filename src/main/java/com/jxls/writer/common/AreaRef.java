@@ -3,8 +3,9 @@ package com.jxls.writer.common;
 import com.jxls.writer.util.CellRefUtil;
 
 /**
+ * Defines area bounds
  * @author Leonid Vysochyn
- *         Date: 2/13/12 12:41 PM
+ *         Date: 2/13/12
  */
 public class AreaRef {
     CellRef firstCellRef;

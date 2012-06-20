@@ -1,8 +1,8 @@
 package com.jxls.writer.expression;
 
 /**
+ * Custom exception class for exceptions thrown during evaluation of expressions
  * Date: Nov 2, 2009
- *
  * @author Leonid Vysochyn
  */
 public class EvaluationException extends RuntimeException{

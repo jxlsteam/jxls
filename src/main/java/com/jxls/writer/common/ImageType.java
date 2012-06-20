@@ -1,6 +1,7 @@
 package com.jxls.writer.common;
 
 /**
+ * Represents possible image types
  * @author Leonid Vysochyn
  */
 public enum ImageType {

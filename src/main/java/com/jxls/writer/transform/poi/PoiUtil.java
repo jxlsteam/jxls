@@ -3,6 +3,7 @@ package com.jxls.writer.transform.poi;
 import org.apache.poi.ss.usermodel.*;
 
 /**
+ * POI utility methods
  * @author Leonid Vysochyn
  */
 public class PoiUtil {

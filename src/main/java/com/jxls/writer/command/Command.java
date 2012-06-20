@@ -8,7 +8,7 @@ import com.jxls.writer.common.Size;
 import java.util.List;
 
 /**
- * A command defines a transformation of a list of areas at a specified cell
+ * A command interface defines a transformation of a list of areas at a specified cell
  *
  * Date: Mar 13, 2009
  * @author Leonid Vysochyn

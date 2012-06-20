@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Map bean context
  * Date: Nov 2, 2009
- *
  * @author Leonid Vysochyn
  */
 public class Context {
