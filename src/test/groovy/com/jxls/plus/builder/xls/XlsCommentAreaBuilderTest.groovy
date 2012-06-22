@@ -2,27 +2,16 @@ package com.jxls.plus.builder.xls
 
 import spock.lang.Specification
 
-import org.apache.poi.ss.usermodel.Workbook
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
-
-import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Row
-
 import org.apache.poi.ss.usermodel.Cell
 import com.jxls.plus.area.Area
 
-import spock.lang.Ignore
 import com.jxls.plus.transform.Transformer
-import com.jxls.plus.transform.poi.PoiTransformer
-
-import com.jxls.plus.transform.poi.PoiUtil
 import com.jxls.plus.common.CellData
 import com.jxls.plus.common.CellRef
 import com.jxls.plus.common.AreaRef
 import com.jxls.plus.command.EachCommand
 import com.jxls.plus.command.IfCommand
 import com.jxls.plus.area.XlsArea
-import com.jxls.plus.builder.xls.XlsCommentAreaBuilder
 
 /**
  * @author Leonid Vysochyn
@@ -112,8 +101,5 @@ class XlsCommentAreaBuilderTest extends Specification {
             ((EachCommand)command6).items == "employees"
     }
 
-    static def setCellComment(Cell cell, String commentText){
-        PoiUtil.setCellComment(cell, commentText, "jxlswriter", null)
-    }
-    
+
 }
