@@ -8,6 +8,7 @@ import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.MapContext;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
     private Expression jexlExpression;
     private static JexlEngine jexl = new JexlEngine();
     JexlContext jexlContext;
+    static Map<String, Expression> expressionMap = new HashMap<String, Expression>();
 
     public JexlExpressionEvaluator(String expression) {
         jexlExpression = jexl.createExpression( expression );
@@ -34,7 +36,11 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
 
     public Object evaluate(String expression) {
         try {
-            jexlExpression = jexl.createExpression( expression );
+            Expression jexlExpression =  expressionMap.get(expression);
+            if( jexlExpression == null ){
+                jexlExpression = jexl.createExpression( expression );
+                expressionMap.put(expression, jexlExpression);
+            }
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
