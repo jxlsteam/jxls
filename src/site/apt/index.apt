@@ -6,11 +6,13 @@ Brian Fox
 26-Mar-2008
 ---
 
-Welcome to Sample Project
+Welcome to jXLS Plus!
 
-    This is a sample project, welcome!   We're excited that you've decided to
-read the index page of this Sample Project.  We hope you enjoy the simple
-sample project we've assembled for you.
+Overview
+
+    jXLS Plus is a simple but powerful library for generating Excel reports in Java.\
+    jXLS Plus is a successor of a well-known {{{http://jxls.sf.net}jXLS library}} providing an extensible architecture, better performance and new features.\
+    For a quick start please see {{{./getting_started.html}Getting Started Guide}}.
 
 Here are some useful links to get you started:
 
