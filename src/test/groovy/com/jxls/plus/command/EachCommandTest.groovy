@@ -136,9 +136,9 @@ class EachCommandTest extends Specification{
         def eachArea = Mock(Area)
         def context = new Context()
         context.putVar("items", [0,1,2,3,4,5,1])
-        def eachCommand = new EachCommand("var", "items", eachArea)
+        def eachCommand = new EachCommand("var1", "items", eachArea)
         when:
-            eachCommand.setSelect(" var % 2 ==0")
+            eachCommand.setSelect("var1 % 2 == 0")
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
