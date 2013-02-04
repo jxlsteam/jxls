@@ -18,11 +18,24 @@ import java.util.Map;
  */
 public class JexlExpressionEvaluator implements ExpressionEvaluator{
     private Expression jexlExpression;
-    private static JexlEngine jexl = new JexlEngine();
     JexlContext jexlContext;
-    static Map<String, Expression> expressionMap = new HashMap<String, Expression>();
+
+    private static final ThreadLocal<JexlEngine> jexlThreadLocal = new ThreadLocal<JexlEngine>(){
+        @Override
+        protected JexlEngine initialValue() {
+            return new JexlEngine();
+        }
+    };
+
+    private static final ThreadLocal<Map<String, Expression>> expressionMapThreadLocal = new ThreadLocal<Map<String, Expression>>(){
+        @Override
+        protected Map<String, Expression> initialValue() {
+            return new HashMap<String, Expression>();
+        }
+    };
 
     public JexlExpressionEvaluator(String expression) {
+        JexlEngine jexl = jexlThreadLocal.get();
         jexlExpression = jexl.createExpression( expression );
     }
 
@@ -36,6 +49,8 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
 
     public Object evaluate(String expression) {
         try {
+            JexlEngine jexl = jexlThreadLocal.get();
+            Map<String,Expression> expressionMap = expressionMapThreadLocal.get();
             Expression jexlExpression =  expressionMap.get(expression);
             if( jexlExpression == null ){
                 jexlExpression = jexl.createExpression( expression );
