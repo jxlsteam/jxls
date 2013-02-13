@@ -9,7 +9,7 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class RowData implements Iterable<CellData> {
-    protected short height;
+    protected int height;
     protected List<CellData> cellDataList = new ArrayList<CellData>();
 
     public int getNumberOfCells(){
@@ -25,11 +25,9 @@ public class RowData implements Iterable<CellData> {
         cellDataList.add(cellData);
     }
 
-    public short getHeight() {
+    public int getHeight() {
         return height;
     }
-
-
 
     public Iterator<CellData> iterator() {
         return cellDataList.iterator();
