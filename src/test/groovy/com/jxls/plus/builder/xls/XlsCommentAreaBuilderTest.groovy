@@ -2,7 +2,6 @@ package com.jxls.plus.builder.xls
 
 import spock.lang.Specification
 
-import org.apache.poi.ss.usermodel.Cell
 import com.jxls.plus.area.Area
 
 import com.jxls.plus.transform.Transformer

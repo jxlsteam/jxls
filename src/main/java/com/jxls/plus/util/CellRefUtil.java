@@ -1,8 +1,5 @@
 package com.jxls.plus.util;
 
-import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.util.CellReference;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -165,8 +162,86 @@ public class CellRefUtil {
      * @see org.apache.poi.ss.util.CellReference
      */
     static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
-        return CellReference.cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, SpreadsheetVersion.EXCEL97);
+        return cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, 0x0100, 0x10000);
     }
+
+    /**
+     * Used to decide whether a name of the form "[A-Z]*[0-9]*" that appears in a formula can be
+     * interpreted as a cell reference.  Names of that form can be also used for sheets and/or
+     * named ranges, and in those circumstances, the question of whether the potential cell
+     * reference is valid (in range) becomes important.
+     * <p/>
+     * Note - that the maximum sheet size varies across Excel versions:
+     * <p/>
+     * <blockquote><table border="0" cellpadding="1" cellspacing="0"
+     *                 summary="Notable cases.">
+     *   <tr><th>Version&nbsp;&nbsp;</th><th>File Format&nbsp;&nbsp;</th>
+     *   	<th>Last Column&nbsp;&nbsp;</th><th>Last Row</th></tr>
+     *   <tr><td>97-2003</td><td>BIFF8</td><td>"IV" (2^8)</td><td>65536 (2^14)</td></tr>
+     *   <tr><td>2007</td><td>BIFF12</td><td>"XFD" (2^14)</td><td>1048576 (2^20)</td></tr>
+     * </table></blockquote>
+     * POI currently targets BIFF8 (Excel 97-2003), so the following behaviour can be observed for
+     * this method:
+     * <blockquote><table border="0" cellpadding="1" cellspacing="0"
+     *                 summary="Notable cases.">
+     *   <tr><th>Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+     *       <th>Result&nbsp;</th></tr>
+     *   <tr><td>"A", "1"</td><td>true</td></tr>
+     *   <tr><td>"a", "111"</td><td>true</td></tr>
+     *   <tr><td>"A", "65536"</td><td>true</td></tr>
+     *   <tr><td>"A", "65537"</td><td>false</td></tr>
+     *   <tr><td>"iv", "1"</td><td>true</td></tr>
+     *   <tr><td>"IW", "1"</td><td>false</td></tr>
+     *   <tr><td>"AAA", "1"</td><td>false</td></tr>
+     *   <tr><td>"a", "111"</td><td>true</td></tr>
+     *   <tr><td>"Sheet", "1"</td><td>false</td></tr>
+     * </table></blockquote>
+     *
+     * @param colStr a string of only letter characters
+     * @param rowStr a string of only digit characters
+     * @return <code>true</code> if the row and col parameters are within range of a BIFF8 spreadsheet.
+     */
+    public static boolean cellReferenceIsWithinRange(String colStr, String rowStr, int lastColumnIndex, int lastRowIndex) {
+        if (!isColumnWithnRange(colStr, lastColumnIndex)) {
+            return false;
+        }
+        return isRowWithnRange(rowStr, lastRowIndex);
+    }
+
+    public static boolean isColumnWithnRange(String colStr, int lastColumnIndex) {
+        String lastCol = convertNumToColString(lastColumnIndex);
+        int lastColLength = lastCol.length();
+
+        int numberOfLetters = colStr.length();
+        if(numberOfLetters > lastColLength) {
+            // "Sheet1" case etc
+            return false; // that was easy
+        }
+        if(numberOfLetters == lastColLength) {
+            if(colStr.toUpperCase().compareTo(lastCol) > 0) {
+                return false;
+            }
+        } else {
+            // apparent column name has less chars than max
+            // no need to check range
+        }
+        return true;
+    }
+
+    public static boolean isRowWithnRange(String rowStr, int lastRowIndex) {
+        int rowNum = Integer.parseInt(rowStr);
+
+        if (rowNum < 0) {
+            throw new IllegalStateException("Invalid rowStr '" + rowStr + "'.");
+        }
+        if (rowNum == 0) {
+            // execution gets here because caller does first pass of discriminating
+            // potential cell references using a simplistic regex pattern.
+            return false;
+        }
+        return rowNum <= lastRowIndex;
+    }
+
 
     static boolean nameLooksLikeBooleanLiteral(String rawSheetName) {
         switch(rawSheetName.charAt(0)) {
