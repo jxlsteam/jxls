@@ -77,7 +77,7 @@ import java.util.regex.Pattern;
 public class XlsCommentAreaBuilder implements AreaBuilder {
     static Logger logger = LoggerFactory.getLogger(XlsCommentAreaBuilder.class);
 
-    private static final String COMMAND_PREFIX = "jx:";
+    public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
@@ -171,7 +171,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         List<CommandData> commandDatas = new ArrayList<CommandData>();
         for (String commentLine : commentLines) {
             String line = commentLine.trim();
-            if (line.startsWith(COMMAND_PREFIX)) {
+            if (isCommandString(line)) {
                 int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
                 if (nameEndIndex < 0) {
                     String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
@@ -195,6 +195,10 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
         }
         return commandDatas;
+    }
+
+    public static boolean isCommandString(String str){
+        return str.startsWith(COMMAND_PREFIX);
     }
 
     private List<Area> buildAreas(CellData cellData, String commandLine) {
