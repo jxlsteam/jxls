@@ -69,7 +69,7 @@ public class Util {
             String sheetName = firstCellRef.getSheetName();
             int row = firstCellRef.getRow();
             int col = firstCellRef.getCol();
-            for (; iterator.hasNext(); ) {
+            while( iterator.hasNext() ) {
                 CellRef cellRef = iterator.next();
                 if( (rowRange || colRange) && !cellRef.getSheetName().equals(sheetName) ){
                     rowRange = false;

@@ -88,12 +88,9 @@ public class CellRefUtil {
                 return true;
             }
         }
-        if(Character.isLetter(rawSheetName.charAt(0))
-                && Character.isDigit(rawSheetName.charAt(len-1))) {
-            // note - values like "A$1:$C$20" don't get this far
-            if(nameLooksLikePlainCellReference(rawSheetName)) {
+        if(Character.isLetter(rawSheetName.charAt(0)) && Character.isDigit(rawSheetName.charAt(len-1)) // note - values like "A$1:$C$20" don't get this far
+                && nameLooksLikePlainCellReference(rawSheetName)) {
                 return true;
-            }
         }
         if (nameLooksLikeBooleanLiteral(rawSheetName)) {
             return true;
@@ -217,13 +214,8 @@ public class CellRefUtil {
             // "Sheet1" case etc
             return false; // that was easy
         }
-        if(numberOfLetters == lastColLength) {
-            if(colStr.toUpperCase().compareTo(lastCol) > 0) {
-                return false;
-            }
-        } else {
-            // apparent column name has less chars than max
-            // no need to check range
+        if(numberOfLetters == lastColLength && colStr.toUpperCase().compareTo(lastCol) > 0) {
+            return false;
         }
         return true;
     }
@@ -362,13 +354,11 @@ public class CellRefUtil {
                 sb.append(ch);
                 continue;
             }
-            if(i < lastQuotePos) {
-                if(reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
-                    // two consecutive quotes is the escape sequence for a single one
-                    i++; // skip this and keep parsing the special name
-                    sb.append(ch);
-                    continue;
-                }
+            if(i < lastQuotePos && reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
+                // two consecutive quotes is the escape sequence for a single one
+                i++; // skip this and keep parsing the special name
+                sb.append(ch);
+                continue;
             }
             throw new RuntimeException("Bad sheet name quote escaping: (" + reference + ")");
         }

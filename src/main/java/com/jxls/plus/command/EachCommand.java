@@ -171,11 +171,9 @@ public class EachCommand extends AbstractCommand {
         }
         for( Object obj : itemsCollection){
             context.putVar(var, obj);
-            if( selectEvaluator != null ){
-                if( !Util.isConditionTrue( selectEvaluator, context )) {
-                    context.removeVar(var);
-                    continue;
-                }
+            if( selectEvaluator != null && !Util.isConditionTrue( selectEvaluator, context ) ){
+                context.removeVar(var);
+                continue;
             }
             Size size = area.applyAt(currentCell, context);
             index++;
