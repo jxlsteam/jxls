@@ -93,4 +93,43 @@ class CellDataTest extends Specification{
             cellData.getCellComment() == "Test comment"
     }
 
+    def "test evaluate number"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '${num}')
+            Integer num = new Integer(100)
+            def context = new Context()
+            context.putVar("num", num)
+        when:
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.NUMBER
+            result == 100
+    }
+
+    def "test evaluate boolean"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '${flag}')
+            boolean flag = true
+            def context = new Context()
+            context.putVar("flag", flag)
+        when:
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.BOOLEAN
+            result == true
+    }
+
+    def "test evaluate date"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '${today}')
+            Date today = new Date()
+            def context = new Context()
+            context.putVar("today", today)
+        when:
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.DATE
+            result == today
+    }
+
 }

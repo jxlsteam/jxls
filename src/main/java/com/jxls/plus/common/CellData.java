@@ -4,6 +4,7 @@ import com.jxls.plus.expression.ExpressionEvaluator;
 import com.jxls.plus.expression.JexlExpressionEvaluator;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,6 +105,8 @@ public class CellData {
                 targetCellType = CellType.NUMBER;
             }else if(evaluationResult instanceof Boolean){
                 targetCellType = CellType.BOOLEAN;
+            }else if(evaluationResult instanceof Date){
+                targetCellType = CellType.DATE;
             }
         }else if(matchCount == 0){
             evaluationResult = strValue;
