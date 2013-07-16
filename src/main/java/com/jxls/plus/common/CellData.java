@@ -66,8 +66,8 @@ public class CellData {
                 String formulaStr = strValue.substring(2, strValue.length()-1);
                 evaluate(formulaStr, context);
                 if( evaluationResult != null ){
-                    evaluationResult = evaluationResult.toString();
                     targetCellType = CellType.FORMULA;
+                    formula = evaluationResult.toString();
                 }
             }else{
                 evaluate(strValue, context);
@@ -96,7 +96,7 @@ public class CellData {
             lastMatchEvalResult = evaluator.evaluate(expression);
             exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
         }
-        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length()-1)){
+        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length())){
             exprMatcher.appendTail(sb);
             evaluationResult = sb.toString();
         }else if(matchCount == 1){

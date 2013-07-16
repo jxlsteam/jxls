@@ -201,7 +201,11 @@ public class XlsArea implements Area {
                     CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
-                    transformer.transform(srcCell, targetCell, context);
+                    try{
+                        transformer.transform(srcCell, targetCell, context);
+                    }catch(Exception e){
+                        logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
+                    }
                     fireAfterTransformCell(srcCell, targetCell, context);
                 }
             }

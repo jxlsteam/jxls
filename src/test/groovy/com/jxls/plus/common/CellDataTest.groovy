@@ -132,4 +132,16 @@ class CellDataTest extends Specification{
             result == today
     }
 
+    def "test evaluate user formula"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '$[SUM(B2:B4)* (1 + ${bonus})]')
+            def context = new Context()
+            context.putVar("bonus", 0.15)
+        when:
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.FORMULA
+            result == "SUM(B2:B4)* (1 + 0.15)"
+    }
+
 }
