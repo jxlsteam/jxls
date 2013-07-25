@@ -2,6 +2,7 @@ package com.jxls.plus.transform;
 
 import com.jxls.plus.common.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -21,4 +22,5 @@ public interface Transformer {
     List<CellData> getCommentedCells();
     void addImage(AreaRef areaRef, int imageIdx);
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
+    void write() throws IOException;
 }
