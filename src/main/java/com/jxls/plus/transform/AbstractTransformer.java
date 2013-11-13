@@ -1,9 +1,6 @@
 package com.jxls.plus.transform;
 
-import com.jxls.plus.common.RowData;
-import com.jxls.plus.common.CellData;
-import com.jxls.plus.common.CellRef;
-import com.jxls.plus.common.SheetData;
+import com.jxls.plus.common.*;
 
 import java.util.*;
 
@@ -17,6 +14,11 @@ public abstract class AbstractTransformer implements Transformer {
     boolean ignoreColumnProps = false;
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
+
+    @Override
+    public Context createInitialContext() {
+        return new Context();
+    }
 
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
         CellData cellData = getCellData(cellRef);

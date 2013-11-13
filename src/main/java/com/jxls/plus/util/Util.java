@@ -6,6 +6,9 @@ import com.jxls.plus.expression.JexlExpressionEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -282,5 +285,24 @@ public class Util {
         }
         return result;
     }
+
+    /**
+   	 * Reads all the data from the input stream, and returns the bytes read.
+   	 */
+   	public static byte[] toByteArray(InputStream stream) throws IOException {
+   		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+   		byte[] buffer = new byte[4096];
+   		int read = 0;
+   		while (read != -1) {
+   			read = stream.read(buffer);
+   			if (read > 0) {
+   				baos.write(buffer, 0, read);
+   			}
+   		}
+
+   		return baos.toByteArray();
+   	}
+
     
 }

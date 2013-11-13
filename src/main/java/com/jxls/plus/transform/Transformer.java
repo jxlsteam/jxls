@@ -12,6 +12,7 @@ import java.util.Set;
  *         Date: 1/23/12
  */
 public interface Transformer {
+    Context createInitialContext();
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context);
     void setFormula(CellRef cellRef, String formulaString);
     Set<CellData> getFormulaCells();
