@@ -14,7 +14,6 @@ public class ImageCommand extends AbstractCommand {
     byte[] imageBytes;
     ImageType imageType;
     Area area;
-    Integer imageIdx;
     /**
      * Image bean name in the context
      */
@@ -26,10 +25,6 @@ public class ImageCommand extends AbstractCommand {
     public ImageCommand(String imgBean, ImageType imageType) {
         this.imgBean = imgBean;
         this.imageType = imageType;
-    }
-
-    public ImageCommand(Integer imageIdx) {
-        this.imageIdx = imageIdx;
     }
 
     public ImageCommand(byte[] imageBytes, ImageType imageType) {
@@ -74,19 +69,15 @@ public class ImageCommand extends AbstractCommand {
         }
         Transformer transformer = getTransformer();
         AreaRef areaRef = new AreaRef(cellRef, area.getSize());
-        if( imageIdx != null ){
-            transformer.addImage(areaRef, imageIdx);
-        }else{
-            byte[] imgBytes = imageBytes;
-            if( imgBean != null ){
-                Object imgObj = context.getVar(imgBean);
-                if( !(imgObj instanceof byte[]) ){
-                    throw new IllegalArgumentException("imgBean value must contain image bytes (byte[])");
-                }
-                imgBytes = (byte[]) imgObj;
+        byte[] imgBytes = imageBytes;
+        if( imgBean != null ){
+            Object imgObj = context.getVar(imgBean);
+            if( !(imgObj instanceof byte[]) ){
+                throw new IllegalArgumentException("imgBean value must contain image bytes (byte[])");
             }
-            transformer.addImage(areaRef, imgBytes, imageType);
+            imgBytes = (byte[]) imgObj;
         }
+        transformer.addImage(areaRef, imgBytes, imageType);
         return area.getSize();
     }
 }

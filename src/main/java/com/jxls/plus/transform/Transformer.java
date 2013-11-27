@@ -21,7 +21,6 @@ public interface Transformer {
     void resetTargetCellRefs();
     void clearCell(CellRef cellRef);
     List<CellData> getCommentedCells();
-    void addImage(AreaRef areaRef, int imageIdx);
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
     void write() throws IOException;
 }
