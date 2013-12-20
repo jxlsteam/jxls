@@ -144,4 +144,18 @@ class CellDataTest extends Specification{
             result == "SUM(B2:B4)* (1 + 0.15)"
     }
 
+    def "test evaluate combined expression"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '${num} days')
+            Integer num = new Integer(21)
+            def context = new Context()
+            context.putVar("num", num)
+        when:
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.STRING
+            result == "21 days"
+
+    }
+
 }
