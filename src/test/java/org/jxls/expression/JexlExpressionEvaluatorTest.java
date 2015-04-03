@@ -1,6 +1,7 @@
 package org.jxls.expression;
 
-import junit.framework.Assert;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,8 +12,6 @@ import java.util.Map;
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.internal.matchers.StringContains.containsString;
-import static org.junit.matchers.JUnitMatchers.both;
 
 /**
  * Date: Nov 2, 2009
@@ -24,7 +23,7 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void simple2VarExpression(){
         String expression = "2 * x + y";
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
         vars.put("y", 3);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
@@ -39,12 +38,12 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void shouldThrowEvaluationExceptionWhenError(){
         String expression = "2 * x + y )";
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
         vars.put("y", 3);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
         thrown.expect(EvaluationException.class);
-        thrown.expectMessage(both(containsString("error")).and(containsString(expression)));
+        thrown.expectMessage(CoreMatchers.both(CoreMatchers.containsString("error")).and(CoreMatchers.containsString(expression)));
         Object result = expressionEvaluator.evaluate( expression );
         assertNotNull( result );
     }
@@ -52,9 +51,8 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void evaluateWhenVarIsNull(){
         String expression = "2*x + dummy.intValue";
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
-        Dummy d = new Dummy(3);
         vars.put("dummy", null);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
         Object result = expressionEvaluator.evaluate( expression );
@@ -64,7 +62,7 @@ public class JexlExpressionEvaluatorTest {
     @Test 
     public void evaluateWhenExpressionVarIsUndefined(){
         String expression = "dummy.intValue";
-        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<>();
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
         Object result = expressionEvaluator.evaluate( expression );
         assertNull(result);

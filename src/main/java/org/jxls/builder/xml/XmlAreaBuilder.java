@@ -4,8 +4,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NewRuleAction;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -35,15 +35,15 @@ public class XmlAreaBuilder implements AreaBuilder {
     }
 
     public List<Area> build(InputStream is) {
-        Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+        Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         AreaAction areaAction = new AreaAction(transformer);
-        ruleMap.put(new Pattern("*/area"), areaAction);
-        ruleMap.put(new Pattern("*/each"), new EachAction());
-        ruleMap.put(new Pattern("*/if"), new IfAction());
-        ruleMap.put(new Pattern("*/user-command"), new UserCommandAction());
+        ruleMap.put(new ElementSelector("*/area"), areaAction);
+        ruleMap.put(new ElementSelector("*/each"), new EachAction());
+        ruleMap.put(new ElementSelector("*/if"), new IfAction());
+        ruleMap.put(new ElementSelector("*/user-command"), new UserCommandAction());
 
-        ruleMap.put(new Pattern("*/user-action"), new NewRuleAction());
+        ruleMap.put(new ElementSelector("*/user-action"), new NewRuleAction());
 
         Context context = new ContextBase();
         SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
