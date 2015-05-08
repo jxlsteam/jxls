@@ -29,7 +29,7 @@ public class TransformerFactory {
             logger.error("Cannot load any Transformer class. Please make sure you have necessary libraries in CLASSPATH.");
             return null;
         }
-        logger.info("Transformer class is " + transformer.getName());
+        logger.debug("Transformer class is " + transformer.getName());
         try {
             Method initMethod = transformer.getMethod(INIT_METHOD, InputStream.class, OutputStream.class);
             return (Transformer) initMethod.invoke(null, inputStream, outputStream);
