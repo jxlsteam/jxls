@@ -57,6 +57,10 @@ public class CellRange {
             }
         }
     }
+
+    public CellRef getStartCell() {
+        return startCell;
+    }
     
     public void excludeCells(int startCol, int endCol, int startRow, int endRow){
         for(int row = startRow; row <= endRow; row++){

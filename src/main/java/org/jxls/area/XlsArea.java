@@ -31,7 +31,6 @@ public class XlsArea implements Area {
     Size size;
     List<AreaListener> areaListeners = new ArrayList<AreaListener>();
 
-    boolean clearCellsBeforeApply = false;
     private boolean cellsCleared = false;
 
     public XlsArea(AreaRef areaRef, Transformer transformer){
@@ -97,14 +96,6 @@ public class XlsArea implements Area {
         }
     }
 
-    public boolean isClearCellsBeforeApply() {
-        return clearCellsBeforeApply;
-    }
-
-    public void setClearCellsBeforeApply(boolean clearCellsBeforeApply) {
-        this.clearCellsBeforeApply = clearCellsBeforeApply;
-    }
-
 
     public Size applyAt(CellRef cellRef, Context context) {
         logger.debug("Applying XlsArea at {} with {}", cellRef, context);
@@ -112,9 +103,11 @@ public class XlsArea implements Area {
         int widthDelta = 0;
         int heightDelta = 0;
         createCellRange();
-        if( clearCellsBeforeApply ){
+
+        if( cellRange.getStartCell().getSheetName().equalsIgnoreCase( cellRef.getSheetName() )){
             clearCells();
         }
+
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);

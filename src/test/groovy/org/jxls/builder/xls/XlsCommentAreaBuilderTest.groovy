@@ -47,7 +47,6 @@ class XlsCommentAreaBuilderTest extends Specification {
             def area1 = areas[0]
             area1.getAreaRef() == new AreaRef("sheet1!B1:G8")
             area1 instanceof  XlsArea
-            ((XlsArea)area1).clearCellsBeforeApply == true
             def commandDataList = area1.getCommandDataList()
             commandDataList.size() == 1
             commandDataList[0].getAreaRef() == new AreaRef("sheet1!B2:G7")

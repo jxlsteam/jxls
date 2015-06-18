@@ -27,7 +27,6 @@ class XlsAreaTest extends Specification{
             area.startCellRef == new CellRef(1, 1)
             area.size == new Size(5,5)
             area.transformer == transformer
-            !area.clearCellsBeforeApply
     }
 
     def "test create from two cell refs"(){
@@ -90,12 +89,12 @@ class XlsAreaTest extends Specification{
         commandData.getCommand() == command
     }
     
-    def "test clear cells"(){
+    def "test clear cells with applyAt for the same worksheet"(){
         given:
             def transformer = Mock(Transformer)
             def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
         when:
-            area.clearCells()
+            area.applyAt(new CellRef("sheet1", 1, 1), null)
         then:
             1 * transformer.clearCell(new CellRef("sheet1", 1, 1))
             1 * transformer.clearCell(new CellRef("sheet1", 1, 2))
@@ -103,40 +102,18 @@ class XlsAreaTest extends Specification{
             1 * transformer.clearCell(new CellRef("sheet1", 2, 2))
     }
 
-    def "test applyAt with default clearCells flag value set to true"(){
+    def "test clear cells with applyAt for different worksheet"(){
         given:
             def transformer = Mock(Transformer)
             def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
             def context = new Context()
         when:
-            area.setClearCellsBeforeApply(true)
-            area.applyAt(new CellRef("sheet1", 3,3), context)
+            area.applyAt(new CellRef("sheet2", 3,3), context)
         then:
-            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 3, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet1", 3, 4), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet1", 4, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet1", 4, 4), context)
-
-            1 * transformer.clearCell(new CellRef("sheet1", 1, 1))
-            1 * transformer.clearCell(new CellRef("sheet1", 1, 2))
-            1 * transformer.clearCell(new CellRef("sheet1", 2, 1))
-            1 * transformer.clearCell(new CellRef("sheet1", 2, 2))
-            0 * _._
-    }
-
-    def "test applyAt with clearCells flag value set to false"(){
-        given:
-            def transformer = Mock(Transformer)
-            def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
-            def context = new Context()
-        when:
-            area.setClearCellsBeforeApply(false)
-            area.applyAt(new CellRef("sheet1", 3,3), context)
-        then:
-            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 3, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet1", 3, 4), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet1", 4, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet1", 4, 4), context)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet2", 3, 3), context)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet2", 3, 4), context)
+            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet2", 4, 3), context)
+            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet2", 4, 4), context)
             0 * _._
     }
 

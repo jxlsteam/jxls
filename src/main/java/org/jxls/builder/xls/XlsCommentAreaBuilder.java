@@ -121,10 +121,6 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             for (CommandData commandData : commandDatas) {
                 if( commandData.getCommand() instanceof  AreaCommand ){
                     XlsArea userArea = new XlsArea(commandData.getAreaRef(), transformer);
-                    String clearCells = ((AreaCommand)commandData.getCommand()).getClearCells();
-                    if( clearCells != null ){
-                        userArea.setClearCellsBeforeApply( Boolean.valueOf( clearCells ));
-                    }
                     allAreas.add(userArea);
                     userAreas.add( userArea );
                 }else{
