@@ -23,8 +23,15 @@
     </scm>
 
     <build>
-      <plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.9</version>
+            </extension>
+        </extensions>
 
+      <plugins>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -64,6 +71,7 @@
               <configuration>
                   <pushChanges>false</pushChanges>
                   <localCheckout>true</localCheckout>
+                  <goals></goals>
               </configuration>
           </plugin>
       </plugins>
@@ -152,10 +160,6 @@
             <name>jXLS Releases Repository at Sourceforge</name>
             <url>scp://shell.sourceforge.net/home/project-web/jxls/htdocs/repository/releases</url>
         </repository>
-        <site>
-            <id>jxls.sf.net</id>
-            <url>scp://shell.sourceforge.net/home/project-web/jxls/htdocs</url>
-        </site>
     </distributionManagement>
 
 </project>
