@@ -71,7 +71,6 @@
               <configuration>
                   <pushChanges>false</pushChanges>
                   <localCheckout>true</localCheckout>
-                  <goals></goals>
               </configuration>
           </plugin>
       </plugins>
