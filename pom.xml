@@ -151,7 +151,7 @@
         <snapshotRepository>
             <id>jxls.snapshots</id>
             <name>jXLS Snapshot Repository at Sourceforge</name>
-            <url>scp://shell.sourceforge.net/home/project-web/jxls/htdocs/repository/releases</url>
+            <url>scp://shell.sourceforge.net/home/project-web/jxls/htdocs/repository/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>jxls.releases</id>
