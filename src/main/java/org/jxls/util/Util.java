@@ -304,5 +304,13 @@ public class Util {
    		return baos.toByteArray();
    	}
 
-    
+
+    public static Collection transformToCollectionObject(String collectionName, Context context){
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
+        Object collectionObject = expressionEvaluator.evaluate(collectionName);
+        if( !(collectionObject instanceof Collection) ){
+            throw new RuntimeException(collectionName + " expression is not a collection");
+        }
+        return (Collection) collectionObject;
+    }
 }

@@ -1,7 +1,6 @@
 package org.jxls.command;
 
 import org.jxls.common.Size;
-import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
@@ -160,7 +159,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Collection itemsCollection = calculateItemsCollection(context);
+        Collection itemsCollection = Util.transformToCollectionObject(items, context);
         int width = 0;
         int height = 0;
         int index = 0;
@@ -195,12 +194,4 @@ public class EachCommand extends AbstractCommand {
         return new Size(width, height);
     }
 
-    protected Collection calculateItemsCollection(Context context){
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
-        Object itemsObject = expressionEvaluator.evaluate(items);
-        if( !(itemsObject instanceof Collection) ){
-            throw new RuntimeException("items expression is not a collection");
-        }
-        return (Collection) itemsObject;
-    }
 }
