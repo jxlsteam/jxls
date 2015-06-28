@@ -42,6 +42,7 @@ public class XmlAreaBuilder implements AreaBuilder {
         ruleMap.put(new ElementSelector("*/each"), new EachAction());
         ruleMap.put(new ElementSelector("*/if"), new IfAction());
         ruleMap.put(new ElementSelector("*/user-command"), new UserCommandAction());
+        ruleMap.put(new ElementSelector("*/grid"), new GridAction());
 
         ruleMap.put(new ElementSelector("*/user-action"), new NewRuleAction());
 
