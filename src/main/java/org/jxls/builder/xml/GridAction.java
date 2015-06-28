@@ -23,7 +23,6 @@ public class GridAction extends Action {
         String headers = attributes.getValue(HEADER_ATTR);
         String data = attributes.getValue(DATA_ATTR);
         String ref = attributes.getValue(REF_ATTR);
-        EachCommand.Direction direction;
         if( headers == null || headers.length() == 0 ){
             String errMsg = "'headers' attribute of 'grid' tag is empty";
             ic.addError(errMsg);
@@ -33,19 +32,17 @@ public class GridAction extends Action {
             String errMsg = "'ref' attribute of 'grid' tag is empty";
             ic.addError(errMsg);
         }
-        Command command = new GridCommand(data, headers);
-        for(int i = 0; i < 2; i++){
-            Object object = ic.peekObject();
-            if( object instanceof Area){
-                Area area = (Area) object;
-                area.addCommand(new AreaRef(ref), command);
-            }else{
-                String errMsg = "Object [" + object + "] currently at the top of the stack is not an Area";
-                ic.addError(errMsg);
-                throw new IllegalArgumentException(errMsg);
-            }
-            ic.pushObject(command);
+        Command command = new GridCommand(headers, data);
+        Object object = ic.peekObject();
+        if( object instanceof Area){
+            Area area = (Area) object;
+            area.addCommand(new AreaRef(ref), command);
+        }else{
+            String errMsg = "Object [" + object + "] currently at the top of the stack is not an Area";
+            ic.addError(errMsg);
+            throw new IllegalArgumentException(errMsg);
         }
+        ic.pushObject(command);
     }
 
     @Override

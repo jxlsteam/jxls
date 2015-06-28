@@ -125,5 +125,22 @@ class XmlAreaBuilderTest extends Specification{
             customArea.getCommandDataList().size() == 1
     }
 
+    def "test build with grid command"(){
+        InputStream is = XmlAreaBuilderTest.class.getResourceAsStream("grid.xml")
+        Transformer transformer = Mock(Transformer)
+        assert is != null
+        when:
+        def xlsAreaList = new XmlAreaBuilder(is, transformer).build()
+        then:
+        xlsAreaList.size() == 1
+        def xlsArea = xlsAreaList.get(0)
+        xlsArea.getCommandDataList().size() == 1
+        def gridCommand = xlsArea.getCommandDataList().get(0).getCommand();
+        def headerArea = gridCommand.getAreaList().get(0);
+        headerArea.getCommandDataList().size() == 0
+        def bodyArea = gridCommand.getAreaList().get(1)
+        bodyArea.getCommandDataList().size() == 0
+    }
+
 
 }

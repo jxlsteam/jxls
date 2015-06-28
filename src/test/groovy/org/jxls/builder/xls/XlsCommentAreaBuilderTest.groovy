@@ -37,11 +37,13 @@ class XlsCommentAreaBuilderTest extends Specification {
             cellData5.setCellComment('jx:if(condition="myvar.value==2" lastCell="K2" )')
             def cellData6 = new CellData(new CellRef("sheet2!C5"))
             cellData6.setCellComment(' jx:each( items = "employees" var="employee" lastCell="E5") ')
+            def cellData7 = new CellData(new CellRef("sheet3!B2"))
+            cellData7.setCellComment('jx:grid(headers="hsData" data="mainData")')
         when:
             def areaBuilder = new XlsCommentAreaBuilder(transformer)
             List<Area> areas = areaBuilder.build()
         then:
-            transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6]
+            transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6, cellData7]
             areas.size() == 2
             // area at sheet1 checks
             def area1 = areas[0]
@@ -97,6 +99,8 @@ class XlsCommentAreaBuilderTest extends Specification {
             command6.areaList[0].areaRef == new AreaRef("sheet2!C5:E5")
             command6.areaList[0].commandDataList.isEmpty()
             ((EachCommand)command6).items == "employees"
+
+//            def command7 = area3.getCommandDataList()[0].getCommand()
     }
 
 
