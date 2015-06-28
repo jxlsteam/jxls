@@ -1,0 +1,8 @@
+<xls>
+    <area ref="Template!A1:B4">
+        <grid headers="headData" data="bodyData" ref="Template!A1:A2">
+            <area ref="Template!A1:A1"/>
+            <area ref="Template!A2:A2"/>
+        </grid>
+    </area>
+</xls>
