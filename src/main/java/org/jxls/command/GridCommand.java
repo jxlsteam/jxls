@@ -25,6 +25,9 @@ public class GridCommand extends AbstractCommand {
     Area headerArea;
     Area bodyArea;
 
+    public GridCommand() {
+    }
+
     @Override
     public String getName() {
         return COMMAND_NAME;
