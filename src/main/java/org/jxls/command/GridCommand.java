@@ -16,7 +16,7 @@ import java.util.Collection;
 public class GridCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "grid";
     public static final String HEADER_VAR = "header";
-    public static final String DATA_VAR = "gridCell";
+    public static final String DATA_VAR = "cell";
 
     /** Name of a context variable containing a collection of headers */
     String headers;
