@@ -91,6 +91,8 @@ public class GridCommand extends AbstractCommand {
         CellRef currentCell = cellRef;
         int totalWidth = 0;
         int totalHeight = 0;
+        boolean oldIgnoreTemplateDataFormat = context.getConfig().isIgnoreTemplateDataFormat();
+        context.getConfig().setIgnoreTemplateDataFormat(true);
         for( Object rowObject : dataCollection){
             if( rowObject.getClass().isArray() || rowObject instanceof Iterable){
                 Iterable cellCollection = null;
@@ -114,6 +116,7 @@ public class GridCommand extends AbstractCommand {
             }
         }
         context.removeVar(DATA_VAR);
+        context.getConfig().setIgnoreTemplateDataFormat(oldIgnoreTemplateDataFormat);
         return new Size(totalWidth, totalHeight);
     }
 
