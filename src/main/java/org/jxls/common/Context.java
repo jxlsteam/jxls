@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public class Context {
     protected Map<String, Object> varMap = new HashMap<String, Object>();
+    private Config config = new Config();
 
     public Context() {
     }
@@ -37,9 +38,29 @@ public class Context {
         varMap.remove(var);
     }
 
+    public Config getConfig() {
+        return config;
+    }
+
     @Override
     public String toString() {
         return "Context" +
                 varMap;
+    }
+
+    /**
+     * Special config class to use in Area processing
+     * Created by Leonid Vysochyn on 02-Jul-15.
+     */
+    public class Config {
+        private boolean ignoreTemplateDataFormat = true;
+
+        public boolean isIgnoreTemplateDataFormat() {
+            return ignoreTemplateDataFormat;
+        }
+
+        public void setIgnoreTemplateDataFormat(boolean ignoreTemplateDataFormat) {
+            this.ignoreTemplateDataFormat = ignoreTemplateDataFormat;
+        }
     }
 }
