@@ -153,7 +153,8 @@ public class XlsArea implements Area {
         }
         transformStaticCells(cellRef, context);
         fireAfterApplyEvent(cellRef, context);
-        return new Size(size.getWidth() + widthDelta, size.getHeight() + heightDelta);
+//        return new Size(size.getWidth() + widthDelta, size.getHeight() + heightDelta);
+        return new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
     }
 
     private void fireBeforeApplyEvent(CellRef cellRef, Context context) {
