@@ -100,8 +100,6 @@ public class XlsArea implements Area {
     public Size applyAt(CellRef cellRef, Context context) {
         logger.debug("Applying XlsArea at {} with {}", cellRef, context);
         fireBeforeApplyEvent(cellRef, context);
-        int widthDelta = 0;
-        int heightDelta = 0;
         createCellRange();
 
         if( cellRange.getStartCell().getSheetName().equalsIgnoreCase( cellRef.getSheetName() )){
@@ -117,8 +115,6 @@ public class XlsArea implements Area {
             int widthChange = newSize.getWidth() - initialSize.getWidth();
             int heightChange = newSize.getHeight() - initialSize.getHeight();
             if( widthChange != 0 || heightChange != 0){
-                widthDelta += widthChange;
-                heightDelta += heightChange;
                 if( widthChange != 0 ){
                     cellRange.shiftCellsWithRowBlock(commandData.getStartCellRef().getRow() - startCellRef.getRow(),
                             commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight(),
