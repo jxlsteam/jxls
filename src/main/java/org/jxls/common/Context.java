@@ -53,14 +53,23 @@ public class Context {
      * Created by Leonid Vysochyn on 02-Jul-15.
      */
     public class Config {
-        private boolean ignoreTemplateDataFormat = true;
+        private boolean ignoreSourceCellStyle = false;
+        private Map<String,String> cellStyleMap = new HashMap<>();
 
-        public boolean isIgnoreTemplateDataFormat() {
-            return ignoreTemplateDataFormat;
+        public boolean isIgnoreSourceCellStyle() {
+            return ignoreSourceCellStyle;
         }
 
-        public void setIgnoreTemplateDataFormat(boolean ignoreTemplateDataFormat) {
-            this.ignoreTemplateDataFormat = ignoreTemplateDataFormat;
+        public void setIgnoreSourceCellStyle(boolean ignoreSourceCellStyle) {
+            this.ignoreSourceCellStyle = ignoreSourceCellStyle;
+        }
+
+        public Map<String, String> getCellStyleMap() {
+            return cellStyleMap;
+        }
+
+        public void setCellStyleMap(Map<String, String> cellStyleMap) {
+            this.cellStyleMap = cellStyleMap;
         }
     }
 }

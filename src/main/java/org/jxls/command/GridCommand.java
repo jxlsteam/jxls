@@ -9,10 +9,7 @@ import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * The command implements a grid with dynamic columns and rows
@@ -31,6 +28,12 @@ public class GridCommand extends AbstractCommand {
     String data;
     /** Comma-separated list of object properties to output in each grid row */
     String props;
+
+    /** Comma-separated list of format type cells
+     * e.g. formatCells="Double:E1, Date:F1"
+     */
+    String formatCells;
+    Map<String,String> cellStyleMap = new HashMap<>();
 
     List<String> rowObjectProps = new ArrayList<>();
 
@@ -70,7 +73,25 @@ public class GridCommand extends AbstractCommand {
         if( props != null ){
             rowObjectProps = Arrays.asList( props.split(",") );
         }
+    }
 
+    public String getFormatCells() {
+        return formatCells;
+    }
+
+    public void setFormatCells(String formatCells) {
+        this.formatCells = formatCells;
+        if(formatCells != null){
+            List<String> cellStyleList = Arrays.asList(formatCells.split(","));
+            try {
+                for (String cellStyleString : cellStyleList) {
+                    String[] styleCell = cellStyleString.split(":");
+                    cellStyleMap.put(styleCell[0].trim(), styleCell[1].trim());
+                }
+            }catch(Exception e){
+                logger.error("Failed to parse formatCells attribute");
+            }
+        }
     }
 
     public GridCommand(String headers, String data) {
@@ -124,8 +145,10 @@ public class GridCommand extends AbstractCommand {
         int totalWidth = 0;
         int totalHeight = 0;
         Context.Config config = context.getConfig();
-        boolean oldIgnoreTemplateDataFormat = config.isIgnoreTemplateDataFormat();
-        config.setIgnoreTemplateDataFormat(true);
+        boolean oldIgnoreSourceCellStyle = config.isIgnoreSourceCellStyle();
+        config.setIgnoreSourceCellStyle(true);
+        Map<String,String> oldStyleCellMap = config.getCellStyleMap();
+        config.setCellStyleMap(this.cellStyleMap);
         for( Object rowObject : dataCollection){
             if( rowObject.getClass().isArray() || rowObject instanceof Iterable){
                 Iterable cellCollection = null;
@@ -172,7 +195,8 @@ public class GridCommand extends AbstractCommand {
             }
         }
         context.removeVar(DATA_VAR);
-        config.setIgnoreTemplateDataFormat(oldIgnoreTemplateDataFormat);
+        config.setIgnoreSourceCellStyle(oldIgnoreSourceCellStyle);
+        config.setCellStyleMap(oldStyleCellMap);
         return new Size(totalWidth, totalHeight);
     }
 
