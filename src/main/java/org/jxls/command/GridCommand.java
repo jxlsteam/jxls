@@ -24,9 +24,9 @@ public class GridCommand extends AbstractCommand {
 
     /** Name of a context variable containing a collection of headers */
     String headers;
-    /** Name of a context variable contaning a collection of data objects for body */
+    /** Name of a context variable containing a collection of data objects for body */
     String data;
-    /** Comma-separated list of object properties to output in each grid row */
+    /** Comma-separated list of object properties for each grid row */
     String props;
 
     /** Comma-separated list of format type cells
