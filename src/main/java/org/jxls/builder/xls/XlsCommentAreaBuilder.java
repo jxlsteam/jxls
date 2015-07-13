@@ -4,11 +4,8 @@ import org.jxls.area.Area;
 import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
-import org.jxls.command.EachCommand;
+import org.jxls.command.*;
 import org.jxls.util.Util;
-import org.jxls.command.Command;
-import org.jxls.command.IfCommand;
-import org.jxls.command.ImageCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -93,6 +90,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put("if", IfCommand.class);
         commandMap.put("area", AreaCommand.class);
         commandMap.put("image", ImageCommand.class);
+        commandMap.put("grid", GridCommand.class);
     }
 
     Transformer transformer;

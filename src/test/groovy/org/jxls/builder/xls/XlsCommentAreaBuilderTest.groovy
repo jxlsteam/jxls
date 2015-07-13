@@ -1,5 +1,6 @@
 package org.jxls.builder.xls
 
+import org.jxls.command.GridCommand
 import spock.lang.Specification
 
 import org.jxls.area.Area
@@ -20,7 +21,7 @@ class XlsCommentAreaBuilderTest extends Specification {
     def "test build"(){
             def transformer = Mock(Transformer)
             def cellData0 = new CellData(new CellRef("sheet1!B1"))
-            cellData0.setCellComment("jx:area(lastCell='G8' clearCells='true')")
+            cellData0.setCellComment("jx:area(lastCell='G8')")
             def cellData1 = new CellData(new CellRef("sheet1!B2"))
             cellData1.setCellComment("jx:each(items='departments', var='department', lastCell='G7')")
             def cellData2 = new CellData(new CellRef("sheet1!C3"))
@@ -37,11 +38,13 @@ class XlsCommentAreaBuilderTest extends Specification {
             cellData5.setCellComment('jx:if(condition="myvar.value==2" lastCell="K2" )')
             def cellData6 = new CellData(new CellRef("sheet2!C5"))
             cellData6.setCellComment(' jx:each( items = "employees" var="employee" lastCell="E5") ')
+            def cellData7 = new CellData(new CellRef("sheet3!B2"))
+            cellData7.setCellComment('jx:grid(headers="hsData" data="mainData")')
         when:
             def areaBuilder = new XlsCommentAreaBuilder(transformer)
             List<Area> areas = areaBuilder.build()
         then:
-            transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6]
+            transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6, cellData7]
             areas.size() == 2
             // area at sheet1 checks
             def area1 = areas[0]
@@ -97,6 +100,40 @@ class XlsCommentAreaBuilderTest extends Specification {
             command6.areaList[0].areaRef == new AreaRef("sheet2!C5:E5")
             command6.areaList[0].commandDataList.isEmpty()
             ((EachCommand)command6).items == "employees"
+
+//            def command7 = area3.getCommandDataList()[0].getCommand()
+    }
+
+    def "test build with GridCommand"(){
+        def transformer = Mock(Transformer)
+        def cellData0 = new CellData(new CellRef("sheet1!B2"))
+        cellData0.setCellComment("jx:area(lastCell='C4')")
+        def cellData1 = new CellData(new CellRef("sheet1!B3"))
+        cellData1.setCellComment("jx:grid(headers='headers', data='data', lastCell='B4', areas=[B3:B3, B4:B4])")
+        when:
+        def areaBuilder = new XlsCommentAreaBuilder(transformer)
+        List<Area> areas = areaBuilder.build()
+        then:
+        transformer.getCommentedCells() >> [cellData0, cellData1]
+
+        areas.size() == 1
+        // area at sheet1 checks
+        def area1 = areas[0]
+        area1.getAreaRef() == new AreaRef("sheet1!B2:C4")
+        area1 instanceof  XlsArea
+        def commandDataList = area1.getCommandDataList()
+        commandDataList.size() == 1
+        commandDataList[0].getAreaRef() == new AreaRef("sheet1!B3:B4")
+        def command1 = commandDataList[0].getCommand()
+        command1.name == "grid"
+        ((GridCommand)command1).headers == "headers"
+        ((GridCommand)command1).data == "data"
+        command1.getAreaList().size() == 2
+        def headerArea = command1.getAreaList()[0]
+        headerArea.getAreaRef() == new AreaRef("sheet1!B3:B3")
+        headerArea.getCommandDataList().size() == 0
+        def bodyArea = command1.getAreaList()[1]
+        bodyArea.getAreaRef()  == new AreaRef("sheet1!B4:B4")
     }
 
 

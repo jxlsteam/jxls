@@ -12,7 +12,7 @@ import org.jxls.common.*;
 public class ImageCommand extends AbstractCommand {
 
     byte[] imageBytes;
-    ImageType imageType;
+    ImageType imageType = ImageType.PNG;
     Area area;
     /**
      * Image bean name in the context
