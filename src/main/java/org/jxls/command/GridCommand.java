@@ -71,7 +71,7 @@ public class GridCommand extends AbstractCommand {
     public void setProps(String props) {
         this.props = props;
         if( props != null ){
-            rowObjectProps = Arrays.asList( props.split(",") );
+            rowObjectProps = Arrays.asList( props.replaceAll("\\s+", "").split(",") );
         }
     }
 
