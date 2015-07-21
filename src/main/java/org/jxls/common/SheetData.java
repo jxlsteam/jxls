@@ -1,5 +1,7 @@
 package org.jxls.common;
 
+import org.jxls.transform.Transformer;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +14,16 @@ public class SheetData implements Iterable<RowData> {
     protected String sheetName;
     protected int[] columnWidth;
     protected List<RowData> rowDataList = new ArrayList<RowData>();
+
+    Transformer transformer;
+
+    public Transformer getTransformer() {
+        return transformer;
+    }
+
+    public void setTransformer(Transformer transformer) {
+        this.transformer = transformer;
+    }
 
     public int getNumberOfRows(){
         return rowDataList.size();

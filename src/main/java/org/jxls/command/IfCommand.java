@@ -90,7 +90,7 @@ public class IfCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Boolean conditionResult = Util.isConditionTrue(condition, context);
+        Boolean conditionResult = Util.isConditionTrue(getExpressionEvaluator(), condition, context);
         if( conditionResult ){
             return ifArea.applyAt(cellRef, context);
         }else{

@@ -75,6 +75,7 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 3, 2), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 5, 2), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 6, 2), context) >> new Size(3, 1)
+            1 * eachArea.getTransformer()
             0 * _._
     }
     
@@ -106,6 +107,7 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 4), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 7), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 11), context) >> new Size(3, 1)
+            1 * eachArea.getTransformer()
             0 * _._
     }
 
@@ -140,6 +142,7 @@ class EachCommandTest extends Specification{
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
+            1 * eachArea.getTransformer()
             0 * _._
     }
 }

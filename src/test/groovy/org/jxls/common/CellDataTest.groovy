@@ -1,5 +1,7 @@
 package org.jxls.common
 
+import org.jxls.expression.JexlExpressionEvaluator
+import org.jxls.transform.Transformer
 import spock.lang.Specification
 
 /**
@@ -97,7 +99,10 @@ class CellDataTest extends Specification{
             Integer num = new Integer(100)
             def context = new Context()
             context.putVar("num", num)
+            def transformer = Mock(Transformer);
+            cellData.setTransformer(transformer)
         when:
+            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.NUMBER
@@ -110,7 +115,10 @@ class CellDataTest extends Specification{
             boolean flag = true
             def context = new Context()
             context.putVar("flag", flag)
+            def transformer = Mock(Transformer);
+            cellData.setTransformer(transformer)
         when:
+            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.BOOLEAN
@@ -123,7 +131,10 @@ class CellDataTest extends Specification{
             Date today = new Date()
             def context = new Context()
             context.putVar("today", today)
+            def transformer = Mock(Transformer);
+            cellData.setTransformer(transformer)
         when:
+            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.DATE
@@ -135,7 +146,10 @@ class CellDataTest extends Specification{
             def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, '$[SUM(B2:B4)* (1 + ${bonus})]')
             def context = new Context()
             context.putVar("bonus", 0.15)
+            def transformer = Mock(Transformer);
+            cellData.setTransformer(transformer)
         when:
+            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.FORMULA
@@ -148,7 +162,10 @@ class CellDataTest extends Specification{
             Integer num = new Integer(21)
             def context = new Context()
             context.putVar("num", num)
+            def transformer = Mock(Transformer);
+            cellData.setTransformer(transformer)
         when:
+            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.STRING

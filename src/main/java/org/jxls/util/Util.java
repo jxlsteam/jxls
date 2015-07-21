@@ -198,9 +198,8 @@ public class Util {
         return rangeList;
     }
 
-    public static Boolean isConditionTrue(String condition, Context context){
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
-        Object conditionResult = expressionEvaluator.evaluate(condition);
+    public static Boolean isConditionTrue(ExpressionEvaluator evaluator, String condition, Context context){
+        Object conditionResult = evaluator.evaluate(condition, context.toMap());
         if( !(conditionResult instanceof Boolean) ){
             throw new RuntimeException("Condition result is not a boolean value - " + condition);
         }
@@ -305,12 +304,12 @@ public class Util {
    	}
 
 
-    public static Collection transformToCollectionObject(String collectionName, Context context){
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(context.toMap());
-        Object collectionObject = expressionEvaluator.evaluate(collectionName);
+    public static Collection transformToCollectionObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context){
+        Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if( !(collectionObject instanceof Collection) ){
             throw new RuntimeException(collectionName + " expression is not a collection");
         }
         return (Collection) collectionObject;
     }
+
 }

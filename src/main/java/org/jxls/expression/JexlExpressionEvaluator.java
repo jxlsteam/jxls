@@ -34,6 +34,9 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
         }
     };
 
+    public JexlExpressionEvaluator() {
+    }
+
     public JexlExpressionEvaluator(String expression) {
         JexlEngine jexl = jexlThreadLocal.get();
         jexlExpression = jexl.createExpression( expression );
@@ -47,7 +50,9 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
         this.jexlContext = jexlContext;
     }
 
-    public Object evaluate(String expression) {
+    @Override
+    public Object evaluate(String expression, Map<String, Object> context) {
+        JexlContext jexlContext = new MapContext(context);
         try {
             JexlEngine jexl = jexlThreadLocal.get();
             Map<String,Expression> expressionMap = expressionMapThreadLocal.get();
@@ -61,7 +66,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
         }
     }
-    
+
     public Object evaluate(Map<String, Object> context){
         jexlContext = new MapContext(context);
         try {
@@ -73,5 +78,9 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
 
     public Expression getJexlExpression() {
         return jexlExpression;
+    }
+
+    public JexlEngine getJexlEngine() {
+        return jexlThreadLocal.get();
     }
 }

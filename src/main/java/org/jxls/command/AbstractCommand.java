@@ -1,6 +1,8 @@
 package org.jxls.command;
 
 import org.jxls.area.Area;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.Transformer;
 
 import java.util.ArrayList;
@@ -32,5 +34,13 @@ public abstract class AbstractCommand implements Command {
     protected Transformer getTransformer(){
         if( areaList.isEmpty() ) return null;
         return areaList.get(0).getTransformer();
+    }
+
+    protected ExpressionEvaluator getExpressionEvaluator(){
+        if(getTransformer() != null ){
+            return getTransformer().getExpressionEvaluator();
+        }else{
+            return new JexlExpressionEvaluator();
+        }
     }
 }
