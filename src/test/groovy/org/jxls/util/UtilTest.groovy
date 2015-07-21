@@ -1,5 +1,6 @@
 package org.jxls.util
 
+import org.jxls.expression.JexlExpressionEvaluator
 import spock.lang.Specification
 import org.jxls.common.CellRef
 
@@ -105,10 +106,11 @@ class UtilTest extends Specification{
     def "test boolean condition calculation"(){
         given:
         def context = new Context()
+        def evaluator = new JexlExpressionEvaluator()
         when:
             context.putVar("x", xValue)
         then:
-            Util.isConditionTrue("2*x + 5 > 10", context) == result
+            Util.isConditionTrue(evaluator, "2*x + 5 > 10", context) == result
         where:
             xValue  | result
             2       | false

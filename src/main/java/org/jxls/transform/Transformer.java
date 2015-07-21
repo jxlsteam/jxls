@@ -1,6 +1,7 @@
 package org.jxls.transform;
 
 import org.jxls.common.*;
+import org.jxls.expression.ExpressionEvaluator;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,4 +24,6 @@ public interface Transformer {
     List<CellData> getCommentedCells();
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
     void write() throws IOException;
+    ExpressionEvaluator getExpressionEvaluator();
+    void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator);
 }

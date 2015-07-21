@@ -2,6 +2,7 @@ package org.jxls.common;
 
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.transform.Transformer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,8 +33,19 @@ public class CellData {
     protected String formula;
     protected Object evaluationResult;
     protected CellType targetCellType;
+    protected ExpressionEvaluator expressionEvaluator;
 
     List<CellRef> targetPos = new ArrayList<CellRef> ();
+
+    Transformer transformer;
+
+    public Transformer getTransformer() {
+        return transformer;
+    }
+
+    public void setTransformer(Transformer transformer) {
+        this.transformer = transformer;
+    }
 
     public CellData(CellRef cellRef) {
         this.cellRef = cellRef;
@@ -57,7 +69,6 @@ public class CellData {
         this(sheetName, row, col, CellType.BLANK, null);
     }
 
-
     public Object evaluate(Context context){
         targetCellType = cellType;
         if( cellType == CellType.STRING && cellValue != null){
@@ -79,10 +90,14 @@ public class CellData {
         return evaluationResult;
     }
 
+    private ExpressionEvaluator getExpressionEvaluator(){
+        return transformer != null ? transformer.getExpressionEvaluator() : new JexlExpressionEvaluator();
+    }
+
     void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
         Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
-        ExpressionEvaluator evaluator = new JexlExpressionEvaluator(context.toMap());
+        ExpressionEvaluator evaluator = getExpressionEvaluator();
         String matchedString;
         String expression;
         Object lastMatchEvalResult = null;
@@ -93,7 +108,7 @@ public class CellData {
             matchCount++;
             matchedString = exprMatcher.group();
             expression = matchedString.substring(2, matchedString.length() - 1);
-            lastMatchEvalResult = evaluator.evaluate(expression);
+            lastMatchEvalResult = evaluator.evaluate(expression, context.toMap());
             exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
         }
         if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length())){

@@ -26,8 +26,8 @@ public class JexlExpressionEvaluatorTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
         vars.put("y", 3);
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
-        Object result = expressionEvaluator.evaluate( expression );
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
+        Object result = expressionEvaluator.evaluate( expression, vars );
         assertNotNull( result );
         assertEquals( "Simple 2-var expression evaluation result is wrong", "7", result.toString());
     }
@@ -41,10 +41,10 @@ public class JexlExpressionEvaluatorTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
         vars.put("y", 3);
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         thrown.expect(EvaluationException.class);
         thrown.expectMessage(CoreMatchers.both(CoreMatchers.containsString("error")).and(CoreMatchers.containsString(expression)));
-        Object result = expressionEvaluator.evaluate( expression );
+        Object result = expressionEvaluator.evaluate( expression, vars );
         assertNotNull( result );
     }
 
@@ -54,8 +54,8 @@ public class JexlExpressionEvaluatorTest {
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
         vars.put("dummy", null);
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
-        Object result = expressionEvaluator.evaluate( expression );
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
+        Object result = expressionEvaluator.evaluate( expression , vars);
         Assert.assertEquals("Incorrect evaluation when a var is null", "4", result.toString());
     }
     
@@ -63,8 +63,9 @@ public class JexlExpressionEvaluatorTest {
     public void evaluateWhenExpressionVarIsUndefined(){
         String expression = "dummy.intValue";
         Map<String, Object> vars = new HashMap<>();
-        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator(vars);
-        Object result = expressionEvaluator.evaluate( expression );
+        ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
+        Object result = expressionEvaluator.evaluate( expression, vars );
         assertNull(result);
     }
+
 }

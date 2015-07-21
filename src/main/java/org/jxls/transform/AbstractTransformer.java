@@ -1,6 +1,8 @@
 package org.jxls.transform;
 
 import org.jxls.common.*;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.expression.JexlExpressionEvaluator;
 
 import java.util.*;
 
@@ -14,6 +16,11 @@ public abstract class AbstractTransformer implements Transformer {
     boolean ignoreColumnProps = false;
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
+    protected ExpressionEvaluator expressionEvaluator;
+
+    public AbstractTransformer() {
+        expressionEvaluator = new JexlExpressionEvaluator();
+    }
 
     @Override
     public Context createInitialContext() {
@@ -68,6 +75,16 @@ public abstract class AbstractTransformer implements Transformer {
 
     public void setIgnoreRowProps(boolean ignoreRowProps) {
         this.ignoreRowProps = ignoreRowProps;
+    }
+
+    @Override
+    public ExpressionEvaluator getExpressionEvaluator() {
+        return expressionEvaluator;
+    }
+
+    @Override
+    public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
+        this.expressionEvaluator = expressionEvaluator;
     }
 
     public Set<CellData> getFormulaCells() {

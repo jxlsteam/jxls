@@ -56,6 +56,7 @@ class IfCommandTest extends Specification{
             ifCommand.applyAt(new CellRef(1, 1), context)
         then:
             1 * elseArea.applyAt(new CellRef(1, 1), context)
+            1 * ifArea.getTransformer()
             0 * _._
     }
 
@@ -70,6 +71,7 @@ class IfCommandTest extends Specification{
             ifCommand.applyAt(new CellRef(1, 1), context)
         then:
             1 * ifArea.applyAt(new CellRef(1, 1), context)
+            1 * ifArea.getTransformer()
             0 * _._
     }
 
