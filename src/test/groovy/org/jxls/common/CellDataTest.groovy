@@ -1,6 +1,9 @@
 package org.jxls.common
 
+import org.jxls.command.AbstractCommand
 import org.jxls.expression.JexlExpressionEvaluator
+import org.jxls.transform.AbstractTransformer
+import org.jxls.transform.TransformationConfig
 import org.jxls.transform.Transformer
 import spock.lang.Specification
 
@@ -100,9 +103,10 @@ class CellDataTest extends Specification{
             def context = new Context()
             context.putVar("num", num)
             def transformer = Mock(Transformer);
+            def transformationConfig = new TransformationConfig()
             cellData.setTransformer(transformer)
         when:
-            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
+            transformer.getTransformationConfig() >> transformationConfig
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.NUMBER
@@ -116,9 +120,10 @@ class CellDataTest extends Specification{
             def context = new Context()
             context.putVar("flag", flag)
             def transformer = Mock(Transformer);
+            def transformationConfig = new TransformationConfig()
             cellData.setTransformer(transformer)
         when:
-            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
+            transformer.getTransformationConfig() >> transformationConfig
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.BOOLEAN
@@ -132,9 +137,10 @@ class CellDataTest extends Specification{
             def context = new Context()
             context.putVar("today", today)
             def transformer = Mock(Transformer);
+            def transformationConfig = new TransformationConfig()
             cellData.setTransformer(transformer)
         when:
-            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
+            transformer.getTransformationConfig() >> transformationConfig
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.DATE
@@ -147,9 +153,10 @@ class CellDataTest extends Specification{
             def context = new Context()
             context.putVar("bonus", 0.15)
             def transformer = Mock(Transformer);
+            def transformationConfig = new TransformationConfig()
             cellData.setTransformer(transformer)
         when:
-            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
+            transformer.getTransformationConfig() >> transformationConfig
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.FORMULA
@@ -163,9 +170,10 @@ class CellDataTest extends Specification{
             def context = new Context()
             context.putVar("num", num)
             def transformer = Mock(Transformer);
-            cellData.setTransformer(transformer)
+            def transformationConfig = new TransformationConfig()
         when:
-            transformer.getExpressionEvaluator() >> new JexlExpressionEvaluator()
+            cellData.setTransformer(transformer)
+            transformer.getTransformationConfig() >> transformationConfig
             def result = cellData.evaluate(context)
         then:
             cellData.targetCellType == CellData.CellType.STRING

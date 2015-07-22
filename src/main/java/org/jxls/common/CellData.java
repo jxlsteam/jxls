@@ -2,6 +2,7 @@ package org.jxls.common;
 
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.transform.AbstractTransformer;
 import org.jxls.transform.Transformer;
 
 import java.util.ArrayList;
@@ -18,8 +19,6 @@ import java.util.regex.Pattern;
 public class CellData {
     public static final String USER_FORMULA_PREFIX = "$[";
     public static final String USER_FORMULA_SUFFIX = "]";
-    protected static final String REGEX_EXPRESSION = "\\$\\{[^}]*}";
-    protected static final Pattern REGEX_EXPRESSION_PATTERN = Pattern.compile(REGEX_EXPRESSION);
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
@@ -33,11 +32,12 @@ public class CellData {
     protected String formula;
     protected Object evaluationResult;
     protected CellType targetCellType;
-    protected ExpressionEvaluator expressionEvaluator;
 
     List<CellRef> targetPos = new ArrayList<CellRef> ();
 
     Transformer transformer;
+
+
 
     public Transformer getTransformer() {
         return transformer;
@@ -91,12 +91,17 @@ public class CellData {
     }
 
     private ExpressionEvaluator getExpressionEvaluator(){
-        return transformer != null ? transformer.getExpressionEvaluator() : new JexlExpressionEvaluator();
+        return transformer.getTransformationConfig().getExpressionEvaluator();
+    }
+
+    private Pattern getExpressionNotationPattern(){
+        return transformer.getTransformationConfig().getExpressionNotationPattern();
     }
 
     void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
-        Matcher exprMatcher = REGEX_EXPRESSION_PATTERN.matcher(strValue);
+
+        Matcher exprMatcher = getExpressionNotationPattern().matcher(strValue);
         ExpressionEvaluator evaluator = getExpressionEvaluator();
         String matchedString;
         String expression;

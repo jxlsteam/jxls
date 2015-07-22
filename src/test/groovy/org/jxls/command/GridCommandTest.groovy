@@ -5,6 +5,8 @@ import org.jxls.area.XlsArea
 import org.jxls.common.CellRef
 import org.jxls.common.Context
 import org.jxls.common.Size
+import org.jxls.transform.TransformationConfig
+import org.jxls.transform.Transformer
 import spock.lang.Specification
 
 /**
@@ -55,11 +57,17 @@ class GridCommandTest extends Specification{
         def gridCommand = new GridCommand( "hs", "datas", headerArea, bodyArea)
         def context = Mock(Context)
         def config = Mock(Context.Config)
+        def transformer = Mock(Transformer)
+        def transformationConfig = new TransformationConfig()
         when:
+
         gridCommand.applyAt(new CellRef("sheet2", 2, 2), context)
+
         then:
         context.toMap() >> ["hs": ["H1","H2","H3"], "datas": [[10, 11, 12], [20,21,22],[30,31,32]]]
         context.getConfig() >> config
+        2 * headerArea.getTransformer() >> transformer
+        2 * transformer.getTransformationConfig() >> transformationConfig
         1 * context.putVar(GridCommand.HEADER_VAR, "H1")
         1 * context.putVar(GridCommand.HEADER_VAR, "H2")
         1 * context.putVar(GridCommand.HEADER_VAR, "H3")
@@ -88,6 +96,7 @@ class GridCommandTest extends Specification{
         1 * bodyArea.applyAt(new CellRef("sheet2", 11, 2), context) >> new Size(2, 4)
         1 * bodyArea.applyAt(new CellRef("sheet2", 11, 4), context) >> new Size(1, 3)
         1 * bodyArea.applyAt(new CellRef("sheet2", 11, 5), context) >> new Size(1, 1)
+
 //        0 * _._
     }
 
@@ -97,6 +106,8 @@ class GridCommandTest extends Specification{
         def bodyArea = Mock(Area)
         def gridCommand = new GridCommand( "hs", "datas", headerArea, bodyArea)
         gridCommand.setProps("strProp,doubleProp,dateProp,intProp")
+        def transformer = Mock(Transformer)
+        def transformationConfig = new TransformationConfig()
         def context = Mock(Context)
         def config = Mock(Context.Config)
         def today = new Date()
@@ -112,6 +123,8 @@ class GridCommandTest extends Specification{
         1 * context.putVar(GridCommand.HEADER_VAR, "H2")
         1 * context.putVar(GridCommand.HEADER_VAR, "H3")
         1 * context.removeVar(GridCommand.HEADER_VAR)
+        2 * headerArea.getTransformer() >> transformer
+        2 * transformer.getTransformationConfig() >> transformationConfig
         1 * headerArea.applyAt(new CellRef("sheet2", 2, 2), context) >> new Size(1, 2)
         1 * headerArea.applyAt(new CellRef("sheet2", 2, 3), context) >> new Size(2, 3)
         1 * headerArea.applyAt(new CellRef("sheet2", 2, 5), context) >> new Size(2, 4)

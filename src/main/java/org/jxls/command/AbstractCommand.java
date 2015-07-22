@@ -3,6 +3,7 @@ package org.jxls.command;
 import org.jxls.area.Area;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 import java.util.ArrayList;
@@ -36,11 +37,7 @@ public abstract class AbstractCommand implements Command {
         return areaList.get(0).getTransformer();
     }
 
-    protected ExpressionEvaluator getExpressionEvaluator(){
-        if(getTransformer() != null ){
-            return getTransformer().getExpressionEvaluator();
-        }else{
-            return new JexlExpressionEvaluator();
-        }
+    protected TransformationConfig getTransformationConfig(){
+        return getTransformer().getTransformationConfig();
     }
 }

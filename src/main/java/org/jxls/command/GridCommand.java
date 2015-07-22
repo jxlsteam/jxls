@@ -112,6 +112,8 @@ public class GridCommand extends AbstractCommand {
         this.data = data;
         this.headerArea = headerArea;
         this.bodyArea = bodyArea;
+        addArea(headerArea);
+        addArea(bodyArea);
     }
 
     @Override
@@ -139,7 +141,7 @@ public class GridCommand extends AbstractCommand {
         if(bodyArea == null || data == null){
             return Size.ZERO_SIZE;
         }
-        Collection dataCollection = Util.transformToCollectionObject(getExpressionEvaluator(), this.data, context);
+        Collection dataCollection = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
 
         CellRef currentCell = cellRef;
         int totalWidth = 0;
@@ -204,7 +206,7 @@ public class GridCommand extends AbstractCommand {
         if(headerArea == null || headers == null){
             return Size.ZERO_SIZE;
         }
-        Collection headers = Util.transformToCollectionObject(getExpressionEvaluator(), this.headers, context);
+        Collection headers = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
         CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;
