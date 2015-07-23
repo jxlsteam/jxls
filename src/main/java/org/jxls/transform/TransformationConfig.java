@@ -12,15 +12,12 @@ public class TransformationConfig {
     public static final String EXPRESSION_PART = "(.+?)";
     public static final String DEFAULT_EXPRESSION_BEGIN = "${";
     public static final String DEFAULT_EXPRESSION_END = "}";
+    protected static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
 
     ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
     String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
     String expressionNotationEnd = DEFAULT_EXPRESSION_END;
-    Pattern expressionNotationPattern;
-
-    {
-        buildExpressionNotation(DEFAULT_EXPRESSION_BEGIN, DEFAULT_EXPRESSION_END);
-    }
+    Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
 
     public TransformationConfig() {
     }
