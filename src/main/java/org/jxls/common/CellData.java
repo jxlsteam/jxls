@@ -1,15 +1,13 @@
 package org.jxls.common;
 
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
-import org.jxls.transform.AbstractTransformer;
+import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Represents an excel cell data holder and cell value evaluator
@@ -94,14 +92,12 @@ public class CellData {
         return transformer.getTransformationConfig().getExpressionEvaluator();
     }
 
-    private Pattern getExpressionNotationPattern(){
-        return transformer.getTransformationConfig().getExpressionNotationPattern();
-    }
-
     void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
-
-        Matcher exprMatcher = getExpressionNotationPattern().matcher(strValue);
+        TransformationConfig transformationConfig = transformer.getTransformationConfig();
+        int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
+        int endExpressionLength = transformationConfig.getExpressionNotationEnd().length();
+        Matcher exprMatcher = transformationConfig.getExpressionNotationPattern().matcher(strValue);
         ExpressionEvaluator evaluator = getExpressionEvaluator();
         String matchedString;
         String expression;
@@ -112,7 +108,7 @@ public class CellData {
             endOffset = exprMatcher.end();
             matchCount++;
             matchedString = exprMatcher.group();
-            expression = matchedString.substring(2, matchedString.length() - 1);
+            expression = matchedString.substring(beginExpressionLength, matchedString.length() - endExpressionLength);
             lastMatchEvalResult = evaluator.evaluate(expression, context.toMap());
             exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
         }
