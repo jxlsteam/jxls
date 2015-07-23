@@ -1,5 +1,8 @@
 package org.jxls.command
 
+import org.jxls.expression.ExpressionEvaluator
+import org.jxls.transform.TransformationConfig
+import org.jxls.transform.Transformer
 import spock.lang.Specification
 
 import org.jxls.common.Size
@@ -62,6 +65,8 @@ class EachCommandTest extends Specification{
             def eachArea = Mock(Area)
             def eachCommand = new EachCommand( "x", "items", eachArea)
             def context = Mock(Context)
+            def transformer = Mock(Transformer)
+            def transformationConfig = new TransformationConfig()
         when:
             eachCommand.applyAt(new CellRef("sheet2", 2, 2), context)
         then:
@@ -75,7 +80,8 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 3, 2), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 5, 2), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 6, 2), context) >> new Size(3, 1)
-            1 * eachArea.getTransformer()
+            1 * eachArea.getTransformer() >> transformer
+            1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._
     }
     
@@ -93,6 +99,8 @@ class EachCommandTest extends Specification{
             def eachArea = Mock(Area)
             def eachCommand = new EachCommand("x", "items", eachArea, EachCommand.Direction.RIGHT)
             def context = Mock(Context)
+            def transformer = Mock(Transformer)
+            def transformationConfig = new TransformationConfig()
         when:
             eachArea.getSize() >> new Size(3, 2)
             eachCommand.applyAt(new CellRef("sheet2", 1, 1), context)
@@ -107,7 +115,8 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 4), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 7), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 11), context) >> new Size(3, 1)
-            1 * eachArea.getTransformer()
+            1 * eachArea.getTransformer() >> transformer
+            1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._
     }
 
@@ -117,6 +126,8 @@ class EachCommandTest extends Specification{
         def cellRefGenerator = Mock(CellRefGenerator)
         def eachSheetCommand = new EachCommand("x", "list", area, cellRefGenerator)
         def context = Mock(Context)
+        def transformer = Mock(Transformer)
+        def transformationConfig = new TransformationConfig()
         when:
         eachSheetCommand.applyAt(new CellRef("sheet2", 2,3), context)
         then:
@@ -130,6 +141,8 @@ class EachCommandTest extends Specification{
         1 * area.applyAt(new CellRef("abc!A2"), context) >> new Size(3,5)
         1 * area.applyAt(new CellRef("def!B2"), context) >> new Size(2,3)
         1 * area.applyAt(new CellRef("ghi!C2"), context) >> new Size(4,3)
+        1 * area.getTransformer() >> transformer
+        1 * transformer.getTransformationConfig() >> transformationConfig
     }
 
     def "test select attribute"(){
@@ -137,12 +150,15 @@ class EachCommandTest extends Specification{
         def context = new Context()
         context.putVar("items", [0,1,2,3,4,5,1])
         def eachCommand = new EachCommand("var1", "items", eachArea)
+        def transformer = Mock(Transformer)
+        def transformationConfig = new TransformationConfig()
         when:
             eachCommand.setSelect("var1 % 2 == 0")
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
-            1 * eachArea.getTransformer()
+            1 * eachArea.getTransformer() >> transformer
+            1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._
     }
 }

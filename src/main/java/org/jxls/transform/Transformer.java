@@ -24,6 +24,6 @@ public interface Transformer {
     List<CellData> getCommentedCells();
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
     void write() throws IOException;
-    ExpressionEvaluator getExpressionEvaluator();
-    void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator);
+    TransformationConfig getTransformationConfig();
+    void setTransformationConfig(TransformationConfig transformationConfig);
 }

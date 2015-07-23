@@ -159,7 +159,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Collection itemsCollection = Util.transformToCollectionObject(getExpressionEvaluator(), items, context);
+        Collection itemsCollection = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
         int width = 0;
         int height = 0;
         int index = 0;

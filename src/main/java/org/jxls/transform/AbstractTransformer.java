@@ -5,6 +5,7 @@ import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
@@ -12,14 +13,13 @@ import java.util.*;
  *         Date: 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
-
     boolean ignoreColumnProps = false;
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
-    protected ExpressionEvaluator expressionEvaluator;
+
+    TransformationConfig transformationConfig = new TransformationConfig();
 
     public AbstractTransformer() {
-        expressionEvaluator = new JexlExpressionEvaluator();
     }
 
     @Override
@@ -78,13 +78,13 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     @Override
-    public ExpressionEvaluator getExpressionEvaluator() {
-        return expressionEvaluator;
+    public TransformationConfig getTransformationConfig() {
+        return transformationConfig;
     }
 
     @Override
-    public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
-        this.expressionEvaluator = expressionEvaluator;
+    public void setTransformationConfig(TransformationConfig transformationConfig) {
+        this.transformationConfig = transformationConfig;
     }
 
     public Set<CellData> getFormulaCells() {
