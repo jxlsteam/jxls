@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
  *         Date: 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
-    public static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
-    public static final Pattern DEFAULT_EXPRESSION_PATTERN = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
     boolean ignoreColumnProps = false;
     boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();

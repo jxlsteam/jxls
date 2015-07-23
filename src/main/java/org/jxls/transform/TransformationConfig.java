@@ -25,7 +25,7 @@ public class TransformationConfig {
     public TransformationConfig() {
     }
 
-    void buildExpressionNotation(String expressionBegin, String expressionEnd){
+    public void buildExpressionNotation(String expressionBegin, String expressionEnd){
         this.expressionNotationBegin = expressionBegin;
         this.expressionNotationEnd = expressionEnd;
         String regexExpression = Pattern.quote(expressionNotationBegin) + EXPRESSION_PART + Pattern.quote(expressionNotationEnd);
