@@ -89,19 +89,6 @@ class XlsAreaTest extends Specification{
         commandData.getCommand() == command
     }
     
-    def "test clear cells with applyAt for the same worksheet"(){
-        given:
-            def transformer = Mock(Transformer)
-            def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
-        when:
-            area.applyAt(new CellRef("sheet1", 1, 1), null)
-        then:
-            1 * transformer.clearCell(new CellRef("sheet1", 1, 1))
-            1 * transformer.clearCell(new CellRef("sheet1", 1, 2))
-            1 * transformer.clearCell(new CellRef("sheet1", 2, 1))
-            1 * transformer.clearCell(new CellRef("sheet1", 2, 2))
-    }
-
     def "test clear cells with applyAt for different worksheet"(){
         given:
             def transformer = Mock(Transformer)
