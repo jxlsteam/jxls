@@ -102,9 +102,9 @@ public class XlsArea implements Area {
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
 
-        if( cellRange.getStartCell().getSheetName().equalsIgnoreCase( cellRef.getSheetName() )){
-            clearCells();
-        }
+//        if( cellRange.getStartCell().getSheetName().equalsIgnoreCase( cellRef.getSheetName() )){
+//            clearCells();
+//        }
 
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();

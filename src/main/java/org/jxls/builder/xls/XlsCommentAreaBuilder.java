@@ -94,11 +94,17 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     }
 
     Transformer transformer;
+    private boolean clearTemplateCells = true;
 
     public XlsCommentAreaBuilder(Transformer transformer) {
         this.transformer = transformer;
     }
-    
+
+    public XlsCommentAreaBuilder(Transformer transformer, boolean clearTemplateCells) {
+        this(transformer);
+        this.clearTemplateCells = clearTemplateCells;
+    }
+
     public static void addCommandMapping(String commandName, Class clazz){
         commandMap.put(commandName, clazz);
     }
@@ -155,6 +161,11 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
             for (Area area : minAreas) {
                 area.addCommand( commandData.getAreaRef(), commandData.getCommand() );
+            }
+        }
+        if( clearTemplateCells ){
+            for(Area area: userAreas){
+                ((XlsArea)area).clearCells();
             }
         }
         return userAreas;

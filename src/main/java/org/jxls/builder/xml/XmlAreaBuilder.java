@@ -8,6 +8,7 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.jxls.area.Area;
+import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.transform.Transformer;
 
@@ -24,6 +25,7 @@ import java.util.Map;
 public class XmlAreaBuilder implements AreaBuilder {
     Transformer transformer;
     InputStream xmlInputStream;
+    private boolean clearTemplateCells = true;
 
     public XmlAreaBuilder(Transformer transformer) {
         this.transformer = transformer;
@@ -32,6 +34,12 @@ public class XmlAreaBuilder implements AreaBuilder {
     public XmlAreaBuilder(InputStream xmlInputStream, Transformer transformer) {
         this.xmlInputStream = xmlInputStream;
         this.transformer = transformer;
+    }
+
+    public XmlAreaBuilder(InputStream xmlInputStream, Transformer transformer, boolean clearTemplateCells) {
+        this.xmlInputStream = xmlInputStream;
+        this.transformer = transformer;
+        this.clearTemplateCells = clearTemplateCells;
     }
 
     public List<Area> build(InputStream is) {
@@ -54,6 +62,11 @@ public class XmlAreaBuilder implements AreaBuilder {
             simpleConfigurator.doConfigure(is);
         } catch (JoranException e) {
             printOccurredErrors(context);
+        }
+        if( clearTemplateCells ){
+            for(Area area: areaAction.getAreaList()){
+                ((XlsArea)area).clearCells();
+            }
         }
         return areaAction.getAreaList();
     }
