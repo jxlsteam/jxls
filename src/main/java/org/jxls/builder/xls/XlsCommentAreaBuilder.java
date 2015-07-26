@@ -5,11 +5,11 @@ import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.command.*;
-import org.jxls.util.Util;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
+import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +96,9 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     Transformer transformer;
     private boolean clearTemplateCells = true;
 
+    public XlsCommentAreaBuilder() {
+    }
+
     public XlsCommentAreaBuilder(Transformer transformer) {
         this.transformer = transformer;
     }
@@ -103,6 +106,16 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     public XlsCommentAreaBuilder(Transformer transformer, boolean clearTemplateCells) {
         this(transformer);
         this.clearTemplateCells = clearTemplateCells;
+    }
+
+    @Override
+    public Transformer getTransformer() {
+        return transformer;
+    }
+
+    @Override
+    public void setTransformer(Transformer transformer) {
+        this.transformer = transformer;
     }
 
     public static void addCommandMapping(String commandName, Class clazz){

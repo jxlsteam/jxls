@@ -42,6 +42,16 @@ public class XmlAreaBuilder implements AreaBuilder {
         this.clearTemplateCells = clearTemplateCells;
     }
 
+    @Override
+    public Transformer getTransformer() {
+        return transformer;
+    }
+
+    @Override
+    public void setTransformer(Transformer transformer) {
+        this.transformer = transformer;
+    }
+
     public List<Area> build(InputStream is) {
         Map<ElementSelector, Action> ruleMap = new HashMap<>();
 

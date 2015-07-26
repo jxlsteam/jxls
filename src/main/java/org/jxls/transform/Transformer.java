@@ -1,7 +1,6 @@
 package org.jxls.transform;
 
 import org.jxls.common.*;
-import org.jxls.expression.ExpressionEvaluator;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,4 +25,6 @@ public interface Transformer {
     void write() throws IOException;
     TransformationConfig getTransformationConfig();
     void setTransformationConfig(TransformationConfig transformationConfig);
+    void deleteSheet(String sheetName);
+    void setHidden(String sheetName, boolean hidden);
 }
