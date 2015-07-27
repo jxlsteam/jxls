@@ -3,6 +3,7 @@ package org.jxls.util;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
@@ -70,13 +71,7 @@ public class JxlsHelper {
     }
 
     public void processTemplate(InputStream templateStream, OutputStream targetStream, Context context) throws IOException {
-        Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);
-        if( transformer == null ){
-            throw new IllegalStateException("Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath");
-        }
-        if( expressionNotationBegin != null && expressionNotationEnd != null){
-            transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
-        }
+        Transformer transformer = createTransformer(templateStream, targetStream);
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
         for (Area xlsArea : xlsAreaList) {
@@ -90,13 +85,7 @@ public class JxlsHelper {
     }
 
     public void processTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String targetCell) throws IOException {
-        Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);
-        if( transformer == null ){
-            throw new IllegalStateException("Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath");
-        }
-        if( expressionNotationBegin != null && expressionNotationEnd != null){
-            transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
-        }
+        Transformer transformer = createTransformer(templateStream, targetStream);
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
         if( xlsAreaList.isEmpty() ){
@@ -119,4 +108,56 @@ public class JxlsHelper {
         }
         transformer.write();
     }
+
+    public void processGridTemplate(InputStream templateStream, OutputStream targetStream, Context context, String objectProps) throws IOException {
+        Transformer transformer = createTransformer(templateStream, targetStream);
+        areaBuilder.setTransformer(transformer);
+        List<Area> xlsAreaList = areaBuilder.build();
+        for (Area xlsArea : xlsAreaList) {
+            GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
+            gridCommand.setProps(objectProps);
+            xlsArea.applyAt(
+                    new CellRef(xlsArea.getStartCellRef().getCellName()), context);
+            if( processFormulas ) {
+                xlsArea.processFormulas();
+            }
+        }
+        transformer.write();
+    }
+
+    public void processGridTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String objectProps, String targetCell) throws IOException {
+        Transformer transformer = createTransformer(templateStream, targetStream);
+        areaBuilder.setTransformer(transformer);
+        List<Area> xlsAreaList = areaBuilder.build();
+        Area firstArea = xlsAreaList.get(0);
+        CellRef targetCellRef = new CellRef(targetCell);
+        GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();
+        gridCommand.setProps(objectProps);
+        firstArea.applyAt(targetCellRef, context);
+        if( processFormulas ){
+            firstArea.processFormulas();
+        }
+        String sourceSheetName = firstArea.getStartCellRef().getSheetName();
+        if( !sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())){
+            if( hideTemplateSheet ){
+                transformer.setHidden(sourceSheetName, true);
+            }
+            if( deleteTemplateSheet ){
+                transformer.deleteSheet(sourceSheetName);
+            }
+        }
+        transformer.write();
+    }
+
+    private Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
+        Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);
+        if( transformer == null ){
+            throw new IllegalStateException("Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath");
+        }
+        if( expressionNotationBegin != null && expressionNotationEnd != null){
+            transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
+        }
+        return transformer;
+    }
+
 }
