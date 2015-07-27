@@ -6,11 +6,13 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,8 +22,9 @@ public class JxlsHelper {
     private boolean hideTemplateSheet = false;
     private boolean deleteTemplateSheet = true;
     private boolean processFormulas = true;
-    String expressionNotationBegin;
-    String expressionNotationEnd;
+    private String expressionNotationBegin;
+    private String expressionNotationEnd;
+    private SimpleExporter simpleExporter = new SimpleExporter();
 
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
 
@@ -147,6 +150,14 @@ public class JxlsHelper {
             }
         }
         transformer.write();
+    }
+
+    public void registerGridTemplate(InputStream inputStream) throws IOException {
+        simpleExporter.registerGridTemplate(inputStream);
+    }
+
+    public void gridExport(Collection headers, Collection dataObjects, String objectProps, OutputStream outputStream){
+        simpleExporter.gridExport(headers, dataObjects, objectProps, outputStream);
     }
 
     private Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
