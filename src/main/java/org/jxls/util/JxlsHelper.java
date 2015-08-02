@@ -6,6 +6,8 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.formula.FastFormulaProcessor;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
 
@@ -22,6 +24,7 @@ public class JxlsHelper {
     private boolean hideTemplateSheet = false;
     private boolean deleteTemplateSheet = true;
     private boolean processFormulas = true;
+    private boolean useFastFormulaProcessor = true;
     private String expressionNotationBegin;
     private String expressionNotationEnd;
     private SimpleExporter simpleExporter = new SimpleExporter();
@@ -67,6 +70,14 @@ public class JxlsHelper {
         this.deleteTemplateSheet = deleteTemplateSheet;
     }
 
+    public boolean isUseFastFormulaProcessor() {
+        return useFastFormulaProcessor;
+    }
+
+    public void setUseFastFormulaProcessor(boolean useFastFormulaProcessor) {
+        this.useFastFormulaProcessor = useFastFormulaProcessor;
+    }
+
     public JxlsHelper buildExpressionNotation(String expressionNotationBegin, String expressionNotationEnd){
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -81,10 +92,19 @@ public class JxlsHelper {
             xlsArea.applyAt(
                     new CellRef(xlsArea.getStartCellRef().getCellName()), context);
             if( processFormulas ) {
+                setFormulaProcessor(xlsArea);
                 xlsArea.processFormulas();
             }
         }
         transformer.write();
+    }
+
+    private void setFormulaProcessor(Area xlsArea) {
+        if( useFastFormulaProcessor ){
+            xlsArea.setFormulaProcessor(new FastFormulaProcessor());
+        }else{
+            xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
+        }
     }
 
     public void processTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String targetCell) throws IOException {
@@ -98,6 +118,7 @@ public class JxlsHelper {
         CellRef targetCellRef = new CellRef(targetCell);
         firstArea.applyAt(targetCellRef, context);
         if( processFormulas ){
+            setFormulaProcessor(firstArea);
             firstArea.processFormulas();
         }
         String sourceSheetName = firstArea.getStartCellRef().getSheetName();
@@ -119,6 +140,7 @@ public class JxlsHelper {
         for (Area xlsArea : xlsAreaList) {
             GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
             gridCommand.setProps(objectProps);
+            setFormulaProcessor(xlsArea);
             xlsArea.applyAt(
                     new CellRef(xlsArea.getStartCellRef().getCellName()), context);
             if( processFormulas ) {
@@ -138,6 +160,7 @@ public class JxlsHelper {
         gridCommand.setProps(objectProps);
         firstArea.applyAt(targetCellRef, context);
         if( processFormulas ){
+            setFormulaProcessor(firstArea);
             firstArea.processFormulas();
         }
         String sourceSheetName = firstArea.getStartCellRef().getSheetName();

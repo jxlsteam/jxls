@@ -8,8 +8,13 @@ import org.jxls.util.CellRefUtil;
  *         Date: 2/13/12
  */
 public class AreaRef {
-    CellRef firstCellRef;
-    CellRef lastCellRef;
+    private CellRef firstCellRef;
+    private CellRef lastCellRef;
+    private int startRow;
+    private int startCol;
+    private int endRow;
+    private int endCol;
+
 
     public AreaRef(CellRef firstCellRef, CellRef lastCellRef) {
         if( (firstCellRef.getSheetName() == null && lastCellRef.getSheetName() == null) ||
@@ -17,14 +22,23 @@ public class AreaRef {
                 firstCellRef.getSheetName().equalsIgnoreCase(lastCellRef.getSheetName()) )){
             this.firstCellRef = firstCellRef;
             this.lastCellRef = lastCellRef;
+            updateStartEndRowCol();
         }else{
             throw new IllegalArgumentException("Cannot create area from specified cell references " + firstCellRef + ", " + lastCellRef);
         }
     }
-    
+
+    private void updateStartEndRowCol() {
+        startRow = firstCellRef.getRow();
+        startCol = firstCellRef.getCol();
+        endRow = lastCellRef.getRow();
+        endCol = lastCellRef.getCol();
+    }
+
     public AreaRef(CellRef cellRef, Size size){
         firstCellRef = cellRef;
         lastCellRef = new CellRef( cellRef.getSheetName(), cellRef.getRow() + size.getHeight() - 1, cellRef.getCol() + size.getWidth() - 1);
+        updateStartEndRowCol();
     }
     
     public AreaRef(String areaRef){
@@ -33,6 +47,7 @@ public class AreaRef {
         if (parts.length == 1) {
             firstCellRef = new CellRef(part0);
             lastCellRef = firstCellRef;
+            updateStartEndRowCol();
             return;
         }
         if (parts.length != 2) {
@@ -46,6 +61,7 @@ public class AreaRef {
             firstCellRef = new CellRef(part0);
             lastCellRef = new CellRef(part1);
         }
+        updateStartEndRowCol();
     }
     
     public String getSheetName(){
@@ -62,17 +78,22 @@ public class AreaRef {
     
     public Size getSize(){
         if( firstCellRef == null || lastCellRef == null ) return Size.ZERO_SIZE;
-        return new Size(lastCellRef.getCol() - firstCellRef.getCol() + 1, lastCellRef.getRow() - firstCellRef.getRow() + 1);
+        return new Size(endCol - startCol + 1, endRow - startRow + 1);
     }
     
-    boolean contains(CellRef cellRef){
+    public boolean contains(CellRef cellRef){
         if( (getSheetName() == null && cellRef.getSheetName() == null) ||
                 getSheetName() != null && getSheetName().equalsIgnoreCase(cellRef.getSheetName())){
-            return (cellRef.getRow() >= firstCellRef.getRow() && cellRef.getCol() >= firstCellRef.getCol() &&
-                    cellRef.getRow() <= lastCellRef.getRow() && cellRef.getCol() <= lastCellRef.getCol());
+            return (cellRef.getRow() >= startRow && cellRef.getCol() >= startCol &&
+                    cellRef.getRow() <= endRow && cellRef.getCol() <= endCol);
         }else{
             return false;
         }
+    }
+
+    public boolean contains(int row, int col){
+            return (row >= startRow && row<=endRow ) &&
+                    (col >= startCol) && (col<=endCol);
     }
     
     public boolean contains(AreaRef areaRef){

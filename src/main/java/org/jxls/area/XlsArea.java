@@ -2,15 +2,14 @@ package org.jxls.area;
 
 import org.jxls.command.Command;
 import org.jxls.common.*;
+import org.jxls.formula.FastFormulaProcessor;
+import org.jxls.formula.FormulaProcessor;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.jxls.util.CellRefUtil;
-import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Core implementation of {@link Area} interface
@@ -32,6 +31,8 @@ public class XlsArea implements Area {
     List<AreaListener> areaListeners = new ArrayList<AreaListener>();
 
     private boolean cellsCleared = false;
+//    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
+    private FormulaProcessor formulaProcessor = new FastFormulaProcessor();
 
     public XlsArea(AreaRef areaRef, Transformer transformer){
         CellRef startCell = areaRef.getFirstCellRef();
@@ -62,6 +63,16 @@ public class XlsArea implements Area {
 
     public XlsArea(CellRef startCellRef, Size size, Transformer transformer) {
         this(startCellRef, size, null, transformer);
+    }
+
+    @Override
+    public FormulaProcessor getFormulaProcessor() {
+        return formulaProcessor;
+    }
+
+    @Override
+    public void setFormulaProcessor(FormulaProcessor formulaProcessor) {
+        this.formulaProcessor = formulaProcessor;
     }
 
     public void addCommand(AreaRef areaRef, Command command){
@@ -145,7 +156,27 @@ public class XlsArea implements Area {
         }
         transformStaticCells(cellRef, context, topStaticAreaLastRow + 1);
         fireAfterApplyEvent(cellRef, context);
-        return new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
+        Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
+        AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
+        updateCellDataFinalAreaForFormulaCells(newAreaRef);
+        return finalSize;
+    }
+
+    private void updateCellDataFinalAreaForFormulaCells(AreaRef newAreaRef) {
+        String sheetName = startCellRef.getSheetName();
+        int offsetRow = startCellRef.getRow();
+        int startCol = startCellRef.getCol();
+        for(int col = 0; col < size.getWidth(); col++){
+            for(int row = 0; row < size.getHeight(); row++){
+                if( !cellRange.isExcluded(row, col) ){
+                    CellRef srcCell = new CellRef(sheetName, offsetRow + row, startCol + col);
+                    CellData cellData = transformer.getCellData(srcCell);
+                    if( cellData != null && cellData.isFormulaCell() ){
+                        cellData.addTargetParentAreaRef( newAreaRef );
+                    }
+                }
+            }
+        }
     }
 
     private int transformTopStaticArea(CellRef cellRef, Context context) {
@@ -161,6 +192,7 @@ public class XlsArea implements Area {
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try{
+                        updateCellDataArea(srcCell, targetCell);
                         transformer.transform(srcCell, targetCell, context);
                     }catch(Exception e){
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
@@ -219,6 +251,7 @@ public class XlsArea implements Area {
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try{
+                        updateCellDataArea(srcCell, targetCell);
                         transformer.transform(srcCell, targetCell, context);
                     }catch(Exception e){
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
@@ -226,6 +259,14 @@ public class XlsArea implements Area {
                     fireAfterTransformCell(srcCell, targetCell, context);
                 }
             }
+        }
+    }
+
+    private void updateCellDataArea(CellRef srcCell, CellRef targetCell) {
+        CellData cellData = transformer.getCellData(srcCell);
+        if( cellData != null ) {
+            cellData.setArea(this);
+            cellData.addTargetPos(targetCell);
         }
     }
 
@@ -255,74 +296,7 @@ public class XlsArea implements Area {
 
 
     public void processFormulas() {
-        Set<CellData> formulaCells = transformer.getFormulaCells();
-        for (CellData formulaCellData : formulaCells) {
-            List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
-            List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
-            List<CellRef> targetFormulaCells = transformer.getTargetCellRef(formulaCellData.getCellRef());
-            Map<CellRef, List<CellRef>> targetCellRefMap = new HashMap<CellRef, List<CellRef>>();
-            Map<String, List<CellRef>> jointedCellRefMap = new HashMap<String, List<CellRef>>();
-            for (String cellRef : formulaCellRefs) {
-                CellRef pos = new CellRef(cellRef);
-                if(pos.getSheetName() == null ){
-                    pos.setSheetName( formulaCellData.getSheetName() );
-                    pos.setIgnoreSheetNameInFormat(true);
-                }
-                List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                targetCellRefMap.put(pos, targetCellDataList);
-            }
-            for (String jointedCellRef : jointedCellRefs) {
-                List<String> nestedCellRefs = Util.getCellRefsFromJointedCellRef(jointedCellRef);
-                List<CellRef> jointedCellRefList = new ArrayList<CellRef>();
-                for (String cellRef : nestedCellRefs) {
-                    CellRef pos = new CellRef(cellRef);
-                    if(pos.getSheetName() == null ){
-                        pos.setSheetName(formulaCellData.getSheetName());
-                        pos.setIgnoreSheetNameInFormat(true);
-                    }
-                    List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-
-                    jointedCellRefList.addAll(targetCellDataList);
-                }
-                jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
-            }
-            for (int i = 0; i < targetFormulaCells.size(); i++) {
-                CellRef targetFormulaCellRef = targetFormulaCells.get(i);
-                String targetFormulaString = formulaCellData.getFormula();
-                for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
-                    List<CellRef> targetCells = cellRefEntry.getValue();
-                    if( targetCells.isEmpty() ) continue;
-                    if( targetCells.size() == targetFormulaCells.size() ){
-                        CellRef targetCellRefCellRef = targetCells.get(i);
-                        targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement( targetCellRefCellRef.getCellName() ));
-                    }else{
-                        List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
-                        if( rangeList.size() == targetFormulaCells.size() ){
-                            List<CellRef> range = rangeList.get(i);
-                            String replacementString = Util.createTargetCellRef( range );
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
-                        }else{
-                            targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(Util.createTargetCellRef(targetCells)));
-                        }
-                    }
-                }
-                for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
-                    List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
-                    if( targetCellRefList.isEmpty() ) continue;
-                    List< List<CellRef> > rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
-                    if( rangeList.size() == targetFormulaCells.size() ){
-                        List<CellRef> range = rangeList.get(i);
-                        String replacementString = Util.createTargetCellRef(range);
-                        targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
-                    }else{
-                        targetFormulaString = targetFormulaString.replaceAll( Pattern.quote(jointedCellRefEntry.getKey()), Util.createTargetCellRef(targetCellRefList));
-                    }
-                }
-                String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
-                targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
-                transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
-            }
-        }
+        formulaProcessor.processAreaFormulas(transformer);
     }
 
     public void addAreaListener(AreaListener listener) {
@@ -349,10 +323,5 @@ public class XlsArea implements Area {
         }
         transformer.resetTargetCellRefs();
     }
-
-    private String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
-        return (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"");
-    }
-
 
 }
