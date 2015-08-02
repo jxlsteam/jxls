@@ -1,5 +1,7 @@
 package org.jxls.area
 
+import org.jxls.formula.FastFormulaProcessor
+import org.jxls.formula.StandardFormulaProcessor
 import spock.lang.Specification
 
 import org.jxls.common.Size
@@ -94,6 +96,7 @@ class XlsAreaTest extends Specification{
             def transformer = Mock(Transformer)
             def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,2), transformer)
             def context = new Context()
+            def cellData = Mock(CellData)
         when:
             area.applyAt(new CellRef("sheet2", 3,3), context)
         then:
@@ -101,12 +104,18 @@ class XlsAreaTest extends Specification{
             1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet2", 3, 4), context)
             1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet2", 4, 3), context)
             1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet2", 4, 4), context)
-            0 * _._
+            8 * transformer.getCellData(_) >> cellData
+            4 * cellData.setArea(area)
+            4 * cellData.addTargetPos(_)
+//            0 * _._
     }
 
     def "test applyAt with inner command"(){
+
         given:
-            def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(10,15),Mock(Transformer))
+            def transformer = Mock(Transformer)
+            transformer.getCellData(_) >> Mock(CellData)
+            def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(10,15), transformer)
             def innerCommand = Mock(Command)
             def context = new Context()
             area.addCommand(new AreaRef(new CellRef("sheet1",3, 2), new Size(2,3)), innerCommand)
@@ -121,6 +130,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1", 1, 1), new Size(2,3))
             def transformer = Mock(Transformer)
             def context = new Context()
+            def cellData = Mock(CellData)
             area.setTransformer(transformer)
         when:
             area.applyAt(new CellRef("sheet1", 4, 3), context)
@@ -131,6 +141,8 @@ class XlsAreaTest extends Specification{
             1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",4, 4), context)
             1 * transformer.transform(new CellRef("sheet1",2, 2), new CellRef("sheet1",5, 4), context)
             1 * transformer.transform(new CellRef("sheet1",3, 2), new CellRef("sheet1",6, 4), context)
+            12 * transformer.getCellData(_) >> cellData
+            6 * cellData.setArea(area)
     }
     
     def "test applyAt for another sheet"(){
@@ -138,6 +150,7 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(2,3))
             def transformer = Mock(Transformer)
             def context = new Context()
+            def cellData = Mock(CellData)
             area.setTransformer(transformer)
         when:
             area.applyAt(new CellRef("sheet2", 4, 3), context)
@@ -148,6 +161,8 @@ class XlsAreaTest extends Specification{
             1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet2", 4, 4), context)
             1 * transformer.transform(new CellRef("sheet1",2, 2), new CellRef("sheet2", 5, 4), context)
             1 * transformer.transform(new CellRef("sheet1",3, 2), new CellRef("sheet2", 6, 4), context)
+            12 * transformer.getCellData(_) >> cellData
+            6 * cellData.setArea(area)
     }
 
     def "test applyAt with two inner commands"(){
@@ -159,6 +174,7 @@ class XlsAreaTest extends Specification{
         area.addCommand(new AreaRef(new CellRef("sheet1",3, 2), new Size(2,3)), innerCommand1)
         def innerCommand2 = Mock(Command)
         area.addCommand(new AreaRef(new CellRef("sheet1",7, 1), new Size(4,5)), innerCommand2)
+        def cellData = Mock(CellData)
         when:
         area.applyAt(new CellRef("sheet1",5, 4), context)
         then:
@@ -170,6 +186,8 @@ class XlsAreaTest extends Specification{
         1 * transformer.transform(new CellRef("sheet1",3, 5), new CellRef("sheet1",7, 9), context)
         1 * transformer.transform(new CellRef("sheet1",14, 2), new CellRef("sheet1",19, 5), context)
         1 * transformer.transform(new CellRef("sheet1",14, 1), new CellRef("sheet1",19, 4), context)
+        _ * transformer.getCellData(_) >> cellData
+        _ * cellData.setArea(area)
     }
 
     def "test applyAt multiple times"(){
@@ -180,6 +198,7 @@ class XlsAreaTest extends Specification{
             context1.putVar("x", 1)
             Context context2 = new Context()
             context2.putVar("x", 2)
+            def cellData = Mock(CellData)
         when:
             area.applyAt(new CellRef("sheet1",2, 2), context1)
             area.applyAt(new CellRef("sheet1",10, 2), context2)
@@ -188,6 +207,8 @@ class XlsAreaTest extends Specification{
             1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",2, 3), context1)
             1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",10, 2), context2)
             1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",10, 3), context2)
+            8 * transformer.getCellData(_) >> cellData
+            4 * cellData.setArea(area)
     }
 
     def "test formulas transformation"(){
@@ -196,63 +217,121 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(3,3), transformer)
             Context context = new Context()
             context.putVar("x", 1)
+            def cellFormula1 = new CellData("sheet1", 1, 1, CellData.CellType.FORMULA, "A1+B3")
+            cellFormula1.addTargetPos(new CellRef("sheet2",11,12))
+            cellFormula1.setArea(area)
+            cellFormula1.addTargetParentAreaRef(new AreaRef("sheet2!M12:O14"))
+
+            def cellFormula2 = new CellData("sheet1", 3, 1, CellData.CellType.FORMULA, "D20 * E30")
+            cellFormula2.addTargetPos(new CellRef("sheet1",22,23))
+            cellFormula2.setArea(area)
+            cellFormula2.addTargetParentAreaRef(new AreaRef("sheet1!V22:X25"))
+
+            def cellFormula3 = new CellData("sheet1", 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')
+            cellFormula3.addTargetPos(new CellRef("sheet1",31,35))
+            cellFormula3.setArea(area)
+            cellFormula3.addTargetParentAreaRef(new AreaRef("sheet1!AG32:AJ36"))
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 1, CellData.CellType.FORMULA, "A1+B3"),
-                    new CellData("sheet1", 3, 1, CellData.CellType.FORMULA, "D20 * E30"),
-                    new CellData("sheet1", 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",0,0)) >> [new CellRef("sheet1",0,0)]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",2,1)) >> [new CellRef("sheet1!C5")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,1)) >> [new CellRef("sheet2",11,12)]
+            1 * transformer.getFormulaCells() >> [cellFormula1,
+                                                  cellFormula2,
+                                                  cellFormula3]
+
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!A1")) >> [new CellRef("sheet1!A1")]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B3")) >> [new CellRef("sheet2!M13")]
+//            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,1)) >> [new CellRef("sheet2",11,12)]
 
             1 * transformer.getTargetCellRef(new CellRef("sheet1",19,3)) >> [new CellRef("sheet1!K10")]
             1 * transformer.getTargetCellRef(new CellRef("sheet1",29,4)) >> [new CellRef("sheet1!I20")]
             1 * transformer.getTargetCellRef(new CellRef("sheet1",6,5)) >> ([new CellRef("sheet1!R77"), new CellRef("sheet1!R78"), new CellRef("sheet1!R79")])
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",2,2)) >> [new CellRef("sheet1",31,35)]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",3,1)) >> [new CellRef("sheet1",22,23)]
+//            1 * transformer.getTargetCellRef(new CellRef("sheet1",2,2)) >> [new CellRef("sheet1",31,35)]
+//            1 * transformer.getTargetCellRef(new CellRef("sheet1",3,1)) >> [new CellRef("sheet1",22,23)]
             1 * transformer.setFormula(new CellRef("sheet1",22,23), "K10 * I20")
-            1 * transformer.setFormula(new CellRef("sheet2", 11, 12), "sheet1!A1+sheet1!C5")
+            1 * transformer.setFormula(new CellRef("sheet2", 11, 12), "sheet1!A1+M13")
             1 * transformer.setFormula(new CellRef("sheet1", 31, 35), "SUM(R77:R79)")
-            0 * _._
+//            0 * _._
     }
 
     def "test formula processing when transforming into multiple cells"(){
         given:
             def transformer = Mock(Transformer)
             def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(3,3), transformer)
+            area.setFormulaProcessor(new StandardFormulaProcessor())
             Context context = new Context()
             context.putVar("x", 1)
+            def formulaCellData = new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "A1+B2+C5")
+            formulaCellData.addTargetPos(new CellRef("sheet1!C2"))
+            formulaCellData.addTargetPos(new CellRef("sheet1!C6"))
+            formulaCellData.addTargetPos(new CellRef("sheet1!C10"))
+            formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B2:D5"))
+            formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B6:D9"))
+            formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B10:D16"))
+            formulaCellData.setArea(area)
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "A1+B2+C5")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",0,0)) >> [new CellRef("sheet1!A1"), new CellRef("sheet1!A3"), new CellRef("sheet1!A5")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,1)) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!B4"), new CellRef("sheet1!B6")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",4,2)) >> [new CellRef("sheet1!C10")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,2)) >> [new CellRef("sheet1",1,2), new CellRef("sheet1", 3, 2), new CellRef("sheet1",5,2)]
-            1 * transformer.setFormula(new CellRef("sheet1",1,2), "A1+B2+C10")
-            1 * transformer.setFormula(new CellRef("sheet1",3,2), "A3+B4+C10")
-            1 * transformer.setFormula(new CellRef("sheet1",5,2), "A5+B6+C10")
+            1 * transformer.getFormulaCells() >> [formulaCellData]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!A1")) >> [new CellRef("sheet1!A1"), new CellRef("sheet1!A3"), new CellRef("sheet1!A5")]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B2")) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!B6"), new CellRef("sheet1!B10")]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!C5")) >> [new CellRef("sheet1!C10")]
+            1 * transformer.setFormula(new CellRef("sheet1!C2"), "A1,A3,A5+B2+C10")
+            1 * transformer.setFormula(new CellRef("sheet1!C6"), "A1,A3,A5+B6+C10")
+            1 * transformer.setFormula(new CellRef("sheet1!C10"), "A1,A3,A5+B10+C10")
             0 * _._
+    }
+
+    def "test formula processing for cell ranged formulas"(){
+        given:
+            def transformer = Mock(Transformer)
+            def area = new XlsArea(new CellRef("sheet1!B2"), new Size(5,5), transformer)
+            Context context = new Context()
+            context.putVar("x", 1)
+            def formulaCellData = new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(B1)")
+        formulaCellData.addTargetPos(new CellRef("sheet1!C6"))
+        formulaCellData.addTargetPos(new CellRef("sheet1!C11"))
+        formulaCellData.addTargetPos(new CellRef("sheet1!C16"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B2:D5"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B6:D9"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B10:D16"))
+            formulaCellData.setArea(area)
+        when:
+            area.processFormulas()
+
+        then:
+            1 * transformer.getFormulaCells() >> [formulaCellData]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B1")) >>
+                    [new CellRef("sheet1!B10"), new CellRef("sheet1!B11"),  new CellRef("sheet1!B12"), new CellRef("sheet1!B13")]
+        1 * transformer.setFormula(new CellRef("sheet1!C6"), "SUM(B10:B13)")
+        1 * transformer.setFormula(new CellRef("sheet1!C11"), "SUM(B10:B13)")
+        1 * transformer.setFormula(new CellRef("sheet1!C16"), "SUM(B10:B13)")
     }
 
     def "test formula processing for nested cells formulas"(){
         given:
-            def transformer = Mock(Transformer)
-            def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(5,5), transformer)
-            Context context = new Context()
-            context.putVar("x", 1)
+        def transformer = Mock(Transformer)
+        def area = new XlsArea(new CellRef("sheet1!B2"), new Size(5,5), transformer)
+        Context context = new Context()
+        context.putVar("x", 1)
+        def formulaCellData = new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(B2)")
+        formulaCellData.addTargetPos(new CellRef("sheet1!C6"))
+        formulaCellData.addTargetPos(new CellRef("sheet1!C11"))
+        formulaCellData.addTargetPos(new CellRef("sheet1!C16"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B6:D9"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B11:D15"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B16:D20"))
+        formulaCellData.setArea(area)
         when:
-            area.processFormulas()
+        area.processFormulas()
+
         then:
-            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(B1)")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,2)) >> [new CellRef("sheet1",5,2), new CellRef("sheet1", 10, 2), new CellRef("sheet1", 15, 2)]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",0,1)) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!B4"),  new CellRef("sheet1!B9"), new CellRef("sheet1!B10"), new CellRef("sheet1!B15"), new CellRef("sheet1!B1"),
-                    new CellRef("sheet1!B3"), new CellRef("sheet1!B8"), new CellRef("sheet1!B16")]
-            1 * transformer.setFormula(new CellRef("sheet1",5,2), "SUM(B1:B4)")
-            1 * transformer.setFormula(new CellRef("sheet1",10,2), "SUM(B8:B10)")
-            1 * transformer.setFormula(new CellRef("sheet1",15,2), "SUM(B15:B16)")
+        1 * transformer.getFormulaCells() >> [formulaCellData]
+        1 * transformer.getTargetCellRef(new CellRef("sheet1!B2")) >>
+                [new CellRef("sheet1!B6"), new CellRef("sheet1!B7"),  new CellRef("sheet1!B8"), new CellRef("sheet1!B9"),
+                 new CellRef("sheet1!B11"), new CellRef("sheet1!B12"), new CellRef("sheet1!B18")]
+        1 * transformer.setFormula(new CellRef("sheet1!C6"), "SUM(B6:B9)")
+        1 * transformer.setFormula(new CellRef("sheet1!C11"), "SUM(B11:B12)")
+        1 * transformer.setFormula(new CellRef("sheet1!C16"), "SUM(B18)")
     }
 
     def "test formula processing for column formulas with joint cells"(){
@@ -261,16 +340,25 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(5,5), transformer)
             Context context = new Context()
             context.putVar("x", 1)
+            def formulaCellData = new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(U_(B2,B20))")
+            formulaCellData.addTargetPos(new CellRef("sheet1!C6"))
+            formulaCellData.addTargetPos(new CellRef("sheet1!C11"))
+            formulaCellData.addTargetPos(new CellRef("sheet1!C16"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B6:D10"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B11:D15"))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B16:D20"))
+            formulaCellData.setArea(area)
         when:
             area.processFormulas()
         then:
-            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,2)) >> [new CellRef("sheet1",5,2), new CellRef("sheet1", 10, 2), new CellRef("sheet1", 15, 2)]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",0,1)) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!B4"),  new CellRef("sheet1!B9"), new CellRef("sheet1!B10"), new CellRef("sheet1!B15")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",19,1)) >> [new CellRef("sheet1!B1"), new CellRef("sheet1!B3"), new CellRef("sheet1!B8"), new CellRef("sheet1!B16")]
-            1 * transformer.setFormula(new CellRef("sheet1",5,2), "SUM(B1:B4)")
-            1 * transformer.setFormula(new CellRef("sheet1",10,2), "SUM(B8:B10)")
-            1 * transformer.setFormula(new CellRef("sheet1",15,2), "SUM(B15:B16)")
+            1 * transformer.getFormulaCells() >> [formulaCellData]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B2")) >> [new CellRef("sheet1!B6"), new CellRef("sheet1!B8"),  new CellRef("sheet1!B10"),
+                                                                           new CellRef("sheet1!B12"), new CellRef("sheet1!B13")]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B20")) >> [new CellRef("sheet1!B7"), new CellRef("sheet1!B9"), new CellRef("sheet1!B14"),
+                                                                            new CellRef("sheet1!B18"), new CellRef("sheet1!B19")]
+            1 * transformer.setFormula(new CellRef("sheet1!C6"), "SUM(B6:B10)")
+            1 * transformer.setFormula(new CellRef("sheet1!C11"), "SUM(B12:B14)")
+            1 * transformer.setFormula(new CellRef("sheet1!C16"), "SUM(B18:B19)")
     }
 
     def "test formula processing for row formulas with joint cells"(){
@@ -279,16 +367,21 @@ class XlsAreaTest extends Specification{
             def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(5,5), transformer)
             Context context = new Context()
             context.putVar("x", 1)
+            def formulaCellData = new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(U_(B3,B20))")
+            formulaCellData.addTargetPos(new CellRef("sheet1!C2"))
+            formulaCellData.addTargetPos(new CellRef("sheet1!C6"))
+            formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B2:F5"))
+            formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!B6:F10"))
+            formulaCellData.setArea(area);
         when:
             area.processFormulas()
+
         then:
-            1 * transformer.getFormulaCells() >> [new CellData("sheet1", 1, 2, CellData.CellType.FORMULA, "SUM(U_(B1,B20))")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",1,2)) >> [new CellRef("sheet1",5,2), new CellRef("sheet1", 10, 2), new CellRef("sheet1", 15, 2)]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",0,1)) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!A4"),  new CellRef("sheet1!D2"), new CellRef("sheet1!C2"), new CellRef("sheet1!B3")]
-            1 * transformer.getTargetCellRef(new CellRef("sheet1",19,1)) >> [new CellRef("sheet1!B4"), new CellRef("sheet1!E2")]
-            1 * transformer.setFormula(new CellRef("sheet1",5,2), "SUM(B2:E2)")
-            1 * transformer.setFormula(new CellRef("sheet1",10,2), "SUM(B3)")
-            1 * transformer.setFormula(new CellRef("sheet1",15,2), "SUM(A4:B4)")
+            1 * transformer.getFormulaCells() >> [formulaCellData]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B3")) >> [new CellRef("sheet1!B3"), new CellRef("sheet1!D3"), new CellRef("sheet1!E7"), ]
+            1 * transformer.getTargetCellRef(new CellRef("sheet1!B20")) >> [new CellRef("sheet1!C3"), new CellRef("sheet1!E3"), new CellRef("sheet1!C7"), new CellRef("sheet1!D7")]
+            1 * transformer.setFormula(new CellRef("sheet1!C2"), "SUM(B3:E3)")
+            1 * transformer.setFormula(new CellRef("sheet1!C6"), "SUM(C7:E7)")
     }
 
     def "test formulas with other sheet references"(){
@@ -297,15 +390,19 @@ class XlsAreaTest extends Specification{
         def area = new XlsArea(new CellRef("sheet1",1, 1), new Size(5,5), transformer)
         Context context = new Context()
         context.putVar("x", 1)
+        def formulaCellData = new CellData("sheet1", 2, 1, CellData.CellType.FORMULA, '''A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1 * '$ & test@.'!A5''')
+        formulaCellData.addTargetPos(new CellRef("sheet1",5,5))
+        formulaCellData.addTargetParentAreaRef(new AreaRef("sheet1!D6:G10"))
+        formulaCellData.setArea(area)
         when:
         area.processFormulas()
+
         then:
-        1 * transformer.getFormulaCells() >> [new CellData("sheet1", 2, 1, CellData.CellType.FORMULA, '''A1+Sheet2!A1 + 'Sheet 3'!B1 + Sheet2!B1 * '$ & test@.'!A5''')]
-        1 * transformer.getTargetCellRef(new CellRef("sheet1",2,1)) >> [new CellRef("sheet1",5,5)]
-        1 * transformer.getTargetCellRef(new CellRef("sheet1",0,0)) >> [new CellRef("sheet1",9,5)]
+        1 * transformer.getFormulaCells() >> [formulaCellData]
+        1 * transformer.getTargetCellRef(new CellRef("sheet1",0,0)) >> [new CellRef("sheet1!F10")]
         1 * transformer.getTargetCellRef(new CellRef("Sheet2",0,0)) >> []
-        1 * transformer.getTargetCellRef(new CellRef("Sheet 3",0,1)) >> [new CellRef("sheet1",5,2)]
-        1 * transformer.getTargetCellRef(new CellRef("Sheet2",0,1)) >> [new CellRef("Sheet 3",0,0)]
+        1 * transformer.getTargetCellRef(new CellRef("Sheet 3",0,1)) >> [new CellRef("sheet1!C6")]
+        1 * transformer.getTargetCellRef(new CellRef("Sheet2",0,1)) >> [new CellRef("Sheet 3!A1")]
         1 * transformer.getTargetCellRef(new CellRef('$ & test@.', 4, 0)) >> [ new CellRef('$ & test@.',4,1)]
         1 * transformer.setFormula(new CellRef("sheet1",5,5), '''F10+Sheet2!A1 + C6 + 'Sheet 3'!A1 * '$ & test@.'!B5''')
         0 * _._
@@ -326,6 +423,7 @@ class XlsAreaTest extends Specification{
     def "test invoke area listener"(){
         given:
             def transformer = Mock(Transformer)
+            transformer.getCellData(_) >> Mock(CellData)
             def area = new XlsArea(new CellRef("sheet1",1,1), new Size(2,2), transformer)
             def listener1 = Mock(AreaListener)
             def context1 = new Context()

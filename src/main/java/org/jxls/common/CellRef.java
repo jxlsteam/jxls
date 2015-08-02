@@ -7,7 +7,7 @@ import org.jxls.util.CellRefUtil;
  * @author Leonid Vysochyn
  *         Date: 1/25/12
  */
-public class CellRef {
+public class CellRef implements Comparable<CellRef>{
     int col;
     int row;
 
@@ -152,4 +152,23 @@ public class CellRef {
         return getCellName();
     }
 
+    @Override
+    public int compareTo(CellRef that) {
+        if (this == that){
+            return 0;
+        }
+        if( col < that.col){
+            return -1;
+        }
+        if( col > that.col ){
+            return 1;
+        }
+        if( row < that.row ){
+            return -1;
+        }
+        if( row > that.row ){
+            return 1;
+        }
+        return 0;
+    }
 }

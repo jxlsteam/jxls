@@ -8,23 +8,38 @@ import java.util.Set;
 
 /**
  * Defines interface methods for excel operations
+ *
  * @author Leonid Vysochyn
  *         Date: 1/23/12
  */
 public interface Transformer {
     Context createInitialContext();
+
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context);
+
     void setFormula(CellRef cellRef, String formulaString);
+
     Set<CellData> getFormulaCells();
+
     CellData getCellData(CellRef cellRef);
+
     List<CellRef> getTargetCellRef(CellRef cellRef);
+
     void resetTargetCellRefs();
+
     void clearCell(CellRef cellRef);
+
     List<CellData> getCommentedCells();
+
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
+
     void write() throws IOException;
+
     TransformationConfig getTransformationConfig();
+
     void setTransformationConfig(TransformationConfig transformationConfig);
+
     void deleteSheet(String sheetName);
+
     void setHidden(String sheetName, boolean hidden);
 }

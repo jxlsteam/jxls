@@ -1,5 +1,6 @@
 package org.jxls.common;
 
+import org.jxls.area.XlsArea;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
@@ -31,10 +32,12 @@ public class CellData {
     protected Object evaluationResult;
     protected CellType targetCellType;
 
+    protected XlsArea area;
+
     List<CellRef> targetPos = new ArrayList<CellRef> ();
+    List<AreaRef> targetParentAreaRef = new ArrayList<>();
 
     Transformer transformer;
-
 
 
     public Transformer getTransformer() {
@@ -65,6 +68,14 @@ public class CellData {
 
     public CellData(String sheetName, int row, int col) {
         this(sheetName, row, col, CellType.BLANK, null);
+    }
+
+    public XlsArea getArea() {
+        return area;
+    }
+
+    public void setArea(XlsArea area) {
+        this.area = area;
     }
 
     public Object evaluate(Context context){
@@ -192,13 +203,24 @@ public class CellData {
     public boolean addTargetPos(CellRef cellRef){
         return targetPos.add(cellRef);
     }
-    
+
+    public void addTargetParentAreaRef(AreaRef areaRef){
+        targetParentAreaRef.add(areaRef);
+    }
+
+    public List<AreaRef> getTargetParentAreaRef() {
+        return targetParentAreaRef;
+    }
+
     public List<CellRef> getTargetPos(){
         return targetPos;
     }
 
+
+
     public void resetTargetPos(){
         targetPos.clear();
+        targetParentAreaRef.clear();
     }
 
 

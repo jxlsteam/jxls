@@ -312,4 +312,7 @@ public class Util {
         return (Collection) collectionObject;
     }
 
+    public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
+        return (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"");
+    }
 }

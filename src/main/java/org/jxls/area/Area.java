@@ -1,6 +1,7 @@
 package org.jxls.area;
 
 import org.jxls.command.Command;
+import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.common.*;
 
@@ -20,6 +21,11 @@ public interface Area {
     AreaRef getAreaRef();
 
     List<CommandData> getCommandDataList();
+
+    FormulaProcessor getFormulaProcessor();
+
+    void setFormulaProcessor(FormulaProcessor formulaProcessor);
+
     void addCommand(AreaRef ref, Command command);
 
     Transformer getTransformer();
