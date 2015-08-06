@@ -134,7 +134,9 @@ public class GridCommand extends AbstractCommand {
         Size headerAreaSize = processHeaders(cellRef, context);
         CellRef bodyCellRef = new CellRef(cellRef.getSheetName(), cellRef.getRow() + headerAreaSize.getHeight(), cellRef.getCol());
         Size bodyAreaSize = processBody(bodyCellRef, context);
-        return headerAreaSize.add(bodyAreaSize);
+        int gridHeight = headerAreaSize.getHeight() + bodyAreaSize.getHeight();
+        int gridWidth = Math.max( headerAreaSize.getWidth(), bodyAreaSize.getWidth());
+        return new Size(gridWidth, gridHeight);
     }
 
     private Size processBody(final CellRef cellRef, Context context) {

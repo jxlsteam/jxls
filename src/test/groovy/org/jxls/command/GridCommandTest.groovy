@@ -61,9 +61,10 @@ class GridCommandTest extends Specification{
         def transformationConfig = new TransformationConfig()
         when:
 
-        gridCommand.applyAt(new CellRef("sheet2", 2, 2), context)
+        Size resultSize = gridCommand.applyAt(new CellRef("sheet2", 2, 2), context)
 
         then:
+        resultSize == new Size(6, 4 + 9)
         context.toMap() >> ["hs": ["H1","H2","H3"], "datas": [[10, 11, 12], [20,21,22],[30,31,32]]]
         context.getConfig() >> config
         2 * headerArea.getTransformer() >> transformer
