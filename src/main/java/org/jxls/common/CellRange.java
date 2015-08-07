@@ -1,11 +1,15 @@
 package org.jxls.common;
 
+import org.jxls.common.cellshift.CellShiftStrategy;
+import org.jxls.common.cellshift.InnerCellShiftStrategy;
+
 /**
  * Represents an excel cell range
  * @author Leonid Vysochyn
  *         Date: 1/26/12
  */
 public class CellRange {
+    private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
     CellRef startCell;
     int width;
     int height;
@@ -40,6 +44,14 @@ public class CellRange {
         return cells[row][col];
     }
 
+    public CellShiftStrategy getCellShiftStrategy() {
+        return cellShiftStrategy;
+    }
+
+    public void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy) {
+        this.cellShiftStrategy = cellShiftStrategy;
+    }
+
     void setCell(int row, int col, CellRef cellRef){
         cells[row][col] = cellRef;
     }
@@ -47,7 +59,8 @@ public class CellRange {
     public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                if( cells[i][j] != null && cells[i][j].getCol() > col && cells[i][j].getRow() >= startRow && cells[i][j].getRow() <= endRow && !changeMatrix[i][j]){
+                boolean requiresShifting = cellShiftStrategy.requiresColShifting(cells[i][j], startRow, endRow, col);
+                if(requiresShifting && !changeMatrix[i][j]){
                     cells[i][j].setCol(cells[i][j].getCol() + colShift);
                     changeMatrix[i][j] = true;
                 }
@@ -58,11 +71,16 @@ public class CellRange {
             rowWidths[row] += colShift;
         }
     }
-    
+
+    public boolean requiresColShifting(CellRef cell, int startRow, int endRow, int startColShift){
+        return cellShiftStrategy.requiresColShifting(cell, startRow, endRow, startColShift);
+    }
+
     public void shiftCellsWithColBlock(int startCol, int endCol, int row, int rowShift){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                if(cells[i][j] != null && cells[i][j].getRow() > row && cells[i][j].getCol() >= startCol && cells[i][j].getCol() <= endCol && !changeMatrix[i][j]){
+                boolean requiresShifting = cellShiftStrategy.requiresRowShifting(cells[i][j], startCol, endCol, row);
+                if(requiresShifting && !changeMatrix[i][j]){
                     cells[i][j].setRow(cells[i][j].getRow() + rowShift );
                     changeMatrix[i][j] = true;
                 }
@@ -72,6 +90,10 @@ public class CellRange {
         for(int col = startCol; col <= maxCol; col++){
             colHeights[col] += rowShift;
         }
+    }
+
+    public boolean requiresRowShifting(CellRef cell, int startCol, int endCol, int startRowShift){
+        return cellShiftStrategy.requiresRowShifting(cell, startCol, endCol, startRowShift);
     }
 
     public CellRef getStartCell() {

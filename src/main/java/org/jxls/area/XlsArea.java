@@ -2,6 +2,9 @@ package org.jxls.area;
 
 import org.jxls.command.Command;
 import org.jxls.common.*;
+import org.jxls.common.cellshift.AdjacentCellShiftStrategy;
+import org.jxls.common.cellshift.CellShiftStrategy;
+import org.jxls.common.cellshift.InnerCellShiftStrategy;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -31,8 +34,13 @@ public class XlsArea implements Area {
     List<AreaListener> areaListeners = new ArrayList<AreaListener>();
 
     private boolean cellsCleared = false;
-//    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
+
     private FormulaProcessor formulaProcessor = new FastFormulaProcessor();
+    // default cell shift strategy
+    private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
+
+    private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
+    private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
 
     public XlsArea(AreaRef areaRef, Transformer transformer){
         CellRef startCell = areaRef.getFirstCellRef();
@@ -63,6 +71,16 @@ public class XlsArea implements Area {
 
     public XlsArea(CellRef startCellRef, Size size, Transformer transformer) {
         this(startCellRef, size, null, transformer);
+    }
+
+    @Override
+    public CellShiftStrategy getCellShiftStrategy() {
+        return cellShiftStrategy;
+    }
+
+    @Override
+    public void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy) {
+        this.cellShiftStrategy = cellShiftStrategy;
     }
 
     @Override
@@ -116,6 +134,9 @@ public class XlsArea implements Area {
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
+            String shiftMode = commandData.getCommand().getShiftMode();
+            CellShiftStrategy commandCellShiftStrategy = detectCellShiftStrategy(shiftMode);
+            cellRange.setCellShiftStrategy(commandCellShiftStrategy);
             CellRef newCell = new CellRef(cellRef.getSheetName(), commandData.getStartCellRef().getRow() - startCellRef.getRow() + cellRef.getRow(), commandData.getStartCellRef().getCol() - startCellRef.getCol() + cellRef.getCol());
             Size initialSize = commandData.getSize();
             Size newSize = commandData.getCommand().applyAt(newCell, context);
@@ -160,6 +181,14 @@ public class XlsArea implements Area {
         AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
         updateCellDataFinalAreaForFormulaCells(newAreaRef);
         return finalSize;
+    }
+
+    private CellShiftStrategy detectCellShiftStrategy(String shiftMode) {
+        if( shiftMode != null && Command.ADJACENT_SHIFT_MODE.equalsIgnoreCase(shiftMode)){
+            return adjacentCellShiftStrategy;
+        }else{
+            return innerCellShiftStrategy;
+        }
     }
 
     private void updateCellDataFinalAreaForFormulaCells(AreaRef newAreaRef) {

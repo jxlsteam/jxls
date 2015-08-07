@@ -1,6 +1,7 @@
 package org.jxls.area;
 
 import org.jxls.command.Command;
+import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.common.*;
@@ -21,6 +22,10 @@ public interface Area {
     AreaRef getAreaRef();
 
     List<CommandData> getCommandDataList();
+
+    CellShiftStrategy getCellShiftStrategy();
+
+    void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy);
 
     FormulaProcessor getFormulaProcessor();
 

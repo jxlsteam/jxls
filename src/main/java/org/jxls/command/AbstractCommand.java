@@ -5,6 +5,8 @@ import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,9 @@ import java.util.List;
  *         Date: 21.03.2009
  */
 public abstract class AbstractCommand implements Command {
+    Logger logger = LoggerFactory.getLogger(AbstractCommand.class);
     List<Area> areaList = new ArrayList<Area>();
+    String shiftMode;
 
     public Command addArea(Area area) {
         areaList.add(area);
@@ -26,6 +30,22 @@ public abstract class AbstractCommand implements Command {
         for (Area area : areaList) {
             area.reset();
         }
+    }
+
+    @Override
+    public void setShiftMode(String mode) {
+        if( mode != null ){
+            if( mode.equalsIgnoreCase(Command.INNER_SHIFT_MODE) || mode.equalsIgnoreCase(Command.ADJACENT_SHIFT_MODE)){
+                shiftMode = mode;
+            }else{
+                logger.error("Cannot set cell shift mode to " + mode + " for command: " + getName());
+            }
+        }
+    }
+
+    @Override
+    public String getShiftMode() {
+        return shiftMode;
     }
 
     public List<Area> getAreaList() {

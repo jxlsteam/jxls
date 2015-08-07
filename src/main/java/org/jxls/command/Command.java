@@ -14,6 +14,9 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public interface Command {
+    public static final String INNER_SHIFT_MODE = "inner";
+    public static final String ADJACENT_SHIFT_MODE = "adjacent";
+
     /**
      * @return command name
      */
@@ -43,5 +46,9 @@ public interface Command {
      * Resets command data for repeatable command usage
      */
     void reset();
+
+    void setShiftMode(String mode);
+
+    String getShiftMode();
 
 }
