@@ -6,6 +6,14 @@ import spock.lang.Specification
  * @author Leonid Vysochyn
  */
 class CellRefTest extends Specification {
+
+    def "test isValid"(){
+        expect:
+            new CellRef(-1, 5).isValid() == false
+            new CellRef(1, -3).isValid() == false
+            new CellRef(1, 0).isValid() == true
+    }
+
     def "test create from cell ref"(){
         when:
             CellRef pos = new CellRef(cellref)

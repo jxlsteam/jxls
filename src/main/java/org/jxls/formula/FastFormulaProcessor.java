@@ -27,12 +27,14 @@ public class FastFormulaProcessor implements FormulaProcessor {
             Map<String, List<CellRef>> jointedCellRefMap = new HashMap<String, List<CellRef>>();
             for (String cellRef : formulaCellRefs) {
                 CellRef pos = new CellRef(cellRef);
-                if(pos.getSheetName() == null ){
-                    pos.setSheetName( formulaCellData.getSheetName() );
-                    pos.setIgnoreSheetNameInFormat(true);
+                if( pos.isValid() ) {
+                    if (pos.getSheetName() == null) {
+                        pos.setSheetName(formulaCellData.getSheetName());
+                        pos.setIgnoreSheetNameInFormat(true);
+                    }
+                    List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
+                    targetCellRefMap.put(pos, targetCellDataList);
                 }
-                List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                targetCellRefMap.put(pos, targetCellDataList);
             }
             for (String jointedCellRef : jointedCellRefs) {
                 List<String> nestedCellRefs = Util.getCellRefsFromJointedCellRef(jointedCellRef);

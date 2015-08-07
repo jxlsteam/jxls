@@ -147,6 +147,10 @@ public class CellRef implements Comparable<CellRef>{
         return result;
     }
 
+    public boolean isValid(){
+        return col >= 0 && row >= 0;
+    }
+
     @Override
     public String toString() {
         return getCellName();
