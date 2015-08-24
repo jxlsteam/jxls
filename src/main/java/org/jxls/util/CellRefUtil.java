@@ -50,7 +50,7 @@ public class CellRefUtil {
         return colRef;
     }
 
-    public static void appendFormat(StringBuffer out, String rawSheetName) {
+    public static void appendFormat(StringBuilder out, String rawSheetName) {
         boolean needsQuotes = needsDelimiting(rawSheetName);
         if(needsQuotes) {
             out.append(DELIMITER);
@@ -61,7 +61,7 @@ public class CellRefUtil {
         }
     }
 
-    static void appendAndEscape(StringBuffer sb, String rawSheetName) {
+    static void appendAndEscape(StringBuilder sb, String rawSheetName) {
         int len = rawSheetName.length();
         for(int i=0; i<len; i++) {
             char ch = rawSheetName.charAt(i);
@@ -156,7 +156,6 @@ public class CellRefUtil {
      * For better or worse this implementation attempts to replicate Excel's formula renderer.
      * Excel uses range checking on the apparent 'row' and 'column' components.  Note however that
      * the maximum sheet size varies across versions.
-     * @see org.apache.poi.ss.util.CellReference
      */
     static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
         return cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, 0x0100, 0x10000);
@@ -346,7 +345,7 @@ public class CellRefUtil {
         //   AreaReference.separateAreaRefs()
         //   SheetNameFormatter.format() (inverse)
 
-        StringBuffer sb = new StringBuffer(indexOfSheetNameDelimiter);
+        StringBuilder sb = new StringBuilder(indexOfSheetNameDelimiter);
 
         for(int i=1; i<lastQuotePos; i++) { // Note boundaries - skip outer quotes
             char ch = reference.charAt(i);
