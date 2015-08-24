@@ -55,7 +55,7 @@ public class CellRef implements Comparable<CellRef>{
     }
 
     public String getCellName(){
-        StringBuffer sb = new StringBuffer(32);
+        StringBuilder sb = new StringBuilder(32);
         if(sheetName != null && !ignoreSheetNameInFormat) {
             CellRefUtil.appendFormat(sb, sheetName);
             sb.append(CellRefUtil.SHEET_NAME_DELIMITER);
@@ -65,7 +65,7 @@ public class CellRef implements Comparable<CellRef>{
     }
 
     public String getFormattedSheetName(){
-        StringBuffer sb = new StringBuffer(32);
+        StringBuilder sb = new StringBuilder(32);
         CellRefUtil.appendFormat(sb, sheetName);
         return sb.toString();
     }
@@ -89,8 +89,9 @@ public class CellRef implements Comparable<CellRef>{
     /**
      * Appends cell reference with '$' markers for absolute values as required.
      * Sheet name is not included.
+     * @param sb
      */
-    void appendCellReference(StringBuffer sb) {
+    void appendCellReference(StringBuilder sb) {
         if(isColAbs) {
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
