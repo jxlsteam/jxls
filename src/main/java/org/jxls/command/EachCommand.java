@@ -82,6 +82,10 @@ public class EachCommand extends AbstractCommand {
         this.direction = direction;
     }
 
+    public void setDirection(String direction){
+        this.direction = Direction.valueOf(direction);
+    }
+
     /**
      * Gets defined cell ref generator
      * @return current {@link CellRefGenerator} instance or null
