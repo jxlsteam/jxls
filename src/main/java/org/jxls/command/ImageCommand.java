@@ -15,15 +15,15 @@ public class ImageCommand extends AbstractCommand {
     ImageType imageType = ImageType.PNG;
     Area area;
     /**
-     * Image bean name in the context
+     * Expression that can be evaluated to image byte array byte[]
      */
-    String imgBean;
+    String src;
 
     public ImageCommand() {
     }
 
-    public ImageCommand(String imgBean, ImageType imageType) {
-        this.imgBean = imgBean;
+    public ImageCommand(String image, ImageType imageType) {
+        this.src = image;
         this.imageType = imageType;
     }
 
@@ -33,17 +33,17 @@ public class ImageCommand extends AbstractCommand {
     }
 
     /**
-     * @return image bean name in the context
+     * @return src expression producing image byte array
      */
-    public String getImgBean() {
-        return imgBean;
+    public String getSrc() {
+        return src;
     }
 
     /**
-     * @param imgBean image bean name in the context
+     * @param src expression resulting in image byte array
      */
-    public void setImgBean(String imgBean) {
-        this.imgBean = imgBean;
+    public void setSrc(String src) {
+        this.src = src;
     }
 
     public void setImageType(String strType){
@@ -70,10 +70,10 @@ public class ImageCommand extends AbstractCommand {
         Transformer transformer = getTransformer();
         AreaRef areaRef = new AreaRef(cellRef, area.getSize());
         byte[] imgBytes = imageBytes;
-        if( imgBean != null ){
-            Object imgObj = context.getVar(imgBean);
+        if( src != null ){
+            Object imgObj = getTransformationConfig().getExpressionEvaluator().evaluate(src, context.toMap());
             if( !(imgObj instanceof byte[]) ){
-                throw new IllegalArgumentException("imgBean value must contain image bytes (byte[])");
+                throw new IllegalArgumentException("src value must contain image bytes (byte[])");
             }
             imgBytes = (byte[]) imgObj;
         }
