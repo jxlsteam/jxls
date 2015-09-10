@@ -1,5 +1,6 @@
 package org.jxls.command
 
+import org.jxls.transform.TransformationConfig
 import spock.lang.Specification
 import org.jxls.area.Area
 import org.jxls.common.Context
@@ -18,6 +19,7 @@ class ImageCommandTest extends Specification {
         given:
             def area = Mock(Area)
             def transformer = Mock(Transformer)
+            def transformationConfig = new TransformationConfig()
             def imgBytes = new byte[10]
             def imageCommand = new ImageCommand("image", ImageType.PNG)
             imageCommand.addArea(area)
@@ -27,8 +29,9 @@ class ImageCommandTest extends Specification {
             imageCommand.applyAt(new CellRef(5, 5), context)
         then:
             area.getSize() >> new Size(3,4)
-            1 * area.getTransformer() >> transformer
+            2 * area.getTransformer() >> transformer
             1 * transformer.addImage(new AreaRef(new CellRef(5,5), new Size(3,4)), imgBytes, ImageType.PNG)
+            1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._
     }
 }
