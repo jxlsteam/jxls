@@ -120,8 +120,10 @@ public class XlsArea implements Area {
     private void createCellRange(){
         cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
         for(CommandData commandData: commandDataList){
-            cellRange.excludeCells(commandData.getStartCellRef().getCol() - startCellRef.getCol(), commandData.getStartCellRef().getCol() - startCellRef.getCol() + commandData.getSize().getWidth()-1,
-                    commandData.getStartCellRef().getRow() - startCellRef.getRow(), commandData.getStartCellRef().getRow() - startCellRef.getRow() + commandData.getSize().getHeight()-1);
+            CellRef startCellRef = commandData.getSourceStartCellRef();
+            Size size = commandData.getSourceSize();
+            cellRange.excludeCells(startCellRef.getCol() - this.startCellRef.getCol(), startCellRef.getCol() - this.startCellRef.getCol() + size.getWidth()-1,
+                    startCellRef.getRow() - this.startCellRef.getRow(), startCellRef.getRow() - this.startCellRef.getRow() + size.getHeight()-1);
         }
     }
 
