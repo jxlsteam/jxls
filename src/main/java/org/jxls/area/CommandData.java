@@ -77,4 +77,9 @@ public class CommandData {
         size = sourceSize;
         command.reset();
     }
+
+    void resetStartCellAndSize(){
+        startCellRef = sourceStartCellRef;
+        size = sourceSize;
+    }
 }

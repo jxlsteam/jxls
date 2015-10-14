@@ -4,11 +4,12 @@ import org.jxls.area.XlsArea;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents an excel cell data holder and cell value evaluator
@@ -18,10 +19,23 @@ import java.util.regex.Matcher;
 public class CellData {
     public static final String USER_FORMULA_PREFIX = "$[";
     public static final String USER_FORMULA_SUFFIX = "]";
+    private static final String ATTR_PREFIX = "(";
+    private static final String ATTR_SUFFIX = ")";
+    public static final String JX_PARAMS_PREFIX = "jx:params";
+    private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
+    private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
+    public static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
+    private Map<String, String> attrMap;
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
     }
+
+    public enum FormulaStrategy {
+        DEFAULT, BY_COLUMN, BY_ROW
+    }
+
+    static Logger logger = LoggerFactory.getLogger(CellData.class);
 
     protected CellRef cellRef;
     protected Object cellValue;
@@ -31,6 +45,7 @@ public class CellData {
     protected String formula;
     protected Object evaluationResult;
     protected CellType targetCellType;
+    protected FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
 
     protected XlsArea area;
 
@@ -78,6 +93,14 @@ public class CellData {
         this.area = area;
     }
 
+    public Map<String, String> getAttrMap() {
+        return attrMap;
+    }
+
+    public void setAttrMap(Map<String, String> attrMap) {
+        this.attrMap = attrMap;
+    }
+
     public Object evaluate(Context context){
         targetCellType = cellType;
         if( cellType == CellType.STRING && cellValue != null){
@@ -101,6 +124,14 @@ public class CellData {
 
     private ExpressionEvaluator getExpressionEvaluator(){
         return transformer.getTransformationConfig().getExpressionEvaluator();
+    }
+
+    public FormulaStrategy getFormulaStrategy() {
+        return formulaStrategy;
+    }
+
+    public void setFormulaStrategy(FormulaStrategy formulaStrategy) {
+        this.formulaStrategy = formulaStrategy;
     }
 
     void evaluate(String strValue, Context context) {
@@ -146,6 +177,58 @@ public class CellData {
 
     public void setCellComment(String cellComment) {
         this.cellComment = cellComment;
+    }
+
+    public boolean isJxlsParamsComment(String cellComment) {
+        return cellComment.startsWith(JX_PARAMS_PREFIX);
+    }
+
+    public void processJxlsParams(String cellComment) {
+        int nameEndIndex = cellComment.indexOf(ATTR_PREFIX, JX_PARAMS_PREFIX.length());
+        if (nameEndIndex < 0) {
+            String errMsg = "Failed to parse jxls params [" + cellComment + "] at " + cellRef.getCellName() +
+                    ". Expected '" + ATTR_PREFIX + "' symbol.";
+            logger.error(errMsg);
+            throw new IllegalStateException(errMsg);
+        }
+        attrMap = buildAttrMap(cellComment, nameEndIndex);
+        if( attrMap.containsKey(FORMULA_STRATEGY_PARAM) ){
+            initFormulaStrategy(attrMap.get(FORMULA_STRATEGY_PARAM));
+        }
+    }
+
+    private void initFormulaStrategy(String formulaStrategyValue) {
+        try {
+            this.formulaStrategy = FormulaStrategy.valueOf(formulaStrategyValue);
+        } catch (IllegalArgumentException e) {
+            throw new JxlsException("Cannot parse formula strategy value at " + cellRef.getCellName(), e);
+        }
+    }
+
+    private Map<String, String> buildAttrMap(String paramsLine, int nameEndIndex) {
+        int paramsEndIndex = paramsLine.lastIndexOf(ATTR_SUFFIX);
+        if(paramsEndIndex < 0 ){
+            String errMsg = "Failed to parse params line [" + paramsLine + "] at " + cellRef.getCellName() +
+                    ". Expected '" + ATTR_SUFFIX + "' symbol.";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
+        }
+        String attrString = paramsLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
+        return parseCommandAttributes(attrString);
+    }
+
+    private Map<String, String> parseCommandAttributes(String attrString) {
+        Map<String,String> attrMap = new LinkedHashMap<String, String>();
+        Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
+        while(attrMatcher.find()){
+            String attrData = attrMatcher.group();
+            int attrNameEndIndex = attrData.indexOf("=");
+            String attrName = attrData.substring(0, attrNameEndIndex).trim();
+            String attrValuePart = attrData.substring(attrNameEndIndex + 1).trim();
+            String attrValue = attrValuePart.substring(1, attrValuePart.length() - 1);
+            attrMap.put(attrName, attrValue);
+        }
+        return attrMap;
     }
 
     public String getSheetName() {

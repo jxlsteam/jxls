@@ -16,7 +16,7 @@ class CellRangeTest extends Specification{
             int shift = 3;
             cellRange.changeMatrix[5][6] = true;
         when:
-            cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift)
+            cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift, true)
         then:
             assert cellRange.getCell(4, 3) == new CellRef(4, 3)
             assert cellRange.getCell(3, 6) == new CellRef(3, 9)
@@ -33,7 +33,7 @@ class CellRangeTest extends Specification{
             int col = 5;
             int shift = 3;
         when:
-            cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift)
+            cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift, true)
         then:
             assert cellRange.hasChanged(3, 6)
             assert cellRange.hasChanged(4, 7)
@@ -50,7 +50,7 @@ class CellRangeTest extends Specification{
             int shift = -3;
             cellRange.changeMatrix[7][4] = true;
         when:
-            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift)
+            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift, true)
         then:
             assert cellRange.getCell(3, 4) == new CellRef(3, 4)
             assert cellRange.getCell(6, 3) == new CellRef(3, 3)
@@ -67,7 +67,7 @@ class CellRangeTest extends Specification{
             int row = 5;
             int shift = -3;
         when:
-            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift)
+            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift, true)
         then:
             assert !cellRange.hasChanged(3, 4)
             assert !cellRange.hasChanged(7, 6)
@@ -82,7 +82,7 @@ class CellRangeTest extends Specification{
             int endCol = 5;
             int row = 5;
             int shift = -3;
-            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift)
+            cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift, true)
         when:
             cellRange.resetChangeMatrix()
         then:
