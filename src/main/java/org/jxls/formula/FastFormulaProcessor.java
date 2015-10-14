@@ -51,24 +51,30 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
             }
+            List<CellRef> usedCellRefs = new ArrayList<>();
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
+
                 for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
                     List<CellRef> targetCells = cellRefEntry.getValue();
                     if( targetCells.isEmpty() ) continue;
                     String replacementString;
-                    if( targetCells.size() == targetFormulaCells.size() ){
-                        CellRef targetCellRefCellRef = targetCells.get(i);
-                        replacementString = targetCellRefCellRef.getCellName();
+                    if( formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN ){
+                        List<CellRef> targetCellRefs = Util.createTargetCellRefListByColumn(targetFormulaCellRef, targetCells, usedCellRefs);
+                        usedCellRefs.addAll(targetCellRefs);
+                        replacementString = Util.createTargetCellRef(targetCellRefs);
+                    }else if( targetCells.size() == targetFormulaCells.size() ){
+                            CellRef targetCellRefCellRef = targetCells.get(i);
+                            replacementString = targetCellRefCellRef.getCellName();
                     }else{
-                        List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
-                        if( rangeList.size() == targetFormulaCells.size() ){
-                            List<CellRef> range = rangeList.get(i);
-                            replacementString = Util.createTargetCellRef(range);
-                        }else{
-                            replacementString = Util.createTargetCellRef(targetCells);
-                        }
+                            List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
+                            if( rangeList.size() == targetFormulaCells.size() ){
+                                List<CellRef> range = rangeList.get(i);
+                                replacementString = Util.createTargetCellRef(range);
+                            }else{
+                                replacementString = Util.createTargetCellRef(targetCells);
+                            }
                     }
                     targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                 }

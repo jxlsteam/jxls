@@ -56,7 +56,7 @@ public class CellRange {
         cells[row][col] = cellRef;
     }
 
-    public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift){
+    public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift, boolean updateRowWidths){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 boolean requiresShifting = cellShiftStrategy.requiresColShifting(cells[i][j], startRow, endRow, col);
@@ -76,7 +76,7 @@ public class CellRange {
         return cellShiftStrategy.requiresColShifting(cell, startRow, endRow, startColShift);
     }
 
-    public void shiftCellsWithColBlock(int startCol, int endCol, int row, int rowShift){
+    public void shiftCellsWithColBlock(int startCol, int endCol, int row, int rowShift, boolean updateColHeights){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 boolean requiresShifting = cellShiftStrategy.requiresRowShifting(cells[i][j], startCol, endCol, row);
@@ -86,9 +86,11 @@ public class CellRange {
                 }
             }
         }
-        int maxCol = Math.min(endCol, colHeights.length-1);
-        for(int col = startCol; col <= maxCol; col++){
-            colHeights[col] += rowShift;
+        if( updateColHeights) {
+            int maxCol = Math.min(endCol, colHeights.length - 1);
+            for (int col = startCol; col <= maxCol; col++) {
+                colHeights[col] += rowShift;
+            }
         }
     }
 

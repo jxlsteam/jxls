@@ -315,4 +315,15 @@ public class Util {
     public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
         return (cellRefEntry.getKey().isIgnoreSheetNameInFormat()?"(?<!!)":"");
     }
+
+    public static List<CellRef> createTargetCellRefListByColumn(CellRef targetFormulaCellRef, List<CellRef> targetCells, List<CellRef> cellRefsToExclude) {
+        List<CellRef> resultCellList = new ArrayList<>();
+        int col = targetFormulaCellRef.getCol();
+        for (CellRef targetCell : targetCells) {
+            if ( targetCell.getCol() == col && targetCell.getRow() < targetFormulaCellRef.getRow() && !cellRefsToExclude.contains(targetCell)){
+               resultCellList.add(targetCell);
+            }
+        }
+        return resultCellList;
+    }
 }

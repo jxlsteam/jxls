@@ -216,7 +216,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     }
 
     public static boolean isCommandString(String str){
-        return str.startsWith(COMMAND_PREFIX);
+        return str.startsWith(COMMAND_PREFIX) && !str.startsWith(CellData.JX_PARAMS_PREFIX);
     }
 
     private List<Area> buildAreas(CellData cellData, String commandLine) {

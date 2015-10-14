@@ -58,6 +58,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
             }
+            List<CellRef> usedCellRefs = new ArrayList<>();
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
@@ -67,6 +68,10 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                     List<CellRef> targetCells = cellRefEntry.getValue();
                     if( targetCells.isEmpty() ) continue;
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef, formulaTargetAreaRef, cellRefEntry);
+                    if( formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN ){
+                        replacementCells = Util.createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells, usedCellRefs);
+                        usedCellRefs.addAll(replacementCells);
+                    }
                     String replacementString = Util.createTargetCellRef(replacementCells);
                     targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                 }
