@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * A class to help execute SQL queries via JDBC
  * Created by Leonid Vysochyn on 17-Oct-15.
  */
 public class JdbcHelper {
@@ -102,7 +103,7 @@ public class JdbcHelper {
     }
 
     private Map<String, Object> handleRow(ResultSet rs) throws SQLException {
-        Map<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> result = new CaseInsensitiveHashMap();
         ResultSetMetaData rsmd = rs.getMetaData();
         int cols = rsmd.getColumnCount();
         for (int i = 1; i <= cols; i++) {
