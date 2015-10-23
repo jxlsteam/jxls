@@ -178,7 +178,23 @@ class CellDataTest extends Specification{
         then:
             cellData.targetCellType == CellData.CellType.STRING
             result == "21 days"
+    }
 
+    def "test evaluate another combined expression"(){
+        setup:
+            def cellData = new CellData("sheet1", 1, 2, CellData.CellType.STRING, 'Days: ${num}')
+            Integer num = new Integer(21)
+            def context = new Context()
+            context.putVar("num", num)
+            def transformer = Mock(Transformer);
+            def transformationConfig = new TransformationConfig()
+        when:
+            cellData.setTransformer(transformer)
+            transformer.getTransformationConfig() >> transformationConfig
+            def result = cellData.evaluate(context)
+        then:
+            cellData.targetCellType == CellData.CellType.STRING
+            result == "Days: 21"
     }
 
 }

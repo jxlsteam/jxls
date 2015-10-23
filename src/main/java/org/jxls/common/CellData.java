@@ -154,17 +154,23 @@ public class CellData {
             lastMatchEvalResult = evaluator.evaluate(expression, context.toMap());
             exprMatcher.appendReplacement(sb, Matcher.quoteReplacement( lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "" ));
         }
-        if( matchCount > 1 || (matchCount == 1 && endOffset < strValue.length())){
+        String lastStringResult = lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "";
+        boolean isAppendTail = matchCount == 1 && endOffset < strValue.length();
+        if( matchCount > 1 || isAppendTail){
             exprMatcher.appendTail(sb);
             evaluationResult = sb.toString();
         }else if(matchCount == 1){
-            evaluationResult = lastMatchEvalResult;
-            if(evaluationResult instanceof Number){
-                targetCellType = CellType.NUMBER;
-            }else if(evaluationResult instanceof Boolean){
-                targetCellType = CellType.BOOLEAN;
-            }else if(evaluationResult instanceof Date){
-                targetCellType = CellType.DATE;
+            if(sb.length() > lastStringResult.length()){
+                evaluationResult = sb.toString();
+            }else {
+                evaluationResult = lastMatchEvalResult;
+                if (evaluationResult instanceof Number) {
+                    targetCellType = CellType.NUMBER;
+                } else if (evaluationResult instanceof Boolean) {
+                    targetCellType = CellType.BOOLEAN;
+                } else if (evaluationResult instanceof Date) {
+                    targetCellType = CellType.DATE;
+                }
             }
         }else if(matchCount == 0){
             evaluationResult = strValue;
@@ -254,7 +260,7 @@ public class CellData {
     public void setCellType(CellType cellType) {
         this.cellType = cellType;
     }
-    
+
     public Object getCellValue(){
         return cellValue;
     }
@@ -274,7 +280,7 @@ public class CellData {
     public void setFormula(String formula) {
         this.formula = formula;
     }
-    
+
     public boolean isFormulaCell(){
         return formula != null;
     }
@@ -282,7 +288,7 @@ public class CellData {
     public static boolean isUserFormula(String str) {
         return str.startsWith(CellData.USER_FORMULA_PREFIX) && str.endsWith(CellData.USER_FORMULA_SUFFIX);
     }
-    
+
     public boolean addTargetPos(CellRef cellRef){
         return targetPos.add(cellRef);
     }
