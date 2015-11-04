@@ -42,40 +42,45 @@ public class JxlsHelper {
         return areaBuilder;
     }
 
-    public void setAreaBuilder(AreaBuilder areaBuilder) {
+    public JxlsHelper setAreaBuilder(AreaBuilder areaBuilder) {
         this.areaBuilder = areaBuilder;
+        return this;
     }
 
     public boolean isProcessFormulas() {
         return processFormulas;
     }
 
-    public void setProcessFormulas(boolean processFormulas) {
+    public JxlsHelper setProcessFormulas(boolean processFormulas) {
         this.processFormulas = processFormulas;
+        return this;
     }
 
     public boolean isHideTemplateSheet() {
         return hideTemplateSheet;
     }
 
-    public void setHideTemplateSheet(boolean hideTemplateSheet) {
+    public JxlsHelper setHideTemplateSheet(boolean hideTemplateSheet) {
         this.hideTemplateSheet = hideTemplateSheet;
+        return this;
     }
 
     public boolean isDeleteTemplateSheet() {
         return deleteTemplateSheet;
     }
 
-    public void setDeleteTemplateSheet(boolean deleteTemplateSheet) {
+    public JxlsHelper setDeleteTemplateSheet(boolean deleteTemplateSheet) {
         this.deleteTemplateSheet = deleteTemplateSheet;
+        return this;
     }
 
     public boolean isUseFastFormulaProcessor() {
         return useFastFormulaProcessor;
     }
 
-    public void setUseFastFormulaProcessor(boolean useFastFormulaProcessor) {
+    public JxlsHelper setUseFastFormulaProcessor(boolean useFastFormulaProcessor) {
         this.useFastFormulaProcessor = useFastFormulaProcessor;
+        return this;
     }
 
     public JxlsHelper buildExpressionNotation(String expressionNotationBegin, String expressionNotationEnd){
@@ -84,7 +89,7 @@ public class JxlsHelper {
         return this;
     }
 
-    public void processTemplate(InputStream templateStream, OutputStream targetStream, Context context) throws IOException {
+    public JxlsHelper processTemplate(InputStream templateStream, OutputStream targetStream, Context context) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
@@ -97,17 +102,19 @@ public class JxlsHelper {
             }
         }
         transformer.write();
+        return this;
     }
 
-    private void setFormulaProcessor(Area xlsArea) {
+    private Area setFormulaProcessor(Area xlsArea) {
         if( useFastFormulaProcessor ){
             xlsArea.setFormulaProcessor(new FastFormulaProcessor());
         }else{
             xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
         }
+        return xlsArea;
     }
 
-    public void processTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String targetCell) throws IOException {
+    public JxlsHelper processTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String targetCell) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
@@ -131,9 +138,10 @@ public class JxlsHelper {
             }
         }
         transformer.write();
+        return this;
     }
 
-    public void processGridTemplate(InputStream templateStream, OutputStream targetStream, Context context, String objectProps) throws IOException {
+    public JxlsHelper processGridTemplate(InputStream templateStream, OutputStream targetStream, Context context, String objectProps) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
@@ -148,6 +156,7 @@ public class JxlsHelper {
             }
         }
         transformer.write();
+        return this;
     }
 
     public void processGridTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context, String objectProps, String targetCell) throws IOException {
@@ -175,12 +184,14 @@ public class JxlsHelper {
         transformer.write();
     }
 
-    public void registerGridTemplate(InputStream inputStream) throws IOException {
+    public JxlsHelper registerGridTemplate(InputStream inputStream) throws IOException {
         simpleExporter.registerGridTemplate(inputStream);
+        return this;
     }
 
-    public void gridExport(Collection headers, Collection dataObjects, String objectProps, OutputStream outputStream){
+    public JxlsHelper gridExport(Collection headers, Collection dataObjects, String objectProps, OutputStream outputStream){
         simpleExporter.gridExport(headers, dataObjects, objectProps, outputStream);
+        return this;
     }
 
     private Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
