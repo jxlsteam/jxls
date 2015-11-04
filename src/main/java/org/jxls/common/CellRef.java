@@ -74,16 +74,18 @@ public class CellRef implements Comparable<CellRef>{
         return sheetName;
     }
 
-    public void setSheetName(String sheetName) {
+    public CellRef setSheetName(String sheetName) {
         this.sheetName = sheetName;
+        return this;
     }
 
     public boolean isIgnoreSheetNameInFormat() {
         return ignoreSheetNameInFormat;
     }
 
-    public void setIgnoreSheetNameInFormat(boolean ignoreSheetNameInFormat) {
+    public CellRef setIgnoreSheetNameInFormat(boolean ignoreSheetNameInFormat) {
         this.ignoreSheetNameInFormat = ignoreSheetNameInFormat;
+        return this;
     }
 
     /**
@@ -91,7 +93,7 @@ public class CellRef implements Comparable<CellRef>{
      * Sheet name is not included.
      * @param sb
      */
-    void appendCellReference(StringBuilder sb) {
+    StringBuilder appendCellReference(StringBuilder sb) {
         if(isColAbs) {
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
@@ -100,22 +102,43 @@ public class CellRef implements Comparable<CellRef>{
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
         sb.append(row+1);
+        return sb;
     }
 
     public int getCol() {
         return col;
     }
 
-    public void setCol(int col) {
+    public CellRef setCol(int col) {
         this.col = col;
+        return this;
     }
 
     public int getRow() {
         return row;
     }
 
-    public void setRow(int row) {
+    public CellRef setRow(int row) {
         this.row = row;
+        return this;
+    }
+
+    public boolean isColAbs() {
+        return isColAbs;
+    }
+
+    public CellRef setIsColAbs(boolean isColAbs) {
+        this.isColAbs = isColAbs;
+        return this;
+    }
+
+    public boolean isRowAbs() {
+        return isRowAbs;
+    }
+
+    public CellRef setIsRowAbs(boolean isRowAbs) {
+        this.isRowAbs = isRowAbs;
+        return this;
     }
 
     @Override
