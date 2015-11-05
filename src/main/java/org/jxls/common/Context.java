@@ -55,6 +55,15 @@ public class Context {
     public class Config {
         private boolean ignoreSourceCellStyle = false;
         private Map<String,String> cellStyleMap = new HashMap<>();
+        private boolean isFormulaProcessingRequired = true;
+
+        public boolean isFormulaProcessingRequired() {
+            return isFormulaProcessingRequired;
+        }
+
+        public void setIsFormulaProcessingRequired(boolean isFormulaProcessingRequired) {
+            this.isFormulaProcessingRequired = isFormulaProcessingRequired;
+        }
 
         public boolean isIgnoreSourceCellStyle() {
             return ignoreSourceCellStyle;

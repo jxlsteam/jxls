@@ -228,7 +228,7 @@ public class XlsArea implements Area {
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try{
-                        updateCellDataArea(srcCell, targetCell);
+                        updateCellDataArea(srcCell, targetCell, context);
                         transformer.transform(srcCell, targetCell, context);
                     }catch(Exception e){
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
@@ -287,7 +287,7 @@ public class XlsArea implements Area {
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try{
-                        updateCellDataArea(srcCell, targetCell);
+                        updateCellDataArea(srcCell, targetCell, context);
                         transformer.transform(srcCell, targetCell, context);
                     }catch(Exception e){
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
@@ -298,7 +298,9 @@ public class XlsArea implements Area {
         }
     }
 
-    private void updateCellDataArea(CellRef srcCell, CellRef targetCell) {
+    private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
+        Context.Config config = context.getConfig();
+        if( !config.isFormulaProcessingRequired() ) return;
         CellData cellData = transformer.getCellData(srcCell);
         if( cellData != null ) {
             cellData.setArea(this);
