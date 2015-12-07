@@ -148,7 +148,7 @@ public class XlsArea implements Area {
                 if( widthChange != 0 ){
                     cellRange.shiftCellsWithRowBlock(commandStartCellRef.getRow() - this.startCellRef.getRow(),
                             commandStartCellRef.getRow() - this.startCellRef.getRow() + commandData.getSize().getHeight(),
-                            commandStartCellRef.getCol() - this.startCellRef.getCol() + commandInitialSize.getWidth(), widthChange, true);
+                            commandStartCellRef.getCol() - this.startCellRef.getCol() + commandInitialSize.getWidth()-1, widthChange, true);
                 }
                 if( heightChange != 0 ){
                     cellRange.shiftCellsWithColBlock(commandStartCellRef.getCol() - this.startCellRef.getCol(),
