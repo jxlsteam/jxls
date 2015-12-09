@@ -25,6 +25,7 @@ public class CellData {
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     public static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
+    public static final String DEFAULT_VALUE = "defaultValue";
     private Map<String, String> attrMap;
 
     public enum CellType {
@@ -46,6 +47,7 @@ public class CellData {
     protected Object evaluationResult;
     protected CellType targetCellType;
     protected FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
+    protected String defaultValue;
 
     protected XlsArea area;
 
@@ -53,7 +55,6 @@ public class CellData {
     List<AreaRef> targetParentAreaRef = new ArrayList<>();
 
     Transformer transformer;
-
 
     public Transformer getTransformer() {
         return transformer;
@@ -134,6 +135,14 @@ public class CellData {
         this.formulaStrategy = formulaStrategy;
     }
 
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
         TransformationConfig transformationConfig = transformer.getTransformationConfig();
@@ -200,6 +209,9 @@ public class CellData {
         attrMap = buildAttrMap(cellComment, nameEndIndex);
         if( attrMap.containsKey(FORMULA_STRATEGY_PARAM) ){
             initFormulaStrategy(attrMap.get(FORMULA_STRATEGY_PARAM));
+        }
+        if( attrMap.containsKey(DEFAULT_VALUE) ){
+            defaultValue = attrMap.get(DEFAULT_VALUE);
         }
     }
 

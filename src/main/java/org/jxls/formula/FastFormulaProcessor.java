@@ -55,10 +55,13 @@ public class FastFormulaProcessor implements FormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
-
+                boolean isFormulaCellRefsEmpty = true;
                 for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
                     List<CellRef> targetCells = cellRefEntry.getValue();
-                    if( targetCells.isEmpty() ) continue;
+                    if( targetCells.isEmpty() ) {
+                        continue;
+                    }
+                    isFormulaCellRefsEmpty = false;
                     String replacementString;
                     if( formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN ){
                         List<CellRef> targetCellRefs = Util.createTargetCellRefListByColumn(targetFormulaCellRef, targetCells, usedCellRefs);
@@ -80,7 +83,10 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 }
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
-                    if( targetCellRefList.isEmpty() ) continue;
+                    if( targetCellRefList.isEmpty() ) {
+                        continue;
+                    }
+                    isFormulaCellRefsEmpty = false;
                     List< List<CellRef> > rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
                     String replacementString;
                     if( rangeList.size() == targetFormulaCells.size() ){
@@ -93,6 +99,9 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 }
                 String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
+                if( isFormulaCellRefsEmpty ){
+                    targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
+                }
                 transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
             }
         }
