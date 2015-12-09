@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Leonid Vysochyn on 19-Jul-15.
+ * Helper class for grid export
  */
 public class SimpleExporter {
     public static final String GRID_TEMPLATE_XLS = "grid_template.xls";

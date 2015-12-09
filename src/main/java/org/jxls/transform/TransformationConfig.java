@@ -6,7 +6,7 @@ import org.jxls.expression.JexlExpressionEvaluator;
 import java.util.regex.Pattern;
 
 /**
- * Created by Leonid Vysochyn on 22-Jul-15.
+ * Transformation configuration class
  */
 public class TransformationConfig {
     public static final String EXPRESSION_PART = "(.+?)";

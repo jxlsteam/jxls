@@ -3,7 +3,7 @@ package org.jxls.common.cellshift;
 import org.jxls.common.CellRef;
 
 /**
- * Created by Leonid Vysochyn on 07-Aug-15.
+ * Shifts not only cells impacted by shifting area but also the adjacent area cells
  */
 public class AdjacentCellShiftStrategy implements CellShiftStrategy {
     @Override

@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * A class to help execute SQL queries via JDBC
- * Created by Leonid Vysochyn on 17-Oct-15.
  */
 public class JdbcHelper {
     Connection conn;

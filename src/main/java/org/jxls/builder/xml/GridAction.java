@@ -11,7 +11,8 @@ import org.jxls.common.AreaRef;
 import org.xml.sax.Attributes;
 
 /**
- * Created by Leonid Vysochyn on 28-Jun-15.
+ * Defines Grid command via xml
+ * @author Leonid Vysochyn
  */
 public class GridAction extends Action {
     public static final String HEADER_ATTR = "headers";

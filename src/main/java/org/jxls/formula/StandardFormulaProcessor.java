@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
  * But it is very-very slow.
  * In many cases it is better to use {@link FastFormulaProcessor} as it is much-much faster
  * although may produce incorrect results in some specific cases
- * Created by Leonid Vysochyn on 02-Aug-15.
  */
 public class StandardFormulaProcessor implements FormulaProcessor {
     public StandardFormulaProcessor() {

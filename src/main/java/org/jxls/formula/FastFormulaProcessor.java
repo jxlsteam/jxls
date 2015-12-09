@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 /**
  * Fast formula processor implementation.
  * It works correctly in 90% of cases and is much more faster than {@link StandardFormulaProcessor}.
- * Created by Leonid Vysochyn on 02-Aug-15.
  */
 public class FastFormulaProcessor implements FormulaProcessor {
     @Override

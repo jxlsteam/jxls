@@ -50,7 +50,6 @@ public class Context {
 
     /**
      * Special config class to use in Area processing
-     * Created by Leonid Vysochyn on 02-Jul-15.
      */
     public class Config {
         private boolean ignoreSourceCellStyle = false;

@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * The command implements a grid with dynamic columns and rows
- * Created by Leonid Vysochyn on 25-Jun-15.
+ * @author Leonid Vysochyn
  */
 public class GridCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "grid";

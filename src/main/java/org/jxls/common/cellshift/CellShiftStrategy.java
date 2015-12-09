@@ -3,7 +3,7 @@ package org.jxls.common.cellshift;
 import org.jxls.common.CellRef;
 
 /**
- * Created by Leonid Vysochyn on 07-Aug-15.
+ * Defines cell shift strategy
  */
 public interface CellShiftStrategy {
 

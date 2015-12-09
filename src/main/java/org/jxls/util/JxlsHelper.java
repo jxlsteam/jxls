@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Leonid Vysochyn on 26-Jul-15.
+ * Common utilities
  */
 public class JxlsHelper {
     private boolean hideTemplateSheet = false;
