@@ -64,9 +64,13 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 String targetFormulaString = formulaCellData.getFormula();
                 AreaRef formulaSourceAreaRef = formulaCellData.getArea().getAreaRef();
                 AreaRef formulaTargetAreaRef = formulaCellData.getTargetParentAreaRef().get(i);
+                boolean isFormulaCellRefsEmpty = true;
                 for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
                     List<CellRef> targetCells = cellRefEntry.getValue();
-                    if( targetCells.isEmpty() ) continue;
+                    if( targetCells.isEmpty() ) {
+                        continue;
+                    }
+                    isFormulaCellRefsEmpty = false;
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef, formulaTargetAreaRef, cellRefEntry);
                     if( formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN ){
                         replacementCells = Util.createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells, usedCellRefs);
@@ -78,7 +82,10 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
                     Collections.sort(targetCellRefList);
-                    if( targetCellRefList.isEmpty() ) continue;
+                    if( targetCellRefList.isEmpty() ) {
+                        continue;
+                    }
+                    isFormulaCellRefsEmpty = false;
                     Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam = new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef, formulaTargetAreaRef, cellRefMapEntryParam);
                     String replacementString = Util.createTargetCellRef(replacementCells);
@@ -86,6 +93,9 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 }
                 String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
+                if( isFormulaCellRefsEmpty ){
+                    targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
+                }
                 transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
             }
         }
