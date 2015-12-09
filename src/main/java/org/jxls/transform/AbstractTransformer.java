@@ -104,4 +104,11 @@ public abstract class AbstractTransformer implements Transformer {
         }
         return formulaCells;
     }
+
+    @Override
+    public void deleteSheet(String sheetName) {
+        if( sheetMap.containsKey(sheetName) ){
+            sheetMap.remove(sheetName);
+        }
+    }
 }
