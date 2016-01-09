@@ -128,7 +128,7 @@ public class XlsArea implements Area {
 
 
     public Size applyAt(CellRef cellRef, Context context) {
-        logger.debug("Applying XlsArea at {} with {}", cellRef, context);
+        logger.debug("Applying XlsArea at {}", cellRef);
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
         int topStaticAreaLastRow = transformTopStaticArea(cellRef, context);
