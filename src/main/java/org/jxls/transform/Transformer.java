@@ -27,6 +27,8 @@ public interface Transformer {
 
     void resetTargetCellRefs();
 
+    void resetArea(AreaRef areaRef);
+
     void clearCell(CellRef cellRef);
 
     List<CellData> getCommentedCells();

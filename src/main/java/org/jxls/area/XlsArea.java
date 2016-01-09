@@ -272,6 +272,7 @@ public class XlsArea implements Area {
                 transformer.clearCell(cellRef);
             }
         }
+        transformer.resetArea(getAreaRef());
         cellsCleared = true;
     }
 
