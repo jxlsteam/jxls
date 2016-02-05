@@ -91,6 +91,11 @@ public class JxlsHelper {
 
     public JxlsHelper processTemplate(InputStream templateStream, OutputStream targetStream, Context context) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
+        processTemplate(context, transformer);
+        return this;
+    }
+
+    public void processTemplate(Context context, Transformer transformer) throws IOException {
         areaBuilder.setTransformer(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
         for (Area xlsArea : xlsAreaList) {
@@ -102,7 +107,6 @@ public class JxlsHelper {
             }
         }
         transformer.write();
-        return this;
     }
 
     private Area setFormulaProcessor(Area xlsArea) {
@@ -194,7 +198,7 @@ public class JxlsHelper {
         return this;
     }
 
-    private Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
+    public Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
         Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);
         if( transformer == null ){
             throw new IllegalStateException("Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath");
