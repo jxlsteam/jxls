@@ -50,7 +50,7 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
             }
-            List<CellRef> usedCellRefs = new ArrayList<>();
+            List<CellRef> usedCellRefs = new ArrayList<CellRef>();
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();

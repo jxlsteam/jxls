@@ -33,9 +33,9 @@ public class GridCommand extends AbstractCommand {
      * e.g. formatCells="Double:E1, Date:F1"
      */
     String formatCells;
-    Map<String,String> cellStyleMap = new HashMap<>();
+    Map<String,String> cellStyleMap = new HashMap<String, String>();
 
-    List<String> rowObjectProps = new ArrayList<>();
+    List<String> rowObjectProps = new ArrayList<String>();
 
     Area headerArea;
     Area bodyArea;

@@ -53,7 +53,7 @@ public class XmlAreaBuilder implements AreaBuilder {
     }
 
     public List<Area> build(InputStream is) {
-        Map<ElementSelector, Action> ruleMap = new HashMap<>();
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
         AreaAction areaAction = new AreaAction(transformer);
         ruleMap.put(new ElementSelector("*/area"), areaAction);

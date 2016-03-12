@@ -52,7 +52,7 @@ public class CellData {
     protected XlsArea area;
 
     List<CellRef> targetPos = new ArrayList<CellRef> ();
-    List<AreaRef> targetParentAreaRef = new ArrayList<>();
+    List<AreaRef> targetParentAreaRef = new ArrayList<AreaRef>();
 
     Transformer transformer;
 

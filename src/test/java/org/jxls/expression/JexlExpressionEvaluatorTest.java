@@ -23,7 +23,7 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void simple2VarExpression(){
         String expression = "2 * x + y";
-        Map<String, Object> vars = new HashMap<>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("x", 2);
         vars.put("y", 3);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
@@ -38,7 +38,7 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void shouldThrowEvaluationExceptionWhenError(){
         String expression = "2 * x + y )";
-        Map<String, Object> vars = new HashMap<>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("x", 2);
         vars.put("y", 3);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
@@ -51,7 +51,7 @@ public class JexlExpressionEvaluatorTest {
     @Test
     public void evaluateWhenVarIsNull(){
         String expression = "2*x + dummy.intValue";
-        Map<String, Object> vars = new HashMap<>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("x", 2);
         vars.put("dummy", null);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
@@ -62,7 +62,7 @@ public class JexlExpressionEvaluatorTest {
     @Test 
     public void evaluateWhenExpressionVarIsUndefined(){
         String expression = "dummy.intValue";
-        Map<String, Object> vars = new HashMap<>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate( expression, vars );
         assertNull(result);

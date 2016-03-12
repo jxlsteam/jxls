@@ -317,7 +317,7 @@ public class Util {
     }
 
     public static List<CellRef> createTargetCellRefListByColumn(CellRef targetFormulaCellRef, List<CellRef> targetCells, List<CellRef> cellRefsToExclude) {
-        List<CellRef> resultCellList = new ArrayList<>();
+        List<CellRef> resultCellList = new ArrayList<CellRef>();
         int col = targetFormulaCellRef.getCol();
         for (CellRef targetCell : targetCells) {
             if ( targetCell.getCol() == col && targetCell.getRow() < targetFormulaCellRef.getRow() && !cellRefsToExclude.contains(targetCell)){

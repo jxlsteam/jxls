@@ -1,6 +1,8 @@
 package org.jxls.jdbc;
 
 import org.jxls.common.JxlsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,13 +14,14 @@ import java.util.Map;
  * A class to help execute SQL queries via JDBC
  */
 public class JdbcHelper {
+    private static Logger logger = LoggerFactory.getLogger(JdbcHelper.class);
     Connection conn;
 
     public JdbcHelper(Connection conn) {
         this.conn = conn;
     }
 
-    public List<Map<String, Object>> query(String sql, Object... params)  {
+    public List<Map<String, Object>> query(String sql, Object... params) {
         List<Map<String, Object>> result;
         if (conn == null) {
             throw new JxlsException("Null jdbc connection");
@@ -28,16 +31,38 @@ public class JdbcHelper {
             throw new JxlsException("Null SQL statement");
         }
 
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
             fillStatement(stmt, params);
-            try(ResultSet rs = stmt.executeQuery()){
-                result = handle(rs);
-            }
+            rs = stmt.executeQuery();
+            result = handle(rs);
         } catch (Exception e) {
             throw new JxlsException("Failed to execute sql", e);
+        } finally {
+            closeJdbcResources(rs, stmt);
         }
 
         return result;
+    }
+
+    private void closeJdbcResources(ResultSet rs, PreparedStatement stmt) {
+        try {
+            if (rs != null) rs.close();
+        } catch (Exception e) {
+            logger.warn("Failed to close result set", e);
+        }
+        try {
+            if (stmt != null) stmt.close();
+        } catch (Exception e) {
+            logger.warn("Failed to close jdbc statement", e);
+        }
+        try {
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            logger.warn("Failed to close jdbc connection");
+        }
     }
 
     /*
@@ -59,7 +84,7 @@ public class JdbcHelper {
             pmd = stmt.getParameterMetaData();
             stmtCount = pmd.getParameterCount();
             paramsCount = params.length;
-        }catch (Exception e){
+        } catch (Exception e) {
             pmdKnownBroken = true;
         }
 
@@ -94,7 +119,7 @@ public class JdbcHelper {
     }
 
     private List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
-        List<Map<String,Object>> rows = new ArrayList<>();
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
         while (rs.next()) {
             rows.add(handleRow(rs));
         }

@@ -29,8 +29,8 @@ public class StandardFormulaProcessor implements FormulaProcessor {
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
             List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
-            Map<CellRef, List<CellRef>> targetCellRefMap = new LinkedHashMap<>();
-            Map<String, List<CellRef>> jointedCellRefMap = new LinkedHashMap<>();
+            Map<CellRef, List<CellRef>> targetCellRefMap = new LinkedHashMap<CellRef, List<CellRef>>();
+            Map<String, List<CellRef>> jointedCellRefMap = new LinkedHashMap<String, List<CellRef>>();
             for (String cellRef : formulaCellRefs) {
                 CellRef pos = new CellRef(cellRef);
                 if( pos.isValid() ) {
@@ -57,7 +57,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
             }
-            List<CellRef> usedCellRefs = new ArrayList<>();
+            List<CellRef> usedCellRefs = new ArrayList<CellRef>();
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
@@ -114,7 +114,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
     }
 
     private List<CellRef> findRelevantCellReferences(List<CellRef> cellReferenceTargets, AreaRef targetFormulaArea) {
-        List<CellRef> relevantCellRefs = new ArrayList<>(cellReferenceTargets.size());
+        List<CellRef> relevantCellRefs = new ArrayList<CellRef>(cellReferenceTargets.size());
         for(CellRef targetCellRef: cellReferenceTargets){
             if( targetFormulaArea.contains(targetCellRef)){
                 relevantCellRefs.add(targetCellRef);
