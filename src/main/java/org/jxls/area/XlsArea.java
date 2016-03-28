@@ -15,19 +15,20 @@ import java.util.*;
 
 /**
  * Core implementation of {@link Area} interface
+ *
  * @author Leonid Vysochyn
- * Date: 1/16/12
+ *         Date: 1/16/12
  */
 public class XlsArea implements Area {
     static Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
-    public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null,0, 0), Size.ZERO_SIZE);
+    public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
 
     List<CommandData> commandDataList = new ArrayList<CommandData>();
     Transformer transformer;
-    
+
     CellRange cellRange;
-    
+
     CellRef startCellRef;
     Size size;
     List<AreaListener> areaListeners = new ArrayList<AreaListener>();
@@ -41,19 +42,19 @@ public class XlsArea implements Area {
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
 
-    public XlsArea(AreaRef areaRef, Transformer transformer){
+    public XlsArea(AreaRef areaRef, Transformer transformer) {
         CellRef startCell = areaRef.getFirstCellRef();
         CellRef endCell = areaRef.getLastCellRef();
         this.startCellRef = startCell;
         this.size = new Size(endCell.getCol() - startCell.getCol() + 1, endCell.getRow() - startCell.getRow() + 1);
         this.transformer = transformer;
     }
-    
-    public XlsArea(String areaRef, Transformer transformer){
+
+    public XlsArea(String areaRef, Transformer transformer) {
         this(new AreaRef(areaRef), transformer);
     }
-    
-    public XlsArea(CellRef startCell, CellRef endCell, Transformer transformer){
+
+    public XlsArea(CellRef startCell, CellRef endCell, Transformer transformer) {
         this(new AreaRef(startCell, endCell), transformer);
     }
 
@@ -92,15 +93,15 @@ public class XlsArea implements Area {
         this.formulaProcessor = formulaProcessor;
     }
 
-    public void addCommand(AreaRef areaRef, Command command){
+    public void addCommand(AreaRef areaRef, Command command) {
         AreaRef thisAreaRef = new AreaRef(startCellRef, size);
-        if( !thisAreaRef.contains(areaRef) ){
+        if (!thisAreaRef.contains(areaRef)) {
             throw new IllegalArgumentException("Cannot add command '" + command.getName() + "' to area " + thisAreaRef + " at " + areaRef);
         }
         commandDataList.add(new CommandData(areaRef, command));
     }
 
-    public void addCommand(String areaRef, Command command){
+    public void addCommand(String areaRef, Command command) {
         commandDataList.add(new CommandData(areaRef, command));
     }
 
@@ -115,14 +116,14 @@ public class XlsArea implements Area {
     public void setTransformer(Transformer transformer) {
         this.transformer = transformer;
     }
-    
-    private void createCellRange(){
+
+    private void createCellRange() {
         cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
-        for(CommandData commandData: commandDataList){
+        for (CommandData commandData : commandDataList) {
             CellRef startCellRef = commandData.getSourceStartCellRef();
             Size size = commandData.getSourceSize();
-            cellRange.excludeCells(startCellRef.getCol() - this.startCellRef.getCol(), startCellRef.getCol() - this.startCellRef.getCol() + size.getWidth()-1,
-                    startCellRef.getRow() - this.startCellRef.getRow(), startCellRef.getRow() - this.startCellRef.getRow() + size.getHeight()-1);
+            cellRange.excludeCells(startCellRef.getCol() - this.startCellRef.getCol(), startCellRef.getCol() - this.startCellRef.getCol() + size.getWidth() - 1,
+                    startCellRef.getRow() - this.startCellRef.getRow(), startCellRef.getRow() - this.startCellRef.getRow() + size.getHeight() - 1);
         }
     }
 
@@ -140,41 +141,61 @@ public class XlsArea implements Area {
             cellRange.setCellShiftStrategy(commandCellShiftStrategy);
             CellRef commandStartCellRef = commandData.getStartCellRef();
             Size commandInitialSize = commandData.getSize();
-            CellRef newCell = new CellRef(cellRef.getSheetName(), commandStartCellRef.getRow() - this.startCellRef.getRow() + cellRef.getRow(), commandStartCellRef.getCol() - this.startCellRef.getCol() + cellRef.getCol());
+            int startCol = commandStartCellRef.getCol() - startCellRef.getCol();
+            int startRow = commandStartCellRef.getRow() - startCellRef.getRow();
+            CellRef newCell = new CellRef(cellRef.getSheetName(), startRow + cellRef.getRow(), startCol + cellRef.getCol());
             Size commandNewSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = commandNewSize.getWidth() - commandInitialSize.getWidth();
             int heightChange = commandNewSize.getHeight() - commandInitialSize.getHeight();
-            if( widthChange != 0 || heightChange != 0){
-                if( widthChange != 0 ){
-                    cellRange.shiftCellsWithRowBlock(commandStartCellRef.getRow() - this.startCellRef.getRow(),
-                            commandStartCellRef.getRow() - this.startCellRef.getRow() + commandData.getSize().getHeight(),
-                            commandStartCellRef.getCol() - this.startCellRef.getCol() + commandInitialSize.getWidth()-1, widthChange, true);
+            int endCol = startCol + commandInitialSize.getWidth() - 1;
+            int endRow = startRow + commandInitialSize.getHeight() - 1;
+            if( heightChange != 0 ){
+                cellRange.shiftCellsWithColBlock(startCol,
+                        endCol, endRow, heightChange, true);
+                Set<CommandData> commandsToShift = findCommandsForVerticalShift(commandDataList.subList(i+1, commandDataList.size()), startCol, endCol, endRow, heightChange);
+                for (CommandData commandDataToShift : commandsToShift) {
+                    CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
+                    int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+                    int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+                    int relativeEndCol = relativeStartCol + commandDataToShift.getSize().getWidth() - 1;
+                    cellRange.shiftCellsWithColBlock(relativeStartCol, relativeEndCol, relativeRow + commandDataToShift.getSize().getHeight() - 1, heightChange, false);
+                    commandDataToShift.setStartCellRef(
+                            new CellRef(commandStartCellRef.getSheetName(),
+                                    commandDataStartCellRef.getRow() + heightChange,
+                                    commandDataStartCellRef.getCol()));
+                    if( heightChange < 0 ){
+                        CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
+                        Size initialSize = commandDataToShift.getSourceSize();
+                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
+                        int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
+                        int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
+                        int initialEndCol = initialStartCol + initialSize.getWidth() - 1;
+                        cellRange.clearCells(initialStartCol, initialEndCol, initialEndRow + heightChange + 1, initialEndRow);
+                    }
                 }
-                if( heightChange != 0 ){
-                    cellRange.shiftCellsWithColBlock(commandStartCellRef.getCol() - this.startCellRef.getCol(),
-                            commandStartCellRef.getCol() - this.startCellRef.getCol() + commandNewSize.getWidth()-1, commandStartCellRef.getRow() - this.startCellRef.getRow() + commandData.getSize().getHeight()-1, heightChange, true);
-                }
-                for (int j = i + 1; j < commandDataList.size(); j++) {
-                    CommandData data = commandDataList.get(j);
-                    CellRef commandDataStartCellRef = data.getStartCellRef();
-                    int newRow = commandDataStartCellRef.getRow() - this.startCellRef.getRow() + cellRef.getRow();
-                    int newCol = commandDataStartCellRef.getCol() - this.startCellRef.getCol() + cellRef.getCol();
-                    Size commandDataSize = data.getSize();
-                    if(newRow > newCell.getRow() && ((newCol >= newCell.getCol() && newCol <= newCell.getCol() + commandNewSize.getWidth()) ||
-                            (newCol + commandDataSize.getWidth() >= newCell.getCol() && newCol + commandDataSize.getWidth() <= newCell.getCol() + commandNewSize.getWidth()) ||
-                            (newCell.getCol() >= newCol && newCell.getCol() <= newCol + commandDataSize.getWidth() )
-                    )){
-                        cellRange.shiftCellsWithColBlock(commandDataStartCellRef.getCol() - this.startCellRef.getCol(),
-                                commandDataStartCellRef.getCol() - this.startCellRef.getCol() + commandDataSize.getWidth()-1, commandDataStartCellRef.getRow() - this.startCellRef.getRow() + commandDataSize.getHeight()-1, heightChange, false);
-                        data.setStartCellRef(new CellRef(commandDataStartCellRef.getSheetName(), commandDataStartCellRef.getRow() + heightChange, commandDataStartCellRef.getCol()));
-                    }else
-                    if( newCol > newCell.getCol() && ( (newRow >= newCell.getRow() && newRow <= newCell.getRow() + commandNewSize.getHeight()) ||
-                   ( newRow + commandDataSize.getHeight() >= newCell.getRow() && newRow + commandDataSize.getHeight() <= newCell.getRow() + commandNewSize.getHeight()) ||
-                    newCell.getRow() >= newRow && newCell.getRow() <= newRow + commandDataSize.getHeight()) ){
-                        cellRange.shiftCellsWithRowBlock(commandDataStartCellRef.getRow() - this.startCellRef.getRow(),
-                                commandDataStartCellRef.getRow() - this.startCellRef.getRow() + commandDataSize.getHeight()-1,
-                                commandDataStartCellRef.getCol() - this.startCellRef.getCol() + commandInitialSize.getWidth(), widthChange, false);
-                        data.setStartCellRef(new CellRef(commandDataStartCellRef.getSheetName(), commandDataStartCellRef.getRow(), commandDataStartCellRef.getCol() + widthChange));
+            }
+            if (widthChange != 0) {
+                cellRange.shiftCellsWithRowBlock(startRow,
+                        endRow,
+                        endCol, widthChange, true);
+                Set<CommandData> commandsToShift = findCommandsForHorizontalShift(commandDataList.subList(i+1, commandDataList.size()), startRow, endRow, endCol, widthChange);
+                for (CommandData commandDataToShift : commandsToShift) {
+                    CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
+                    int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+                    int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+                    int relativeEndRow = relativeStartRow + commandDataToShift.getSize().getHeight() - 1;
+                    cellRange.shiftCellsWithRowBlock(relativeStartRow, relativeEndRow, relativeCol + commandDataToShift.getSize().getWidth() - 1, widthChange, false);
+                    commandDataToShift.setStartCellRef(
+                            new CellRef(commandStartCellRef.getSheetName(),
+                                    commandDataStartCellRef.getRow(),
+                                    commandDataStartCellRef.getCol() + widthChange));
+                    if( widthChange < 0 ){
+                        CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
+                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
+                        Size initialSize = commandDataToShift.getSourceSize();
+                        int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
+                        int initialEndCol = initialStartCellRef.getCol() + initialSize.getWidth() - 1;
+                        cellRange.clearCells(initialEndCol + widthChange + 1, initialEndCol, initialStartRow, initialEndRow);
                     }
                 }
             }
@@ -184,16 +205,119 @@ public class XlsArea implements Area {
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
         AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
         updateCellDataFinalAreaForFormulaCells(newAreaRef);
-        for(CommandData commandData: commandDataList){
+        for (CommandData commandData : commandDataList) {
             commandData.resetStartCellAndSize();
         }
         return finalSize;
     }
 
+    private Set<CommandData> findCommandsForHorizontalShift(List<CommandData> commandList, int startRow, int endRow, int shiftingCol, int widthChange) {
+        Set<CommandData> result = new LinkedHashSet<>();
+        for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
+            CommandData commandData = commandList.get(i);
+            CellRef commandDataStartCellRef = commandData.getStartCellRef();
+            int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeEndRow = relativeStartRow + commandData.getSize().getHeight() - 1;
+            if (relativeCol > shiftingCol) {
+                boolean isShiftingNeeded = false;
+                if (widthChange > 0) {
+                    if ((relativeStartRow >= startRow && relativeStartRow <= endRow)
+                            || (relativeEndRow >= startRow && relativeEndRow <= endRow)
+                            || (startRow >= relativeStartRow && startRow <= relativeEndRow)) {
+                        isShiftingNeeded = true;
+                    }
+                } else {
+                    if (relativeStartRow >= startRow && relativeEndRow <= endRow && isNoHighCommandsInArea(commandList, shiftingCol + 1, relativeCol - 1, startRow, endRow)) {
+                        isShiftingNeeded = true;
+                    }
+                }
+                if( isShiftingNeeded ){
+                    result.add(commandData);
+                    Set<CommandData> dependentCommands = findCommandsForHorizontalShift(
+                            commandList.subList(i+1, commandList.size()),
+                            relativeStartRow,
+                            relativeEndRow,
+                            relativeCol + commandData.getSize().getWidth() - 1,
+                            widthChange);
+                    result.addAll(dependentCommands);
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean isNoHighCommandsInArea(List<CommandData> commandList, int startCol, int endCol, int startRow, int endRow) {
+        for (CommandData commandData : commandList) {
+            CellRef commandDataStartCellRef = commandData.getStartCellRef();
+            int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeEndCol = relativeCol + commandData.getSize().getWidth() - 1;
+            int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeEndRow = relativeStartRow + commandData.getSize().getHeight() - 1;
+
+            if( relativeCol >= startCol && relativeEndCol <= endCol
+                    && ((relativeStartRow < startRow && relativeEndRow >= startRow) || (relativeEndRow > endRow && relativeStartRow <= endRow)) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Set<CommandData> findCommandsForVerticalShift(List<CommandData> commandList, int startCol, int endCol, int shiftingRow, int heightChange) {
+        Set<CommandData> result = new LinkedHashSet<>();
+        for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
+            CommandData commandData = commandList.get(i);
+            CellRef commandDataStartCellRef = commandData.getStartCellRef();
+            int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeEndCol = relativeStartCol + commandData.getSize().getWidth() - 1;
+            if (relativeRow > shiftingRow) {
+                boolean isShiftingNeeded = false;
+                if (heightChange > 0) {
+                    if ((relativeStartCol >= startCol && relativeStartCol <= endCol)
+                            || (relativeEndCol >= startCol && relativeEndCol <= endCol)
+                            || (startCol >= relativeStartCol && startCol <= relativeEndCol)) {
+                        isShiftingNeeded = true;
+                    }
+                } else {
+                    if (relativeStartCol >= startCol && relativeEndCol <= endCol && isNoWideCommandsInArea(commandList, startCol, endCol, shiftingRow+1, relativeRow - 1)) {
+                        isShiftingNeeded = true;
+                    }
+                }
+                if( isShiftingNeeded ){
+                    result.add(commandData);
+                    Set<CommandData> dependentCommands = findCommandsForVerticalShift(
+                            commandList.subList(i+1, commandList.size()),
+                            relativeStartCol,
+                            relativeEndCol,
+                            relativeRow + commandData.getSize().getHeight() - 1,
+                            heightChange);
+                    result.addAll(dependentCommands);
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean isNoWideCommandsInArea(List<CommandData> commandList, int startCol, int endCol, int startRow, int endRow) {
+        for (CommandData commandData : commandList) {
+            CellRef commandDataStartCellRef = commandData.getStartCellRef();
+            int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeEndRow = relativeRow + commandData.getSize().getHeight() - 1;
+            int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeEndCol = relativeStartCol + commandData.getSize().getWidth() - 1;
+            if( relativeRow >= startRow && relativeEndRow <= endRow
+                    && ((relativeStartCol < startCol && relativeEndCol >= startCol) || (relativeEndCol > endCol && relativeStartCol <= endCol)) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private CellShiftStrategy detectCellShiftStrategy(String shiftMode) {
-        if( shiftMode != null && Command.ADJACENT_SHIFT_MODE.equalsIgnoreCase(shiftMode)){
+        if (shiftMode != null && Command.ADJACENT_SHIFT_MODE.equalsIgnoreCase(shiftMode)) {
             return adjacentCellShiftStrategy;
-        }else{
+        } else {
             return innerCellShiftStrategy;
         }
     }
@@ -202,13 +326,13 @@ public class XlsArea implements Area {
         String sheetName = startCellRef.getSheetName();
         int offsetRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
-        for(int col = 0; col < size.getWidth(); col++){
-            for(int row = 0; row < size.getHeight(); row++){
-                if( !cellRange.isExcluded(row, col) ){
+        for (int col = 0; col < size.getWidth(); col++) {
+            for (int row = 0; row < size.getHeight(); row++) {
+                if (!cellRange.isExcluded(row, col)) {
                     CellRef srcCell = new CellRef(sheetName, offsetRow + row, startCol + col);
                     CellData cellData = transformer.getCellData(srcCell);
-                    if( cellData != null && cellData.isFormulaCell() ){
-                        cellData.addTargetParentAreaRef( newAreaRef );
+                    if (cellData != null && cellData.isFormulaCell()) {
+                        cellData.addTargetParentAreaRef(newAreaRef);
                     }
                 }
             }
@@ -220,17 +344,17 @@ public class XlsArea implements Area {
         int startRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
         int topStaticAreaLastRow = findRelativeTopCommandRow() - 1;
-        for(int col = 0; col < size.getWidth(); col++){
-            for(int row = 0; row <= topStaticAreaLastRow; row++){
-                if( !cellRange.isExcluded(row, col) ){
+        for (int col = 0; col < size.getWidth(); col++) {
+            for (int row = 0; row <= topStaticAreaLastRow; row++) {
+                if (!cellRange.isExcluded(row, col)) {
                     CellRef relativeCell = cellRange.getCell(row, col);
                     CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
-                    try{
+                    try {
                         updateCellDataArea(srcCell, targetCell, context);
                         transformer.transform(srcCell, targetCell, context);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
                     }
                     fireAfterTransformCell(srcCell, targetCell, context);
@@ -242,7 +366,7 @@ public class XlsArea implements Area {
 
     private int findRelativeTopCommandRow() {
         int topCommandRow = startCellRef.getRow() + size.getHeight() - 1;
-        for(CommandData data : commandDataList){
+        for (CommandData data : commandDataList) {
             topCommandRow = Math.min(data.getStartCellRef().getRow(), topCommandRow);
         }
         return topCommandRow - startCellRef.getRow();
@@ -262,12 +386,12 @@ public class XlsArea implements Area {
 
 
     public void clearCells() {
-        if( cellsCleared ) return;
+        if (cellsCleared) return;
         String sheetName = startCellRef.getSheetName();
         int startRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
-        for(int row = 0; row < size.getHeight(); row++){
-            for(int col = 0; col < size.getWidth(); col++){
+        for (int row = 0; row < size.getHeight(); row++) {
+            for (int col = 0; col < size.getWidth(); col++) {
                 CellRef cellRef = new CellRef(sheetName, startRow + row, startCol + col);
                 transformer.clearCell(cellRef);
             }
@@ -280,17 +404,17 @@ public class XlsArea implements Area {
         String sheetName = startCellRef.getSheetName();
         int offsetRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
-        for(int col = 0; col < size.getWidth(); col++){
-            for(int row = relativeStartRow; row < size.getHeight(); row++){
-                if( !cellRange.isExcluded(row, col) ){
+        for (int col = 0; col < size.getWidth(); col++) {
+            for (int row = relativeStartRow; row < size.getHeight(); row++) {
+                if (!cellRange.isExcluded(row, col)) {
                     CellRef relativeCell = cellRange.getCell(row, col);
                     CellRef srcCell = new CellRef(sheetName, offsetRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
                     fireBeforeTransformCell(srcCell, targetCell, context);
-                    try{
+                    try {
                         updateCellDataArea(srcCell, targetCell, context);
                         transformer.transform(srcCell, targetCell, context);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
                     }
                     fireAfterTransformCell(srcCell, targetCell, context);
@@ -301,9 +425,9 @@ public class XlsArea implements Area {
 
     private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
         Context.Config config = context.getConfig();
-        if( !config.isFormulaProcessingRequired() ) return;
+        if (!config.isFormulaProcessingRequired()) return;
         CellData cellData = transformer.getCellData(srcCell);
-        if( cellData != null ) {
+        if (cellData != null) {
             cellData.setArea(this);
             cellData.addTargetPos(targetCell);
         }
@@ -328,8 +452,8 @@ public class XlsArea implements Area {
     public Size getSize() {
         return size;
     }
-    
-    public AreaRef getAreaRef(){
+
+    public AreaRef getAreaRef() {
         return new AreaRef(startCellRef, size);
     }
 
@@ -349,7 +473,7 @@ public class XlsArea implements Area {
     public List<Command> findCommandByName(String name) {
         List<Command> commands = new ArrayList<Command>();
         for (CommandData commandData : commandDataList) {
-            if( name != null && name.equals(commandData.getCommand().getName()) ){
+            if (name != null && name.equals(commandData.getCommand().getName())) {
                 commands.add(commandData.getCommand());
             }
         }

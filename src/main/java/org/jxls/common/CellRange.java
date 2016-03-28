@@ -10,13 +10,13 @@ import org.jxls.common.cellshift.InnerCellShiftStrategy;
  */
 public class CellRange {
     private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
-    CellRef startCell;
-    int width;
-    int height;
-    CellRef[][] cells;
+    private CellRef startCell;
+    private int width;
+    private int height;
+    private CellRef[][] cells;
     boolean[][] changeMatrix;
-    int[] rowWidths;
-    int[] colHeights;
+    private int[] rowWidths;
+    private int[] colHeights;
 
     public CellRange(CellRef startCell, int width, int height) {
         String sheetName = startCell.getSheetName();
@@ -60,16 +60,31 @@ public class CellRange {
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 boolean requiresShifting = cellShiftStrategy.requiresColShifting(cells[i][j], startRow, endRow, col);
-                if(requiresShifting && !changeMatrix[i][j]){
+                if(requiresShifting && isHorizontalShiftAllowed(col, colShift, i, j)){
                     cells[i][j].setCol(cells[i][j].getCol() + colShift);
                     changeMatrix[i][j] = true;
                 }
             }
         }
-        int maxRow = Math.min(endRow, rowWidths.length-1);
-        for(int row = startRow; row <= maxRow; row++){
-            rowWidths[row] += colShift;
+        if( updateRowWidths ) {
+            int maxRow = Math.min(endRow, rowWidths.length - 1);
+            for (int row = startRow; row <= maxRow; row++) {
+                rowWidths[row] += colShift;
+            }
         }
+    }
+
+    private boolean isHorizontalShiftAllowed(int col, int widthChange, int cellRow, int cellCol) {
+        if( changeMatrix[cellRow][cellCol] ){
+            return false;
+        }
+        if( widthChange >= 0 ) return true;
+        for(int i = cellCol-1; i > col; i--){
+            if( isEmpty(cellRow, i) ){
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean requiresColShifting(CellRef cell, int startRow, int endRow, int startColShift){
@@ -80,7 +95,7 @@ public class CellRange {
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 boolean requiresShifting = cellShiftStrategy.requiresRowShifting(cells[i][j], startCol, endCol, row);
-                if(requiresShifting && !changeMatrix[i][j]){
+                if(requiresShifting && isVerticalShiftAllowed(row, rowShift, i, j)){
                     cells[i][j].setRow(cells[i][j].getRow() + rowShift );
                     changeMatrix[i][j] = true;
                 }
@@ -94,18 +109,31 @@ public class CellRange {
         }
     }
 
-    public boolean requiresRowShifting(CellRef cell, int startCol, int endCol, int startRowShift){
-        return cellShiftStrategy.requiresRowShifting(cell, startCol, endCol, startRowShift);
+    private boolean isVerticalShiftAllowed(int row, int heightChange, int cellRow, int cellCol) {
+        if( changeMatrix[cellRow][cellCol] ){
+            return false;
+        }
+        if( heightChange >= 0 ) return true;
+        for(int i = cellRow-1; i > row; i--){
+            if( isEmpty(i, cellCol) ){
+                return false;
+            }
+        }
+        return true;
     }
 
-    public CellRef getStartCell() {
-        return startCell;
-    }
-    
     public void excludeCells(int startCol, int endCol, int startRow, int endRow){
         for(int row = startRow; row <= endRow; row++){
             for(int col = startCol; col <= endCol; col++){
                 cells[row][col] = null;
+            }
+        }
+    }
+
+    public void clearCells(int startCol, int endCol, int startRow, int endRow){
+        for(int row = startRow; row <= endRow; row++){
+            for(int col = startCol; col <= endCol; col++){
+                cells[row][col] = CellRef.NONE;
             }
         }
     }
@@ -127,6 +155,10 @@ public class CellRange {
     }
 
     public boolean isExcluded(int row, int col){
+        return cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
+    }
+
+    public boolean isEmpty(int row, int col){
         return cells[row][col] == null;
     }
 
