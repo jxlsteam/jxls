@@ -1,26 +1,30 @@
 package org.jxls.transform;
 
-import org.jxls.common.*;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.common.CellData;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.RowData;
+import org.jxls.common.SheetData;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
+ *
  * @author Leonid Vysochyn
  *         Date: 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
-    boolean ignoreColumnProps = false;
-    boolean ignoreRowProps = false;
+    private boolean ignoreColumnProps = false;
+    private boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
 
-    TransformationConfig transformationConfig = new TransformationConfig();
-
-    public AbstractTransformer() {
-    }
+    private TransformationConfig transformationConfig = new TransformationConfig();
 
     @Override
     public Context createInitialContext() {
@@ -107,7 +111,7 @@ public abstract class AbstractTransformer implements Transformer {
 
     @Override
     public void deleteSheet(String sheetName) {
-        if( sheetMap.containsKey(sheetName) ){
+        if (sheetMap.containsKey(sheetName)) {
             sheetMap.remove(sheetName);
         }
     }

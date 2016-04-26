@@ -1,5 +1,7 @@
 package org.jxls.util;
 
+import org.jxls.common.JxlsException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,7 +78,7 @@ public class CellRefUtil {
     static boolean needsDelimiting(String rawSheetName) {
         int len = rawSheetName.length();
         if(len < 1) {
-            throw new RuntimeException("Zero length string is an invalid sheet name");
+            throw new JxlsException("Zero length string is an invalid sheet name");
         }
         if(Character.isDigit(rawSheetName.charAt(0))) {
             // sheet name with digit in the first position always requires delimiting
@@ -92,12 +94,7 @@ public class CellRefUtil {
                 && nameLooksLikePlainCellReference(rawSheetName)) {
                 return true;
         }
-        if (nameLooksLikeBooleanLiteral(rawSheetName)) {
-            return true;
-        }
-        // Error constant literals all contain '#' and other special characters
-        // so they don't get this far
-        return false;
+        return nameLooksLikeBooleanLiteral(rawSheetName);
     }
 
     /**
@@ -157,7 +154,7 @@ public class CellRefUtil {
      * Excel uses range checking on the apparent 'row' and 'column' components.  Note however that
      * the maximum sheet size varies across versions.
      */
-    static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
+    private static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
         return cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, 0x0100, 0x10000);
     }
 
@@ -213,10 +210,7 @@ public class CellRefUtil {
             // "Sheet1" case etc
             return false; // that was easy
         }
-        if(numberOfLetters == lastColLength && colStr.toUpperCase().compareTo(lastCol) > 0) {
-            return false;
-        }
-        return true;
+        return !(numberOfLetters == lastColLength && colStr.toUpperCase().compareTo(lastCol) > 0);
     }
 
     public static boolean isRowWithnRange(String rowStr, int lastRowIndex) {
@@ -261,8 +255,9 @@ public class CellRefUtil {
             case '\n':
             case '\r':
             case '\t':
-                throw new RuntimeException("Illegal character (0x"
+                throw new JxlsException("Illegal character (0x"
                         + Integer.toHexString(ch) + ") found in sheet name");
+            default:
         }
         return true;
     }
@@ -335,7 +330,7 @@ public class CellRefUtil {
         }
         int lastQuotePos = indexOfSheetNameDelimiter-1;
         if(reference.charAt(lastQuotePos) != SPECIAL_NAME_DELIMITER) {
-            throw new RuntimeException("Mismatched quotes: (" + reference + ")");
+            throw new JxlsException("Mismatched quotes: (" + reference + ")");
         }
 
         // TODO - refactor cell reference parsing logic to one place.
@@ -359,7 +354,7 @@ public class CellRefUtil {
                 sb.append(ch);
                 continue;
             }
-            throw new RuntimeException("Bad sheet name quote escaping: (" + reference + ")");
+            throw new JxlsException("Bad sheet name quote escaping: (" + reference + ")");
         }
         return sb.toString();
     }
@@ -415,7 +410,7 @@ public class CellRefUtil {
         String partA = reference.substring(0, delimiterPos);
         String partB = reference.substring(delimiterPos+1);
         if(partB.indexOf(SHEET_NAME_DELIMITER) >=0) {
-            throw new RuntimeException("Unexpected " + SHEET_NAME_DELIMITER
+            throw new JxlsException("Unexpected " + SHEET_NAME_DELIMITER
                     + " in second cell reference of '" + reference + "'");
         }
 

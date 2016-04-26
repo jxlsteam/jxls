@@ -72,7 +72,7 @@ import java.util.regex.Pattern;
  * @author Leonid Vysochyn
  */
 public class XlsCommentAreaBuilder implements AreaBuilder {
-    static Logger logger = LoggerFactory.getLogger(XlsCommentAreaBuilder.class);
+    private static Logger logger = LoggerFactory.getLogger(XlsCommentAreaBuilder.class);
 
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
@@ -93,7 +93,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put("grid", GridCommand.class);
     }
 
-    Transformer transformer;
+    private Transformer transformer;
     private boolean clearTemplateCells = true;
 
     public XlsCommentAreaBuilder() {

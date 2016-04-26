@@ -16,29 +16,30 @@ import java.util.*;
  * @author Leonid Vysochyn
  */
 public class GridCommand extends AbstractCommand {
-    public static final String COMMAND_NAME = "grid";
+    private static final String COMMAND_NAME = "grid";
     public static final String HEADER_VAR = "header";
     public static final String DATA_VAR = "cell";
 
-    static Logger logger = LoggerFactory.getLogger(GridCommand.class);
+    private static Logger logger = LoggerFactory.getLogger(GridCommand.class);
 
     /** Name of a context variable containing a collection of headers */
-    String headers;
+    private String headers;
     /** Name of a context variable containing a collection of data objects for body */
-    String data;
+    private String data;
     /** Comma-separated list of object properties for each grid row */
-    String props;
+    private String props;
 
     /** Comma-separated list of format type cells
      * e.g. formatCells="Double:E1, Date:F1"
      */
-    String formatCells;
-    Map<String,String> cellStyleMap = new HashMap<>();
+    private String formatCells;
+    private Map<String,String> cellStyleMap = new HashMap<>();
 
-    List<String> rowObjectProps = new ArrayList<>();
+    private List<String> rowObjectProps = new ArrayList<>();
 
-    Area headerArea;
-    Area bodyArea;
+    private Area headerArea;
+    private Area bodyArea;
+
 
     public GridCommand() {
     }

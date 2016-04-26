@@ -23,8 +23,8 @@ import java.util.Map;
  *         Date: 2/14/12 11:50 AM
  */
 public class XmlAreaBuilder implements AreaBuilder {
-    Transformer transformer;
-    InputStream xmlInputStream;
+    private Transformer transformer;
+    private InputStream xmlInputStream;
     private boolean clearTemplateCells = true;
 
     public XmlAreaBuilder(Transformer transformer) {

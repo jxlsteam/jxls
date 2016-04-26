@@ -15,7 +15,7 @@ public class SheetData implements Iterable<RowData> {
     protected int[] columnWidth;
     protected List<RowData> rowDataList = new ArrayList<RowData>();
 
-    Transformer transformer;
+    private Transformer transformer;
 
     public Transformer getTransformer() {
         return transformer;

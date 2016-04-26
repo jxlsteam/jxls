@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  *         Date: 2/3/12
  */
 public class Util {
-    static Logger logger = LoggerFactory.getLogger(Util.class);
+    private static Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
     public static final String regexCellRef = "([a-zA-Z]+[a-zA-Z0-9]*![a-zA-Z]+[0-9]+|[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
@@ -201,7 +201,7 @@ public class Util {
     public static Boolean isConditionTrue(ExpressionEvaluator evaluator, String condition, Context context){
         Object conditionResult = evaluator.evaluate(condition, context.toMap());
         if( !(conditionResult instanceof Boolean) ){
-            throw new RuntimeException("Condition result is not a boolean value - " + condition);
+            throw new JxlsException("Condition result is not a boolean value - " + condition);
         }
         return (Boolean)conditionResult;
     }
@@ -209,7 +209,7 @@ public class Util {
     public static Boolean isConditionTrue(JexlExpressionEvaluator evaluator, Context context){
         Object conditionResult = evaluator.evaluate(context.toMap());
         if( !(conditionResult instanceof Boolean) ){
-            throw new RuntimeException("Condition result is not a boolean value - " + evaluator.getJexlExpression().getExpression());
+            throw new JxlsException("Condition result is not a boolean value - " + evaluator.getJexlExpression().getExpression());
         }
         return (Boolean)conditionResult;
     }
@@ -307,7 +307,7 @@ public class Util {
     public static Collection transformToCollectionObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context){
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if( !(collectionObject instanceof Collection) ){
-            throw new RuntimeException(collectionName + " expression is not a collection");
+            throw new JxlsException(collectionName + " expression is not a collection");
         }
         return (Collection) collectionObject;
     }

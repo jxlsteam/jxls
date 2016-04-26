@@ -20,18 +20,18 @@ import java.util.*;
  *         Date: 1/16/12
  */
 public class XlsArea implements Area {
-    static Logger logger = LoggerFactory.getLogger(XlsArea.class);
+    private static Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
 
-    List<CommandData> commandDataList = new ArrayList<CommandData>();
-    Transformer transformer;
+    private List<CommandData> commandDataList = new ArrayList<CommandData>();
+    private Transformer transformer;
 
-    CellRange cellRange;
+    private CellRange cellRange;
 
-    CellRef startCellRef;
-    Size size;
-    List<AreaListener> areaListeners = new ArrayList<AreaListener>();
+    private CellRef startCellRef;
+    private Size size;
+    private List<AreaListener> areaListeners = new ArrayList<AreaListener>();
 
     private boolean cellsCleared = false;
 
@@ -265,7 +265,8 @@ public class XlsArea implements Area {
 
     private Set<CommandData> findCommandsForVerticalShift(List<CommandData> commandList, int startCol, int endCol, int shiftingRow, int heightChange) {
         Set<CommandData> result = new LinkedHashSet<>();
-        for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
+        int commandListSize = commandList.size();
+        for (int i = 0; i < commandListSize; i++) {
             CommandData commandData = commandList.get(i);
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
             int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
@@ -287,7 +288,7 @@ public class XlsArea implements Area {
                 if( isShiftingNeeded ){
                     result.add(commandData);
                     Set<CommandData> dependentCommands = findCommandsForVerticalShift(
-                            commandList.subList(i+1, commandList.size()),
+                            commandList.subList(i+1, commandListSize),
                             relativeStartCol,
                             relativeEndCol,
                             relativeRow + commandData.getSize().getHeight() - 1,

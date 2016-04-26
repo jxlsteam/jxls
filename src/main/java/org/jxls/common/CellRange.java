@@ -10,17 +10,15 @@ import org.jxls.common.cellshift.InnerCellShiftStrategy;
  */
 public class CellRange {
     private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
-    private CellRef startCell;
     private int width;
     private int height;
     private CellRef[][] cells;
-    boolean[][] changeMatrix;
+    private boolean[][] changeMatrix;
     private int[] rowWidths;
     private int[] colHeights;
 
     public CellRange(CellRef startCell, int width, int height) {
         String sheetName = startCell.getSheetName();
-        this.startCell = startCell;
         this.width = width;
         this.height = height;
         cells = new CellRef[height][];

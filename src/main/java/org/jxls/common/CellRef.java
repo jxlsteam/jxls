@@ -8,15 +8,15 @@ import org.jxls.util.CellRefUtil;
  *         Date: 1/25/12
  */
 public class CellRef implements Comparable<CellRef>{
-    public static CellRef NONE = new CellRef("NONE", -1, -1);
+    static CellRef NONE = new CellRef("NONE", -1, -1);
 
-    int col;
-    int row;
+    private int col;
+    private int row;
 
-    String sheetName;
-    boolean isColAbs;
-    boolean isRowAbs;
-    boolean ignoreSheetNameInFormat = false;
+    private String sheetName;
+    private boolean isColAbs;
+    private boolean isRowAbs;
+    private boolean ignoreSheetNameInFormat = false;
 
     public CellRef(String sheetName, int row, int col) {
         this.sheetName = sheetName;

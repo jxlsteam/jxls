@@ -20,9 +20,6 @@ public class UserCommandAction extends Action {
     public static final String REF_ATTR = "ref";
     public static final String COMMAND_CLASS_ATTR = "commandClass";
 
-    public UserCommandAction() {
-    }
-
     @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
         String ref = attributes.getValue(REF_ATTR);

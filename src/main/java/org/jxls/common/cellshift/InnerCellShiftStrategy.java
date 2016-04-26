@@ -3,9 +3,6 @@ package org.jxls.common.cellshift;
 import org.jxls.common.CellRef;
 
 public class InnerCellShiftStrategy implements CellShiftStrategy{
-    public InnerCellShiftStrategy() {
-    }
-
     public boolean requiresColShifting(CellRef cell, int startRow, int endRow, int startColShift) {
         return cell != null && cell.getCol() > startColShift && cell.getRow() >= startRow && cell.getRow() <= endRow;
     }

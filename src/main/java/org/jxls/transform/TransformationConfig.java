@@ -9,18 +9,15 @@ import java.util.regex.Pattern;
  * Transformation configuration class
  */
 public class TransformationConfig {
-    public static final String EXPRESSION_PART = "(.+?)";
-    public static final String DEFAULT_EXPRESSION_BEGIN = "${";
-    public static final String DEFAULT_EXPRESSION_END = "}";
-    protected static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
+    private static final String EXPRESSION_PART = "(.+?)";
+    private static final String DEFAULT_EXPRESSION_BEGIN = "${";
+    private static final String DEFAULT_EXPRESSION_END = "}";
+    private static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
 
-    ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
-    String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
-    String expressionNotationEnd = DEFAULT_EXPRESSION_END;
-    Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
-
-    public TransformationConfig() {
-    }
+    private ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
+    private String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
+    private String expressionNotationEnd = DEFAULT_EXPRESSION_END;
+    private Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
 
     public void buildExpressionNotation(String expressionBegin, String expressionEnd){
         this.expressionNotationBegin = expressionBegin;

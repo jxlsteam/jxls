@@ -7,8 +7,8 @@ import java.util.Collection;
  * @author Leonid Vysochyn
  */
 public class GroupData {
-    Object item;
-    Collection items;
+    private Object item;
+    private Collection items;
 
     public GroupData(Object groupItem, Collection groupItems) {
         this.item = groupItem;

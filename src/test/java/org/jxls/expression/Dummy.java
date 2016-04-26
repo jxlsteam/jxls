@@ -5,8 +5,8 @@ package org.jxls.expression;
  *         Date: 1/30/12 1:26 PM
  */
 public class Dummy {
-    String strValue;
-    int intValue;
+    private String strValue;
+    private int intValue;
 
     public Dummy(String strValue, int intValue) {
         this.strValue = strValue;

@@ -18,13 +18,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class XlsAreaTest {
     @Mock
-    Transformer transformer;
+    private Transformer transformer;
 
     @Mock
-    Command command1;
+    private Command command1;
 
     @Mock
-    Command command2;
+    private Command command2;
 
     @Test
     public void applyAtToAnotherSheet() throws Exception {

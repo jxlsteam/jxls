@@ -6,8 +6,8 @@ package org.jxls.common;
  * @author Leonid Vysochyn
  */
 public class Size {
-    int width;
-    int height;
+    private int width;
+    private int height;
 
     public static final Size ZERO_SIZE = new Size(0,0);
 
@@ -47,10 +47,8 @@ public class Size {
 
         Size size = (Size) o;
 
-        if (height != size.height) return false;
-        if (width != size.width) return false;
+        return height == size.height && width == size.width;
 
-        return true;
     }
 
     @Override

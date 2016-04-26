@@ -1,8 +1,6 @@
 package org.jxls.command;
 
 import org.jxls.area.Area;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 import org.slf4j.Logger;
@@ -17,9 +15,9 @@ import java.util.List;
  *         Date: 21.03.2009
  */
 public abstract class AbstractCommand implements Command {
-    Logger logger = LoggerFactory.getLogger(AbstractCommand.class);
+    private Logger logger = LoggerFactory.getLogger(AbstractCommand.class);
     List<Area> areaList = new ArrayList<Area>();
-    String shiftMode;
+    private String shiftMode;
 
     public Command addArea(Area area) {
         areaList.add(area);

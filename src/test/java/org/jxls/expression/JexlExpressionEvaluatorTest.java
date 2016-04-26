@@ -1,7 +1,6 @@
 package org.jxls.expression;
 
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +18,9 @@ import static org.junit.Assert.assertNull;
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluatorTest {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
 
     @Test
     public void simple2VarExpression(){
@@ -31,9 +33,6 @@ public class JexlExpressionEvaluatorTest {
         assertNotNull( result );
         assertEquals( "Simple 2-var expression evaluation result is wrong", "7", result.toString());
     }
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldThrowEvaluationExceptionWhenError(){
@@ -56,7 +55,7 @@ public class JexlExpressionEvaluatorTest {
         vars.put("dummy", null);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate( expression , vars);
-        Assert.assertEquals("Incorrect evaluation when a var is null", "4", result.toString());
+        assertEquals("Incorrect evaluation when a var is null", "4", result.toString());
     }
     
     @Test 
