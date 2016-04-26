@@ -14,9 +14,9 @@ public class CommandData {
     private CellRef sourceStartCellRef;
     private Size sourceSize;
 
-    CellRef startCellRef;
-    Size size;
-    Command command;
+    private CellRef startCellRef;
+    private Size size;
+    private Command command;
     
     public CommandData(AreaRef areaRef, Command command){
         startCellRef = areaRef.getFirstCellRef();

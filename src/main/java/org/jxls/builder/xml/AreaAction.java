@@ -13,17 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds {@link AreaCommand} from XML
+ * Builds {@link org.jxls.builder.xls.AreaCommand} from XML
  * @author Leonid Vysochyn
  *         Date: 2/14/12
  */
-public class AreaAction extends Action {
-    public static final String REF_ATTR = "ref";
-    public static final String CLEAR_CELLS_ATTR = "clearCells";
-    List<Area> areaList = new ArrayList<Area>();
-    Transformer transformer;
+class AreaAction extends Action {
+    private static final String REF_ATTR = "ref";
+    private List<Area> areaList = new ArrayList<Area>();
+    private Transformer transformer;
 
-    public AreaAction(Transformer transformer) {
+    AreaAction(Transformer transformer) {
         this.transformer = transformer;
     }
 

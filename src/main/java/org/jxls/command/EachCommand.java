@@ -21,12 +21,12 @@ import java.util.Collection;
 public class EachCommand extends AbstractCommand {
     public enum Direction {RIGHT, DOWN}
     
-    String var;
-    String items;
-    String select;
-    Area area;
-    Direction direction = Direction.DOWN;
-    CellRefGenerator cellRefGenerator;
+    private String var;
+    private String items;
+    private String select;
+    private Area area;
+    private Direction direction = Direction.DOWN;
+    private CellRefGenerator cellRefGenerator;
 
     public EachCommand() {
     }

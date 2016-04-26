@@ -11,7 +11,7 @@ import org.jxls.common.Context;
  */
 public class AreaCommand extends AbstractCommand {
 
-    String clearCells;
+    private String clearCells;
 
     public String getName() {
         return "area";

@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class JexlExpressionEvaluator implements ExpressionEvaluator{
     private Expression jexlExpression;
-    JexlContext jexlContext;
+    private JexlContext jexlContext;
 
     private static final ThreadLocal<JexlEngine> jexlThreadLocal = new ThreadLocal<JexlEngine>(){
         @Override
@@ -30,7 +30,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
     private static final ThreadLocal<Map<String, Expression>> expressionMapThreadLocal = new ThreadLocal<Map<String, Expression>>(){
         @Override
         protected Map<String, Expression> initialValue() {
-            return new HashMap<String, Expression>();
+            return new HashMap<>();
         }
     };
 

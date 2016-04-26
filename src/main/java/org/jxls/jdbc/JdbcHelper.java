@@ -2,9 +2,14 @@ package org.jxls.jdbc;
 
 import org.jxls.common.JxlsException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ParameterMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,13 +17,13 @@ import java.util.Map;
  * A class to help execute SQL queries via JDBC
  */
 public class JdbcHelper {
-    Connection conn;
+    private Connection conn;
 
     public JdbcHelper(Connection conn) {
         this.conn = conn;
     }
 
-    public List<Map<String, Object>> query(String sql, Object... params)  {
+    public List<Map<String, Object>> query(String sql, Object... params) {
         List<Map<String, Object>> result;
         if (conn == null) {
             throw new JxlsException("Null jdbc connection");
@@ -28,9 +33,9 @@ public class JdbcHelper {
             throw new JxlsException("Null SQL statement");
         }
 
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillStatement(stmt, params);
-            try(ResultSet rs = stmt.executeQuery()){
+            try (ResultSet rs = stmt.executeQuery()) {
                 result = handle(rs);
             }
         } catch (Exception e) {
@@ -59,7 +64,7 @@ public class JdbcHelper {
             pmd = stmt.getParameterMetaData();
             stmtCount = pmd.getParameterCount();
             paramsCount = params.length;
-        }catch (Exception e){
+        } catch (Exception e) {
             pmdKnownBroken = true;
         }
 
@@ -94,7 +99,7 @@ public class JdbcHelper {
     }
 
     private List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
-        List<Map<String,Object>> rows = new ArrayList<>();
+        List<Map<String, Object>> rows = new ArrayList<>();
         while (rs.next()) {
             rows.add(handleRow(rs));
         }

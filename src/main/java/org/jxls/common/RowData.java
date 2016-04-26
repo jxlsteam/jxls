@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class RowData implements Iterable<CellData> {
     protected int height;
-    protected List<CellData> cellDataList = new ArrayList<CellData>();
-    Transformer transformer;
+    private List<CellData> cellDataList = new ArrayList<CellData>();
+    private Transformer transformer;
 
     public Transformer getTransformer() {
         return transformer;
@@ -32,7 +32,7 @@ public class RowData implements Iterable<CellData> {
         else return null;
     }
 
-    public void addCellData(CellData cellData){
+    protected void addCellData(CellData cellData){
         cellDataList.add(cellData);
     }
 

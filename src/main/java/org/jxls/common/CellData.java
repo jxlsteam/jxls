@@ -17,15 +17,15 @@ import java.util.regex.Pattern;
  *         Date: 2/3/12
  */
 public class CellData {
-    public static final String USER_FORMULA_PREFIX = "$[";
-    public static final String USER_FORMULA_SUFFIX = "]";
+    private static final String USER_FORMULA_PREFIX = "$[";
+    private static final String USER_FORMULA_SUFFIX = "]";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     public static final String JX_PARAMS_PREFIX = "jx:params";
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
-    public static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
-    public static final String DEFAULT_VALUE = "defaultValue";
+    private static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
+    private static final String DEFAULT_VALUE = "defaultValue";
     private Map<String, String> attrMap;
 
     public enum CellType {
@@ -36,25 +36,25 @@ public class CellData {
         DEFAULT, BY_COLUMN, BY_ROW
     }
 
-    static Logger logger = LoggerFactory.getLogger(CellData.class);
+    private static Logger logger = LoggerFactory.getLogger(CellData.class);
 
     protected CellRef cellRef;
     protected Object cellValue;
     protected CellType cellType;
-    protected String cellComment;
+    private String cellComment;
 
     protected String formula;
     protected Object evaluationResult;
     protected CellType targetCellType;
-    protected FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
-    protected String defaultValue;
+    private FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
+    private String defaultValue;
 
     protected XlsArea area;
 
-    List<CellRef> targetPos = new ArrayList<CellRef> ();
-    List<AreaRef> targetParentAreaRef = new ArrayList<>();
+    private List<CellRef> targetPos = new ArrayList<CellRef> ();
+    private List<AreaRef> targetParentAreaRef = new ArrayList<>();
 
-    Transformer transformer;
+    private Transformer transformer;
 
     public Transformer getTransformer() {
         return transformer;
@@ -143,7 +143,7 @@ public class CellData {
         this.defaultValue = defaultValue;
     }
 
-    void evaluate(String strValue, Context context) {
+    private void evaluate(String strValue, Context context) {
         StringBuffer sb = new StringBuffer();
         TransformationConfig transformationConfig = transformer.getTransformationConfig();
         int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
@@ -194,11 +194,11 @@ public class CellData {
         this.cellComment = cellComment;
     }
 
-    public boolean isJxlsParamsComment(String cellComment) {
+    protected boolean isJxlsParamsComment(String cellComment) {
         return cellComment.startsWith(JX_PARAMS_PREFIX);
     }
 
-    public void processJxlsParams(String cellComment) {
+    protected void processJxlsParams(String cellComment) {
         int nameEndIndex = cellComment.indexOf(ATTR_PREFIX, JX_PARAMS_PREFIX.length());
         if (nameEndIndex < 0) {
             String errMsg = "Failed to parse jxls params [" + cellComment + "] at " + cellRef.getCellName() +
@@ -297,7 +297,7 @@ public class CellData {
         return formula != null;
     }
 
-    public static boolean isUserFormula(String str) {
+    private static boolean isUserFormula(String str) {
         return str.startsWith(CellData.USER_FORMULA_PREFIX) && str.endsWith(CellData.USER_FORMULA_SUFFIX);
     }
 
@@ -334,9 +334,8 @@ public class CellData {
 
         if (cellType != cellData.cellType) return false;
         if (cellValue != null ? !cellValue.equals(cellData.cellValue) : cellData.cellValue != null) return false;
-        if (cellRef != null ? !cellRef.equals(cellData.cellRef) : cellData.cellRef != null) return false;
+        return cellRef != null ? cellRef.equals(cellData.cellRef) : cellData.cellRef == null;
 
-        return true;
     }
 
     @Override

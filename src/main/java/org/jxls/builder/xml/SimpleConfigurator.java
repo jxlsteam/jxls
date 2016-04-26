@@ -15,16 +15,16 @@ import java.util.Map;
  * @author Leonid Vysochyn
  *         Date: 2/14/12
  */
-public class SimpleConfigurator extends GenericConfigurator {
+class SimpleConfigurator extends GenericConfigurator {
 
-    final Map<ElementSelector, Action> ruleMap;
-    final List<ImplicitAction> iaList;
+    private final Map<ElementSelector, Action> ruleMap;
+    private final List<ImplicitAction> iaList;
 
-    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
+    SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
         this(ruleMap, null);
     }
 
-    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitAction> iaList) {
+    private SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitAction> iaList) {
         this.ruleMap = ruleMap;
         this.iaList = iaList;
     }

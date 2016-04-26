@@ -21,7 +21,7 @@ public class TransformerFactory {
     public static final String JEXCEL_TRANSFORMER = "jexcel";
     public static final String POI_TRANSFORMER = "poi";
 
-    static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
 
     public static Transformer createTransformer(InputStream inputStream, OutputStream outputStream) {
         Class transformer = getTransformerClass();

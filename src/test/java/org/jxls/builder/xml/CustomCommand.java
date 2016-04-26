@@ -10,7 +10,7 @@ import org.jxls.common.Size;
  *         Date: 2/21/12 4:45 PM
  */
 public class CustomCommand extends AbstractCommand {
-    String attr;
+    private String attr;
 
     public String getName() {
         return "custom";

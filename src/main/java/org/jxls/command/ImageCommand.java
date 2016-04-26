@@ -11,13 +11,13 @@ import org.jxls.common.*;
  */
 public class ImageCommand extends AbstractCommand {
 
-    byte[] imageBytes;
-    ImageType imageType = ImageType.PNG;
-    Area area;
+    private byte[] imageBytes;
+    private ImageType imageType = ImageType.PNG;
+    private Area area;
     /**
      * Expression that can be evaluated to image byte array byte[]
      */
-    String src;
+    private String src;
 
     public ImageCommand() {
     }

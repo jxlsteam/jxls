@@ -19,9 +19,6 @@ import java.util.regex.Pattern;
  * although may produce incorrect results in some specific cases
  */
 public class StandardFormulaProcessor implements FormulaProcessor {
-    public StandardFormulaProcessor() {
-    }
-
     @Override
     public void processAreaFormulas(Transformer transformer) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
