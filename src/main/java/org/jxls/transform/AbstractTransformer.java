@@ -2,7 +2,6 @@ package org.jxls.transform;
 
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
-import org.jxls.common.Context;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 
@@ -25,11 +24,6 @@ public abstract class AbstractTransformer implements Transformer {
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
 
     private TransformationConfig transformationConfig = new TransformationConfig();
-
-    @Override
-    public Context createInitialContext() {
-        return new Context();
-    }
 
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
         CellData cellData = getCellData(cellRef);

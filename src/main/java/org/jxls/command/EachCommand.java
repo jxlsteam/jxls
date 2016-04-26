@@ -1,13 +1,18 @@
 package org.jxls.command;
 
-import org.jxls.common.Size;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
+import org.jxls.common.Size;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.List;
+
 
 /**
  * Implements iteration over collection of items
@@ -16,24 +21,28 @@ import java.util.Collection;
  * 'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.
  * 'cellRefGenerator' defines custom strategy for target cell references.
  * Date: Nov 10, 2009
+ *
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
     public enum Direction {RIGHT, DOWN}
-    
+
     private String var;
     private String items;
     private String select;
     private Area area;
     private Direction direction = Direction.DOWN;
     private CellRefGenerator cellRefGenerator;
+    private String multisheet;
+
+    private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
 
     public EachCommand() {
     }
 
     /**
-     * @param var name of the key in the context to contain each collection items during iteration
-     * @param items name of the collection bean in the context
+     * @param var       name of the key in the context to contain each collection items during iteration
+     * @param items     name of the collection bean in the context
      * @param direction defines processing by rows (DOWN - default) or columns (RIGHT)
      */
     public EachCommand(String var, String items, Direction direction) {
@@ -45,29 +54,29 @@ public class EachCommand extends AbstractCommand {
     public EachCommand(String var, String items, Area area) {
         this(var, items, area, Direction.DOWN);
     }
-    
+
     public EachCommand(String var, String items, Area area, Direction direction) {
-        this( var, items, direction );
-        if( area != null ){
+        this(var, items, direction);
+        if (area != null) {
             this.area = area;
             addArea(this.area);
         }
     }
 
     /**
-     *
-     * @param var name of the key in the context to contain each collection items during iteration
-     * @param items name of the collection bean in the context
-     * @param area body area for this command
+     * @param var              name of the key in the context to contain each collection items during iteration
+     * @param items            name of the collection bean in the context
+     * @param area             body area for this command
      * @param cellRefGenerator generates target cell ref for each collection item during iteration
      */
     public EachCommand(String var, String items, Area area, CellRefGenerator cellRefGenerator) {
-        this(var, items, area, (Direction)null );
+        this(var, items, area, (Direction) null);
         this.cellRefGenerator = cellRefGenerator;
     }
 
     /**
      * Gets iteration directino
+     *
      * @return current direction for iteration
      */
     public Direction getDirection() {
@@ -76,18 +85,20 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Sets iteration direction
+     *
      * @param direction
      */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public void setDirection(String direction){
+    public void setDirection(String direction) {
         this.direction = Direction.valueOf(direction);
     }
 
     /**
      * Gets defined cell ref generator
+     *
      * @return current {@link CellRefGenerator} instance or null
      */
     public CellRefGenerator getCellRefGenerator() {
@@ -104,6 +115,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Gets current variable name for collection item in the context during iteration
+     *
      * @return collection item key name in the context
      */
     public String getVar() {
@@ -112,6 +124,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Sets current variable name for collection item in the context during iteration
+     *
      * @param var
      */
     public void setVar(String var) {
@@ -120,6 +133,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Gets collection bean name
+     *
      * @return collection bean name in the context
      */
     public String getItems() {
@@ -128,6 +142,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Sets collection bean name
+     *
      * @param items collection bean name in the context
      */
     public void setItems(String items) {
@@ -136,6 +151,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Gets current 'select' expression for filtering out collection items
+     *
      * @return current 'select' expression or null if undefined
      */
     public String getSelect() {
@@ -144,18 +160,34 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Sets current 'select' expression for filtering collection
+     *
      * @param select filtering expression
      */
     public void setSelect(String select) {
         this.select = select;
     }
 
+    /**
+     * @return Context variable name holding a list of Excel sheet names to output the collection to
+     */
+    public String getMultisheet() {
+        return multisheet;
+    }
+
+    /**
+     * Sets name of context variable holding a list of Excel sheet names to output the collection to
+     * @param multisheet
+     */
+    public void setMultisheet(String multisheet) {
+        this.multisheet = multisheet;
+    }
+
     @Override
     public Command addArea(Area area) {
-        if( area == null ){
+        if (area == null) {
             return this;
         }
-        if( areaList.size() >= 1){
+        if (areaList.size() >= 1) {
             throw new IllegalArgumentException("You can add only a single area to 'each' command");
         }
         this.area = area;
@@ -167,35 +199,50 @@ public class EachCommand extends AbstractCommand {
         int width = 0;
         int height = 0;
         int index = 0;
+        CellRefGenerator cellRefGenerator = this.cellRefGenerator;
+        if (cellRefGenerator == null && multisheet != null) {
+            List<String> sheetNameList = extractSheetNameList(context);
+            cellRefGenerator = new SheetNameGenerator(sheetNameList, cellRef);
+        }
         CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
         JexlExpressionEvaluator selectEvaluator = null;
-        if( select != null ){
-            selectEvaluator = new JexlExpressionEvaluator( select );
+        if (select != null) {
+            selectEvaluator = new JexlExpressionEvaluator(select);
         }
-        for( Object obj : itemsCollection){
+        for (Object obj : itemsCollection) {
             context.putVar(var, obj);
-            if( selectEvaluator != null && !Util.isConditionTrue(selectEvaluator, context) ){
+            if (selectEvaluator != null && !Util.isConditionTrue(selectEvaluator, context)) {
                 context.removeVar(var);
                 continue;
             }
             Size size = area.applyAt(currentCell, context);
             index++;
-            if( cellRefGenerator != null ){
+            if (cellRefGenerator != null) {
                 width = Math.max(width, size.getWidth());
                 height = Math.max(height, size.getHeight());
-                currentCell = cellRefGenerator.generateCellRef(index, context);
-            }else if( direction == Direction.DOWN ){
+                if(index < itemsCollection.size()) {
+                    currentCell = cellRefGenerator.generateCellRef(index, context);
+                }
+            } else if (direction == Direction.DOWN) {
                 currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 width = Math.max(width, size.getWidth());
                 height += size.getHeight();
-            }else{
+            } else {
                 currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                 width += size.getWidth();
-                height = Math.max( height, size.getHeight() );
+                height = Math.max(height, size.getHeight());
             }
             context.removeVar(var);
         }
         return new Size(width, height);
+    }
+
+    private List<String> extractSheetNameList(Context context) {
+        try {
+            return (List<String>) context.getVar(multisheet);
+        } catch (Exception e) {
+            throw new JxlsException("Failed to get sheet names from " + multisheet, e);
+        }
     }
 
 }
