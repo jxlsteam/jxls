@@ -19,7 +19,7 @@ import org.jxls.common.AreaListener
  * @author Leonid Vysochyn
  * Date: 1/18/12 6:25 PM
  */
-class XlsAreaTest extends Specification{
+class XlsAreaGTest extends Specification{
     def "test create"(){
         given:
             def transformer = Mock(Transformer)
