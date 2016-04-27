@@ -104,9 +104,12 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     @Override
-    public void deleteSheet(String sheetName) {
+    public boolean deleteSheet(String sheetName) {
         if (sheetMap.containsKey(sheetName)) {
             sheetMap.remove(sheetName);
+            return true;
+        } else {
+            return false;
         }
     }
 }

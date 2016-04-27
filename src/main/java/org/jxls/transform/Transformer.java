@@ -40,7 +40,7 @@ public interface Transformer {
 
     void setTransformationConfig(TransformationConfig transformationConfig);
 
-    void deleteSheet(String sheetName);
+    boolean deleteSheet(String sheetName);
 
     void setHidden(String sheetName, boolean hidden);
 }
