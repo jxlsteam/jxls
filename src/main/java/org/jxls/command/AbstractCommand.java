@@ -21,6 +21,7 @@ public abstract class AbstractCommand implements Command {
 
     public Command addArea(Area area) {
         areaList.add(area);
+        area.setParentCommand(this);
         return this;
     }
 

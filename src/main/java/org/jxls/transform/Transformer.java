@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public interface Transformer {
 
-    void transform(CellRef srcCellRef, CellRef targetCellRef, Context context);
+    void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
 
     void setFormula(CellRef cellRef, String formulaString);
 
@@ -43,4 +43,6 @@ public interface Transformer {
     boolean deleteSheet(String sheetName);
 
     void setHidden(String sheetName, boolean hidden);
+
+    void updateRowHeight(String srcSheetName, int srcRowNum, String targetSheetName, int targetRowNum);
 }

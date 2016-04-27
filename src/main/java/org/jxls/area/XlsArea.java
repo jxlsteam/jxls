@@ -1,7 +1,13 @@
 package org.jxls.area;
 
 import org.jxls.command.Command;
-import org.jxls.common.*;
+import org.jxls.common.AreaListener;
+import org.jxls.common.AreaRef;
+import org.jxls.common.CellData;
+import org.jxls.common.CellRange;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.Size;
 import org.jxls.common.cellshift.AdjacentCellShiftStrategy;
 import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.common.cellshift.InnerCellShiftStrategy;
@@ -11,7 +17,10 @@ import org.jxls.transform.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Core implementation of {@link Area} interface
@@ -26,6 +35,7 @@ public class XlsArea implements Area {
 
     private List<CommandData> commandDataList = new ArrayList<CommandData>();
     private Transformer transformer;
+    Command parentCommand;
 
     private CellRange cellRange;
 
@@ -71,6 +81,17 @@ public class XlsArea implements Area {
 
     public XlsArea(CellRef startCellRef, Size size, Transformer transformer) {
         this(startCellRef, size, null, transformer);
+    }
+
+
+    @Override
+    public Command getParentCommand() {
+        return parentCommand;
+    }
+
+    @Override
+    public void setParentCommand(Command command) {
+        this.parentCommand = command;
     }
 
     @Override
@@ -354,7 +375,8 @@ public class XlsArea implements Area {
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try {
                         updateCellDataArea(srcCell, targetCell, context);
-                        transformer.transform(srcCell, targetCell, context);
+                        boolean updateRowHeight = parentCommand != null;
+                        transformer.transform(srcCell, targetCell, context, updateRowHeight);
                     } catch (Exception e) {
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
                     }
@@ -362,7 +384,25 @@ public class XlsArea implements Area {
                 }
             }
         }
+        if( parentCommand == null ) {
+            updateRowHeights(cellRef, 0, topStaticAreaLastRow);
+        }
         return topStaticAreaLastRow;
+    }
+
+    private void updateRowHeights(CellRef areaStartCellRef, int relativeStartRow, int relativeEndRow) {
+        for (int srcRow = relativeStartRow; srcRow <= relativeEndRow; srcRow++) {
+            if (!cellRange.containsCommandsInRow(srcRow)) {
+//                CellRef relativeCell = cellRange.getCell(srcRow, 0);
+                int maxRow = cellRange.findTargetRow(srcRow);
+                int targetRow = areaStartCellRef.getRow() + maxRow;
+                try {
+                    transformer.updateRowHeight(startCellRef.getSheetName(), srcRow, areaStartCellRef.getSheetName(), targetRow);
+                } catch (Exception e) {
+                    logger.error("Failed to update row height for src row={} and target row={} ", srcRow, targetRow, e);
+                }
+            }
+        }
     }
 
     private int findRelativeTopCommandRow() {
@@ -405,8 +445,10 @@ public class XlsArea implements Area {
         String sheetName = startCellRef.getSheetName();
         int offsetRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
-        for (int col = 0; col < size.getWidth(); col++) {
-            for (int row = relativeStartRow; row < size.getHeight(); row++) {
+        int width = size.getWidth();
+        int height = size.getHeight();
+        for (int col = 0; col < width; col++) {
+            for (int row = relativeStartRow; row < height; row++) {
                 if (!cellRange.isExcluded(row, col)) {
                     CellRef relativeCell = cellRange.getCell(row, col);
                     CellRef srcCell = new CellRef(sheetName, offsetRow + row, startCol + col);
@@ -414,13 +456,17 @@ public class XlsArea implements Area {
                     fireBeforeTransformCell(srcCell, targetCell, context);
                     try {
                         updateCellDataArea(srcCell, targetCell, context);
-                        transformer.transform(srcCell, targetCell, context);
+                        boolean updateRowHeight = parentCommand != null;
+                        transformer.transform(srcCell, targetCell, context, updateRowHeight);
                     } catch (Exception e) {
                         logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
                     }
                     fireAfterTransformCell(srcCell, targetCell, context);
                 }
             }
+        }
+        if( parentCommand == null ) {
+            updateRowHeights(cellRef, relativeStartRow, height - 1);
         }
     }
 
@@ -487,5 +533,6 @@ public class XlsArea implements Area {
         }
         transformer.resetTargetCellRefs();
     }
+
 
 }
