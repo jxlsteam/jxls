@@ -33,8 +33,8 @@ public class XlsAreaTest {
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 7, size.getWidth());
         assertEquals("Height is wrong", 10, size.getHeight());
-        verify(transformer).transform(new CellRef("sheet1!A1"), new CellRef("sheet2!B2"), context);
-        verify(transformer).transform(new CellRef("sheet1!D2"), new CellRef("sheet2!E3"), context);
+        verify(transformer).transform(new CellRef("sheet1!A1"), new CellRef("sheet2!B2"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!D2"), new CellRef("sheet2!E3"), context, false);
     }
 
     @Test
@@ -46,8 +46,8 @@ public class XlsAreaTest {
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 8, size.getWidth());
         assertEquals("Height is wrong", 11, size.getHeight());
-        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C8"), context);
-        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!F5"), context);
+        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C8"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!F5"), context, false);
     }
 
     @Test
@@ -61,12 +61,12 @@ public class XlsAreaTest {
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 8, size.getWidth());
         assertEquals("Height is wrong", 12, size.getHeight());
-        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C8"), context);
-        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!F5"), context);
-        verify(transformer).transform(new CellRef("sheet1!A9"), new CellRef("sheet2!B12"), context);
-        verify(transformer).transform(new CellRef("sheet1!B9"), new CellRef("sheet2!C12"), context);
-        verify(transformer).transform(new CellRef("sheet1!C7"), new CellRef("sheet2!E9"), context);
-        verify(transformer).transform(new CellRef("sheet1!C9"), new CellRef("sheet2!D11"), context);
+        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C8"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!F5"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!A9"), new CellRef("sheet2!B12"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!B9"), new CellRef("sheet2!C12"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!C7"), new CellRef("sheet2!E9"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!C9"), new CellRef("sheet2!D11"), context, false);
     }
 
     @Test
@@ -80,13 +80,13 @@ public class XlsAreaTest {
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 7, size.getWidth());
         assertEquals("Height is wrong", 10, size.getHeight());
-        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C6"), context);
-        verify(transformer).transform(new CellRef("sheet1!A6"), new CellRef("sheet2!B7"), context);
-        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!E5"), context);
-        verify(transformer).transform(new CellRef("sheet1!A9"), new CellRef("sheet2!B10"), context);
-        verify(transformer).transform(new CellRef("sheet1!B9"), new CellRef("sheet2!C10"), context);
-        verify(transformer).transform(new CellRef("sheet1!C7"), new CellRef("sheet2!D7"), context);
-        verify(transformer).transform(new CellRef("sheet1!C10"), new CellRef("sheet2!D10"), context);
+        verify(transformer).transform(new CellRef("sheet1!B6"), new CellRef("sheet2!C6"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!A6"), new CellRef("sheet2!B7"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!D4"), new CellRef("sheet2!E5"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!A9"), new CellRef("sheet2!B10"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!B9"), new CellRef("sheet2!C10"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!C7"), new CellRef("sheet2!D7"), context, false);
+        verify(transformer).transform(new CellRef("sheet1!C10"), new CellRef("sheet2!D10"), context, false);
     }
 
 }

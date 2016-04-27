@@ -21,7 +21,7 @@ import java.util.Set;
 public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreColumnProps = false;
     private boolean ignoreRowProps = false;
-    protected Map<String, SheetData> sheetMap = new LinkedHashMap<String, SheetData>();
+    protected Map<String, SheetData> sheetMap = new LinkedHashMap<>();
 
     private TransformationConfig transformationConfig = new TransformationConfig();
 

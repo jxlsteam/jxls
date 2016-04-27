@@ -1,6 +1,5 @@
 package org.jxls.area
 
-import org.jxls.formula.FastFormulaProcessor
 import org.jxls.formula.StandardFormulaProcessor
 import spock.lang.Specification
 
@@ -100,10 +99,10 @@ class XlsAreaGTest extends Specification{
         when:
             area.applyAt(new CellRef("sheet2", 3,3), context)
         then:
-            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet2", 3, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet2", 3, 4), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet2", 4, 3), context)
-            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet2", 4, 4), context)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet2", 3, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet2", 3, 4), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet2", 4, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet2", 4, 4), context, false)
             8 * transformer.getCellData(_) >> cellData
             4 * cellData.setArea(area)
             4 * cellData.addTargetPos(_)
@@ -135,12 +134,12 @@ class XlsAreaGTest extends Specification{
         when:
             area.applyAt(new CellRef("sheet1", 4, 3), context)
         then:
-            1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",4, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",2, 1), new CellRef("sheet1",5, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",3, 1), new CellRef("sheet1",6, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",4, 4), context)
-            1 * transformer.transform(new CellRef("sheet1",2, 2), new CellRef("sheet1",5, 4), context)
-            1 * transformer.transform(new CellRef("sheet1",3, 2), new CellRef("sheet1",6, 4), context)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 4, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet1", 5, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 3, 1), new CellRef("sheet1", 6, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet1", 4, 4), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet1", 5, 4), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 3, 2), new CellRef("sheet1", 6, 4), context, false)
             12 * transformer.getCellData(_) >> cellData
             6 * cellData.setArea(area)
     }
@@ -155,12 +154,12 @@ class XlsAreaGTest extends Specification{
         when:
             area.applyAt(new CellRef("sheet2", 4, 3), context)
         then:
-            1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet2", 4, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",2, 1), new CellRef("sheet2", 5, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",3, 1), new CellRef("sheet2", 6, 3), context)
-            1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet2", 4, 4), context)
-            1 * transformer.transform(new CellRef("sheet1",2, 2), new CellRef("sheet2", 5, 4), context)
-            1 * transformer.transform(new CellRef("sheet1",3, 2), new CellRef("sheet2", 6, 4), context)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet2", 4, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 1), new CellRef("sheet2", 5, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 3, 1), new CellRef("sheet2", 6, 3), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet2", 4, 4), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 2, 2), new CellRef("sheet2", 5, 4), context, false)
+            1 * transformer.transform(new CellRef("sheet1", 3, 2), new CellRef("sheet2", 6, 4), context, false)
             12 * transformer.getCellData(_) >> cellData
             6 * cellData.setArea(area)
     }
@@ -180,12 +179,12 @@ class XlsAreaGTest extends Specification{
         then:
         1 * innerCommand1.applyAt(new CellRef("sheet1",7, 5), context) >> new Size(3,6)
         1 * innerCommand2.applyAt(new CellRef("sheet1",14, 4), context) >> new Size(4,3)
-        1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",5, 4), context)
-        1 * transformer.transform(new CellRef("sheet1",6, 2), new CellRef("sheet1",13, 5), context)
-        1 * transformer.transform(new CellRef("sheet1",6, 3), new CellRef("sheet1",13, 6), context)
-        1 * transformer.transform(new CellRef("sheet1",3, 5), new CellRef("sheet1",7, 9), context)
-        1 * transformer.transform(new CellRef("sheet1",14, 2), new CellRef("sheet1",19, 5), context)
-        1 * transformer.transform(new CellRef("sheet1",14, 1), new CellRef("sheet1",19, 4), context)
+        1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 5, 4), context, false)
+        1 * transformer.transform(new CellRef("sheet1", 6, 2), new CellRef("sheet1", 13, 5), context, false)
+        1 * transformer.transform(new CellRef("sheet1", 6, 3), new CellRef("sheet1", 13, 6), context, false)
+        1 * transformer.transform(new CellRef("sheet1", 3, 5), new CellRef("sheet1", 7, 9), context, false)
+        1 * transformer.transform(new CellRef("sheet1", 14, 2), new CellRef("sheet1", 19, 5), context, false)
+        1 * transformer.transform(new CellRef("sheet1", 14, 1), new CellRef("sheet1", 19, 4), context, false)
         _ * transformer.getCellData(_) >> cellData
         _ * cellData.setArea(area)
     }
@@ -203,10 +202,10 @@ class XlsAreaGTest extends Specification{
             area.applyAt(new CellRef("sheet1",2, 2), context1)
             area.applyAt(new CellRef("sheet1",10, 2), context2)
         then:
-            1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",2, 2), context1)
-            1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",2, 3), context1)
-            1 * transformer.transform(new CellRef("sheet1",1, 1), new CellRef("sheet1",10, 2), context2)
-            1 * transformer.transform(new CellRef("sheet1",1, 2), new CellRef("sheet1",10, 3), context2)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 2, 2), context1, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet1", 2, 3), context1, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 1), new CellRef("sheet1", 10, 2), context2, false)
+            1 * transformer.transform(new CellRef("sheet1", 1, 2), new CellRef("sheet1", 10, 3), context2, false)
             8 * transformer.getCellData(_) >> cellData
             4 * cellData.setArea(area)
     }

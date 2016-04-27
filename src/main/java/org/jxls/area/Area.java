@@ -42,4 +42,7 @@ public interface Area {
     List<Command> findCommandByName(String name);
 
     void reset();
+
+    Command getParentCommand();
+    void setParentCommand(Command command);
 }

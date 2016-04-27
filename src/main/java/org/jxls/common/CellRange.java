@@ -156,6 +156,13 @@ public class CellRange {
         return cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
+    public boolean containsCommandsInRow(int row){
+        for(int col = 0; col < width; col++){
+            if( cells[row][col] == null ) return true;
+        }
+        return false;
+    }
+
     public boolean isEmpty(int row, int col){
         return cells[row][col] == null;
     }
@@ -172,4 +179,12 @@ public class CellRange {
         }
     }
 
+    public int findTargetRow(int srcRow) {
+        int maxRow = srcRow;
+        for(int col = 0; col < width; col++){
+            CellRef cellRef = cells[srcRow][col];
+            maxRow = Math.max(maxRow, cellRef.getRow());
+        }
+        return maxRow;
+    }
 }
