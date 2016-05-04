@@ -68,7 +68,8 @@ public class ImageCommand extends AbstractCommand {
             throw new IllegalArgumentException("No area is defined for image command");
         }
         Transformer transformer = getTransformer();
-        AreaRef areaRef = new AreaRef(cellRef, area.getSize());
+        Size imageAnchorAreaSize = new Size(area.getSize().getWidth() + 1, area.getSize().getHeight() + 1);
+        AreaRef imageAnchorArea = new AreaRef(cellRef, imageAnchorAreaSize);
         byte[] imgBytes = imageBytes;
         if( src != null ){
             Object imgObj = getTransformationConfig().getExpressionEvaluator().evaluate(src, context.toMap());
@@ -77,7 +78,7 @@ public class ImageCommand extends AbstractCommand {
             }
             imgBytes = (byte[]) imgObj;
         }
-        transformer.addImage(areaRef, imgBytes, imageType);
+        transformer.addImage(imageAnchorArea, imgBytes, imageType);
         return area.getSize();
     }
 }
