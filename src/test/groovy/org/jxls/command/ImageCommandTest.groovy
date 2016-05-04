@@ -30,7 +30,7 @@ class ImageCommandTest extends Specification {
         then:
             area.getSize() >> new Size(3,4)
             2 * area.getTransformer() >> transformer
-            1 * transformer.addImage(new AreaRef(new CellRef(5,5), new Size(3,4)), imgBytes, ImageType.PNG)
+            1 * transformer.addImage(new AreaRef(new CellRef(5,5), new Size(4,5)), imgBytes, ImageType.PNG)
             1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._
     }
