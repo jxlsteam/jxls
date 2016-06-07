@@ -100,22 +100,39 @@ public class JdbcHelper {
 
     private List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<>();
+        String[] columnNames = null;
         while (rs.next()) {
-            rows.add(handleRow(rs));
+            if (null == columnNames) {
+              columnNames = extractColumnNamesFromRow(rs);
+            }
+            rows.add(handleRow(rs, columnNames));
         }
         return rows;
     }
 
-    private Map<String, Object> handleRow(ResultSet rs) throws SQLException {
-        Map<String, Object> result = new CaseInsensitiveHashMap();
+    private String[] extractColumnNamesFromRow(ResultSet rs) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int cols = rsmd.getColumnCount();
+
+        String[] columnNames = new String[cols + 1];
+
         for (int i = 1; i <= cols; i++) {
             String columnName = rsmd.getColumnLabel(i);
             if (null == columnName || 0 == columnName.length()) {
                 columnName = rsmd.getColumnName(i);
             }
-            result.put(columnName, rs.getObject(i));
+            columnNames[i] = columnName;
+        }
+
+        return columnNames;
+    }
+
+    private Map<String, Object> handleRow(ResultSet rs, String[] columnNames) throws SQLException {
+        Map<String, Object> result = new CaseInsensitiveHashMap();
+        int cols = columnNames.length;
+
+        for (int i = 1; i <= cols; i++) {
+            result.put(columnNames[i], rs.getObject(i));
         }
         return result;
     }
