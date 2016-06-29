@@ -84,7 +84,7 @@ public class TransformerFactory {
         try {
             return Class.forName(POI_CLASS_NAME);
         } catch (Exception e) {
-            logger.info("Cannot load POI transformer class");
+            logger.warn("Cannot load POI transformer class", e);
             return null;
         }
     }
@@ -93,7 +93,7 @@ public class TransformerFactory {
         try {
             return Class.forName(JEXCEL_CLASS_NAME);
         } catch (Exception e) {
-            logger.info("Cannot load JExcel transformer class");
+            logger.warn("Cannot load JExcel transformer class", e);
             return null;
         }
     }
