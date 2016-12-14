@@ -22,7 +22,25 @@ public class CellData {
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     public static final String JX_PARAMS_PREFIX = "jx:params";
-    private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'])(?:(?!\\1).)*\\1";
+    /*
+     * In addition to normal (straight) single and double quotes, this regex
+     * includes the following commonly occurring quote-like characters (some
+     * of which have been observed in recent versions of LibreOffice):
+     *
+     * U+201C - LEFT DOUBLE QUOTATION MARK
+     * U+201D - RIGHT DOUBLE QUOTATION MARK
+     * U+201E - DOUBLE LOW-9 QUOTATION MARK
+     * U+201F - DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+     * U+2033 - DOUBLE PRIME
+     * U+2036 - REVERSED DOUBLE PRIME
+     * U+2018 - LEFT SINGLE QUOTATION MARK
+     * U+2019 - RIGHT SINGLE QUOTATION MARK
+     * U+201A - SINGLE LOW-9 QUOTATION MARK
+     * U+201B - SINGLE HIGH-REVERSED-9 QUOTATION MARK
+     * U+2032 - PRIME
+     * U+2035 - REVERSED PRIME
+     */
+    private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'\u201C\u201D\u201E\u201F\u2033\u2036\u2018\u2019\u201A\u201B\u2032\u2035])(?:(?!\\1).)*\\1";
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     private static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
     private static final String DEFAULT_VALUE = "defaultValue";
