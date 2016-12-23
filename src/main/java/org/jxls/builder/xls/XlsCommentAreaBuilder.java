@@ -97,7 +97,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
      */
     private static final String ATTR_REGEX = "\\s*\\w+\\s*=\\s*([\"|'\u201C\u201D\u201E\u201F\u2033\u2036\u2018\u2019\u201A\u201B\u2032\u2035])(?:(?!\\1).)*\\1";
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
-    private static final String AREAS_ATTR_REGEX = "areas\\s*=\\[[^]]*]";
+    private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     
     private static Map<String, Class> commandMap = new HashMap<String, Class>();
