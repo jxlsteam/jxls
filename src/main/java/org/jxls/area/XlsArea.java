@@ -391,9 +391,9 @@ public class XlsArea implements Area {
     }
 
     private void updateRowHeights(CellRef areaStartCellRef, int relativeStartRow, int relativeEndRow) {
+        if( transformer == null ) return;
         for (int srcRow = relativeStartRow; srcRow <= relativeEndRow; srcRow++) {
             if (!cellRange.containsCommandsInRow(srcRow)) {
-//                CellRef relativeCell = cellRange.getCell(srcRow, 0);
                 int maxRow = cellRange.findTargetRow(srcRow);
                 int targetRow = areaStartCellRef.getRow() + maxRow;
                 try {
