@@ -53,8 +53,9 @@ public class JxlsHelper {
         return formulaProcessor;
     }
 
-    public void setFormulaProcessor(FormulaProcessor formulaProcessor) {
+    public JxlsHelper setFormulaProcessor(FormulaProcessor formulaProcessor) {
         this.formulaProcessor = formulaProcessor;
+        return this;
     }
 
     public boolean isProcessFormulas() {
