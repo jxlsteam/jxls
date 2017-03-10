@@ -1,16 +1,13 @@
 package org.jxls.command
 
-import org.jxls.expression.ExpressionEvaluator
+import org.jxls.area.Area
+import org.jxls.area.XlsArea
+import org.jxls.common.CellRef
+import org.jxls.common.Context
+import org.jxls.common.Size
 import org.jxls.transform.TransformationConfig
 import org.jxls.transform.Transformer
 import spock.lang.Specification
-
-import org.jxls.common.Size
-import org.jxls.common.CellRef
-import org.jxls.area.XlsArea
-import org.jxls.area.Area
-import org.jxls.common.Context
-
 /**
  * @author Leonid Vysochyn
  * Date: 1/18/12 6:00 PM
@@ -157,6 +154,44 @@ class EachCommandTest extends Specification{
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
+            1 * eachArea.getTransformer() >> transformer
+            1 * transformer.getTransformationConfig() >> transformationConfig
+            0 * _._
+    }
+
+    class Person{
+        String name
+        int age
+        String city
+
+        Person(String name, int age, String city) {
+            this.name = name
+            this.age = age
+            this.city = city
+        }
+    }
+
+    def "test grouping"(){
+        def eachArea = Mock(Area)
+        def context = new Context()
+        def persons = [
+                new Person("A", 20, "London"),
+                new Person("B", 25, "NY"),
+                new Person("C", 20, "Paris"),
+                new Person("D", 30, "Stockholm"),
+                new Person("H", 25, "Paris") ]
+        context.putVar("persons", persons)
+        def eachCommand = new EachCommand("persons", eachArea)
+        def transformer = Mock(Transformer)
+        def transformationConfig = new TransformationConfig()
+        when:
+            eachCommand.groupBy = "age"
+            eachCommand.applyAt(new CellRef("sheet1!A1"), context)
+        then:
+            3 * eachArea.applyAt(_, context) >> {args ->
+                assert args[1].getVar(EachCommand.GROUP_DATA_KEY) != null
+                return new Size(1,2)
+            }
             1 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
             0 * _._

@@ -28,7 +28,7 @@ import java.util.List;
 public class EachCommand extends AbstractCommand {
     public enum Direction {RIGHT, DOWN}
 
-    private static final String GROUP_DATA_KEY = "_group";
+    static final String GROUP_DATA_KEY = "_group";
 
     private String var;
     private String items;
@@ -54,6 +54,10 @@ public class EachCommand extends AbstractCommand {
         this.var = var;
         this.items = items;
         this.direction = direction == null ? Direction.DOWN : direction;
+    }
+
+    public EachCommand(String items, Area area) {
+        this(null, items, area);
     }
 
     public EachCommand(String var, String items, Area area) {
