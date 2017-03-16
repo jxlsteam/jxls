@@ -238,7 +238,8 @@ public class EachCommand extends AbstractCommand {
             return processCollection(context, itemsCollection, cellRef, var);
         } else {
             Collection<GroupData> groupedData = Util.groupCollection(itemsCollection, groupBy, groupOrder);
-            return processCollection(context, groupedData, cellRef, GROUP_DATA_KEY);
+            String groupVar = var != null ? var : GROUP_DATA_KEY;
+            return processCollection(context, groupedData, cellRef, groupVar);
         }
     }
 
