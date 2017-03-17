@@ -14,6 +14,7 @@ import org.jxls.util.Util;
  */
 public class IfCommand extends AbstractCommand {
 
+    public static final String COMMAND_NAME = "if";
     private String condition;
     private Area ifArea = XlsArea.EMPTY_AREA;
     private Area elseArea = XlsArea.EMPTY_AREA;
@@ -41,7 +42,7 @@ public class IfCommand extends AbstractCommand {
     }
 
     public String getName() {
-        return "if";
+        return COMMAND_NAME;
     }
 
     /**

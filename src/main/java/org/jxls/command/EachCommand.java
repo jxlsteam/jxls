@@ -26,6 +26,9 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
+
+    public static final String COMMAND_NAME = "each";
+
     public enum Direction {RIGHT, DOWN}
 
     static final String GROUP_DATA_KEY = "_group";
@@ -119,7 +122,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public String getName() {
-        return "each";
+        return COMMAND_NAME;
     }
 
     /**

@@ -11,6 +11,7 @@ import org.jxls.common.*;
  */
 public class ImageCommand extends AbstractCommand {
 
+    public static final String COMMAND_NAME = "image";
     private byte[] imageBytes;
     private ImageType imageType = ImageType.PNG;
     private Area area;
@@ -60,7 +61,7 @@ public class ImageCommand extends AbstractCommand {
     }
 
     public String getName() {
-        return "image";
+        return COMMAND_NAME;
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
