@@ -249,6 +249,9 @@ public class Util {
     }
     
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        if (obj instanceof Map) {
+            return ((Map) obj).get(propertyName);
+        }
         Method method = obj.getClass().getMethod("get" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1));
         return method.invoke(obj);
     }
@@ -278,8 +281,9 @@ public class Util {
                         groupItems.add( bean );
                     }
                 }
-                GroupData groupData = new GroupData( groupItems.get(0), groupItems );
-                result.add(groupData);
+                if( !groupItems.isEmpty() ) {
+                    result.add(new GroupData(groupItems.get(0), groupItems));
+                }
             }
         }
         return result;

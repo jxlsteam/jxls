@@ -7,6 +7,7 @@ import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.formula.FastFormulaProcessor;
+import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
@@ -27,6 +28,7 @@ public class JxlsHelper {
     private boolean useFastFormulaProcessor = true;
     private String expressionNotationBegin;
     private String expressionNotationEnd;
+    private FormulaProcessor formulaProcessor;
     private SimpleExporter simpleExporter = new SimpleExporter();
 
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
@@ -44,6 +46,15 @@ public class JxlsHelper {
 
     public JxlsHelper setAreaBuilder(AreaBuilder areaBuilder) {
         this.areaBuilder = areaBuilder;
+        return this;
+    }
+
+    public FormulaProcessor getFormulaProcessor() {
+        return formulaProcessor;
+    }
+
+    public JxlsHelper setFormulaProcessor(FormulaProcessor formulaProcessor) {
+        this.formulaProcessor = formulaProcessor;
         return this;
     }
 
@@ -110,11 +121,15 @@ public class JxlsHelper {
     }
 
     private Area setFormulaProcessor(Area xlsArea) {
-        if( useFastFormulaProcessor ){
-            xlsArea.setFormulaProcessor(new FastFormulaProcessor());
-        }else{
-            xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
+        FormulaProcessor fp = formulaProcessor;
+        if( fp == null ){
+            if( useFastFormulaProcessor ){
+                fp = new FastFormulaProcessor();
+            }else{
+                fp = new StandardFormulaProcessor();
+            }
         }
+        xlsArea.setFormulaProcessor(fp);
         return xlsArea;
     }
 

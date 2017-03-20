@@ -104,11 +104,12 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
     static{
-        commandMap.put("each", EachCommand.class);
-        commandMap.put("if", IfCommand.class);
-        commandMap.put("area", AreaCommand.class);
-        commandMap.put("image", ImageCommand.class);
-        commandMap.put("grid", GridCommand.class);
+        commandMap.put(EachCommand.COMMAND_NAME, EachCommand.class);
+        commandMap.put(IfCommand.COMMAND_NAME, IfCommand.class);
+        commandMap.put(AreaCommand.COMMAND_NAME, AreaCommand.class);
+        commandMap.put(ImageCommand.COMMAND_NAME, ImageCommand.class);
+        commandMap.put(GridCommand.COMMAND_NAME, GridCommand.class);
+        commandMap.put(UpdateCellCommand.COMMAND_NAME, UpdateCellCommand.class);
     }
 
     private Transformer transformer;

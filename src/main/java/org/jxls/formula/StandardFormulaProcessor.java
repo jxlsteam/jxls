@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
  * although may produce incorrect results in some specific cases
  */
 public class StandardFormulaProcessor implements FormulaProcessor {
+
+    private static final int MAX_NUM_ARGS_FOR_SUM = 255;
+
     @Override
     public void processAreaFormulas(Transformer transformer) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
@@ -73,7 +76,13 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         usedCellRefs.addAll(replacementCells);
                     }
                     String replacementString = Util.createTargetCellRef(replacementCells);
-                    targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
+                    if (targetCells.size() > MAX_NUM_ARGS_FOR_SUM && targetFormulaString.startsWith("SUM")) {
+                        // Excel doesn't support more than 255 arguments in functions.
+                        // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
+                        targetFormulaString = join(targetCells, "+");
+                    } else {
+                        targetFormulaString =   targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
+                    }
                 }
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
@@ -118,6 +127,14 @@ public class StandardFormulaProcessor implements FormulaProcessor {
             }
         }
         return relevantCellRefs;
+    }
+
+    private String join(List<CellRef> cellRefs, String separator) {
+        List<String> cellStrings = new ArrayList<>();
+        for (CellRef cellRef : cellRefs) {
+            cellStrings.add(cellRef.getCellName());
+        }
+        return Util.joinStrings(cellStrings, separator);
     }
 
 }

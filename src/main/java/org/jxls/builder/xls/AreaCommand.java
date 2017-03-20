@@ -11,10 +11,11 @@ import org.jxls.common.Context;
  */
 public class AreaCommand extends AbstractCommand {
 
+    public static final String COMMAND_NAME = "area";
     private String clearCells;
 
     public String getName() {
-        return "area";
+        return COMMAND_NAME;
     }
 
     public Size applyAt(CellRef cellRef, Context context) {

@@ -120,6 +120,10 @@ public class CellData {
         this.attrMap = attrMap;
     }
 
+    public void setEvaluationResult(Object evaluationResult) {
+        this.evaluationResult = evaluationResult;
+    }
+
     public Object evaluate(Context context){
         targetCellType = cellType;
         if( cellType == CellType.STRING && cellValue != null){

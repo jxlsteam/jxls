@@ -3,6 +3,7 @@ package org.jxls.command;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.GroupData;
 import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.expression.JexlExpressionEvaluator;
@@ -25,7 +26,12 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
+
+    public static final String COMMAND_NAME = "each";
+
     public enum Direction {RIGHT, DOWN}
+
+    static final String GROUP_DATA_KEY = "_group";
 
     private String var;
     private String items;
@@ -34,6 +40,8 @@ public class EachCommand extends AbstractCommand {
     private Direction direction = Direction.DOWN;
     private CellRefGenerator cellRefGenerator;
     private String multisheet;
+    private String groupBy;
+    private String groupOrder;
 
     private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
 
@@ -49,6 +57,10 @@ public class EachCommand extends AbstractCommand {
         this.var = var;
         this.items = items;
         this.direction = direction == null ? Direction.DOWN : direction;
+    }
+
+    public EachCommand(String items, Area area) {
+        this(null, items, area);
     }
 
     public EachCommand(String var, String items, Area area) {
@@ -110,7 +122,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public String getName() {
-        return "each";
+        return COMMAND_NAME;
     }
 
     /**
@@ -176,10 +188,39 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * Sets name of context variable holding a list of Excel sheet names to output the collection to
+     *
      * @param multisheet
      */
     public void setMultisheet(String multisheet) {
         this.multisheet = multisheet;
+    }
+
+    /**
+     * @return property name for grouping the collection
+     */
+    public String getGroupBy() {
+        return groupBy;
+    }
+
+    /**
+     * @param groupBy property name for grouping the collection
+     */
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
+    }
+
+    /**
+     * @return group order
+     */
+    public String getGroupOrder() {
+        return groupOrder;
+    }
+
+    /**
+     * @param groupOrder group ordering
+     */
+    public void setGroupOrder(String groupOrder) {
+        this.groupOrder = groupOrder;
     }
 
     @Override
@@ -196,9 +237,20 @@ public class EachCommand extends AbstractCommand {
 
     public Size applyAt(CellRef cellRef, Context context) {
         Collection itemsCollection = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
-        int width = 0;
-        int height = 0;
+        if (groupBy == null || groupBy.length() == 0) {
+            return processCollection(context, itemsCollection, cellRef, var);
+        } else {
+            Collection<GroupData> groupedData = Util.groupCollection(itemsCollection, groupBy, groupOrder);
+            String groupVar = var != null ? var : GROUP_DATA_KEY;
+            return processCollection(context, groupedData, cellRef, groupVar);
+        }
+    }
+
+    private Size processCollection(Context context, Collection itemsCollection, CellRef cellRef, String varName) {
         int index = 0;
+        int newWidth = 0;
+        int newHeight = 0;
+
         CellRefGenerator cellRefGenerator = this.cellRefGenerator;
         if (cellRefGenerator == null && multisheet != null) {
             List<String> sheetNameList = extractSheetNameList(context);
@@ -209,32 +261,33 @@ public class EachCommand extends AbstractCommand {
         if (select != null) {
             selectEvaluator = new JexlExpressionEvaluator(select);
         }
+
         for (Object obj : itemsCollection) {
-            context.putVar(var, obj);
+            context.putVar(varName, obj);
             if (selectEvaluator != null && !Util.isConditionTrue(selectEvaluator, context)) {
-                context.removeVar(var);
+                context.removeVar(varName);
                 continue;
             }
             Size size = area.applyAt(currentCell, context);
             index++;
             if (cellRefGenerator != null) {
-                width = Math.max(width, size.getWidth());
-                height = Math.max(height, size.getHeight());
-                if(index < itemsCollection.size()) {
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight = Math.max(newHeight, size.getHeight());
+                if (index < itemsCollection.size()) {
                     currentCell = cellRefGenerator.generateCellRef(index, context);
                 }
             } else if (direction == Direction.DOWN) {
                 currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
-                width = Math.max(width, size.getWidth());
-                height += size.getHeight();
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight += size.getHeight();
             } else {
                 currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
-                width += size.getWidth();
-                height = Math.max(height, size.getHeight());
+                newWidth += size.getWidth();
+                newHeight = Math.max(newHeight, size.getHeight());
             }
-            context.removeVar(var);
+            context.removeVar(varName);
         }
-        return new Size(width, height);
+        return new Size(newWidth, newHeight);
     }
 
     private List<String> extractSheetNameList(Context context) {

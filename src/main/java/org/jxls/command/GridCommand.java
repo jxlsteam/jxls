@@ -16,7 +16,7 @@ import java.util.*;
  * @author Leonid Vysochyn
  */
 public class GridCommand extends AbstractCommand {
-    private static final String COMMAND_NAME = "grid";
+    public static final String COMMAND_NAME = "grid";
     public static final String HEADER_VAR = "header";
     public static final String DATA_VAR = "cell";
 
