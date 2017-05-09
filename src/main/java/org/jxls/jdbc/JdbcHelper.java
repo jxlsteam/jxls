@@ -98,7 +98,7 @@ public class JdbcHelper {
         }
     }
 
-    private List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
+    public List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<>();
         while (rs.next()) {
             rows.add(handleRow(rs));
