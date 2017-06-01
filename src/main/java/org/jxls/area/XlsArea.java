@@ -150,6 +150,9 @@ public class XlsArea implements Area {
 
 
     public Size applyAt(CellRef cellRef, Context context) {
+        if( this == XlsArea.EMPTY_AREA ) {
+            return Size.ZERO_SIZE;
+        }
         logger.debug("Applying XlsArea at {}", cellRef);
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
@@ -191,7 +194,7 @@ public class XlsArea implements Area {
                         int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
                         int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
                         int initialEndCol = initialStartCol + initialSize.getWidth() - 1;
-                        cellRange.clearCells(initialStartCol, initialEndCol, initialEndRow + heightChange + 1, initialEndRow);
+                        cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
                     }
                 }
             }
@@ -212,11 +215,12 @@ public class XlsArea implements Area {
                                     commandDataStartCellRef.getCol() + widthChange));
                     if( widthChange < 0 ){
                         CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
-                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
                         Size initialSize = commandDataToShift.getSourceSize();
+                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
                         int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
+                        int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
                         int initialEndCol = initialStartCellRef.getCol() + initialSize.getWidth() - 1;
-                        cellRange.clearCells(initialEndCol + widthChange + 1, initialEndCol, initialStartRow, initialEndRow);
+                        cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
                     }
                 }
             }
