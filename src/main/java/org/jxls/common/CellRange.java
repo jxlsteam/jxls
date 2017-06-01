@@ -16,8 +16,10 @@ public class CellRange {
     private boolean[][] changeMatrix;
     private int[] rowWidths;
     private int[] colHeights;
+    private CellRef startCellRef;
 
     public CellRange(CellRef startCell, int width, int height) {
+        this.startCellRef = startCell;
         String sheetName = startCell.getSheetName();
         this.width = width;
         this.height = height;
@@ -35,6 +37,20 @@ public class CellRange {
         }
         for(int col = 0; col < width; col++){
             colHeights[col] = height;
+        }
+    }
+
+    void print(){
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                String text = " ";
+                if( !isEmpty(i, j) ){
+                    CellRef absCellRef = new CellRef(cells[i][j].getRow() + startCellRef.getRow(), cells[i][j].getCol() + startCellRef.getCol());
+                    text = absCellRef + " ";
+                }
+                System.out.print(text);
+            }
+            System.out.println();
         }
     }
     
