@@ -1,22 +1,26 @@
 package org.jxls.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
+
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Common utilities
@@ -119,7 +123,36 @@ public class JxlsHelper {
         }
         transformer.write();
     }
+   
+    private static final ServiceFactory SERVICE_FACTORY = ServiceFactory.DEFAULT.createService(ServiceFactory.class, ServiceFactory.DEFAULT);
+    
+    private static <T>  T loadService(Class<T> interfaceClass) {
+		final T ret = SERVICE_FACTORY.createService(interfaceClass, null);
+		return ret;
+	}
+    
+    private static final JxlsConfigProvider CONFIG_PROVIDER = loadService(JxlsConfigProvider.class);
+    
+    public static String getProperty(final String key, final String defaultValue){
+    	return CONFIG_PROVIDER.getProperty(key, defaultValue);
+    }
+    
+    private static final class ExpressionEvaluatorFactoryHolder {
+    	private static final ExpressionEvaluatorFactory INSTANCE;
+    	static {
+    		INSTANCE = loadService(ExpressionEvaluatorFactory.class);
+		}		
+    }
+    
+    
+        public ExpressionEvaluatorFactory getExpressionEvaluatorFactory(){
+    	return ExpressionEvaluatorFactoryHolder.INSTANCE;
+    }
 
+    public ExpressionEvaluator createExpressionEvaluator(final String expression){
+    	return ExpressionEvaluatorFactoryHolder.INSTANCE.createExpressionEvaluator(expression);
+    }
+    
     private Area setFormulaProcessor(Area xlsArea) {
         FormulaProcessor fp = formulaProcessor;
         if( fp == null ){

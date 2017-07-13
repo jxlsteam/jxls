@@ -9,4 +9,8 @@ import java.util.Map;
  */
 public interface ExpressionEvaluator {
     Object evaluate(String expression, Map<String,Object> context);
+    
+    Object evaluate(Map<String, Object> context);
+    
+    String getExpression();
 }
