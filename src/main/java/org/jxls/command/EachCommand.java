@@ -6,7 +6,8 @@ import org.jxls.common.Context;
 import org.jxls.common.GroupData;
 import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
-import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.util.JxlsHelper;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,9 +258,9 @@ public class EachCommand extends AbstractCommand {
             cellRefGenerator = new SheetNameGenerator(sheetNameList, cellRef);
         }
         CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
-        JexlExpressionEvaluator selectEvaluator = null;
+        ExpressionEvaluator selectEvaluator = null;
         if (select != null) {
-            selectEvaluator = new JexlExpressionEvaluator(select);
+            selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
         }
 
         for (Object obj : itemsCollection) {

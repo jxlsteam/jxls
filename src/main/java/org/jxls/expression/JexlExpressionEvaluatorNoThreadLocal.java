@@ -67,4 +67,9 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     public JexlEngine getJexlEngine() {
         return jexl;
     }
+    
+	@Override
+	public String getExpression() {
+		return jexlExpression == null ? null : jexlExpression.getExpression();
+	}
 }

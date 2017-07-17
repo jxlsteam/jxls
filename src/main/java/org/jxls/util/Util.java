@@ -1,8 +1,8 @@
 package org.jxls.util;
 
 import org.jxls.common.*;
+import org.jxls.expression.EvaluationException;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,10 +206,10 @@ public class Util {
         return (Boolean)conditionResult;
     }
 
-    public static Boolean isConditionTrue(JexlExpressionEvaluator evaluator, Context context){
+    public static Boolean isConditionTrue(ExpressionEvaluator evaluator, Context context){
         Object conditionResult = evaluator.evaluate(context.toMap());
         if( !(conditionResult instanceof Boolean) ){
-            throw new JxlsException("Condition result is not a boolean value - " + evaluator.getJexlExpression().getExpression());
+            throw new EvaluationException("Condition result is not a boolean value - " + evaluator.getExpression());
         }
         return (Boolean)conditionResult;
     }
