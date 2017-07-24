@@ -1,6 +1,7 @@
 package org.jxls.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -54,5 +55,20 @@ public class EachCommandJTest {
     //then
     assertEquals(
         "original value for loop variable is not restored!", "Value 1", context.getVar("myVar"));
+  }
+
+  @Test
+  public void shouldIgnoreMissingItems(){
+    //given
+    CellRef cellRef = new CellRef("A1");
+    Context context = new Context();
+    EachCommand eachCommand = new EachCommand("myVar", "items", area);
+    eachCommand.setUtil(new UtilWrapper());
+    when(area.getTransformer()).thenReturn(transformer);
+    when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
+    //when
+    Size size = eachCommand.applyAt(cellRef, context);
+    //then
+    assertNotNull(size);
   }
 }
