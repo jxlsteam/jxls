@@ -1,6 +1,7 @@
 package org.jxls.command;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -245,7 +246,13 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Collection itemsCollection = util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+        Collection itemsCollection = null;
+        try {
+            itemsCollection = util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+        } catch (Exception e) {
+            logger.warn("Failed to evaluate collection expression {}", items, e);
+            itemsCollection = Collections.emptyList();
+        }
         if (groupBy == null || groupBy.length() == 0) {
             return processCollection(context, itemsCollection, cellRef, var);
         } else {
