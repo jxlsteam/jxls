@@ -1,5 +1,7 @@
 package org.jxls.command;
 
+import java.util.Collection;
+import java.util.List;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
@@ -8,12 +10,9 @@ import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
-import org.jxls.util.Util;
+import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -27,7 +26,7 @@ import java.util.List;
  * @author Leonid Vysochyn
  */
 public class EachCommand extends AbstractCommand {
-
+    
     public static final String COMMAND_NAME = "each";
 
     public enum Direction {RIGHT, DOWN}
@@ -43,6 +42,8 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private String groupBy;
     private String groupOrder;
+
+    private UtilWrapper util = new UtilWrapper();
 
     private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
 
@@ -87,6 +88,13 @@ public class EachCommand extends AbstractCommand {
         this.cellRefGenerator = cellRefGenerator;
     }
 
+    UtilWrapper getUtil() {
+        return util;
+    }
+
+    void setUtil(UtilWrapper util) {
+        this.util = util;
+    }
     /**
      * Gets iteration directino
      *
@@ -237,11 +245,11 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Collection itemsCollection = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+        Collection itemsCollection = util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
         if (groupBy == null || groupBy.length() == 0) {
             return processCollection(context, itemsCollection, cellRef, var);
         } else {
-            Collection<GroupData> groupedData = Util.groupCollection(itemsCollection, groupBy, groupOrder);
+            Collection<GroupData> groupedData = util.groupCollection(itemsCollection, groupBy, groupOrder);
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             return processCollection(context, groupedData, cellRef, groupVar);
         }
@@ -263,9 +271,10 @@ public class EachCommand extends AbstractCommand {
             selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
         }
 
+        Object currentVarObject = context.getVar(varName);
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
-            if (selectEvaluator != null && !Util.isConditionTrue(selectEvaluator, context)) {
+            if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
                 context.removeVar(varName);
                 continue;
             }
@@ -286,6 +295,10 @@ public class EachCommand extends AbstractCommand {
                 newWidth += size.getWidth();
                 newHeight = Math.max(newHeight, size.getHeight());
             }
+        }
+        if(currentVarObject != null){
+            context.putVar(varName, currentVarObject);
+        }else{
             context.removeVar(varName);
         }
         return new Size(newWidth, newHeight);

@@ -72,13 +72,14 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 2)
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
-            4 * context.removeVar("x")
+            1 * context.removeVar("x")
             1 * eachArea.applyAt(new CellRef("sheet2", 2, 2), context) >> new Size(3, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 3, 2), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 5, 2), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 6, 2), context) >> new Size(3, 1)
             1 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
+            1 * context.getVar('x')
             0 * _._
     }
     
@@ -107,13 +108,14 @@ class EachCommandTest extends Specification{
             1 * context.putVar("x", 2)
             1 * context.putVar("x", 3)
             1 * context.putVar("x", 4)
-            4 * context.removeVar("x")
+            1 * context.removeVar("x")
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 1), context) >> new Size(3, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 4), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 7), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 1, 11), context) >> new Size(3, 1)
             1 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
+            1 * context.getVar("x")
             0 * _._
     }
 
