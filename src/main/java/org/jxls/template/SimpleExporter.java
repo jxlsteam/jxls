@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,14 +25,6 @@ public class SimpleExporter {
     private byte[] templateBytes;
 
     public SimpleExporter() {
-        InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
-        try {
-            registerGridTemplate(is);
-        } catch (IOException e) {
-            String message = "Failed to read default template file " + GRID_TEMPLATE_XLS;
-            logger.error(message);
-            throw new JxlsException(message, e);
-        }
     }
 
     public void registerGridTemplate(InputStream inputStream) throws IOException {
@@ -47,8 +37,18 @@ public class SimpleExporter {
         templateBytes = os.toByteArray();
     }
 
-    public void gridExport(Iterable headers, Iterable dataObjects, String objectProps, OutputStream outputStream){
-        InputStream is = new ByteArrayInputStream(templateBytes);
+    public void gridExport(Iterable<Object> headers, Iterable<Object> dataObjects, String objectProps, OutputStream outputStream){
+    	if( templateBytes == null ){
+            InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
+            try {
+                registerGridTemplate(is);
+            } catch (IOException e) {
+                String message = "Failed to read default template file " + GRID_TEMPLATE_XLS;
+                logger.error(message);
+                throw new JxlsException(message, e);
+            }
+    	}    	
+    	InputStream is = new ByteArrayInputStream(templateBytes);
         Transformer transformer = TransformerFactory.createTransformer(is, outputStream);
         AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
         List<Area> xlsAreaList = areaBuilder.build();
