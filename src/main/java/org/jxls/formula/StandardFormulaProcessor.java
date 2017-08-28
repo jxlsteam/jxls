@@ -76,10 +76,11 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         usedCellRefs.addAll(replacementCells);
                     }
                     String replacementString = Util.createTargetCellRef(replacementCells);
-                    if (targetCells.size() > MAX_NUM_ARGS_FOR_SUM && targetFormulaString.startsWith("SUM")) {
+                    if(targetFormulaString.startsWith("SUM") && Util.countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM ) {
                         // Excel doesn't support more than 255 arguments in functions.
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
-                        targetFormulaString = join(targetCells, "+");
+                        targetFormulaString = replacementString.replaceAll(",", "+");
+            System.out.println(targetFormulaString);
                     } else {
                         targetFormulaString =   targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                     }
@@ -101,7 +102,11 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 if( isFormulaCellRefsEmpty ){
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
-                transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
+                if(!targetFormulaString.isEmpty()) {
+                    transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(),
+                            targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()),
+                        targetFormulaString);
+                }
             }
         }
     }
@@ -127,14 +132,6 @@ public class StandardFormulaProcessor implements FormulaProcessor {
             }
         }
         return relevantCellRefs;
-    }
-
-    private String join(List<CellRef> cellRefs, String separator) {
-        List<String> cellStrings = new ArrayList<>();
-        for (CellRef cellRef : cellRefs) {
-            cellStrings.add(cellRef.getCellName());
-        }
-        return Util.joinStrings(cellStrings, separator);
     }
 
 }
