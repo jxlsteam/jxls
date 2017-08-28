@@ -37,7 +37,7 @@ public class SimpleExporter {
         templateBytes = os.toByteArray();
     }
 
-    public void gridExport(Iterable<Object> headers, Iterable<Object> dataObjects, String objectProps, OutputStream outputStream){
+    public void gridExport(Iterable headers, Iterable dataObjects, String objectProps, OutputStream outputStream){
     	if( templateBytes == null ){
             InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
             try {
