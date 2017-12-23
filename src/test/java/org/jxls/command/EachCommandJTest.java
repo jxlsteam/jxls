@@ -48,7 +48,7 @@ public class EachCommandJTest {
     eachCommand.setUtil(util);
     when(area.getTransformer()).thenReturn(transformer);
     when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
-    when(util.transformToCollectionObject(null, "items", context)).thenReturn(list);
+    when(util.transformToIterableObject(null, "items", context)).thenReturn(list);
     when(area.applyAt(cellRef, context)).thenReturn(size);
     //when
     eachCommand.applyAt(cellRef, context);

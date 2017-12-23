@@ -2,6 +2,7 @@ package org.jxls.command;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -246,9 +247,9 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Collection itemsCollection = null;
+        Iterable itemsCollection = null;
         try {
-            itemsCollection = util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
         } catch (Exception e) {
             logger.warn("Failed to evaluate collection expression {}", items, e);
             itemsCollection = Collections.emptyList();
@@ -256,13 +257,13 @@ public class EachCommand extends AbstractCommand {
         if (groupBy == null || groupBy.length() == 0) {
             return processCollection(context, itemsCollection, cellRef, var);
         } else {
-            Collection<GroupData> groupedData = util.groupCollection(itemsCollection, groupBy, groupOrder);
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             return processCollection(context, groupedData, cellRef, groupVar);
         }
     }
 
-    private Size processCollection(Context context, Collection itemsCollection, CellRef cellRef, String varName) {
+    private Size processCollection(Context context, Iterable itemsCollection, CellRef cellRef, String varName) {
         int index = 0;
         int newWidth = 0;
         int newHeight = 0;
@@ -279,7 +280,8 @@ public class EachCommand extends AbstractCommand {
         }
 
         Object currentVarObject = context.getVar(varName);
-        for (Object obj : itemsCollection) {
+        for (Iterator iterator = itemsCollection.iterator(); iterator.hasNext(); ) {
+            Object obj = iterator.next();
             context.putVar(varName, obj);
             if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
                 context.removeVar(varName);
@@ -290,15 +292,17 @@ public class EachCommand extends AbstractCommand {
             if (cellRefGenerator != null) {
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight = Math.max(newHeight, size.getHeight());
-                if (index < itemsCollection.size()) {
+                if (iterator.hasNext() ) {
                     currentCell = cellRefGenerator.generateCellRef(index, context);
                 }
             } else if (direction == Direction.DOWN) {
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                currentCell = new CellRef(currentCell.getSheetName(),
+                    currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight += size.getHeight();
             } else {
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(),
+                    currentCell.getCol() + size.getWidth());
                 newWidth += size.getWidth();
                 newHeight = Math.max(newHeight, size.getHeight());
             }
