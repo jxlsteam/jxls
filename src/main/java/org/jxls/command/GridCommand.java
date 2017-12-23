@@ -1,15 +1,19 @@
 package org.jxls.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.util.Util;
+import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * The command implements a grid with dynamic columns and rows
@@ -40,6 +44,7 @@ public class GridCommand extends AbstractCommand {
     private Area headerArea;
     private Area bodyArea;
 
+    private UtilWrapper util = new UtilWrapper();
 
     public GridCommand() {
     }
@@ -144,7 +149,7 @@ public class GridCommand extends AbstractCommand {
         if(bodyArea == null || data == null){
             return Size.ZERO_SIZE;
         }
-        Collection dataCollection = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
+        Iterable dataCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
 
         CellRef currentCell = cellRef;
         int totalWidth = 0;
@@ -209,7 +214,7 @@ public class GridCommand extends AbstractCommand {
         if(headerArea == null || headers == null){
             return Size.ZERO_SIZE;
         }
-        Collection headers = Util.transformToCollectionObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
+        Iterable headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
         CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;

@@ -310,6 +310,39 @@ public class Util {
     return result;
   }
 
+  public static Collection<GroupData> groupIterable(
+      Iterable iterable, String groupProperty, String groupOrder) {
+    Collection<GroupData> result = new ArrayList<GroupData>();
+    if (iterable != null) {
+      Set groupByValues;
+      if (groupOrder != null) {
+        if ("desc".equalsIgnoreCase(groupOrder)) {
+          groupByValues = new TreeSet(Collections.reverseOrder());
+        } else {
+          groupByValues = new TreeSet();
+        }
+      } else {
+        groupByValues = new LinkedHashSet();
+      }
+      for (Object bean : iterable) {
+        groupByValues.add(getObjectProperty(bean, groupProperty, true));
+      }
+      for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
+        Object groupValue = iterator.next();
+        List groupItems = new ArrayList();
+        for (Object bean : iterable) {
+          if (groupValue.equals(getObjectProperty(bean, groupProperty, true))) {
+            groupItems.add(bean);
+          }
+        }
+        if (!groupItems.isEmpty()) {
+          result.add(new GroupData(groupItems.get(0), groupItems));
+        }
+      }
+    }
+    return result;
+  }
+
   /** Reads all the data from the input stream, and returns the bytes read. */
   public static byte[] toByteArray(InputStream stream) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -362,4 +395,14 @@ public class Util {
     }
     return count;
   }
+
+  public static Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+      String collectionName, Context context) {
+    Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
+    if(!(collectionObject instanceof Iterable<?>)) {
+      throw new JxlsException(collectionName + " expression is not a collection");
+    }
+    return (Iterable) collectionObject;
+  }
+
 }

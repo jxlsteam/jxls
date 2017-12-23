@@ -81,6 +81,11 @@ public class UtilWrapper {
     return Util.groupCollection(collection, groupProperty, groupOrder);
   }
 
+  public Collection<GroupData> groupIterable(Iterable iterable, String groupProperty,
+      String groupOrder){
+    return Util.groupIterable(iterable, groupProperty, groupOrder);
+  }
+
   public byte[] toByteArray(InputStream stream) throws IOException{
     return Util.toByteArray(stream);
   }
@@ -88,6 +93,11 @@ public class UtilWrapper {
   public Collection transformToCollectionObject(ExpressionEvaluator expressionEvaluator,
       String collectionName, Context context){
     return Util.transformToCollectionObject(expressionEvaluator, collectionName, context);
+  }
+
+  public Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+	      String collectionName, Context context){
+	    return Util.transformToIterableObject(expressionEvaluator, collectionName, context);
   }
 
   public String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry){
