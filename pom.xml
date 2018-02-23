@@ -210,6 +210,12 @@
             <version>3.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-jexcel</artifactId>
+            <version>1.0.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <reporting>
