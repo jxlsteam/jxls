@@ -78,7 +78,7 @@ public class FastFormulaProcessor implements FormulaProcessor {
                                 replacementString = Util.createTargetCellRef(targetCells);
                             }
                     }
-                    targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
+                    targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Util.getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName())), Matcher.quoteReplacement(replacementString));
                 }
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();

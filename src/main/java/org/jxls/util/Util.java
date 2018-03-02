@@ -405,4 +405,8 @@ public class Util {
     return (Iterable) collectionObject;
   }
 
+  public static String getStrictCellNameRegex(String name){
+    return "(?<=[^A-Z]|^)"+name+"(?=\\D|$)";
+  }
+
 }
