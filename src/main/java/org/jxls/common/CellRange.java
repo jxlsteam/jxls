@@ -196,10 +196,13 @@ public class CellRange {
     }
 
     public int findTargetRow(int srcRow) {
-        int maxRow = srcRow;
+        int maxRow = -1;
         for(int col = 0; col < width; col++){
             CellRef cellRef = cells[srcRow][col];
             maxRow = Math.max(maxRow, cellRef.getRow());
+        }
+        if (maxRow < 0) {
+            maxRow = srcRow;
         }
         return maxRow;
     }
