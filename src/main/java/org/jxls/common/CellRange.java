@@ -174,7 +174,7 @@ public class CellRange {
 
     public boolean containsCommandsInRow(int row){
         for(int col = 0; col < width; col++){
-            if( cells[row][col] == null ) return true;
+            if( cells[row][col] == null || cells[row][col] == CellRef.NONE) return true;
         }
         return false;
     }
