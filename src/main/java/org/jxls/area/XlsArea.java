@@ -396,21 +396,22 @@ public class XlsArea implements Area {
 
     private void updateRowHeights(CellRef areaStartCellRef, int relativeStartRow, int relativeEndRow) {
         if( transformer == null ) return;
-        for (int srcRow = relativeStartRow; srcRow <= relativeEndRow; srcRow++) {
-            if (!cellRange.containsCommandsInRow(srcRow)) {
-                int maxRow = cellRange.findTargetRow(srcRow);
-                int targetRow = areaStartCellRef.getRow() + maxRow;
+        for (int relativeSrcRow = relativeStartRow; relativeSrcRow <= relativeEndRow; relativeSrcRow++) {
+            if (!cellRange.containsCommandsInRow(relativeSrcRow)) {
+                int relativeTargetRow = cellRange.findTargetRow(relativeSrcRow);
+                int targetRow = areaStartCellRef.getRow() + relativeTargetRow;
+                int srcRow = areaStartCellRef.getRow() + relativeSrcRow;
                 try {
                     transformer.updateRowHeight(startCellRef.getSheetName(), srcRow, areaStartCellRef.getSheetName(), targetRow);
                 } catch (Exception e) {
-                    logger.error("Failed to update row height for src row={} and target row={} ", srcRow, targetRow, e);
+                    logger.error("Failed to update row height for src row={} and target row={} ", relativeSrcRow, targetRow, e);
                 }
             }
         }
     }
 
     private int findRelativeTopCommandRow() {
-        int topCommandRow = startCellRef.getRow() + size.getHeight() - 1;
+        int topCommandRow = startCellRef.getRow() + size.getHeight();
         for (CommandData data : commandDataList) {
             topCommandRow = Math.min(data.getStartCellRef().getRow(), topCommandRow);
         }
