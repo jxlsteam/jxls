@@ -187,7 +187,9 @@ public class JxlsHelper {
     List<Area> xlsAreaList = areaBuilder.build();
     for (Area xlsArea : xlsAreaList) {
       xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
-      if (processFormulas) {
+    }
+    if (processFormulas) {
+      for (Area xlsArea : xlsAreaList) {
         setFormulaProcessor(xlsArea);
         xlsArea.processFormulas();
       }

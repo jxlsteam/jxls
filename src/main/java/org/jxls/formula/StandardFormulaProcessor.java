@@ -1,11 +1,14 @@
 package org.jxls.formula;
 
+import org.jxls.area.Area;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CellRefUtil;
 import org.jxls.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,13 +22,20 @@ import java.util.regex.Pattern;
  * although may produce incorrect results in some specific cases
  */
 public class StandardFormulaProcessor implements FormulaProcessor {
+    private static Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
 
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
     @Override
     public void processAreaFormulas(Transformer transformer) {
+        processAreaFormulas(transformer, null);
+    }
+
+    @Override
+    public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
+            logger.debug("Processing formula cell {}", formulaCellData);
             List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
             List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
@@ -39,6 +49,9 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         pos.setIgnoreSheetNameInFormat(true);
                     }
                     List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
+                    if(targetCellDataList.isEmpty() && area != null && !area.getAreaRef().contains(pos)){
+                        targetCellDataList.add(pos);
+                    }
                     targetCellRefMap.put(pos, targetCellDataList);
                 }
             }
@@ -80,7 +93,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         // Excel doesn't support more than 255 arguments in functions.
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
-            System.out.println(targetFormulaString);
+                        System.out.println(targetFormulaString);
                     } else {
                         targetFormulaString =   targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                     }
@@ -104,8 +117,8 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 }
                 if(!targetFormulaString.isEmpty()) {
                     transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(),
-                            targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()),
-                        targetFormulaString);
+                                    targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()),
+                            targetFormulaString);
                 }
             }
         }

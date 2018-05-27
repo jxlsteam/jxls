@@ -511,7 +511,7 @@ public class XlsArea implements Area {
 
 
     public void processFormulas() {
-        formulaProcessor.processAreaFormulas(transformer);
+        formulaProcessor.processAreaFormulas(transformer, this);
     }
 
     public void addAreaListener(AreaListener listener) {
