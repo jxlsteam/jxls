@@ -24,7 +24,7 @@ public class JxlsHelper {
   private boolean hideTemplateSheet = false;
   private boolean deleteTemplateSheet = true;
   private boolean processFormulas = true;
-  private boolean useFastFormulaProcessor = true;
+  private boolean useFastFormulaProcessor = false;
   private String expressionNotationBegin;
   private String expressionNotationEnd;
   private FormulaProcessor formulaProcessor;

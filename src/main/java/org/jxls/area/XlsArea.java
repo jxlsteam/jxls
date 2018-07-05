@@ -13,6 +13,7 @@ import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.common.cellshift.InnerCellShiftStrategy;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class XlsArea implements Area {
 
     private boolean cellsCleared = false;
 
-    private FormulaProcessor formulaProcessor = new FastFormulaProcessor();
+    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
     // default cell shift strategy
     private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
 
