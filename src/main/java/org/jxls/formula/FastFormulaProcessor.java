@@ -38,9 +38,6 @@ public class FastFormulaProcessor implements FormulaProcessor {
                         pos.setIgnoreSheetNameInFormat(true);
                     }
                     List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                    if(targetCellDataList.isEmpty() && area != null && !area.getAreaRef().contains(pos)){
-                        targetCellDataList.add(pos);
-                    }
                     targetCellRefMap.put(pos, targetCellDataList);
                 }
             }
