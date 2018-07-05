@@ -74,6 +74,9 @@ public class StandardFormulaProcessor implements FormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
+                if( formulaCellData.getArea() == null ) {
+                    continue;
+                }
                 AreaRef formulaSourceAreaRef = formulaCellData.getArea().getAreaRef();
                 AreaRef formulaTargetAreaRef = formulaCellData.getTargetParentAreaRef().get(i);
                 boolean isFormulaCellRefsEmpty = true;
