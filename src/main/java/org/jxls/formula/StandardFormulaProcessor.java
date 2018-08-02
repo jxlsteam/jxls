@@ -98,7 +98,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         targetFormulaString = replacementString.replaceAll(",", "+");
                         System.out.println(targetFormulaString);
                     } else {
-                        targetFormulaString =   targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
+                        targetFormulaString =   targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Util.regexExcludePrefixSymbols + Pattern.quote(cellRefEntry.getKey().getCellName()), Matcher.quoteReplacement(replacementString));
                     }
                 }
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {

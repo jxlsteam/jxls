@@ -34,6 +34,7 @@ public class Util {
   private static final Pattern regexCellRefPattern = Pattern.compile(regexCellRef);
   public static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
   private static final Pattern regexJointedCellRefPattern = Pattern.compile(regexJointedCellRef);
+  public static final String regexExcludePrefixSymbols = "(?<!\\w)";
 
   public static List<String> getFormulaCellRefs(String formula) {
     return getStringPartsByPattern(formula, regexCellRefExcludingJointedPattern);
