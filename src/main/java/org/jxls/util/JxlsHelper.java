@@ -193,7 +193,14 @@ public class JxlsHelper {
         setFormulaProcessor(xlsArea);
         xlsArea.processFormulas();
       }
-    }
+   }
+   String sourceSheetName = xlsAreaList.get(0).getStartCellRef().getSheetName();
+   if (hideTemplateSheet) {
+     transformer.setHidden(sourceSheetName, true);
+   }
+   if (deleteTemplateSheet) {
+     transformer.deleteSheet(sourceSheetName);
+   }
     transformer.write();
   }
 
@@ -271,7 +278,7 @@ public class JxlsHelper {
       if (deleteTemplateSheet) {
         transformer.deleteSheet(sourceSheetName);
       }
-    }
+   }
     transformer.write();
     return this;
   }
@@ -298,7 +305,14 @@ public class JxlsHelper {
       xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
       if (processFormulas) {
         xlsArea.processFormulas();
-      }
+    }
+    String sourceSheetName = xlsAreaList.get(0).getStartCellRef().getSheetName();
+    if (hideTemplateSheet) {
+      transformer.setHidden(sourceSheetName, true);
+    }
+    if (deleteTemplateSheet) {
+      transformer.deleteSheet(sourceSheetName);
+    }
     }
     transformer.write();
     return this;
