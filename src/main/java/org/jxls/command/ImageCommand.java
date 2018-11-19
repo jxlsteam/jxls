@@ -74,6 +74,9 @@ public class ImageCommand extends AbstractCommand {
         byte[] imgBytes = imageBytes;
         if( src != null ){
             Object imgObj = getTransformationConfig().getExpressionEvaluator().evaluate(src, context.toMap());
+            if( imgObj == null ){
+                return area.getSize();
+            }
             if( !(imgObj instanceof byte[]) ){
                 throw new IllegalArgumentException("src value must contain image bytes (byte[])");
             }
