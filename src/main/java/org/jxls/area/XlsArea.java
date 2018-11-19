@@ -238,9 +238,11 @@ public class XlsArea implements Area {
     }
 
     private Set<CommandData> findCommandsForHorizontalShift(List<CommandData> commandList, int startRow, int endRow, int shiftingCol, int widthChange) {
-        Set<CommandData> result = new LinkedHashSet<>();
+        Set<CommandData> result = new LinkedHashSet<>(commandList.size());
         for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
             CommandData commandData = commandList.get(i);
+            if (result.contains(commandData)) continue; //Should be safe with default equals & hashcode (as references are not changing)
+
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
             int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
             int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
@@ -290,10 +292,12 @@ public class XlsArea implements Area {
     }
 
     private Set<CommandData> findCommandsForVerticalShift(List<CommandData> commandList, int startCol, int endCol, int shiftingRow, int heightChange) {
-        Set<CommandData> result = new LinkedHashSet<>();
+        Set<CommandData> result = new LinkedHashSet<>(commandList.size());
         int commandListSize = commandList.size();
         for (int i = 0; i < commandListSize; i++) {
             CommandData commandData = commandList.get(i);
+            if (result.contains(commandData)) continue; //Should be safe with default equals & hashcode (as references are not changing)
+
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
             int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
             int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
