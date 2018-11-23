@@ -287,6 +287,9 @@ public class EachCommand extends AbstractCommand {
                 context.removeVar(varName);
                 continue;
             }
+            if( currentCell == null ){
+                continue;
+            }
             Size size = area.applyAt(currentCell, context);
             index++;
             if (cellRefGenerator != null) {

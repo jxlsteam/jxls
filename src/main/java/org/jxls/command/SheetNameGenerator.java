@@ -19,6 +19,9 @@ public class SheetNameGenerator implements CellRefGenerator {
 
     @Override
     public CellRef generateCellRef(int index, Context context) {
+        if (sheetNames.size() <= index) {
+            return null;
+        }
         String sheetName = sheetNames.get(index);
         return new CellRef(sheetName, startCellRef.getRow(), startCellRef.getCol());
     }
