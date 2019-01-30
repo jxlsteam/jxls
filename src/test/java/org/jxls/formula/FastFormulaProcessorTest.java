@@ -25,7 +25,7 @@ public class FastFormulaProcessorTest {
     @Test
     public void FastFormulaProcessorIfFormulaTest() throws IOException {
         //BEFORE
-    	Locale.setDefault(Locale.ENGLISH); // Makes the testcase work in a German environment where "IF" is called "WENN" in Excel.
+        Locale.setDefault(Locale.ENGLISH); // Makes the testcase work in a German environment where "IF" is called "WENN" in Excel.
         InputStream template = getTestSheet();
         OutputStream outputStream = new ByteArrayOutputStream();
         Transformer transformer = spy(getTransformer(template, outputStream));
