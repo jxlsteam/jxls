@@ -56,7 +56,6 @@ public class FastFormulaProcessorTest {
 
     private CellData getIFFormula(List<CellData> cellData){
         for(CellData cell : cellData){
-        	System.out.println(cell.getFormula());
             if(cell.getFormula().startsWith("IF")){
                 return cell;
             }
