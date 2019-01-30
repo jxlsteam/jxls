@@ -293,13 +293,13 @@ public class Util {
         groupByValues = new LinkedHashSet();
       }
       for (Object bean : collection) {
-        groupByValues.add(getObjectProperty(bean, groupProperty, true));
+        groupByValues.add(getGroupKey(bean, groupProperty));
       }
       for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
         List groupItems = new ArrayList();
         for (Object bean : collection) {
-          if (groupValue.equals(getObjectProperty(bean, groupProperty, true))) {
+          if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
           }
         }
@@ -326,13 +326,13 @@ public class Util {
         groupByValues = new LinkedHashSet();
       }
       for (Object bean : iterable) {
-        groupByValues.add(getObjectProperty(bean, groupProperty, true));
+        groupByValues.add(getGroupKey(bean, groupProperty));
       }
       for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
         List groupItems = new ArrayList();
         for (Object bean : iterable) {
-          if (groupValue.equals(getObjectProperty(bean, groupProperty, true))) {
+          if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
           }
         }
@@ -342,6 +342,11 @@ public class Util {
       }
     }
     return result;
+  }
+  
+  private static Object getGroupKey(Object bean, String propertyName) {
+    Object ret = getObjectProperty(bean, propertyName, true);
+    return ret == null ? "null" : ret;
   }
 
   /** Reads all the data from the input stream, and returns the bytes read. */
