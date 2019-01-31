@@ -45,4 +45,6 @@ public interface Transformer {
     void setHidden(String sheetName, boolean hidden);
 
     void updateRowHeight(String srcSheetName, int srcRowNum, String targetSheetName, int targetRowNum);
+
+    void adjustTableSize(CellRef ref, Size size);
 }
