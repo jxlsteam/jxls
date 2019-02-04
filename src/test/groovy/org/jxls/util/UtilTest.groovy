@@ -144,4 +144,16 @@ class UtilTest extends Specification{
             groups[3].item == new Dummy("bc", 2)
             groups[3].items == [new Dummy("bc", 2)]
     }
+
+    def "test group collection with null keys"() {
+        def list = [new Dummy("abc", 1), new Dummy(null, 4), new Dummy("abc", 3), new Dummy(null, 2)]
+        when:
+            def groups = Util.groupCollection(list, "strValue", "asc")
+        then:
+            groups.size() == 2
+            groups[0].item == new Dummy("abc", 1)
+            groups[0].items == [new Dummy("abc", 1), new Dummy("abc", 3)]
+            groups[1].item == new Dummy(null, 4)
+            groups[1].items == [new Dummy(null, 4), new Dummy(null, 2)]
+    }
 }
