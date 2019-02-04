@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
@@ -24,6 +25,7 @@ public class FastFormulaProcessorTest {
     @Test
     public void FastFormulaProcessorIfFormulaTest() throws IOException {
         //BEFORE
+        Locale.setDefault(Locale.ENGLISH); // Makes the testcase work in a German environment where "IF" is called "WENN" in Excel.
         InputStream template = getTestSheet();
         OutputStream outputStream = new ByteArrayOutputStream();
         Transformer transformer = spy(getTransformer(template, outputStream));
