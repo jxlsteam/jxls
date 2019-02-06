@@ -44,7 +44,6 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private String groupBy;
     private String groupOrder;
-    private boolean adjustTableSize = false;
 
     private UtilWrapper util = new UtilWrapper();
 
@@ -235,17 +234,6 @@ public class EachCommand extends AbstractCommand {
         this.groupOrder = groupOrder;
     }
 
-    public String getTable() {
-        return adjustTableSize ? "1" : "0";
-    }
-
-    /**
-     * @param table not null and not empty to turn table size adjustment on
-     */
-    public void setTable(String table) {
-        adjustTableSize = table != null && !table.trim().isEmpty();
-    }
-
     @Override
     public Command addArea(Area area) {
         if (area == null) {
@@ -274,7 +262,7 @@ public class EachCommand extends AbstractCommand {
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar);
         }
-        if (adjustTableSize) {
+        if (direction == Direction.DOWN) {
             getTransformer().adjustTableSize(cellRef, size);
         }
         return size;
