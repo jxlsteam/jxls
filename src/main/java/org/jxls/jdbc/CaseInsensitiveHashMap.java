@@ -29,13 +29,12 @@ public class CaseInsensitiveHashMap extends LinkedHashMap<String, Object> {
      * <p>
      * Any query operation using the key
      * ({@link #get(Object)}, {@link #containsKey(Object)})
-     * is done in three steps:
+     * is done in three steps:</p>
      * <ul>
      * <li>convert the parameter key to lower case</li>
      * <li>get the actual key that corresponds to the lower case key</li>
      * <li>query the map with the actual key</li>
      * </ul>
-     * </p>
      */
     private final Map<String, String> lowerCaseMap = new HashMap<String, String>();
 

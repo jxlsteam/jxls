@@ -109,7 +109,7 @@ public class EachCommand extends AbstractCommand {
     /**
      * Sets iteration direction
      *
-     * @param direction
+     * @param direction -
      */
     public void setDirection(Direction direction) {
         this.direction = direction;
@@ -148,7 +148,7 @@ public class EachCommand extends AbstractCommand {
     /**
      * Sets current variable name for collection item in the context during iteration
      *
-     * @param var
+     * @param var name of the loop var
      */
     public void setVar(String var) {
         this.var = var;
@@ -200,7 +200,7 @@ public class EachCommand extends AbstractCommand {
     /**
      * Sets name of context variable holding a list of Excel sheet names to output the collection to
      *
-     * @param multisheet
+     * @param multisheet var name
      */
     public void setMultisheet(String multisheet) {
         this.multisheet = multisheet;

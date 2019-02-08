@@ -12,6 +12,7 @@ public interface FormulaProcessor {
      * Processes all formulas using the provided transformer
      * Used after area transformation
      * Deprecated - use processAreaFormulas(Transformer transformer, Area area) method instead
+     * @param transformer -
      */
     @Deprecated
     void processAreaFormulas(Transformer transformer);

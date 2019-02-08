@@ -73,7 +73,7 @@ public class JxlsHelper {
   /**
    * Sets formula processor implementation
    *
-   * @param formulaProcessor
+   * @param formulaProcessor FormulaProcessor instance
    * @return this JxlsHelper instance
    */
   public JxlsHelper setFormulaProcessor(FormulaProcessor formulaProcessor) {
@@ -166,7 +166,7 @@ public class JxlsHelper {
    * @param targetStream target output stream
    * @param context data map
    * @return this JxlsHelper instance
-   * @throws IOException
+   * @throws IOException -
    */
   public JxlsHelper processTemplate(
       InputStream templateStream, OutputStream targetStream, Context context) throws IOException {
@@ -180,7 +180,7 @@ public class JxlsHelper {
    *
    * @param context data context
    * @param transformer transformer instance
-   * @throws IOException
+   * @throws IOException -
    */
   public void processTemplate(Context context, Transformer transformer) throws IOException {
     areaBuilder.setTransformer(transformer);
@@ -283,7 +283,7 @@ public class JxlsHelper {
      * @param context context data map
      * @param objectProps object properties to use with the {@link GridCommand}
      * @return this JxlsHelper instance
-     * @throws IOException
+     * @throws IOException -
      */
   public JxlsHelper processGridTemplate(
       InputStream templateStream, OutputStream targetStream, Context context, String objectProps)
@@ -312,7 +312,7 @@ public class JxlsHelper {
      * @param context context data map
      * @param objectProps object properties to use with {@link GridCommand}
      * @param targetCell start target cell to use when processing the template
-     * @throws IOException
+     * @throws IOException -
      */
   public void processGridTemplateAtCell(
       InputStream templateStream,
@@ -349,7 +349,7 @@ public class JxlsHelper {
      * Registers grid template to be used with {@link SimpleExporter}
      * @param inputStream template input stream
      * @return this JxlsHelper object
-     * @throws IOException
+     * @throws IOException -
      */
   public JxlsHelper registerGridTemplate(InputStream inputStream) throws IOException {
     simpleExporter.registerGridTemplate(inputStream);
@@ -362,7 +362,7 @@ public class JxlsHelper {
      * @param dataObjects collection of data objects to export
      * @param objectProps object properties (comma separated) to use with the {@link GridCommand}
      * @param outputStream output stream to write the processing result
-     * @return
+     * @return this
      */
   public JxlsHelper gridExport(
       Collection headers, Collection dataObjects, String objectProps, OutputStream outputStream) {
@@ -373,9 +373,10 @@ public class JxlsHelper {
   /**
    * Creates {@link Transformer} instance connected to the given input stream
    * and output stream with the default or custom expression notation (see also {@link JxlsHelper#buildExpressionNotation(String, String)}
+   * 
    * @param templateStream source template input stream
    * @param targetStream target output stream to write the processing result
-   * @return
+   * @return created transformer
    */
   public Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
     Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);

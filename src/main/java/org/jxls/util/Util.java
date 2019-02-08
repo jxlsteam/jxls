@@ -349,7 +349,13 @@ public class Util {
     return ret == null ? "null" : ret;
   }
 
-  /** Reads all the data from the input stream, and returns the bytes read. */
+  /**
+   * Reads all the data from the input stream, and returns the bytes read.
+   * 
+   * @param stream -
+   * @return byte array
+   * @throws IOException -
+   */
   public static byte[] toByteArray(InputStream stream) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

@@ -50,9 +50,9 @@ import java.util.regex.Pattern;
  *
  * Command examples:
  *
- * jx:if(condition="employee.payment <= 2000", lastCell="F9", areas=["A9:F9","A30:F30"])
+ * jx:if(condition="employee.payment &lt;= 2000", lastCell="F9", areas=["A9:F9","A30:F30"])
  *
- * Here we define {@link IfCommand} with a condition expression 'employee.payment <= 2000' and first area (if-area) "A9:F9"
+ * Here we define {@link IfCommand} with a condition expression 'employee.payment &lt;= 2000' and first area (if-area) "A9:F9"
  * and second area (else-area) "A30:F30". The command is added to the parent area covering a range from the cell where
  * the comment is placed and to the cell defined in lastCell attribute "F9".
  *
@@ -144,7 +144,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     /**
      * Builds a list of {@link org.jxls.area.XlsArea} objects defined by top level AreaCommand markup ("jx:area")
      * containing a tree of all nested commands
-     * @return
+     * @return Area list
      */
     public List<Area> build() {
         List<Area> userAreas = new ArrayList<Area>();
