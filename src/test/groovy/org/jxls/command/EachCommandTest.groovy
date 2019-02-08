@@ -77,10 +77,10 @@ class EachCommandTest extends Specification{
             1 * eachArea.applyAt(new CellRef("sheet2", 3, 2), context) >> new Size(3, 2)
             1 * eachArea.applyAt(new CellRef("sheet2", 5, 2), context) >> new Size(4, 1)
             1 * eachArea.applyAt(new CellRef("sheet2", 6, 2), context) >> new Size(3, 1)
-            1 * eachArea.getTransformer() >> transformer
+            2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
             1 * context.getVar('x')
-            0 * _._
+            1 * _._
     }
     
     def "test set direction"(){
@@ -140,8 +140,9 @@ class EachCommandTest extends Specification{
         1 * area.applyAt(new CellRef("abc!A2"), context) >> new Size(3,5)
         1 * area.applyAt(new CellRef("def!B2"), context) >> new Size(2,3)
         1 * area.applyAt(new CellRef("ghi!C2"), context) >> new Size(4,3)
-        1 * area.getTransformer() >> transformer
+        2 * area.getTransformer() >> transformer
         1 * transformer.getTransformationConfig() >> transformationConfig
+        3 * _._
     }
 
     def "test select attribute"(){
@@ -156,9 +157,9 @@ class EachCommandTest extends Specification{
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
-            1 * eachArea.getTransformer() >> transformer
+            2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
-            0 * _._
+            1 * _._
     }
 
     class Person{
@@ -194,8 +195,8 @@ class EachCommandTest extends Specification{
                 assert args[1].getVar(EachCommand.GROUP_DATA_KEY) != null
                 return new Size(1,2)
             }
-            1 * eachArea.getTransformer() >> transformer
+            2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
-            0 * _._
+            1 * _._
     }
 }
