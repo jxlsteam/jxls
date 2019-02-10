@@ -29,7 +29,7 @@ public interface Command {
 
     /**
      * Adds an area to this command
-     * @param area
+     * @param area -
      * @return this command instance
      */
     Command addArea(Area area);

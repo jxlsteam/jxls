@@ -63,7 +63,7 @@ public class IfCommand extends AbstractCommand {
 
     /**
      * Gets an area to render when the condition is evaluated to 'true'
-     * @return
+     * @return if Area
      */
     public Area getIfArea() {
         return ifArea;
@@ -71,7 +71,7 @@ public class IfCommand extends AbstractCommand {
 
     /**
      * Gets an area to render when the condition is evaluated to 'false'
-     * @return
+     * @return else Area
      */
     public Area getElseArea() {
         return elseArea;

@@ -29,7 +29,9 @@ public class CellRefUtil {
     /**
      * Takes in a 0-based base-10 column and returns a ALPHA-26
      *  representation.
-     * eg column #3 -> D
+     * eg column #3 -&gt; D
+     * @param col -
+     * @return -
      */
     public static String convertNumToColString(int col) {
         // Excel counts column A as the 1st column, we
@@ -100,8 +102,8 @@ public class CellRefUtil {
     /**
      * Note - this method assumes the specified rawSheetName has only letters and digits.  It
      * cannot be used to match absolute or range references (using the dollar or colon char).
-     * <p/>
-     * Some notable cases:
+     * 
+     * <p>Some notable cases:
      *    <blockquote><table border="0" cellpadding="1" cellspacing="0"
      *                 summary="Notable cases.">
      *      <tr><th>Input&nbsp;</th><th>Result&nbsp;</th><th>Comments</th></tr>
@@ -114,7 +116,7 @@ public class CellRefUtil {
      *      <tr><td>"A$1:$C$20"&nbsp;&nbsp;</td><td>false</td><td>Not a plain cell reference</td></tr>
      *      <tr><td>"SALES20080101"&nbsp;&nbsp;</td><td>true</td>
      *      		<td>Still needs delimiting even though well out of range</td></tr>
-     *    </table></blockquote>
+     *    </table></blockquote></p>
      *
      * @return <code>true</code> if there is any possible ambiguity that the specified rawSheetName
      * could be interpreted as a valid cell name.
@@ -134,8 +136,8 @@ public class CellRefUtil {
     /**
      * Used to decide whether sheet names like 'AB123' need delimiting due to the fact that they
      * look like cell references.
-     * <p/>
-     * This code is currently being used for translating formulas represented with <code>Ptg</code>
+     * 
+     * <p>This code is currently being used for translating formulas represented with <code>Ptg</code>
      * tokens into human readable text form.  In formula expressions, a sheet name always has a
      * trailing '!' so there is little chance for ambiguity.  It doesn't matter too much what this
      * method returns but it is worth noting the likely consumers of these formula text strings:
@@ -145,14 +147,14 @@ public class CellRefUtil {
      * <li>VBA automation entry into Excel cell contents e.g.  ActiveCell.Formula = "=c64!A1"</li>
      * <li>Manual entry into Excel cell contents</li>
      * <li>Some third party formula parser</li>
-     * </ol>
+     * </ol></p>
      *
-     * At the time of writing, POI's formula parser tolerates cell-like sheet names in formulas
-     * with or without delimiters.  The same goes for Excel(2007), both manual and automated entry.
-     * <p/>
-     * For better or worse this implementation attempts to replicate Excel's formula renderer.
+     * <p>At the time of writing, POI's formula parser tolerates cell-like sheet names in formulas
+     * with or without delimiters.  The same goes for Excel(2007), both manual and automated entry.</p>
+     * 
+     * <p>For better or worse this implementation attempts to replicate Excel's formula renderer.
      * Excel uses range checking on the apparent 'row' and 'column' components.  Note however that
-     * the maximum sheet size varies across versions.
+     * the maximum sheet size varies across versions.</p>
      */
     private static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
         return cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, 0x0100, 0x10000);
@@ -163,9 +165,9 @@ public class CellRefUtil {
      * interpreted as a cell reference.  Names of that form can be also used for sheets and/or
      * named ranges, and in those circumstances, the question of whether the potential cell
      * reference is valid (in range) becomes important.
-     * <p/>
-     * Note - that the maximum sheet size varies across Excel versions:
-     * <p/>
+     * 
+     * <p>Note - that the maximum sheet size varies across Excel versions:</p>
+     * 
      * <blockquote><table border="0" cellpadding="1" cellspacing="0"
      *                 summary="Notable cases.">
      *   <tr><th>Version&nbsp;&nbsp;</th><th>File Format&nbsp;&nbsp;</th>
@@ -192,6 +194,8 @@ public class CellRefUtil {
      *
      * @param colStr a string of only letter characters
      * @param rowStr a string of only digit characters
+     * @param lastColumnIndex -
+     * @param lastRowIndex -
      * @return <code>true</code> if the row and col parameters are within range of a BIFF8 spreadsheet.
      */
     public static boolean cellReferenceIsWithinRange(String colStr, String rowStr, int lastColumnIndex, int lastRowIndex) {
@@ -265,10 +269,12 @@ public class CellRefUtil {
     /**
      * takes in a column reference portion of a CellRef and converts it from
      * ALPHA-26 number format to 0-based base 10.
-     * 'A' -> 0
-     * 'Z' -> 25
-     * 'AA' -> 26
-     * 'IV' -> 255
+     * <pre> 'A' -&gt; 0
+     * 'Z' -&gt; 25
+     * 'AA' -&gt; 26
+     * 'IV' -&gt; 255</pre>
+     * 
+     * @param ref -
      * @return zero based column index
      */
     public static int convertColStringToIndex(String ref) {
@@ -363,6 +369,7 @@ public class CellRefUtil {
      * Separates Area refs in two parts and returns them as separate elements in a String array,
      * each qualified with the sheet name (if present)
      *
+     * @param reference -
      * @return array with one or two elements. never <code>null</code>
      */
     public static String[] separateAreaRefs(String reference) {
