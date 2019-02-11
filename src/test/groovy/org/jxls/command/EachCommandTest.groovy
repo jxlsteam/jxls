@@ -80,7 +80,8 @@ class EachCommandTest extends Specification{
             2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
             1 * context.getVar('x')
-            1 * _._
+            1 * transformer.adjustTableSize(new CellRef("sheet2", 2, 2), new Size(4,5))
+            0 * _._
     }
     
     def "test set direction"(){
@@ -142,7 +143,6 @@ class EachCommandTest extends Specification{
         1 * area.applyAt(new CellRef("ghi!C2"), context) >> new Size(4,3)
         2 * area.getTransformer() >> transformer
         1 * transformer.getTransformationConfig() >> transformationConfig
-        3 * _._
     }
 
     def "test select attribute"(){
@@ -159,7 +159,8 @@ class EachCommandTest extends Specification{
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
             2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
-            1 * _._
+            1 * transformer.adjustTableSize(new CellRef("sheet1!A1"), new Size(1,6))
+            0 * _._
     }
 
     class Person{
@@ -197,6 +198,7 @@ class EachCommandTest extends Specification{
             }
             2 * eachArea.getTransformer() >> transformer
             1 * transformer.getTransformationConfig() >> transformationConfig
-            1 * _._
+            1 * transformer.adjustTableSize(new CellRef("sheet1!A1"), new Size(1, 6))
+            0 * _._
     }
 }
