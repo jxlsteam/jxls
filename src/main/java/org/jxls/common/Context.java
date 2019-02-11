@@ -26,8 +26,7 @@ public class Context {
     }
     
     public Object getVar(String name){
-        if( varMap.containsKey(name) ) return varMap.get(name);
-        else return null;
+        return varMap.get(name);
     }
 
     public void putVar(String name, Object value) {
