@@ -113,7 +113,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                     String replacementString = Util.createTargetCellRef(replacementCells);
                     targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
                 }
-                String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
+                String sheetNameReplacementRegex = Pattern.quote(targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER);
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 if( isFormulaCellRefsEmpty ){
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";

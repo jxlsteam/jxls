@@ -1,20 +1,16 @@
 package org.jxls.command;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import org.jxls.area.Area;
-import org.jxls.common.CellRef;
-import org.jxls.common.Context;
-import org.jxls.common.GroupData;
-import org.jxls.common.JxlsException;
-import org.jxls.common.Size;
+import org.jxls.common.*;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -276,33 +272,31 @@ public class EachCommand extends AbstractCommand {
         CellRefGenerator cellRefGenerator = this.cellRefGenerator;
         if (cellRefGenerator == null && multisheet != null) {
             List<String> sheetNameList = extractSheetNameList(context);
-            cellRefGenerator = new SheetNameGenerator(sheetNameList, cellRef);
+            cellRefGenerator = sheetNameList == null ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator()) : new SheetNameGenerator(sheetNameList, cellRef);
         }
-        CellRef currentCell = cellRefGenerator != null ? cellRefGenerator.generateCellRef(index, context) : cellRef;
         ExpressionEvaluator selectEvaluator = null;
         if (select != null) {
             selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
         }
 
+        CellRef currentCell = cellRef;
         Object currentVarObject = context.getVar(varName);
-        for (Iterator iterator = itemsCollection.iterator(); iterator.hasNext(); ) {
-            Object obj = iterator.next();
+        for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
             if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
                 context.removeVar(varName);
                 continue;
             }
-            if( currentCell == null ){
-                continue;
+            if (cellRefGenerator != null) {
+                currentCell = cellRefGenerator.generateCellRef(index++, context);
+            }
+            if (currentCell == null) {
+                break;
             }
             Size size = area.applyAt(currentCell, context);
-            index++;
             if (cellRefGenerator != null) {
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight = Math.max(newHeight, size.getHeight());
-                if (iterator.hasNext() ) {
-                    currentCell = cellRefGenerator.generateCellRef(index, context);
-                }
             } else if (direction == Direction.DOWN) {
                 currentCell = new CellRef(currentCell.getSheetName(),
                     currentCell.getRow() + size.getHeight(), currentCell.getCol());
