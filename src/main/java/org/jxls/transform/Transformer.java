@@ -57,4 +57,6 @@ public interface Transformer {
     void updateRowHeight(String srcSheetName, int srcRowNum, String targetSheetName, int targetRowNum);
 
     void adjustTableSize(CellRef ref, Size size);
+
+    void mergeCells(CellRef ref, int rows, int cols);
 }
