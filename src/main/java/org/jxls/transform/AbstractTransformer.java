@@ -4,6 +4,7 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
+import org.jxls.common.Size;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,5 +112,9 @@ public abstract class AbstractTransformer implements Transformer {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void adjustTableSize(CellRef ref, Size size) {
     }
 }
