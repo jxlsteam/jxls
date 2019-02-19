@@ -15,6 +15,11 @@ import java.util.Set;
 public interface Transformer {
 
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
+    
+    /**
+     * Must be called after use. write() calls this method.
+     */
+    void dispose();
 
     void setFormula(CellRef cellRef, String formulaString);
 
@@ -34,6 +39,11 @@ public interface Transformer {
 
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
 
+    /**
+     * Writes Excel workbook to output stream and disposes the workbook.
+     * 
+     * @throws IOException
+     */
     void write() throws IOException;
 
     TransformationConfig getTransformationConfig();
