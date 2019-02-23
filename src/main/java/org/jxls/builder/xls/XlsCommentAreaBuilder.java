@@ -110,6 +110,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put(ImageCommand.COMMAND_NAME, ImageCommand.class);
         commandMap.put(GridCommand.COMMAND_NAME, GridCommand.class);
         commandMap.put(UpdateCellCommand.COMMAND_NAME, UpdateCellCommand.class);
+        commandMap.put(MergeCellsCommand.COMMAND_NAME, MergeCellsCommand.class);
     }
 
     private Transformer transformer;

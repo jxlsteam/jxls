@@ -2,6 +2,7 @@ package org.jxls.transform;
 
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.common.JxlsException;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
@@ -117,8 +118,14 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
     }
-    
+
     @Override
     public void dispose() {
     }
+
+    @Override
+    public void mergeCells(CellRef ref, int rows, int cols) {
+        throw new UnsupportedOperationException("mergeCells operation is not implemented in the " + this.getClass().getName());
+    }
+
 }
