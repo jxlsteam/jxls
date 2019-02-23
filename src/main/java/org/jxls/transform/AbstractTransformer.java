@@ -125,7 +125,7 @@ public abstract class AbstractTransformer implements Transformer {
 
     @Override
     public void mergeCells(CellRef ref, int rows, int cols) {
-        throw new JxlsException("mergeCells operation is not implemented in the " + this.getClass().getName());
+        throw new UnsupportedOperationException("mergeCells operation is not implemented in the " + this.getClass().getName());
     }
 
 }
