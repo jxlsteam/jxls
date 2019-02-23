@@ -117,4 +117,8 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
     }
+    
+    @Override
+    public void dispose() {
+    }
 }
