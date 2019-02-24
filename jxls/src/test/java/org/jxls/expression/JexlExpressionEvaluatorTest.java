@@ -13,8 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * Date: Nov 2, 2009
- *
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluatorTest {
