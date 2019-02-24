@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
  * It works correctly in 90% of cases and is much more faster than {@link StandardFormulaProcessor}.
  */
 public class FastFormulaProcessor implements FormulaProcessor {
+    @Deprecated
     @Override
     public void processAreaFormulas(Transformer transformer) {
         processAreaFormulas(transformer, null);

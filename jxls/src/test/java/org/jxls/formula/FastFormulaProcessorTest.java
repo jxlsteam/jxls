@@ -34,7 +34,7 @@ public class FastFormulaProcessorTest {
 
         //TEST
         FastFormulaProcessor fastFormulaProcessor = new FastFormulaProcessor();
-        fastFormulaProcessor.processAreaFormulas(transformer);
+        fastFormulaProcessor.processAreaFormulas(transformer, null);
 
         //ASSERT
         verify(transformer).setFormula(any(CellRef.class),firstFooCaptor.capture());
