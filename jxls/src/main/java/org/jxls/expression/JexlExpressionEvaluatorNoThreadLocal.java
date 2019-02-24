@@ -1,9 +1,11 @@
 package org.jxls.expression;
 
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.jexl2.JexlEngine;
-import org.apache.commons.jexl2.MapContext;
+
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,25 +16,33 @@ import java.util.Map;
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator{
-    private Expression jexlExpression;
+    private JexlExpression jexlExpression;
     private JexlContext jexlContext;
 
-    private static final JexlEngine jexl = new JexlEngine();
+    private JexlEngine jexl;
 
-    private static final Map<String, Expression> expressionMap = new HashMap<>();
+    private static final Map<String, JexlExpression> expressionMap = new HashMap<>();
 
     public JexlExpressionEvaluatorNoThreadLocal() {
+        this(true, false);
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict) {
+        this.jexl = new JexlBuilder().silent(silent).strict(strict).create();
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(String expression) {
+        this();
         jexlExpression = jexl.createExpression( expression );
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(Map<String, Object> context) {
+        this();
         jexlContext = new MapContext(context);
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(JexlContext jexlContext) {
+        this();
         this.jexlContext = jexlContext;
     }
 
@@ -40,7 +50,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     public Object evaluate(String expression, Map<String, Object> context) {
         JexlContext jexlContext = new MapContext(context);
         try {
-            Expression jexlExpression =  expressionMap.get(expression);
+            JexlExpression jexlExpression =  expressionMap.get(expression);
             if( jexlExpression == null ){
                 jexlExpression = jexl.createExpression( expression );
                 expressionMap.put(expression, jexlExpression);
@@ -56,11 +66,11 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
         try {
             return jexlExpression.evaluate( jexlContext );
         } catch (Exception e) {
-            throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getExpression(), e);
+            throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e);
         }
     }
 
-    public Expression getJexlExpression() {
+    public JexlExpression getJexlExpression() {
         return jexlExpression;
     }
 
@@ -70,6 +80,6 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     
 	@Override
 	public String getExpression() {
-		return jexlExpression == null ? null : jexlExpression.getExpression();
+		return jexlExpression == null ? null : jexlExpression.getSourceText();
 	}
 }

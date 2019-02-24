@@ -28,6 +28,7 @@
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <groovyVersion>2.0.0</groovyVersion>
         <spockVersion>1.0-groovy-2.4</spockVersion>
+        <jexl.version>3.1</jexl.version>
     </properties>
 
     <scm>
@@ -176,8 +177,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-jexl</artifactId>
-            <version>2.1.1</version>
+            <artifactId>commons-jexl3</artifactId>
+            <version>${jexl.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>

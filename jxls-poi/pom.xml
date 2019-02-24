@@ -30,6 +30,7 @@
         <spockVersion>1.0-groovy-2.4</spockVersion>
         <poi.version>4.0.1</poi.version>
         <jxls.version>2.6.0-SNAPSHOT</jxls.version>
+        <jexl.version>3.1</jexl.version>
     </properties>
 
     <build>
@@ -183,8 +184,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-jexl</artifactId>
-            <version>2.1.1</version>
+            <artifactId>commons-jexl3</artifactId>
+            <version>${jexl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
