@@ -26,6 +26,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
 
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
+    @Deprecated
     @Override
     public void processAreaFormulas(Transformer transformer) {
         processAreaFormulas(transformer, null);

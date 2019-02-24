@@ -113,8 +113,8 @@ class GridCommandTest extends Specification{
         def config = Mock(Context.Config)
         def today = new Date()
         def obj1 = ["strProp": "text 1", "intProp": 25, "doubleProp": 12.34, "dateProp": today]
-        def obj2 = ["strProp": "text 2", "intProp": 35, "doubleProp": 15.34, "dateProp": today+1]
-        def obj3 = ["strProp": "text 3", "intProp": 45, "doubleProp": 18.55, "dateProp": today+2]
+        def obj2 = ["strProp": "text 2", "intProp": 35, "doubleProp": 15.34, "dateProp": today]
+        def obj3 = ["strProp": "text 3", "intProp": 45, "doubleProp": 18.55, "dateProp": today]
         when:
         gridCommand.applyAt(new CellRef("sheet2", 2, 2), context)
         then:
@@ -137,12 +137,12 @@ class GridCommandTest extends Specification{
 
         1 * context.putVar(GridCommand.DATA_VAR, "text 2")
         1 * context.putVar(GridCommand.DATA_VAR, 15.34)
-        1 * context.putVar(GridCommand.DATA_VAR, today + 1)
+        1 * context.putVar(GridCommand.DATA_VAR, today)
         1 * context.putVar(GridCommand.DATA_VAR, 35)
 
         1 * context.putVar(GridCommand.DATA_VAR, "text 3")
         1 * context.putVar(GridCommand.DATA_VAR, 18.55)
-        1 * context.putVar(GridCommand.DATA_VAR, today + 2)
+        1 * context.putVar(GridCommand.DATA_VAR, today)
         1 * context.putVar(GridCommand.DATA_VAR, 45)
         1 * context.removeVar(GridCommand.DATA_VAR)
 

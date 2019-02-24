@@ -24,7 +24,7 @@ public class TransformerFactory {
     private static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
 
     public static Transformer createTransformer(InputStream inputStream, OutputStream outputStream) {
-        Class transformer = getTransformerClass();
+        Class<?> transformer = getTransformerClass();
         if (transformer == null) {
             logger.error("Cannot load any Transformer class. Please make sure you have necessary libraries in CLASSPATH.");
             return null;
