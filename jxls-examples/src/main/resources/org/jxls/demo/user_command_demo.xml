@@ -1,0 +1,20 @@
+<xls>
+    <area ref="Template!A1:G15">
+        <each items="departments" var="department" ref="Template!A2:F12">
+            <area ref="Template!A2:G12">
+                <user-command collapseIf="department.name == 'BA'" ref="Template!A9:F9" commandClass="org.jxls.demo.GroupRowCommand">
+                    <area ref="Template!A9:F9">
+                        <each items="department.staff" var="employee" ref="Template!A9:F9">
+                            <area ref="Template!A9:F9">
+                                <if condition="employee.payment &lt;= 2000" ref="Template!A9:F9">
+                                    <area ref="Template!A18:F18" clearCells="true"/>
+                                    <area ref="Template!A9:F9"/>
+                                </if>
+                            </area>
+                        </each>
+                    </area>
+                </user-command>
+            </area>
+        </each>
+    </area>
+</xls>
