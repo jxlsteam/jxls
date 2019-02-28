@@ -8,7 +8,7 @@ import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.transform.Transformer;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;

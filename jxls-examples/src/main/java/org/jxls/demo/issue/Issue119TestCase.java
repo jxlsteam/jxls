@@ -16,7 +16,7 @@ public class Issue119TestCase {
             try (OutputStream os = new FileOutputStream("target/issue119_output.xls")) {
                 Context context = new Context();
                 context.putVar("title", "Report XLS");
-                context.putVar("value", new Integer(100));
+                context.putVar("value", 100);
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }
         }

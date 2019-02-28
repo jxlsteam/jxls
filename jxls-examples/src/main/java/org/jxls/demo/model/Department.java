@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Sample Department bean to demostrate main excel export features
+ * Sample Department bean to demonstrate main excel export features
  * @author Leonid Vysochyn
  */
 public class Department {
     private String name;
     private Employee chief = new Employee();
-    private List<Employee> staff = new ArrayList<Employee>();
+    private List<Employee> staff = new ArrayList<>();
     private String link;
     private byte[] image;
     private List<Employee> staff2 = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Department {
     }
 
     public static List<Department> generate(int depCount, int employeeCount){
-        List<Department> departments = new ArrayList<Department>();
+        List<Department> departments = new ArrayList<>();
         Random random = new Random(System.currentTimeMillis());
         for(int index = 0; index < depCount; index++){
             Department dep = new Department("Dep " + index);
@@ -44,7 +44,7 @@ public class Department {
     }
 
     public static List<Department> generate(int depCount, int employeeCount, int otherEmployeeCount){
-        List<Department> departments = new ArrayList<Department>();
+        List<Department> departments = new ArrayList<>();
         Random random = new Random(System.currentTimeMillis());
         for(int index = 0; index < depCount; index++){
             Department dep = new Department("Dep " + index);
@@ -92,7 +92,7 @@ public class Department {
         return staff;
     }
 
-    public void setStaff(List staff) {
+    public void setStaff(List<Employee> staff) {
         this.staff = staff;
     }
 

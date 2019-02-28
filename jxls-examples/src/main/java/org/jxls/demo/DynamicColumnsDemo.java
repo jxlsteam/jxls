@@ -36,7 +36,7 @@ public class DynamicColumnsDemo {
 
     public static void execute() throws IOException {
         logger.info("Preparing test data");
-        List<String> headers = new ArrayList<String>(Arrays.asList("Param 1", "Param 2", "Param 3", "Param 4", "Param 5"));
+        List<String> headers = new ArrayList<>(Arrays.asList("Param 1", "Param 2", "Param 3", "Param 4", "Param 5"));
         List<List<Object>> rows = new ArrayList<>();
         for(int i = 0; i < 10; i++){
             List<Object> row = new ArrayList<>();

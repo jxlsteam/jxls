@@ -83,7 +83,7 @@ public class SxssfDemo {
             List<Employee> employees = Employee.generate(10);
             try (OutputStream os = new FileOutputStream("target/simple_sxssf_output.xlsx")) {
                 Workbook workbook = WorkbookFactory.create(is);
-                Transformer transformer = PoiTransformer.createSxssfTransformer(workbook, 5, false);
+                PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 5, false);
                 AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
                 List<Area> xlsAreaList = areaBuilder.build();
                 Area xlsArea = xlsAreaList.get(0);
@@ -94,7 +94,7 @@ public class SxssfDemo {
                 context.getConfig().setIsFormulaProcessingRequired(false); // with SXSSF you cannot use normal formula processing
                 workbook.setForceFormulaRecalculation(true);
                 workbook.setActiveSheet(1);
-                ((PoiTransformer) transformer).getWorkbook().write(os);
+                transformer.getWorkbook().write(os);
             }
         }
     }
@@ -107,7 +107,7 @@ public class SxssfDemo {
         try(InputStream is = SxssfDemo.class.getResourceAsStream("stress1_sxssf.xlsx")) {
             assert is != null;
             Workbook workbook = WorkbookFactory.create(is);
-            Transformer transformer = PoiTransformer.createSxssfTransformer(workbook);
+            PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook);
             AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
             List<Area> xlsAreaList = areaBuilder.build();
             Area xlsArea = xlsAreaList.get(0);
@@ -123,7 +123,7 @@ public class SxssfDemo {
             workbook.setForceFormulaRecalculation(true);
             workbook.setActiveSheet(1);
             try(OutputStream os = new FileOutputStream("target/sxssf_stress1_output.xlsx")) {
-                ((PoiTransformer) transformer).getWorkbook().write(os);
+                transformer.getWorkbook().write(os);
             }
         }
     }
@@ -136,7 +136,7 @@ public class SxssfDemo {
         try(InputStream is = SxssfDemo.class.getResourceAsStream("stress1.xlsx")) {
             assert is != null;
             Workbook workbook = WorkbookFactory.create(is);
-            Transformer transformer = PoiTransformer.createSxssfTransformer(workbook, 10, true);
+            PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 10, true);
             AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
             List<Area> xlsAreaList = areaBuilder.build();
             Area xlsArea = xlsAreaList.get(0);
@@ -148,7 +148,7 @@ public class SxssfDemo {
             long endTime = System.nanoTime();
             System.out.println("Stress Sxssf demo 1 time (s): " + (endTime - startTime) / 1e9);
             try(OutputStream os = new FileOutputStream("target/sxssf_stress1_output.xlsx")) {
-                ((PoiTransformer) transformer).getWorkbook().write(os);
+                transformer.getWorkbook().write(os);
             }
         }
     }
@@ -161,7 +161,7 @@ public class SxssfDemo {
         try(InputStream is = SxssfDemo.class.getResourceAsStream("stress2_sxssf.xlsx")) {
             Workbook workbook = WorkbookFactory.create(is);
             // setting rowAccessWindowSize to 600 to be able to process static cells in a single iteration
-            Transformer transformer = PoiTransformer.createSxssfTransformer(workbook, 600, true);
+            PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 600, true);
             AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
             List<Area> xlsAreaList = areaBuilder.build();
             Area xlsArea = xlsAreaList.get(0);
@@ -177,7 +177,7 @@ public class SxssfDemo {
             workbook.setForceFormulaRecalculation(true);
             workbook.setActiveSheet(1);
             try (OutputStream os = new FileOutputStream("target/sxssf_stress2_output.xlsx")) {
-                ((PoiTransformer) transformer).getWorkbook().write(os);
+                transformer.getWorkbook().write(os);
             }
         }
     }

@@ -39,7 +39,7 @@ public class Issue122TestCase {
         }
 
         public Person(int merkmal, String vorname) {
-            this(vorname, Integer.valueOf(merkmal));
+            this(vorname, merkmal);
         }
 
         public String getVorname() {

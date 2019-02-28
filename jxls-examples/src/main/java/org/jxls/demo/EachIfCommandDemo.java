@@ -74,7 +74,7 @@ public class EachIfCommandDemo {
     }
 
     public static List<Department> createDepartments() {
-        List<Department> departments = new ArrayList<Department>();
+        List<Department> departments = new ArrayList<>();
         Department department = new Department("IT");
         Employee chief = new Employee("Derek", 35, 3000, 0.30);
         department.setChief(chief);
