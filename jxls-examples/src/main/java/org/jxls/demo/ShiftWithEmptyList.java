@@ -13,8 +13,8 @@ import java.util.List;
 
 public class ShiftWithEmptyList {
 
-    final static List<String> NON_EMPTY_LIST = new ArrayList<String>(Arrays.asList("A", "B", "C"));
-    final static List<String> EMPTY_LIST = new ArrayList<String>();
+    final static List<String> NON_EMPTY_LIST = new ArrayList<>(Arrays.asList("A", "B", "C"));
+    final static List<String> EMPTY_LIST = new ArrayList<>();
 
     final static String EMPTY_LIST_NAME = "emptyList";
     final static String NON_EMPTY_LIST_NAME = "nonEmptyList";

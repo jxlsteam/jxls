@@ -12,8 +12,8 @@ public class Issue103TestCase {
 // --------- SETTINGS ---------
 
     // define the lists which would be used in the template
-    final static List<String> NON_EMPTY_LIST = new ArrayList<String>(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"));
-    final static List<String> EMPTY_LIST = new ArrayList<String>();
+    final static List<String> NON_EMPTY_LIST = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"));
+    final static List<String> EMPTY_LIST = new ArrayList<>();
 
     // define how the lists would be named in the template
     final static String EMPTY_LIST_NAME = "emptyList";

@@ -1,5 +1,6 @@
 package org.jxls.demo;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -8,11 +9,9 @@ import org.jxls.common.Context;
 import org.jxls.demo.model.Department;
 import org.jxls.demo.model.Employee;
 import org.jxls.formula.FastFormulaProcessor;
-import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

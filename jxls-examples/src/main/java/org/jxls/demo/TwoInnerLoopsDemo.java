@@ -1,7 +1,6 @@
 package org.jxls.demo;
 
 import org.jxls.common.Context;
-import org.jxls.demo.guide.Employee;
 import org.jxls.demo.model.Department;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.util.JxlsHelper;
@@ -13,10 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Two nested each commands demo

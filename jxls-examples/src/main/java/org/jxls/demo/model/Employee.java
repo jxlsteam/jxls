@@ -54,7 +54,7 @@ public class Employee {
 
 
     public static List<Employee> generate(int num){
-        List<Employee> result = new ArrayList<Employee>();
+        List<Employee> result = new ArrayList<>();
         for(int index = 0; index < num; index++){
             result.add( generateOne("" + index) );
         }

@@ -16,7 +16,7 @@ public class Org {
     }
 
     public static List<Org> generate(int orgCount, int depCount){
-        List<Org> orgs = new ArrayList<Org>();
+        List<Org> orgs = new ArrayList<>();
         Random random = new Random(System.currentTimeMillis());
         for(int index = 0; index < orgCount; index++){
             Org org = new Org("Org " + index);

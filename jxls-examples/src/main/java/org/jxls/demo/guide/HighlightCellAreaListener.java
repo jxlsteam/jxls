@@ -57,7 +57,7 @@ public class HighlightCellAreaListener implements AreaListener {
         CellStyle cellStyle = cell.getCellStyle();
         CellStyle newCellStyle = workbook.createCellStyle();
         newCellStyle.setDataFormat( cellStyle.getDataFormat() );
-        newCellStyle.setFont( workbook.getFontAt( cellStyle.getFontIndex() ));
+        newCellStyle.setFont( workbook.getFontAt( cellStyle.getFontIndexAsInt() ));
         newCellStyle.setFillBackgroundColor( cellStyle.getFillBackgroundColor());
         newCellStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
         newCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);

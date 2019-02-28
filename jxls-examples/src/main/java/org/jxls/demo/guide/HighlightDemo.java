@@ -6,10 +6,7 @@ import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.JxlsHelper;
-import org.jxls.util.TransformerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +48,7 @@ public class HighlightDemo {
     }
 
     private static List<Employee> generateSampleEmployeeData() throws ParseException {
-        List<Employee> employees = new ArrayList<Employee>();
+        List<Employee> employees = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd", Locale.US);
         employees.add( new Employee("Elsa", dateFormat.parse("1970-Jul-10"), 1500, 0.15) );
         employees.add( new Employee("Oleg", dateFormat.parse("1973-Apr-30"), 2300, 0.25) );
