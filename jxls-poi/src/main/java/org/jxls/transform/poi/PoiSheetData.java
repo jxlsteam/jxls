@@ -10,32 +10,33 @@ import java.util.List;
 
 /**
  * Sheet data wrapper for POI sheet
+ * 
  * @author Leonid Vysochyn
- *         Date: 2/1/12
+ * @since 2/1/12
  */
 public class PoiSheetData extends SheetData {
-    private List<CellRangeAddress> mergedRegions = new ArrayList<CellRangeAddress>();
+    private List<CellRangeAddress> mergedRegions = new ArrayList<>();
     private Sheet sheet;
 
-    public static PoiSheetData createSheetData(Sheet sheet, PoiTransformer transformer){
+    public static PoiSheetData createSheetData(Sheet sheet, PoiTransformer transformer) {
         PoiSheetData sheetData = new PoiSheetData();
         sheetData.setTransformer(transformer);
         sheetData.sheet = sheet;
         sheetData.sheetName = sheet.getSheetName();
         int numberOfRows = sheet.getLastRowNum() + 1;
         int numberOfColumns = -1;
-        for(int i = 0; i < numberOfRows; i++){
+        for (int i = 0; i < numberOfRows; i++) {
             RowData rowData = PoiRowData.createRowData(sheet.getRow(i), transformer);
             sheetData.rowDataList.add(rowData);
-            if( rowData!=null && rowData.getNumberOfCells() > numberOfColumns ){
+            if (rowData != null && rowData.getNumberOfCells() > numberOfColumns) {
                 numberOfColumns = rowData.getNumberOfCells();
             }
         }
-        for(int i = 0; i < sheet.getNumMergedRegions(); i++){
+        for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
             CellRangeAddress region = sheet.getMergedRegion(i);
             sheetData.mergedRegions.add(region);
         }
-        if(numberOfColumns > 0) {
+        if (numberOfColumns > 0) {
             sheetData.columnWidth = new int[numberOfColumns];
             for (int i = 0; i < numberOfColumns; i++) {
                 sheetData.columnWidth[i] = sheet.getColumnWidth(i);
@@ -43,8 +44,6 @@ public class PoiSheetData extends SheetData {
         }
         return sheetData;
     }
-
-
 
     public List<CellRangeAddress> getMergedRegions() {
         return mergedRegions;
