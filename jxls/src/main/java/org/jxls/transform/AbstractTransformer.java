@@ -2,7 +2,6 @@ package org.jxls.transform;
 
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
-import org.jxls.common.JxlsException;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
