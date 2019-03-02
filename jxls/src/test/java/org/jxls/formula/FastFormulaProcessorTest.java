@@ -48,7 +48,7 @@ public class FastFormulaProcessorTest {
         transformer.getTargetCellRef(new CellRef("Arkusz1",21,4))
                 .add(new CellRef("Arkusz1",210,30));
 
-        List<CellData> cellDataList = new ArrayList(transformer.getFormulaCells());
+        List<CellData> cellDataList = new ArrayList<>(transformer.getFormulaCells());
         getIFFormula(cellDataList)
                 .addTargetPos(new CellRef("Arkusz1",12,12));
         return transformer;

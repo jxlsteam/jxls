@@ -268,7 +268,7 @@ public class Util {
   public static Object getObjectProperty(Object obj, String propertyName)
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     if (obj instanceof Map) {
-      return ((Map) obj).get(propertyName);
+      return ((Map<?,?>) obj).get(propertyName);
     }
     Method method =
         obj.getClass()
@@ -277,27 +277,28 @@ public class Util {
     return method.invoke(obj);
   }
 
+  // TODO MW: groupCollection vs. groupIterable: duplicate code?
   public static Collection<GroupData> groupCollection(
-      Collection collection, String groupProperty, String groupOrder) {
+      Collection<?> collection, String groupProperty, String groupOrder) {
     Collection<GroupData> result = new ArrayList<GroupData>();
     if (collection != null) {
 
-      Set groupByValues;
+      Set<Object> groupByValues;
       if (groupOrder != null) {
         if ("desc".equalsIgnoreCase(groupOrder)) {
-          groupByValues = new TreeSet(Collections.reverseOrder());
+          groupByValues = new TreeSet<>(Collections.reverseOrder());
         } else {
-          groupByValues = new TreeSet();
+          groupByValues = new TreeSet<>();
         }
       } else {
-        groupByValues = new LinkedHashSet();
+        groupByValues = new LinkedHashSet<>();
       }
       for (Object bean : collection) {
         groupByValues.add(getGroupKey(bean, groupProperty));
       }
-      for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
+      for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
-        List groupItems = new ArrayList();
+        List<Object> groupItems = new ArrayList<>();
         for (Object bean : collection) {
           if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
@@ -312,25 +313,25 @@ public class Util {
   }
 
   public static Collection<GroupData> groupIterable(
-      Iterable iterable, String groupProperty, String groupOrder) {
+      Iterable<?> iterable, String groupProperty, String groupOrder) {
     Collection<GroupData> result = new ArrayList<GroupData>();
     if (iterable != null) {
-      Set groupByValues;
+      Set<Object> groupByValues;
       if (groupOrder != null) {
         if ("desc".equalsIgnoreCase(groupOrder)) {
-          groupByValues = new TreeSet(Collections.reverseOrder());
+          groupByValues = new TreeSet<>(Collections.reverseOrder());
         } else {
-          groupByValues = new TreeSet();
+          groupByValues = new TreeSet<>();
         }
       } else {
-        groupByValues = new LinkedHashSet();
+        groupByValues = new LinkedHashSet<>();
       }
       for (Object bean : iterable) {
         groupByValues.add(getGroupKey(bean, groupProperty));
       }
-      for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
+      for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
-        List groupItems = new ArrayList();
+        List<Object> groupItems = new ArrayList<>();
         for (Object bean : iterable) {
           if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
@@ -371,13 +372,13 @@ public class Util {
     return baos.toByteArray();
   }
 
-  public static Collection transformToCollectionObject(
+  public static Collection<?> transformToCollectionObject(
       ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
     Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
     if (!(collectionObject instanceof Collection)) {
       throw new JxlsException(collectionName + " expression is not a collection");
     }
-    return (Collection) collectionObject;
+    return (Collection<?>) collectionObject;
   }
 
   public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
@@ -408,13 +409,13 @@ public class Util {
     return count;
   }
 
-  public static Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+  public static Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator,
       String collectionName, Context context) {
     Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
     if(!(collectionObject instanceof Iterable<?>)) {
       throw new JxlsException(collectionName + " expression is not a collection");
     }
-    return (Iterable) collectionObject;
+    return (Iterable<?>) collectionObject;
   }
 
   public static String getStrictCellNameRegex(String name){

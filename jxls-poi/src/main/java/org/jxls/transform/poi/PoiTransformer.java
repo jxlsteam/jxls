@@ -324,7 +324,7 @@ public class PoiTransformer extends AbstractTransformer {
         if(sheet == null) {
             sheet = workbook.createSheet(areaRef.getSheetName());
         }
-        Drawing drawing = sheet.createDrawingPatriarch();
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
         ClientAnchor anchor = helper.createClientAnchor();
         anchor.setCol1(areaRef.getFirstCellRef().getCol());
         anchor.setRow1(areaRef.getFirstCellRef().getRow());

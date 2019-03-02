@@ -100,7 +100,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     
-    private static Map<String, Class> commandMap = new HashMap<String, Class>();
+    private static Map<String, Class<? extends Command>> commandMap = new HashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
     static{
@@ -138,7 +138,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         this.transformer = transformer;
     }
 
-    public static void addCommandMapping(String commandName, Class clazz){
+    public static void addCommandMapping(String commandName, Class<? extends Command> clazz){
         commandMap.put(commandName, clazz);
     }
 
@@ -279,13 +279,13 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     }
 
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
-        Class clazz = commandMap.get(commandName);
+        Class<? extends Command> clazz = commandMap.get(commandName);
         if( clazz == null ){
             logger.warn("Failed to find Command class mapped to command name '" + commandName + "'");
             return null;
         }
         try {
-            Command command = (Command) clazz.newInstance();
+            Command command = clazz.newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if( !attr.getKey().equals(LAST_CELL_ATTR_NAME) ){
                     Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);

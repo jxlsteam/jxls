@@ -243,7 +243,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Iterable itemsCollection = null;
+        Iterable<?> itemsCollection = null;
         try {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
         } catch (Exception e) {
@@ -264,7 +264,7 @@ public class EachCommand extends AbstractCommand {
         return size;
     }
 
-    private Size processCollection(Context context, Iterable itemsCollection, CellRef cellRef, String varName) {
+    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
         int index = 0;
         int newWidth = 0;
         int newHeight = 0;

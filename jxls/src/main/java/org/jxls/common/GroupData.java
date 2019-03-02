@@ -8,9 +8,9 @@ import java.util.Collection;
  */
 public class GroupData {
     private Object item;
-    private Collection items;
+    private Collection<Object> items;
 
-    public GroupData(Object groupItem, Collection groupItems) {
+    public GroupData(Object groupItem, Collection<Object> groupItems) {
         this.item = groupItem;
         this.items = groupItems;
     }
@@ -23,11 +23,11 @@ public class GroupData {
         this.item = item;
     }
 
-    public Collection getItems() {
+    public Collection<Object> getItems() {
         return items;
     }
 
-    public void setItems(Collection items) {
+    public void setItems(Collection<Object> items) {
         this.items = items;
     }
 }

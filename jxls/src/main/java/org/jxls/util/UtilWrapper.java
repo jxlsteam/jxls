@@ -76,12 +76,12 @@ public class UtilWrapper {
     return Util.getObjectProperty(obj, propertyName);
   }
 
-  public Collection<GroupData> groupCollection(Collection collection, String groupProperty,
+  public Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty,
       String groupOrder){
     return Util.groupCollection(collection, groupProperty, groupOrder);
   }
 
-  public Collection<GroupData> groupIterable(Iterable iterable, String groupProperty,
+  public Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty,
       String groupOrder){
     return Util.groupIterable(iterable, groupProperty, groupOrder);
   }
@@ -90,12 +90,12 @@ public class UtilWrapper {
     return Util.toByteArray(stream);
   }
 
-  public Collection transformToCollectionObject(ExpressionEvaluator expressionEvaluator,
+  public Collection<?> transformToCollectionObject(ExpressionEvaluator expressionEvaluator,
       String collectionName, Context context){
     return Util.transformToCollectionObject(expressionEvaluator, collectionName, context);
   }
 
-  public Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+  public Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator,
 	      String collectionName, Context context){
 	    return Util.transformToIterableObject(expressionEvaluator, collectionName, context);
   }

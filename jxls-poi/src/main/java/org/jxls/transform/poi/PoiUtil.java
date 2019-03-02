@@ -18,7 +18,7 @@ public class PoiUtil {
     public static void setCellComment(Cell cell, String commentText, String commentAuthor, ClientAnchor anchor){
         Sheet sheet = cell.getSheet();
         Workbook wb = sheet.getWorkbook();
-        Drawing drawing = sheet.createDrawingPatriarch();
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
         CreationHelper factory = wb.getCreationHelper();
         if( anchor == null ){
             anchor = factory.createClientAnchor();
