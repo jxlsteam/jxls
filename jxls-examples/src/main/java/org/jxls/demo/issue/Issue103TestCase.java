@@ -1,12 +1,15 @@
 package org.jxls.demo.issue;
 
-import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
-
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
 
 public class Issue103TestCase {
 // --------- SETTINGS ---------

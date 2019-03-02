@@ -6,11 +6,16 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.demo.model.Employee;
 import org.jxls.transform.jexcel.JexcelTransformer;
-import jxl.format.CellFormat;
-import jxl.format.Colour;
-import jxl.write.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jxl.format.CellFormat;
+import jxl.format.Colour;
+import jxl.write.WritableCell;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 
 /**
  * @author Leonid Vysochyn

@@ -1,5 +1,15 @@
 package org.jxls.formula;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jxls.area.Area;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
@@ -9,10 +19,6 @@ import org.jxls.util.CellRefUtil;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This is a standard formula processor implementation which takes into account all performed cell

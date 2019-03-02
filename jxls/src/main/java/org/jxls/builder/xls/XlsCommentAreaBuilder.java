@@ -1,10 +1,24 @@
 package org.jxls.builder.xls;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jxls.area.Area;
 import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
-import org.jxls.command.*;
+import org.jxls.command.Command;
+import org.jxls.command.EachCommand;
+import org.jxls.command.GridCommand;
+import org.jxls.command.IfCommand;
+import org.jxls.command.ImageCommand;
+import org.jxls.command.MergeCellsCommand;
+import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -12,10 +26,6 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Builds {@link org.jxls.area.XlsArea} from excel comments in the excel template

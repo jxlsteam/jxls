@@ -1,12 +1,16 @@
 package org.jxls.area;
 
+import java.util.List;
+
 import org.jxls.command.Command;
+import org.jxls.common.AreaListener;
+import org.jxls.common.AreaRef;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.Size;
 import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.jxls.common.*;
-
-import java.util.List;
 
 /**
  * Generic interface for excel area processing

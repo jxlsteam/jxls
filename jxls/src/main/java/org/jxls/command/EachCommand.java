@@ -1,16 +1,20 @@
 package org.jxls.command;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.jxls.area.Area;
-import org.jxls.common.*;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.GroupData;
+import org.jxls.common.JxlsException;
+import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 
 /**

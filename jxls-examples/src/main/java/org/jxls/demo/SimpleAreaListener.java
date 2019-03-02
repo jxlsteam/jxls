@@ -1,12 +1,17 @@
 package org.jxls.demo;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.area.XlsArea;
 import org.jxls.common.AreaListener;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.demo.model.Employee;
 import org.jxls.transform.poi.PoiTransformer;
-import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
