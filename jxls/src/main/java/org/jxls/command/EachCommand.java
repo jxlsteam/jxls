@@ -321,12 +321,19 @@ public class EachCommand extends AbstractCommand {
         return new Size(newWidth, newHeight);
     }
 
+    @SuppressWarnings("unchecked")
     private List<String> extractSheetNameList(Context context) {
         try {
-            return (List<String>) context.getVar(multisheet);
+            Object sheetnames = context.getVar(multisheet);
+            if (sheetnames == null) {
+                return null;
+            } else if (sheetnames instanceof List) {
+                return (List<String>) sheetnames;
+            }
         } catch (Exception e) {
             throw new JxlsException("Failed to get sheet names from " + multisheet, e);
         }
+        throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
     }
 
 }

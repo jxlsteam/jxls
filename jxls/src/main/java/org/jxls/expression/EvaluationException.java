@@ -2,10 +2,12 @@ package org.jxls.expression;
 
 /**
  * Custom exception class for exceptions thrown during evaluation of expressions
- * Date: Nov 2, 2009
+ * 
  * @author Leonid Vysochyn
+ * @since Nov 2, 2009
  */
-public class EvaluationException extends RuntimeException{
+public class EvaluationException extends RuntimeException {
+    private static final long serialVersionUID = -611735067629358064L;
 
     public EvaluationException() {
     }

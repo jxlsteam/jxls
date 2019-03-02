@@ -4,9 +4,7 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.common.Context;
 
@@ -65,16 +63,6 @@ public class WritableHyperlink implements WritableCellValue {
         }
         cell.setCellStyle(linkStyle);
         return cell;
-    }
-
-
-    private CellStyle createLinkStyle(Workbook workbook) {
-        linkStyle = workbook.createCellStyle();
-        Font hlink_font = workbook.createFont();
-        hlink_font.setUnderline(Font.U_SINGLE);
-        hlink_font.setColor(IndexedColors.BLUE.getIndex());
-        linkStyle.setFont(hlink_font);
-        return linkStyle;
     }
 
     public String getAddress() {

@@ -85,7 +85,7 @@ public class PoiCellData extends org.jxls.common.CellData {
     }
 
     private void readCellContents(Cell cell) {
-        switch( cell.getCellTypeEnum() ){
+        switch(cell.getCellType()) {
             case STRING:
                 richTextString = cell.getRichStringCellValue();
                 cellValue = richTextString.getString();

@@ -4,6 +4,8 @@ package org.jxls.common;
  * This is just a wrapper for non-runtime exceptions
  */
 public class JxlsException extends RuntimeException {
+    private static final long serialVersionUID = -3618771481378341613L;
+
     public JxlsException() {
     }
 
