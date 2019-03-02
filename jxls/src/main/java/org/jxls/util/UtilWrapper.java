@@ -95,7 +95,8 @@ public class UtilWrapper {
     return Util.transformToCollectionObject(expressionEvaluator, collectionName, context);
   }
 
-  public Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+  // TODO MW to Leonid: Iterable is a raw type. References to generic type Iterable<T> should be parameterized -> problem in EachCommandJTest
+  public Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
 	      String collectionName, Context context){
 	    return Util.transformToIterableObject(expressionEvaluator, collectionName, context);
   }
