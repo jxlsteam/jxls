@@ -114,6 +114,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cellType = CellType.ERROR;
                 break;
             case BLANK:
+            case _NONE:
                 cellValue = null;
                 cellType = CellType.BLANK;
                 break;
@@ -212,7 +213,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cell.setCellValue((Date)evaluationResult);
                 break;
             case NUMBER:
-                    cell.setCellValue(((Number) evaluationResult).doubleValue());
+                cell.setCellValue(((Number) evaluationResult).doubleValue());
                 break;
             case FORMULA:
                 try{
@@ -236,6 +237,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             case ERROR:
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
+            // TODO MW to Leonid: case BLANK:  code needed?
         }
     }
 
