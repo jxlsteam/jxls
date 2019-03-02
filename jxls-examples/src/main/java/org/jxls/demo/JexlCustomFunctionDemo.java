@@ -1,5 +1,7 @@
 package org.jxls.demo;
 
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -43,7 +45,8 @@ public class JexlCustomFunctionDemo {
                 JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer.getTransformationConfig().getExpressionEvaluator();
                 Map<String, Object> functionMap = new HashMap<>();
                 functionMap.put("demo", new JexlCustomFunctionDemo());
-//                evaluator.getJexlEngine().setFunctions(functionMap);
+                JexlEngine customJexlEngine = new JexlBuilder().namespaces(functionMap).create();
+                evaluator.setJexlEngine(customJexlEngine);
                 xlsArea.applyAt(new CellRef("Sheet1!A1"), context);
                 transformer.write();
             }

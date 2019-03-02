@@ -84,6 +84,15 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator{
         return jexlExpression;
     }
 
+    public void setJexlEngine(final JexlEngine jexlEngine){
+        jexlThreadLocal = new ThreadLocal<JexlEngine>() {
+            @Override
+            protected JexlEngine initialValue() {
+                return jexlEngine;
+            }
+        };
+    }
+
     public JexlEngine getJexlEngine() {
         return jexlThreadLocal.get();
     }
