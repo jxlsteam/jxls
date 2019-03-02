@@ -74,10 +74,13 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
         return jexlExpression;
     }
 
+    public void setJexlEngine(final JexlEngine jexlEngine){
+        this.jexl = jexlEngine;
+    }
     public JexlEngine getJexlEngine() {
         return jexl;
     }
-    
+
 	@Override
 	public String getExpression() {
 		return jexlExpression == null ? null : jexlExpression.getSourceText();
