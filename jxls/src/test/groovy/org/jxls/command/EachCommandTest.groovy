@@ -7,6 +7,8 @@ import org.jxls.common.Context
 import org.jxls.common.Size
 import org.jxls.transform.TransformationConfig
 import org.jxls.transform.Transformer
+import org.jxls.util.Person
+
 import spock.lang.Specification
 /**
  * @author Leonid Vysochyn
@@ -161,18 +163,6 @@ class EachCommandTest extends Specification{
             1 * transformer.getTransformationConfig() >> transformationConfig
             1 * transformer.adjustTableSize(new CellRef("sheet1!A1"), new Size(1,6))
             0 * _._
-    }
-
-    class Person{
-        String name
-        int age
-        String city
-
-        Person(String name, int age, String city) {
-            this.name = name
-            this.age = age
-            this.city = city
-        }
     }
 
     def "test grouping"(){
