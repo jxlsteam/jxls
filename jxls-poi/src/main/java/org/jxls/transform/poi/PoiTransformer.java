@@ -41,7 +41,7 @@ import java.util.List;
  * POI implementation of {@link org.jxls.transform.Transformer} interface
  *
  * @author Leonid Vysochyn
- *         Date: 1/23/12
+ * @since 1/23/12
  */
 public class PoiTransformer extends AbstractTransformer {
     private static final int MAX_COLUMN_TO_READ_COMMENT = 50;
@@ -189,7 +189,7 @@ public class PoiTransformer extends AbstractTransformer {
             destSheet.setColumnWidth(targetCellRef.getCol(), sheetData.getColumnWidth(srcCellRef.getCol()));
         }
         if (updateRowHeightFlag && !isIgnoreRowProps()) {
-            Row row = destSheet.getRow(targetCellRef.getRow()); // TODO Leonid: Wouldn't the use of destRow be better here? NPE?
+            Row row = destSheet.getRow(targetCellRef.getRow()); // TODO MW to Leonid: Wouldn't the use of destRow be better here? NPE?
             row.setHeight((short) sheetData.getRowData(srcCellRef.getRow()).getHeight());
         }
         org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(targetCellRef.getCol());
@@ -299,7 +299,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     protected final void removeCellComment(Sheet sheet, int rowNum, int colNum) {
         Row row = sheet.getRow(rowNum);
-        if( row == null ) return;
+        if (row == null) return;
         Cell cell = row.getCell(colNum);
         if (cell == null) return;
         cell.removeCellComment();
@@ -321,10 +321,10 @@ public class PoiTransformer extends AbstractTransformer {
     private void addImage(AreaRef areaRef, int imageIdx) {
         CreationHelper helper = workbook.getCreationHelper();
         Sheet sheet = workbook.getSheet(areaRef.getSheetName());
-        if(sheet == null) {
+        if (sheet == null) {
             sheet = workbook.createSheet(areaRef.getSheetName());
         }
-        Drawing drawing = sheet.createDrawingPatriarch();
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
         ClientAnchor anchor = helper.createClientAnchor();
         anchor.setCol1(areaRef.getFirstCellRef().getCol());
         anchor.setRow1(areaRef.getFirstCellRef().getRow());
@@ -502,26 +502,28 @@ public class PoiTransformer extends AbstractTransformer {
         CellStyle cellStyle = null;
         try {
             cellStyle = getCellStyle(cellRef);
-        } catch (Exception e) { }
-        if(cellStyle != null){
-            for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) {
-                    row = sheet.createRow(i);
-                }for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
-                    Cell cell = row.getCell(j);
-                    if (cell == null) {
-                        cell = row.createCell(j);
-                    }
-                    if (cellStyle == null){
-                        cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
-                        cell.getCellStyle().setVerticalAlignment(VerticalAlignment.CENTER);
-                    }else {
-                        cell.setCellStyle(cellStyle);
-                    }
+        } catch (Exception ignore) {
+        }
+        if (cellStyle == null) {
+            return;
+        }
+        for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) {
+                row = sheet.createRow(i);
+            }
+            for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
+                Cell cell = row.getCell(j);
+                if (cell == null) {
+                    cell = row.createCell(j);
+                }
+                if (cellStyle == null) {
+                    cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
+                    cell.getCellStyle().setVerticalAlignment(VerticalAlignment.CENTER);
+                } else {
+                    cell.setCellStyle(cellStyle);
                 }
             }
         }
     }
-
 }

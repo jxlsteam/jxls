@@ -1,16 +1,20 @@
 package org.jxls.command;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.jxls.area.Area;
-import org.jxls.common.*;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.GroupData;
+import org.jxls.common.JxlsException;
+import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -243,7 +247,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     public Size applyAt(CellRef cellRef, Context context) {
-        Iterable itemsCollection = null;
+        Iterable<?> itemsCollection = null;
         try {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
         } catch (Exception e) {
@@ -264,7 +268,7 @@ public class EachCommand extends AbstractCommand {
         return size;
     }
 
-    private Size processCollection(Context context, Iterable itemsCollection, CellRef cellRef, String varName) {
+    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
         int index = 0;
         int newWidth = 0;
         int newHeight = 0;
@@ -317,12 +321,19 @@ public class EachCommand extends AbstractCommand {
         return new Size(newWidth, newHeight);
     }
 
+    @SuppressWarnings("unchecked")
     private List<String> extractSheetNameList(Context context) {
         try {
-            return (List<String>) context.getVar(multisheet);
+            Object sheetnames = context.getVar(multisheet);
+            if (sheetnames == null) {
+                return null;
+            } else if (sheetnames instanceof List) {
+                return (List<String>) sheetnames;
+            }
         } catch (Exception e) {
             throw new JxlsException("Failed to get sheet names from " + multisheet, e);
         }
+        throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
     }
 
 }

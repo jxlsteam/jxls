@@ -1,8 +1,12 @@
 package org.jxls.command;
 
 import org.jxls.area.Area;
+import org.jxls.common.AreaRef;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.common.ImageType;
+import org.jxls.common.Size;
 import org.jxls.transform.Transformer;
-import org.jxls.common.*;
 
 /**
  * Implements image rendering

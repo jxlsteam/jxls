@@ -11,7 +11,6 @@ import org.jxls.common.Size;
 import org.jxls.common.cellshift.AdjacentCellShiftStrategy;
 import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.common.cellshift.InnerCellShiftStrategy;
-import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;

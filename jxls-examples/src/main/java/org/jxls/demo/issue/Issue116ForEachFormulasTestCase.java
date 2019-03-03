@@ -1,10 +1,5 @@
 package org.jxls.demo.issue;
 
-import org.jxls.common.Context;
-import org.jxls.expression.JexlExpressionEvaluator;
-import org.jxls.transform.Transformer;
-import org.jxls.util.JxlsHelper;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +7,10 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jxls.common.Context;
+import org.jxls.transform.Transformer;
+import org.jxls.util.JxlsHelper;
 
 public class Issue116ForEachFormulasTestCase
 {
@@ -30,10 +29,10 @@ public class Issue116ForEachFormulasTestCase
                 JxlsHelper jxlsHelper = JxlsHelper.getInstance();
                 jxlsHelper.setUseFastFormulaProcessor(false);
                 Transformer transformer = jxlsHelper.createTransformer(is, os);
-                final JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer.getTransformationConfig().getExpressionEvaluator();
                 Map<String, Object> jxlsMap = new HashMap<>();
                 jxlsMap.put("math", Math.class); // add Math utility functions
 
+//                final JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer.getTransformationConfig().getExpressionEvaluator();
 //                evaluator.getJexlEngine().setFunctions(jxlsMap);
                 jxlsHelper.processTemplate(context, transformer);
             }

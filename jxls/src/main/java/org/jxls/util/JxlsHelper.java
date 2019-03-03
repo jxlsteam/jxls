@@ -365,7 +365,7 @@ public class JxlsHelper {
      * @return this
      */
   public JxlsHelper gridExport(
-      Collection headers, Collection dataObjects, String objectProps, OutputStream outputStream) {
+      Collection<?> headers, Collection<?> dataObjects, String objectProps, OutputStream outputStream) {
     simpleExporter.gridExport(headers, dataObjects, objectProps, outputStream);
     return this;
   }

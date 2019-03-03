@@ -1,19 +1,32 @@
 package org.jxls.util;
 
-import org.jxls.common.*;
-import org.jxls.expression.EvaluationException;
-import org.jxls.expression.ExpressionEvaluator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jxls.common.CellRef;
+import org.jxls.common.CellRefColPrecedenceComparator;
+import org.jxls.common.CellRefRowPrecedenceComparator;
+import org.jxls.common.Context;
+import org.jxls.common.GroupData;
+import org.jxls.common.JxlsException;
+import org.jxls.expression.EvaluationException;
+import org.jxls.expression.ExpressionEvaluator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class with various helper methods used by other classes
@@ -268,7 +281,7 @@ public class Util {
   public static Object getObjectProperty(Object obj, String propertyName)
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     if (obj instanceof Map) {
-      return ((Map) obj).get(propertyName);
+      return ((Map<?,?>) obj).get(propertyName);
     }
     Method method =
         obj.getClass()
@@ -277,27 +290,28 @@ public class Util {
     return method.invoke(obj);
   }
 
+  // TODO MW: groupCollection vs. groupIterable: duplicate code?
   public static Collection<GroupData> groupCollection(
-      Collection collection, String groupProperty, String groupOrder) {
+      Collection<?> collection, String groupProperty, String groupOrder) {
     Collection<GroupData> result = new ArrayList<GroupData>();
     if (collection != null) {
 
-      Set groupByValues;
+      Set<Object> groupByValues;
       if (groupOrder != null) {
         if ("desc".equalsIgnoreCase(groupOrder)) {
-          groupByValues = new TreeSet(Collections.reverseOrder());
+          groupByValues = new TreeSet<>(Collections.reverseOrder());
         } else {
-          groupByValues = new TreeSet();
+          groupByValues = new TreeSet<>();
         }
       } else {
-        groupByValues = new LinkedHashSet();
+        groupByValues = new LinkedHashSet<>();
       }
       for (Object bean : collection) {
         groupByValues.add(getGroupKey(bean, groupProperty));
       }
-      for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
+      for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
-        List groupItems = new ArrayList();
+        List<Object> groupItems = new ArrayList<>();
         for (Object bean : collection) {
           if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
@@ -312,25 +326,25 @@ public class Util {
   }
 
   public static Collection<GroupData> groupIterable(
-      Iterable iterable, String groupProperty, String groupOrder) {
+      Iterable<?> iterable, String groupProperty, String groupOrder) {
     Collection<GroupData> result = new ArrayList<GroupData>();
     if (iterable != null) {
-      Set groupByValues;
+      Set<Object> groupByValues;
       if (groupOrder != null) {
         if ("desc".equalsIgnoreCase(groupOrder)) {
-          groupByValues = new TreeSet(Collections.reverseOrder());
+          groupByValues = new TreeSet<>(Collections.reverseOrder());
         } else {
-          groupByValues = new TreeSet();
+          groupByValues = new TreeSet<>();
         }
       } else {
-        groupByValues = new LinkedHashSet();
+        groupByValues = new LinkedHashSet<>();
       }
       for (Object bean : iterable) {
         groupByValues.add(getGroupKey(bean, groupProperty));
       }
-      for (Iterator iterator = groupByValues.iterator(); iterator.hasNext(); ) {
+      for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext(); ) {
         Object groupValue = iterator.next();
-        List groupItems = new ArrayList();
+        List<Object> groupItems = new ArrayList<>();
         for (Object bean : iterable) {
           if (groupValue.equals(getGroupKey(bean, groupProperty))) {
             groupItems.add(bean);
@@ -371,13 +385,13 @@ public class Util {
     return baos.toByteArray();
   }
 
-  public static Collection transformToCollectionObject(
+  public static Collection<?> transformToCollectionObject(
       ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
     Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
     if (!(collectionObject instanceof Collection)) {
       throw new JxlsException(collectionName + " expression is not a collection");
     }
-    return (Collection) collectionObject;
+    return (Collection<?>) collectionObject;
   }
 
   public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
@@ -408,13 +422,13 @@ public class Util {
     return count;
   }
 
-  public static Iterable transformToIterableObject(ExpressionEvaluator expressionEvaluator,
+  public static Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator,
       String collectionName, Context context) {
     Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
     if(!(collectionObject instanceof Iterable<?>)) {
       throw new JxlsException(collectionName + " expression is not a collection");
     }
-    return (Iterable) collectionObject;
+    return (Iterable<?>) collectionObject;
   }
 
   public static String getStrictCellNameRegex(String name){

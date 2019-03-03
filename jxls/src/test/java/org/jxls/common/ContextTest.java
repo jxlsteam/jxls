@@ -21,7 +21,7 @@ public class ContextTest {
         context.putVar("col", 1);
         context.putVar("row", 2);
         context.putVar("obj", "12345");
-        Map vars = context.toMap();
+        Map<String, Object> vars = context.toMap();
         assertEquals(vars.get("col"), 1);
         assertEquals(vars.get("row"), 2);
         assertEquals(vars.get("obj"), "12345");
@@ -31,7 +31,7 @@ public class ContextTest {
     public void removeVar(){
         Context context = new Context();
         context.putVar("col", 1);
-        Map vars = context.toMap();
+        Map<String, Object> vars = context.toMap();
         assertEquals(vars.get("col"), 1);
         context.removeVar("col");
         vars = context.toMap();

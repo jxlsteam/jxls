@@ -49,7 +49,7 @@ public class TransformerFactory {
     }
 
     public static String getTransformerName(){
-        Class transformerClass = getTransformerClass();
+        Class<?> transformerClass = getTransformerClass();
         if( transformerClass == null ){
             return null;
         }
@@ -62,9 +62,9 @@ public class TransformerFactory {
         return transformerClass.getName();
     }
 
-    private static Class getTransformerClass() {
+    private static Class<?> getTransformerClass() {
         String transformerName = System.getProperty(TRANSFORMER_SYSTEM_PROPERTY);
-        Class transformer = null;
+        Class<?> transformer = null;
         if( transformerName == null ){
             transformer = loadPoiTransformer();
             if (transformer == null) {
@@ -80,7 +80,7 @@ public class TransformerFactory {
         return transformer;
     }
 
-    private static Class loadPoiTransformer() {
+    private static Class<?> loadPoiTransformer() {
         try {
             return Class.forName(POI_CLASS_NAME);
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class TransformerFactory {
         }
     }
 
-    private static Class loadJexcelTransformer() {
+    private static Class<?> loadJexcelTransformer() {
         try {
             return Class.forName(JEXCEL_CLASS_NAME);
         } catch (Exception e) {

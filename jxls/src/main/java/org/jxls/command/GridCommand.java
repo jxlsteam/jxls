@@ -10,7 +10,6 @@ import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
-import org.jxls.util.Util;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +148,7 @@ public class GridCommand extends AbstractCommand {
         if(bodyArea == null || data == null){
             return Size.ZERO_SIZE;
         }
-        Iterable dataCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
+        Iterable<?> dataCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
 
         CellRef currentCell = cellRef;
         int totalWidth = 0;
@@ -161,11 +160,11 @@ public class GridCommand extends AbstractCommand {
         config.setCellStyleMap(this.cellStyleMap);
         for( Object rowObject : dataCollection){
             if( rowObject.getClass().isArray() || rowObject instanceof Iterable){
-                Iterable cellCollection = null;
+                Iterable<?> cellCollection = null;
                 if( rowObject.getClass().isArray() ){
                     cellCollection = Arrays.asList((Object[])rowObject);
                 }else{
-                    cellCollection = (Iterable) rowObject;
+                    cellCollection = (Iterable<?>) rowObject;
                 }
                 int width = 0;
                 int height = 0;
@@ -214,7 +213,7 @@ public class GridCommand extends AbstractCommand {
         if(headerArea == null || headers == null){
             return Size.ZERO_SIZE;
         }
-        Iterable headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
+        Iterable<?> headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
         CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;

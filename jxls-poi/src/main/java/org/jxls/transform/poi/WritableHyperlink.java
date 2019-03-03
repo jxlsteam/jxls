@@ -4,16 +4,14 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.common.Context;
 
 /**
  * Writable cell value implementation for Hyperlink
  * @author Leonid Vysochyn
- *         Date: 6/18/12
+ * @since 6/18/12
  */
 public class WritableHyperlink implements WritableCellValue {
     public static final String LINK_URL = "URL";
@@ -34,16 +32,17 @@ public class WritableHyperlink implements WritableCellValue {
     public WritableHyperlink(String address, String title, String linkTypeString) {
         this.address = address;
         this.title = title;
-        if( LINK_URL.equals(linkTypeString) ){
+        if (LINK_URL.equals(linkTypeString)) {
             linkType = HyperlinkType.URL;
-        }else if( LINK_DOCUMENT.equals(linkTypeString) ){
+        } else if (LINK_DOCUMENT.equals(linkTypeString)) {
             linkType = HyperlinkType.DOCUMENT;
-        }else if( LINK_EMAIL.equals(linkTypeString) ){
+        } else if (LINK_EMAIL.equals(linkTypeString)) {
             linkType = HyperlinkType.EMAIL;
-        }else if( LINK_FILE.equals(linkTypeString) ){
+        } else if (LINK_FILE.equals(linkTypeString)) {
             linkType = HyperlinkType.FILE;
-        }else {
-            throw new IllegalArgumentException("Link type must be one of the following values: " + LINK_URL + "," + LINK_DOCUMENT + "," + LINK_EMAIL + "," + LINK_FILE);
+        } else {
+            throw new IllegalArgumentException("Link type must be one of the following values: " + LINK_URL + ","
+                    + LINK_DOCUMENT + "," + LINK_EMAIL + "," + LINK_FILE);
         }
     }
 
@@ -60,21 +59,11 @@ public class WritableHyperlink implements WritableCellValue {
         hyperlink.setAddress(address);
         cell.setHyperlink(hyperlink);
         cell.setCellValue(title);
-        if( linkStyle == null ){
+        if (linkStyle == null) {
             linkStyle = cell.getCellStyle();
         }
         cell.setCellStyle(linkStyle);
         return cell;
-    }
-
-
-    private CellStyle createLinkStyle(Workbook workbook) {
-        linkStyle = workbook.createCellStyle();
-        Font hlink_font = workbook.createFont();
-        hlink_font.setUnderline(Font.U_SINGLE);
-        hlink_font.setColor(IndexedColors.BLUE.getIndex());
-        linkStyle.setFont(hlink_font);
-        return linkStyle;
     }
 
     public String getAddress() {
@@ -92,5 +81,4 @@ public class WritableHyperlink implements WritableCellValue {
     public void setTitle(String title) {
         this.title = title;
     }
-
 }

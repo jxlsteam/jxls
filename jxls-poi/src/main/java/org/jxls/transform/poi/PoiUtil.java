@@ -12,15 +12,17 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 
 /**
  * POI utility methods
+ * 
  * @author Leonid Vysochyn
  */
 public class PoiUtil {
-    public static void setCellComment(Cell cell, String commentText, String commentAuthor, ClientAnchor anchor){
+    
+    public static void setCellComment(Cell cell, String commentText, String commentAuthor, ClientAnchor anchor) {
         Sheet sheet = cell.getSheet();
         Workbook wb = sheet.getWorkbook();
-        Drawing drawing = sheet.createDrawingPatriarch();
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
         CreationHelper factory = wb.getCreationHelper();
-        if( anchor == null ){
+        if (anchor == null) {
             anchor = factory.createClientAnchor();
             anchor.setCol1(cell.getColumnIndex() + 1);
             anchor.setCol2(cell.getColumnIndex() + 3);
@@ -30,25 +32,25 @@ public class PoiUtil {
         Comment comment = drawing.createCellComment(anchor);
         comment.setString(factory.createRichTextString(commentText));
         comment.setAuthor(commentAuthor != null ? commentAuthor : "");
-        cell.setCellComment( comment );
+        cell.setCellComment(comment);
     }
 
-    public WritableCellValue hyperlink(String address, String link, String linkTypeString){
+    public WritableCellValue hyperlink(String address, String link, String linkTypeString) {
         return new WritableHyperlink(address, link, linkTypeString);
     }
 
-    public WritableCellValue hyperlink(String address, String title){
+    public WritableCellValue hyperlink(String address, String title) {
         return new WritableHyperlink(address, title);
     }
 
-    public static void copySheetProperties(Sheet src, Sheet dest){
+    public static void copySheetProperties(Sheet src, Sheet dest) {
         dest.setAutobreaks(src.getAutobreaks());
         dest.setDisplayGridlines(src.isDisplayGridlines());
         dest.setVerticallyCenter(src.getVerticallyCenter());
         dest.setFitToPage(src.getFitToPage());
         dest.setForceFormulaRecalculation(src.getForceFormulaRecalculation());
         dest.setRowSumsRight(src.getRowSumsRight());
-        dest.setRowSumsBelow( src.getRowSumsBelow() );
+        dest.setRowSumsBelow(src.getRowSumsBelow());
         copyPrintSetup(src, dest);
     }
 
@@ -72,14 +74,14 @@ public class PoiUtil {
         destPrintSetup.setScale(srcPrintSetup.getScale());
         destPrintSetup.setUsePage(srcPrintSetup.getUsePage());
         destPrintSetup.setValidSettings(srcPrintSetup.getValidSettings());
-        destPrintSetup.setVResolution( srcPrintSetup.getVResolution() );
+        destPrintSetup.setVResolution(srcPrintSetup.getVResolution());
     }
 
     public static boolean isJxComment(String cellComment) {
-        if(cellComment == null ) return false;
+        if (cellComment == null) return false;
         String[] commentLines = cellComment.split("\\n");
         for (String commentLine : commentLines) {
-            if( (commentLine != null) && XlsCommentAreaBuilder.isCommandString( commentLine.trim() ) ){
+            if ((commentLine != null) && XlsCommentAreaBuilder.isCommandString(commentLine.trim())) {
                 return true;
             }
         }

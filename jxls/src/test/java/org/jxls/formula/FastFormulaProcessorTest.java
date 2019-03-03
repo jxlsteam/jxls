@@ -1,6 +1,18 @@
 package org.jxls.formula;
 
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.common.CellData;
@@ -8,15 +20,6 @@ import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
 import org.mockito.ArgumentCaptor;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 /**
  * @author Michał Kępkowski
@@ -48,7 +51,7 @@ public class FastFormulaProcessorTest {
         transformer.getTargetCellRef(new CellRef("Arkusz1",21,4))
                 .add(new CellRef("Arkusz1",210,30));
 
-        List<CellData> cellDataList = new ArrayList(transformer.getFormulaCells());
+        List<CellData> cellDataList = new ArrayList<>(transformer.getFormulaCells());
         getIFFormula(cellDataList)
                 .addTargetPos(new CellRef("Arkusz1",12,12));
         return transformer;

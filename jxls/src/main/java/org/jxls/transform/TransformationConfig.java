@@ -1,7 +1,6 @@
 package org.jxls.transform;
 
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 
 import java.util.regex.Pattern;

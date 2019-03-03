@@ -1,10 +1,24 @@
 package org.jxls.builder.xls;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jxls.area.Area;
 import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
-import org.jxls.command.*;
+import org.jxls.command.Command;
+import org.jxls.command.EachCommand;
+import org.jxls.command.GridCommand;
+import org.jxls.command.IfCommand;
+import org.jxls.command.ImageCommand;
+import org.jxls.command.MergeCellsCommand;
+import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -12,10 +26,6 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Builds {@link org.jxls.area.XlsArea} from excel comments in the excel template
@@ -100,7 +110,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     
-    private static Map<String, Class> commandMap = new HashMap<String, Class>();
+    private static Map<String, Class<? extends Command>> commandMap = new HashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
     static{
@@ -138,7 +148,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         this.transformer = transformer;
     }
 
-    public static void addCommandMapping(String commandName, Class clazz){
+    public static void addCommandMapping(String commandName, Class<? extends Command> clazz){
         commandMap.put(commandName, clazz);
     }
 
@@ -279,13 +289,13 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     }
 
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
-        Class clazz = commandMap.get(commandName);
+        Class<? extends Command> clazz = commandMap.get(commandName);
         if( clazz == null ){
             logger.warn("Failed to find Command class mapped to command name '" + commandName + "'");
             return null;
         }
         try {
-            Command command = (Command) clazz.newInstance();
+            Command command = clazz.newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if( !attr.getKey().equals(LAST_CELL_ATTR_NAME) ){
                     Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);

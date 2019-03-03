@@ -1,5 +1,12 @@
 package org.jxls.template;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -11,9 +18,6 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.List;
 
 /**
  * Helper class for grid export
@@ -37,7 +41,7 @@ public class SimpleExporter {
         templateBytes = os.toByteArray();
     }
 
-    public void gridExport(Iterable headers, Iterable dataObjects, String objectProps, OutputStream outputStream){
+    public void gridExport(Iterable<?> headers, Iterable<?> dataObjects, String objectProps, OutputStream outputStream){
     	if( templateBytes == null ){
             InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
             try {
