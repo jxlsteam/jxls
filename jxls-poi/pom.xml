@@ -24,7 +24,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spockVersion>1.2-groovy-2.5</spockVersion>
+        <spockVersion>1.0-groovy-2.4</spockVersion>
         <poi.version>4.0.1</poi.version>
         <jxls.version>2.6.0-SNAPSHOT</jxls.version>
         <slf4j.version>1.7.26</slf4j.version>
