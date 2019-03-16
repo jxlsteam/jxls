@@ -12,11 +12,11 @@ import java.util.Map;
 
 /**
  * Configurator used by XmlAreaBuilder to configure building rules
+ * 
  * @author Leonid Vysochyn
- *         Date: 2/14/12
+ * @since 2/14/12
  */
 class SimpleConfigurator extends GenericConfigurator {
-
     private final Map<ElementSelector, Action> ruleMap;
     private final List<ImplicitAction> iaList;
 
@@ -39,12 +39,11 @@ class SimpleConfigurator extends GenericConfigurator {
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-        if(iaList == null) {
+        if (iaList == null) {
             return;
         }
         for (ImplicitAction ia : iaList) {
             interpreter.addImplicitAction(ia);
         }
     }
-
 }

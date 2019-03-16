@@ -12,8 +12,9 @@ import org.xml.sax.Attributes;
 
 /**
  * Builds custom user command from XML
+ * 
  * @author Leonid Vysochyn
- *         Date: 2/21/12
+ * @since 2/21/12
  */
 public class UserCommandAction extends Action {
     public static final String ATTR = "attr";
@@ -24,29 +25,28 @@ public class UserCommandAction extends Action {
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
         String ref = attributes.getValue(REF_ATTR);
         String commandClassName = attributes.getValue(COMMAND_CLASS_ATTR);
-        if( commandClassName == null || commandClassName.trim().length() == 0){
+        if (commandClassName == null || commandClassName.trim().length() == 0) {
             String errMsg = "Required actionClass attribute is not specified for userCommand";
             ic.addError(errMsg);
             throw new IllegalArgumentException(errMsg);
         }
         Command command;
         try {
-            command = (Command) OptionHelper.instantiateByClassName(commandClassName,
-                    Command.class, context);
+            command = (Command) OptionHelper.instantiateByClassName(commandClassName, Command.class, context);
         } catch (Exception e) {
             addError("Could not instantiate class [" + commandClassName + "]", e);
             throw new IllegalStateException(e);
         }
-        try{
+        try {
             initPropertiesFromAttributes(command, attributes);
-        }catch (Exception e){
+        } catch (Exception e) {
             addWarn("Could not set an attribute");
         }
         Object object = ic.peekObject();
-        if( object instanceof Area){
+        if (object instanceof Area) {
             Area area = (Area) object;
             area.addCommand(new AreaRef(ref), command);
-        }else{
+        } else {
             String errMsg = "Object [" + object + "] currently at the top of the stack is not an Area";
             ic.addError(errMsg);
             throw new IllegalArgumentException(errMsg);
@@ -56,7 +56,7 @@ public class UserCommandAction extends Action {
 
     private void initPropertiesFromAttributes(Object obj, Attributes attributes) {
         int attrLength = attributes.getLength();
-        for(int i = 0; i < attrLength; i++){
+        for (int i = 0; i < attrLength; i++) {
             try {
                 Util.setObjectProperty(obj, attributes.getLocalName(i), attributes.getValue(i));
             } catch (Exception e) {

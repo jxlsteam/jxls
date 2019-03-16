@@ -4,10 +4,12 @@ import java.util.Map;
 
 /**
  * An interface to evaluate expressions
- * Date: Nov 2, 2009
+ * 
  * @author Leonid Vysochyn
+ * @since 11/02/2009
  */
 public interface ExpressionEvaluator {
+
     Object evaluate(String expression, Map<String,Object> context);
     
     Object evaluate(Map<String, Object> context);

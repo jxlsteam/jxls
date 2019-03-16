@@ -1,13 +1,14 @@
 package org.jxls.common;
 
-import org.jxls.transform.Transformer;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jxls.transform.Transformer;
+
 /**
- * Represents an excel row data holder
+ * Represents an Excel row data holder
+ * 
  * @author Leonid Vysochyn
  */
 public class RowData implements Iterable<CellData> {
@@ -23,13 +24,16 @@ public class RowData implements Iterable<CellData> {
         this.transformer = transformer;
     }
 
-    public int getNumberOfCells(){
+    public int getNumberOfCells() {
         return cellDataList.size();
     }
 
-    public CellData getCellData(int col){
-        if( col < cellDataList.size() ) return cellDataList.get(col);
-        else return null;
+    public CellData getCellData(int col) {
+        if (col < cellDataList.size()) {
+            return cellDataList.get(col);
+        } else {
+            return null;
+        }
     }
 
     protected void addCellData(CellData cellData){
@@ -40,6 +44,7 @@ public class RowData implements Iterable<CellData> {
         return height;
     }
 
+    @Override
     public Iterator<CellData> iterator() {
         return cellDataList.iterator();
     }

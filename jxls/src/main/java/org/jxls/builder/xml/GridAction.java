@@ -10,7 +10,7 @@ import org.jxls.common.AreaRef;
 import org.xml.sax.Attributes;
 
 /**
- * Defines Grid command via xml
+ * Builds {@link GridCommand} from XML
  *
  * @author Leonid Vysochyn
  */

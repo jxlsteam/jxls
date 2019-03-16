@@ -1,22 +1,23 @@
 package org.jxls.transform;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+
 /**
- * Created by Leonid Vysochyn on 7/23/2015.
+ * @author Leonid Vysochyn
  */
 public class TransformationConfigTest {
+    
     @Test
-    public void defaultValuesAfterCreation(){
+    public void defaultValuesAfterCreation() {
         TransformationConfig config = new TransformationConfig();
         assertEquals("Default expression notation begin part is wrong", "${", config.getExpressionNotationBegin());
         assertEquals("Default expression notation end part is wrong", "}", config.getExpressionNotationEnd());
     }
 
     @Test
-    public void buildExpressionNotation(){
+    public void buildExpressionNotation() {
         TransformationConfig config = new TransformationConfig();
         String expressionBegin = "[[";
         String expressionEnd = "]]";

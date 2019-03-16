@@ -2,7 +2,6 @@ package org.jxls.expression;
 
 /**
  * @author Leonid Vysochyn
- *         Date: 1/30/12 1:26 PM
  */
 public class Dummy {
     private String strValue;
@@ -41,12 +40,9 @@ public class Dummy {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Dummy dummy = (Dummy) o;
-
         if (intValue != dummy.intValue) return false;
         if (strValue != null ? !strValue.equals(dummy.strValue) : dummy.strValue != null) return false;
-
         return true;
     }
 

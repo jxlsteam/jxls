@@ -7,15 +7,16 @@ import org.jxls.common.Size;
 
 /**
  * @author Leonid Vysochyn
- *         Date: 2/21/12 4:45 PM
  */
 public class CustomCommand extends AbstractCommand {
     private String attr;
 
+    @Override
     public String getName() {
         return "custom";
     }
 
+    @Override
     public Size applyAt(CellRef cellRef, Context context) {
         return Size.ZERO_SIZE;
     }

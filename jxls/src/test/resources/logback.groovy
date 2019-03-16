@@ -4,7 +4,7 @@ import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 
 appender("CONSOLE", ConsoleAppender) {
-    encoder(PatternLayoutEncoder){
+    encoder(PatternLayoutEncoder) {
         pattern = "%level %logger - %msg%n"
     }
 }

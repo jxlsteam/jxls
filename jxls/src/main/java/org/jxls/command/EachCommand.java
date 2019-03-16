@@ -16,38 +16,38 @@ import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Implements iteration over collection of items
- * 'items' is a bean name of the collection in context
- * 'var' is a name of a collection item to put into the context during the iteration
- * 'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.
- * 'cellRefGenerator' defines custom strategy for target cell references.
- * Date: Nov 10, 2009
+ * <p>Implements iteration over collection of items</p><ul>
+ * <li>'items' is a bean name of the collection in context</li>
+ * <li>'var' is a name of a collection item to put into the context during the iteration</li>
+ * <li>'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.</li>
+ * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
+ * <li>'select' holds an expression for filtering collection.</li>
+ * <li>'multisheet' is the name of the sheet names container.</li>
+ * <li>'groupBy' is the name for grouping.</li>
+ * <li>'groupOrder' defines the grouping order. Case does not matter.
+ *     "asc" for ascending, "desc" for descending sort order. Other values or null: no sorting.</li>
+ * </ul>
  *
  * @author Leonid Vysochyn
+ * @since Nov 10, 2009
  */
 public class EachCommand extends AbstractCommand {
-    
     public static final String COMMAND_NAME = "each";
-
-    public enum Direction {RIGHT, DOWN}
-
+    private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
     static final String GROUP_DATA_KEY = "_group";
 
-    private String var;
-    private String items;
-    private String select;
+    private UtilWrapper util = new UtilWrapper();
     private Area area;
+    private String items;
+    private String var;
+    public enum Direction {RIGHT, DOWN}
     private Direction direction = Direction.DOWN;
     private CellRefGenerator cellRefGenerator;
+    private String select;
     private String multisheet;
     private String groupBy;
     private String groupOrder;
-
-    private UtilWrapper util = new UtilWrapper();
-
-    private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
 
     public EachCommand() {
     }
@@ -97,8 +97,9 @@ public class EachCommand extends AbstractCommand {
     void setUtil(UtilWrapper util) {
         this.util = util;
     }
+    
     /**
-     * Gets iteration directino
+     * Gets iteration direction
      *
      * @return current direction for iteration
      */
@@ -109,12 +110,15 @@ public class EachCommand extends AbstractCommand {
     /**
      * Sets iteration direction
      *
-     * @param direction -
+     * @param direction iteration direction
      */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
+    /**
+     * @param direction "DOWN" or "RIGHT"
+     */
     public void setDirection(String direction) {
         this.direction = Direction.valueOf(direction);
     }
@@ -132,6 +136,7 @@ public class EachCommand extends AbstractCommand {
         this.cellRefGenerator = cellRefGenerator;
     }
 
+    @Override
     public String getName() {
         return COMMAND_NAME;
     }
@@ -228,7 +233,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param groupOrder group ordering
+     * @param groupOrder group ordering: asc = ascending, desc = descending, other value or null: no sorting. Case does not matter.
      */
     public void setGroupOrder(String groupOrder) {
         this.groupOrder = groupOrder;
@@ -246,6 +251,7 @@ public class EachCommand extends AbstractCommand {
         return super.addArea(area);
     }
 
+    @Override
     public Size applyAt(CellRef cellRef, Context context) {
         Iterable<?> itemsCollection = null;
         try {
@@ -276,8 +282,11 @@ public class EachCommand extends AbstractCommand {
         CellRefGenerator cellRefGenerator = this.cellRefGenerator;
         if (cellRefGenerator == null && multisheet != null) {
             List<String> sheetNameList = extractSheetNameList(context);
-            cellRefGenerator = sheetNameList == null ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator()) : new SheetNameGenerator(sheetNameList, cellRef);
+            cellRefGenerator = sheetNameList == null
+                    ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator())
+                    : new SheetNameGenerator(sheetNameList, cellRef);
         }
+        
         ExpressionEvaluator selectEvaluator = null;
         if (select != null) {
             selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
@@ -302,20 +311,18 @@ public class EachCommand extends AbstractCommand {
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight = Math.max(newHeight, size.getHeight());
             } else if (direction == Direction.DOWN) {
-                currentCell = new CellRef(currentCell.getSheetName(),
-                    currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight += size.getHeight();
-            } else {
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(),
-                    currentCell.getCol() + size.getWidth());
+            } else { // RIGHT
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                 newWidth += size.getWidth();
                 newHeight = Math.max(newHeight, size.getHeight());
             }
         }
-        if(currentVarObject != null){
+        if (currentVarObject != null) {
             context.putVar(varName, currentVarObject);
-        }else{
+        } else {
             context.removeVar(varName);
         }
         return new Size(newWidth, newHeight);
@@ -335,5 +342,4 @@ public class EachCommand extends AbstractCommand {
         }
         throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
     }
-
 }

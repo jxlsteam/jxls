@@ -8,14 +8,14 @@ import org.jxls.common.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO Javadoc
 public class UpdateCellCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "updateCell";
     private static Logger logger = LoggerFactory.getLogger(UpdateCellCommand.class);
 
     private Area area;
-    private CellDataUpdater cellDataUpdater;
     private String updater;
-
+    private CellDataUpdater cellDataUpdater; // TODO not used, please fix
 
     @Override
     public String getName() {
@@ -40,7 +40,7 @@ public class UpdateCellCommand extends AbstractCommand {
 
     @Override
     public Command addArea(Area area) {
-        String message = "You can add only a single-cell area to '" + COMMAND_NAME + "' command";
+        String message = "You can only add a single cell area to '" + COMMAND_NAME + "' command!";
         if (areaList.size() >= 1) {
             throw new IllegalArgumentException(message);
         }
@@ -54,23 +54,24 @@ public class UpdateCellCommand extends AbstractCommand {
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         CellDataUpdater cellDataUpdater = createCellDataUpdater(context);
-        CellRef srcCell = area.getStartCellRef();
-        CellData cellData = area.getTransformer().getCellData(srcCell);
-        if( cellDataUpdater != null ) {
+        if (cellDataUpdater != null) {
+            CellRef srcCell = area.getStartCellRef();
+            CellData cellData = area.getTransformer().getCellData(srcCell);
             cellDataUpdater.updateCellData(cellData, cellRef, context);
         }
         return area.applyAt(cellRef, context);
     }
 
     private CellDataUpdater createCellDataUpdater(Context context) {
-        if( updater==null ){
-            logger.warn("updater attribute is not set");
+        if (updater == null) {
+            logger.warn("Attribute 'updater' is not set!");
             return null;
         }
-        if (context.getVar(updater) instanceof CellDataUpdater) {
-            return (CellDataUpdater) context.getVar(updater);
+        Object updaterInstance = context.getVar(updater);
+        if (updaterInstance instanceof CellDataUpdater) {
+            return (CellDataUpdater) updaterInstance;
         } else {
-            logger.warn("CellDataUpdater is null for updater ='{}'", updater);
+            logger.warn("CellDataUpdater is null or does not implement CellDataUpdater! Attribute 'updater': {}", updater);
             return null;
         }
     }

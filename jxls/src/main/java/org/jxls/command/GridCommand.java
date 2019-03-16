@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -16,36 +17,53 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The command implements a grid with dynamic columns and rows
+ * 
  * @author Leonid Vysochyn
  */
 public class GridCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "grid";
     public static final String HEADER_VAR = "header";
     public static final String DATA_VAR = "cell";
-
     private static Logger logger = LoggerFactory.getLogger(GridCommand.class);
 
     /** Name of a context variable containing a collection of headers */
     private String headers;
     /** Name of a context variable containing a collection of data objects for body */
     private String data;
-    /** Comma-separated list of object properties for each grid row */
+    /** Comma separated list of object property names for each grid row */
     private String props;
-
-    /** Comma-separated list of format type cells
-     * e.g. formatCells="Double:E1, Date:F1"
-     */
+    /** Comma separated list of format type cells, e.g. formatCells="Double:E1, Date:F1" */
     private String formatCells;
     private Map<String,String> cellStyleMap = new HashMap<>();
-
     private List<String> rowObjectProps = new ArrayList<>();
-
     private Area headerArea;
     private Area bodyArea;
-
     private UtilWrapper util = new UtilWrapper();
 
     public GridCommand() {
+    }
+
+    public GridCommand(String headers, String data) {
+        this.headers = headers;
+        this.data = data;
+    }
+
+    public GridCommand(String headers, String data, String props, Area headerArea, Area bodyArea) {
+        this.headers = headers;
+        this.data = data;
+        this.props = props;
+        this.headerArea = headerArea;
+        this.bodyArea = bodyArea;
+    }
+
+    // TODO MW to Leonid: looks a bit strange that here are addArea() calls and in the above constructor not
+    public GridCommand(String headers, String data, Area headerArea, Area bodyArea) {
+        this.headers = headers;
+        this.data = data;
+        this.headerArea = headerArea;
+        this.bodyArea = bodyArea;
+        addArea(headerArea);
+        addArea(bodyArea);
     }
 
     @Override
@@ -75,8 +93,8 @@ public class GridCommand extends AbstractCommand {
 
     public void setProps(String props) {
         this.props = props;
-        if( props != null ){
-            rowObjectProps = Arrays.asList( props.replaceAll("\\s+", "").split(",") );
+        if (props != null) {
+            rowObjectProps = Arrays.asList(props.replaceAll("\\s+", "").split(",")); // Remove whitespace and split into List.
         }
     }
 
@@ -84,51 +102,32 @@ public class GridCommand extends AbstractCommand {
         return formatCells;
     }
 
+    /**
+     * @param formatCells Comma-separated list of format type cells, e.g. formatCells="Double:E1, Date:F1"
+     */
     public void setFormatCells(String formatCells) {
         this.formatCells = formatCells;
-        if(formatCells != null){
+        if (formatCells != null) {
             List<String> cellStyleList = Arrays.asList(formatCells.split(","));
             try {
                 for (String cellStyleString : cellStyleList) {
                     String[] styleCell = cellStyleString.split(":");
                     cellStyleMap.put(styleCell[0].trim(), styleCell[1].trim());
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 logger.error("Failed to parse formatCells attribute");
             }
         }
     }
 
-    public GridCommand(String headers, String data) {
-        this.headers = headers;
-        this.data = data;
-    }
-
-    public GridCommand(String headers, String data, String props, Area headerArea, Area bodyArea) {
-        this.headers = headers;
-        this.data = data;
-        this.props = props;
-        this.headerArea = headerArea;
-        this.bodyArea = bodyArea;
-    }
-
-    public GridCommand(String headers, String data, Area headerArea, Area bodyArea) {
-        this.headers = headers;
-        this.data = data;
-        this.headerArea = headerArea;
-        this.bodyArea = bodyArea;
-        addArea(headerArea);
-        addArea(bodyArea);
-    }
-
     @Override
     public Command addArea(Area area) {
-        if( areaList.size() >= 2 ){
-            throw new IllegalArgumentException("Cannot add any more areas to GridCommand. You can add only 1 area as a 'header' and 1 area as a 'body'");
+        if (areaList.size() >= 2) {
+            throw new IllegalArgumentException("Cannot add any more areas to GridCommand. You can add only 1 area as a 'header' and 1 area as a 'body'.");
         }
-        if(areaList.isEmpty()){
+        if (areaList.isEmpty()) {
             headerArea = area;
-        }else {
+        } else {
             bodyArea = area;
         }
         return super.addArea(area);
@@ -140,12 +139,34 @@ public class GridCommand extends AbstractCommand {
         CellRef bodyCellRef = new CellRef(cellRef.getSheetName(), cellRef.getRow() + headerAreaSize.getHeight(), cellRef.getCol());
         Size bodyAreaSize = processBody(bodyCellRef, context);
         int gridHeight = headerAreaSize.getHeight() + bodyAreaSize.getHeight();
-        int gridWidth = Math.max( headerAreaSize.getWidth(), bodyAreaSize.getWidth());
+        int gridWidth = Math.max(headerAreaSize.getWidth(), bodyAreaSize.getWidth());
         return new Size(gridWidth, gridHeight);
     }
 
+    private Size processHeaders(CellRef cellRef, Context context) {
+        if (headerArea == null || headers == null) {
+            return Size.ZERO_SIZE;
+        }
+        Iterable<?> headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
+        CellRef currentCell = cellRef;
+        int width = 0;
+        int height = 0;
+        // TODO possible error: content of HEADER_VAR is not saved & restored
+        for (Object header : headers) {
+            context.putVar(HEADER_VAR, header);
+            Size size = headerArea.applyAt(currentCell, context);
+            currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+            width += size.getWidth();
+            height = Math.max(height, size.getHeight());
+        }
+        context.removeVar(HEADER_VAR);
+    
+        return new Size(width, height);
+    }
+
+    // TODO method too long, similar code
     private Size processBody(final CellRef cellRef, Context context) {
-        if(bodyArea == null || data == null){
+        if (bodyArea == null || data == null) {
             return Size.ZERO_SIZE;
         }
         Iterable<?> dataCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
@@ -158,47 +179,48 @@ public class GridCommand extends AbstractCommand {
         config.setIgnoreSourceCellStyle(true);
         Map<String,String> oldStyleCellMap = config.getCellStyleMap();
         config.setCellStyleMap(this.cellStyleMap);
-        for( Object rowObject : dataCollection){
-            if( rowObject.getClass().isArray() || rowObject instanceof Iterable){
+        // TODO possible error: content of DATA_VAR is not saved & restored
+        for (Object rowObject : dataCollection) {
+            if (rowObject.getClass().isArray() || rowObject instanceof Iterable) {
                 Iterable<?> cellCollection = null;
-                if( rowObject.getClass().isArray() ){
-                    cellCollection = Arrays.asList((Object[])rowObject);
-                }else{
+                if (rowObject.getClass().isArray()) {
+                    cellCollection = Arrays.asList((Object[]) rowObject);
+                } else {
                     cellCollection = (Iterable<?>) rowObject;
                 }
                 int width = 0;
                 int height = 0;
-                for(Object cellObject : cellCollection){
+                for (Object cellObject : cellCollection) {
                     context.putVar(DATA_VAR, cellObject);
                     Size size = bodyArea.applyAt(currentCell, context);
                     currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                     width += size.getWidth();
-                    height = Math.max( height, size.getHeight() );
+                    height = Math.max(height, size.getHeight());
                 }
-                totalWidth = Math.max( width, totalWidth );
+                totalWidth = Math.max(width, totalWidth);
                 totalHeight = totalHeight + height;
                 currentCell = new CellRef(cellRef.getSheetName(), currentCell.getRow() + height, cellRef.getCol());
-            }else{
-                if( rowObjectProps.isEmpty()){
+            } else {
+                if (rowObjectProps.isEmpty()) {
                     throw new IllegalArgumentException("Got a non-collection object type for a Grid row but object properties list is empty");
                 }
                 int width = 0;
                 int height = 0;
-                for(String prop : rowObjectProps){
+                for (String prop : rowObjectProps) {
                     try {
                         Object value = PropertyUtils.getProperty(rowObject, prop);
                         context.putVar(DATA_VAR, value);
                         Size size = bodyArea.applyAt(currentCell, context);
                         currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
                         width += size.getWidth();
-                        height = Math.max( height, size.getHeight() );
+                        height = Math.max(height, size.getHeight());
                     } catch (Exception e) {
                         String message = "Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName();
                         logger.error(message, e);
                         throw new IllegalStateException(message, e);
                     }
                 }
-                totalWidth = Math.max( width, totalWidth );
+                totalWidth = Math.max(width, totalWidth);
                 totalHeight = totalHeight + height;
                 currentCell = new CellRef(cellRef.getSheetName(), currentCell.getRow() + height, cellRef.getCol());
             }
@@ -208,25 +230,4 @@ public class GridCommand extends AbstractCommand {
         config.setCellStyleMap(oldStyleCellMap);
         return new Size(totalWidth, totalHeight);
     }
-
-    private Size processHeaders(CellRef cellRef, Context context) {
-        if(headerArea == null || headers == null){
-            return Size.ZERO_SIZE;
-        }
-        Iterable<?> headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
-        CellRef currentCell = cellRef;
-        int width = 0;
-        int height = 0;
-        for( Object header : headers){
-            context.putVar(HEADER_VAR, header);
-            Size size = headerArea.applyAt(currentCell, context);
-            currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
-            width += size.getWidth();
-            height = Math.max( height, size.getHeight() );
-        }
-        context.removeVar(HEADER_VAR);
-
-        return new Size(width, height);
-    }
-
 }

@@ -28,56 +28,59 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Builds {@link org.jxls.area.XlsArea} from excel comments in the excel template
- * A command is specified in a cell comment like the following
- * jx:COMMAND_NAME(attr1="value1" attr2="value2" ... attrN="valueN" lastCell="LAST_CELL" areas=["AREA_REF1", "AREA_REF2", ... , "AREA_REFN"])
- * where
- * COMMAND_NAME - the name of the command
+ * <h1>Builds {@link org.jxls.area.XlsArea} from Excel comments in the Excel template</h1>
+ * 
+ * <h2>Command syntax</h2>
+ * <p>A command is specified in a cell comment like the following</p>
+ * <pre> jx:COMMAND_NAME(attr1="value1" attr2="value2" ... attrN="valueN" lastCell="LAST_CELL" areas=["AREA_REF1", "AREA_REF2", ... , "AREA_REFN"])</pre>
+ * where<ul>
+ * <li>COMMAND_NAME - the name of the command</li>
  *
- * attr1, attr2, ... attrN, value1, value2, ... , valueN - command attributes and their values
+ * <li>attr1, attr2, ... attrN, value1, value2, ... , valueN - command attributes and their values</li>
  *
- * lastCell, LAST_CELL - attribute name and cell reference value specifying the last cell where this command is placed
+ * <li>lastCell, LAST_CELL - attribute name and cell reference value specifying the last cell where this command is placed
  * in the parent area. The first cell is defined by the cell where the comment is defined.
- * If there is no "areas" attribute defined it also defines the single area for this command to operate on.
+ * If there is no "areas" attribute defined it also defines the single area for this command to operate on.</li>
  *
- * AREA_REF1, AREA_REF2, ... , AREA_REFN - additional area references for this command (if supported by the command)
+ * <li>AREA_REF1, AREA_REF2, ... , AREA_REFN - additional area references for this command (if supported by the command)
  * 'areas' attribute is optional and only needed for commands which work with more than one area.
- * If there is only a single area for the command it is usually enough to define just lastCell attribute
+ * If there is only a single area for the command it is usually enough to define just lastCell attribute</li>
+ * </ul>
  *
- * Top areas are defined by specifying "area" ({@link AreaCommand}
+ * <p>Multiple commands can be specified in a single cell comment separated by new lines.
+ * In this case the area of the first command will contain the second command and so on.</p>
  *
- * Multiple commands can be specified in a single cell comment separated by new lines.
- * In this case the area of the first command will contain the second command and so on
- *
- *
- * The class defines following pre-defined mappings between the command names and classes
- * "jx:each" - {@link org.jxls.command.EachCommand}
+ * <p>This class defines the following pre-defined mappings between the command names and Command classes:</p>
+ * <pre> "jx:each" - {@link org.jxls.command.EachCommand}
  * "jx:if" - {@link IfCommand}
+ * "jx:area" - {@link AreaCommand} - for defining the top areas
  * "jx:image" - {@link ImageCommand}
- * "jx:area" - {@link AreaCommand}
+ * "jx:grid" - {@link GridCommand}
+ * "jx:updateCell" - {@link UpdateCellCommand}
+ * "jx:mergeCells" - {@link MergeCellsCommand}</pre>
  *
- * Custom command classes mapping can be added using addCommandMapping(String commandName, Class clazz) method
+ * <p>Custom command classes mapping can be added using addCommandMapping(String commandName, Class clazz) method</p>
  *
- * Command examples:
+ * <h2>Command examples</h2>
  *
- * jx:if(condition="employee.payment &lt;= 2000", lastCell="F9", areas=["A9:F9","A30:F30"])
+ * <pre> jx:if(condition="employee.payment &lt;= 2000", lastCell="F9", areas=["A9:F9","A30:F30"])</pre>
  *
- * Here we define {@link IfCommand} with a condition expression 'employee.payment &lt;= 2000' and first area (if-area) "A9:F9"
+ * <p>Here we define {@link IfCommand} with a condition expression 'employee.payment &lt;= 2000' and first area (if-area) "A9:F9"
  * and second area (else-area) "A30:F30". The command is added to the parent area covering a range from the cell where
- * the comment is placed and to the cell defined in lastCell attribute "F9".
+ * the comment is placed and to the cell defined in lastCell attribute "F9".</p>
  *
- * jx:each(items="department.staff", var="employee", lastCell="F9")
+ * <pre> jx:each(items="department.staff", var="employee", lastCell="F9")</pre>
  *
- * Here we define {@link org.jxls.command.EachCommand} with items attribute set to 'department.staff' and var attribute set to 'employee'.
- * The command area is defined from the cell where the comment is defined and till the lastCell "F9"
+ * <p>Here we define {@link org.jxls.command.EachCommand} with items attribute set to 'department.staff' and var attribute set to 'employee'.
+ * The command area is defined from the cell where the comment is defined and till the lastCell "F9"</p>
  *
- * jx:area(lastCell="G26" clearCells="true")
+ * <pre> jx:area(lastCell="G26" clearCells="true")</pre>
  *
- * Specifies the top area range with {@link AreaCommand} starting from the cell where the comment is defined and in
- * the cell defined in lastCell("G26"). clearCells attribute defines if it is required to clear area cell values after processing
+ * <p>Specifies the top area range with {@link AreaCommand} starting from the cell where the comment is defined and in
+ * the cell defined in lastCell("G26"). clearCells attribute defines if it is required to clear area cell values after processing</p>
  *
- * Note: Clearing comments from the cells appears to have some issues in POI so should be used with caution.
- * The easiest approach will be just removing the template sheet.
+ * <p>Note: Clearing comments from the cells appears to have some issues in POI so should be used with caution.
+ * The easiest approach will be just removing the template sheet.</p>
  *
  * @author Leonid Vysochyn
  */
@@ -113,7 +116,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static Map<String, Class<? extends Command>> commandMap = new HashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
-    static{
+    static {
         commandMap.put(EachCommand.COMMAND_NAME, EachCommand.class);
         commandMap.put(IfCommand.COMMAND_NAME, IfCommand.class);
         commandMap.put(AreaCommand.COMMAND_NAME, AreaCommand.class);
@@ -148,15 +151,17 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         this.transformer = transformer;
     }
 
-    public static void addCommandMapping(String commandName, Class<? extends Command> clazz){
+    public static void addCommandMapping(String commandName, Class<? extends Command> clazz) {
         commandMap.put(commandName, clazz);
     }
 
     /**
      * Builds a list of {@link org.jxls.area.XlsArea} objects defined by top level AreaCommand markup ("jx:area")
      * containing a tree of all nested commands
+     * 
      * @return Area list
      */
+    @Override
     public List<Area> build() {
         List<Area> userAreas = new ArrayList<Area>();
         List<CellData> commentedCells = transformer.getCommentedCells();
@@ -166,14 +171,14 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             String comment = cellData.getCellComment();
             List<CommandData> commandDatas = buildCommands(cellData, comment);
             for (CommandData commandData : commandDatas) {
-                if( commandData.getCommand() instanceof  AreaCommand ){
+                if (commandData.getCommand() instanceof AreaCommand) {
                     XlsArea userArea = new XlsArea(commandData.getAreaRef(), transformer);
                     allAreas.add(userArea);
-                    userAreas.add( userArea );
-                }else{
+                    userAreas.add(userArea);
+                } else {
                     List<Area> areas = commandData.getCommand().getAreaList();
                     allAreas.addAll(areas);
-                    allCommands.add( commandData );
+                    allCommands.add(commandData);
                 }
             }
         }
@@ -184,31 +189,31 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             Area minArea = null;
             List<Area> minAreas = new ArrayList<Area>();
             for (Area area : allAreas) {
-                if( commandAreas.contains( area ) || !area.getAreaRef().contains(commandAreaRef)) continue;
+                if (commandAreas.contains(area) || !area.getAreaRef().contains(commandAreaRef)) continue;
                 boolean belongsToNextCommand = false;
                 for (int j = i + 1; j < allCommands.size(); j++) {
                     CommandData nextCommand = allCommands.get(j);
-                    if(nextCommand.getCommand().getAreaList().contains( area )){
+                    if (nextCommand.getCommand().getAreaList().contains(area)) {
                         belongsToNextCommand = true;
                         break;
                     }
                 }
-                if( belongsToNextCommand || (minArea != null && !minArea.getAreaRef().contains(area.getAreaRef())) ) continue;
-                if( minArea != null && minArea.equals( area ) ){
-                    minAreas.add( area );
-                }else{
+                if (belongsToNextCommand || (minArea != null && !minArea.getAreaRef().contains(area.getAreaRef()))) continue;
+                if (minArea != null && minArea.equals(area)) {
+                    minAreas.add(area);
+                } else {
                     minArea = area;
                     minAreas.clear();
                     minAreas.add( minArea );
                 }
             }
             for (Area area : minAreas) {
-                area.addCommand( commandData.getAreaRef(), commandData.getCommand() );
+                area.addCommand(commandData.getAreaRef(), commandData.getCommand());
             }
         }
-        if( clearTemplateCells ){
-            for(Area area: userAreas){
-                ((XlsArea)area).clearCells();
+        if (clearTemplateCells) {
+            for (Area area : userAreas) {
+                ((XlsArea) area).clearCells();
             }
         }
         return userAreas;
@@ -233,11 +238,11 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
                     commandDatas.add(commandData);
                     List<Area> areas = buildAreas(cellData, line);
                     for (Area area : areas) {
-                        commandData.getCommand().addArea( area );
+                        commandData.getCommand().addArea(area);
                     }
-                    if( areas.isEmpty() ){
+                    if (areas.isEmpty()) {
                         Area area = new XlsArea(commandData.getAreaRef(), transformer);
-                        commandData.getCommand().addArea( area );
+                        commandData.getCommand().addArea(area);
                     }
                 }
             }
@@ -245,14 +250,14 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return commandDatas;
     }
 
-    public static boolean isCommandString(String str){
+    public static boolean isCommandString(String str) {
         return str.startsWith(COMMAND_PREFIX) && !str.startsWith(CellData.JX_PARAMS_PREFIX);
     }
 
     private List<Area> buildAreas(CellData cellData, String commandLine) {
         List<Area> areas = new ArrayList<Area>();
         Matcher areasAttrMatcher = AREAS_ATTR_REGEX_PATTERN.matcher(commandLine);
-        if( areasAttrMatcher.find() ){
+        if (areasAttrMatcher.find()) {
             String areasAttr = areasAttrMatcher.group();
             List<AreaRef> areaRefs = extractAreaRefs(cellData, areasAttr);
             for (AreaRef areaRef : areaRefs) {
@@ -266,20 +271,20 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private List<AreaRef> extractAreaRefs(CellData cellData, String areasAttr) {
         List<AreaRef> areaRefs = new ArrayList<AreaRef>();
         Matcher areaRefMatcher = Util.regexAreaRefPattern.matcher(areasAttr);
-        while( areaRefMatcher.find() ){
+        while (areaRefMatcher.find()) {
             String areaRefName = areaRefMatcher.group();
             AreaRef areaRef = new AreaRef(areaRefName);
-            if( areaRef.getSheetName() == null || areaRef.getSheetName().trim().length() == 0){
-                areaRef.getFirstCellRef().setSheetName( cellData.getSheetName() );
+            if (areaRef.getSheetName() == null || areaRef.getSheetName().trim().length() == 0) {
+                areaRef.getFirstCellRef().setSheetName(cellData.getSheetName());
             }
             areaRefs.add(areaRef);
         }
-        return areaRefs;  
+        return areaRefs;
     }
 
     private Map<String, String> buildAttrMap(String commandLine, int nameEndIndex) {
         int paramsEndIndex = commandLine.lastIndexOf(ATTR_SUFFIX);
-        if(paramsEndIndex < 0 ){
+        if (paramsEndIndex < 0) {
             String errMsg = "Failed to parse command line [" + commandLine + "]. Expected '" + ATTR_SUFFIX + "' symbol.";
             logger.error(errMsg);
             throw new IllegalArgumentException(errMsg);
@@ -290,37 +295,38 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
 
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
         Class<? extends Command> clazz = commandMap.get(commandName);
-        if( clazz == null ){
+        if (clazz == null) {
             logger.warn("Failed to find Command class mapped to command name '" + commandName + "'");
             return null;
         }
         try {
             Command command = clazz.newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
-                if( !attr.getKey().equals(LAST_CELL_ATTR_NAME) ){
+                if (!attr.getKey().equals(LAST_CELL_ATTR_NAME)) {
                     Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);
                 }
             }
             String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);
-            if( lastCellRef == null ){
-                logger.warn("Failed to find last cell ref attribute '" + LAST_CELL_ATTR_NAME + "' for command '" + commandName + "' in cell " + cellData.getCellRef());
+            if (lastCellRef == null) {
+                logger.warn("Failed to find last cell ref attribute '" + LAST_CELL_ATTR_NAME + "' for command '"
+                        + commandName + "' in cell " + cellData.getCellRef());
                 return null;
             }
             CellRef lastCell = new CellRef(lastCellRef);
-            if( lastCell.getSheetName() == null || lastCell.getSheetName().trim().length() == 0 ){
-                lastCell.setSheetName( cellData.getSheetName() );
+            if (lastCell.getSheetName() == null || lastCell.getSheetName().trim().length() == 0) {
+                lastCell.setSheetName(cellData.getSheetName());
             }
-            return new CommandData(new AreaRef(cellData.getCellRef(), lastCell),  command);
+            return new CommandData(new AreaRef(cellData.getCellRef(), lastCell), command);
         } catch (Exception e) {
-            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'",e);
+            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'", e);
             return null;
         }
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {
-        Map<String,String> attrMap = new LinkedHashMap<String, String>();
+        Map<String, String> attrMap = new LinkedHashMap<String, String>();
         Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
-        while(attrMatcher.find()){
+        while (attrMatcher.find()) {
             String attrData = attrMatcher.group();
             int attrNameEndIndex = attrData.indexOf("=");
             String attrName = attrData.substring(0, attrNameEndIndex).trim();
@@ -330,5 +336,4 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         }
         return attrMap;
     }
-
 }

@@ -52,6 +52,7 @@ public class WritableHyperlink implements WritableCellValue {
         this.linkType = linkType;
     }
 
+    @Override
     public Object writeToCell(Cell cell, Context context) {
         Workbook workbook = cell.getSheet().getWorkbook();
         CreationHelper createHelper = workbook.getCreationHelper();

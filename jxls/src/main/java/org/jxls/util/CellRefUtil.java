@@ -1,21 +1,20 @@
 package org.jxls.util;
 
-import org.jxls.common.JxlsException;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jxls.common.JxlsException;
+
 /**
- * This is a class to convert Excel cell names to (sheet,row,col) representations and vice versa
- * The current code is taken from Apache POI CellReference class (@link http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html)
+ * This is a class to convert Excel cell names to (sheet, row, col) representations and vice versa.
+ * The current code is taken from Apache POI CellReference class ( http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html ).
+ * 
  * @author Leonid Vysochyn
- *         Date: 2/6/12
+ * @since 2/6/12
  */
 public class CellRefUtil {
     private static final char DELIMITER = '\'';
-    /**
-     * Matches a single cell ref with no absolute ('$') markers
-     */
+    /** Matches a single cell ref with no absolute ('$') markers */
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("([A-Za-z]+)([0-9]+)");
     /** The character (!) that separates sheet names from cell references */
     public static final char SHEET_NAME_DELIMITER = '!';
@@ -27,36 +26,30 @@ public class CellRefUtil {
     private static final char SPECIAL_NAME_DELIMITER = '\'';
 
     /**
-     * Takes in a 0-based base-10 column and returns a ALPHA-26
-     *  representation.
-     * eg column #3 -&gt; D
+     * Takes in a 0-based base-10 column and returns a ALPHA-26 representation. e.g. column #3 -&gt; D
+     * 
      * @param col -
      * @return -
      */
     public static String convertNumToColString(int col) {
-        // Excel counts column A as the 1st column, we
-        //  treat it as the 0th one
-        int excelColNum = col + 1;
-
         String colRef = "";
+        int excelColNum = col + 1; // Excel counts column A as the 1st column, we treat it as the 0th one.
         int colRemain = excelColNum;
-
-        while(colRemain > 0) {
+        while (colRemain > 0) {
             int thisPart = colRemain % 26;
-            if(thisPart == 0) { thisPart = 26; }
+            if (thisPart == 0) {
+                thisPart = 26;
+            }
             colRemain = (colRemain - thisPart) / 26;
-
-            // The letter A is at 65
-            char colChar = (char)(thisPart+64);
+            char colChar = (char) (thisPart + 64); // The letter A is at 65
             colRef = colChar + colRef;
         }
-
         return colRef;
     }
 
     public static void appendFormat(StringBuilder out, String rawSheetName) {
         boolean needsQuotes = needsDelimiting(rawSheetName);
-        if(needsQuotes) {
+        if (needsQuotes) {
             out.append(DELIMITER);
             appendAndEscape(out, rawSheetName);
             out.append(DELIMITER);
@@ -67,9 +60,9 @@ public class CellRefUtil {
 
     static void appendAndEscape(StringBuilder sb, String rawSheetName) {
         int len = rawSheetName.length();
-        for(int i=0; i<len; i++) {
+        for (int i = 0; i < len; i++) {
             char ch = rawSheetName.charAt(i);
-            if(ch == DELIMITER) {
+            if (ch == DELIMITER) {
                 // single quotes (') are encoded as ('')
                 sb.append(DELIMITER);
             }
@@ -79,22 +72,22 @@ public class CellRefUtil {
 
     static boolean needsDelimiting(String rawSheetName) {
         int len = rawSheetName.length();
-        if(len < 1) {
+        if (len < 1) {
             throw new JxlsException("Zero length string is an invalid sheet name");
         }
-        if(Character.isDigit(rawSheetName.charAt(0))) {
+        if (Character.isDigit(rawSheetName.charAt(0))) {
             // sheet name with digit in the first position always requires delimiting
             return true;
         }
-        for(int i=0; i<len; i++) {
+        for (int i = 0; i < len; i++) {
             char ch = rawSheetName.charAt(i);
-            if(isSpecialChar(ch)) {
+            if (isSpecialChar(ch)) {
                 return true;
             }
         }
-        if(Character.isLetter(rawSheetName.charAt(0)) && Character.isDigit(rawSheetName.charAt(len-1)) // note - values like "A$1:$C$20" don't get this far
+        if (Character.isLetter(rawSheetName.charAt(0)) && Character.isDigit(rawSheetName.charAt(len - 1)) // note - values like "A$1:$C$20" don't get this far
                 && nameLooksLikePlainCellReference(rawSheetName)) {
-                return true;
+            return true;
         }
         return nameLooksLikeBooleanLiteral(rawSheetName);
     }
@@ -123,7 +116,7 @@ public class CellRefUtil {
      */
     static boolean nameLooksLikePlainCellReference(String rawSheetName) {
         Matcher matcher = CELL_REF_PATTERN.matcher(rawSheetName);
-        if(!matcher.matches()) {
+        if (!matcher.matches()) {
             return false;
         }
 
@@ -208,9 +201,8 @@ public class CellRefUtil {
     public static boolean isColumnWithnRange(String colStr, int lastColumnIndex) {
         String lastCol = convertNumToColString(lastColumnIndex);
         int lastColLength = lastCol.length();
-
         int numberOfLetters = colStr.length();
-        if(numberOfLetters > lastColLength) {
+        if (numberOfLetters > lastColLength) {
             // "Sheet1" case etc
             return false; // that was easy
         }
@@ -219,7 +211,6 @@ public class CellRefUtil {
 
     public static boolean isRowWithnRange(String rowStr, int lastRowIndex) {
         int rowNum = Integer.parseInt(rowStr);
-
         if (rowNum < 0) {
             throw new IllegalStateException("Invalid rowStr '" + rowStr + "'.");
         }
@@ -234,9 +225,11 @@ public class CellRefUtil {
 
     static boolean nameLooksLikeBooleanLiteral(String rawSheetName) {
         switch(rawSheetName.charAt(0)) {
-            case 'T': case 't':
+            case 'T':
+            case 't':
                 return "TRUE".equalsIgnoreCase(rawSheetName);
-            case 'F': case 'f':
+            case 'F':
+            case 'f':
                 return "FALSE".equalsIgnoreCase(rawSheetName);
         }
         return false;
@@ -249,7 +242,7 @@ public class CellRefUtil {
      */
     static boolean isSpecialChar(char ch) {
         // note - Character.isJavaIdentifierPart() would allow dollars '$'
-        if(Character.isLetterOrDigit(ch)) {
+        if (Character.isLetterOrDigit(ch)) {
             return false;
         }
         switch(ch) {
@@ -259,8 +252,7 @@ public class CellRefUtil {
             case '\n':
             case '\r':
             case '\t':
-                throw new JxlsException("Illegal character (0x"
-                        + Integer.toHexString(ch) + ") found in sheet name");
+                throw new JxlsException("Illegal character (0x" + Integer.toHexString(ch) + ") found in sheet name");
             default:
         }
         return true;
@@ -278,10 +270,9 @@ public class CellRefUtil {
      * @return zero based column index
      */
     public static int convertColStringToIndex(String ref) {
-
         int pos = 0;
-        int retval=0;
-        for (int k = ref.length()-1; k >= 0; k--) {
+        int retval = 0;
+        for (int k = ref.length() - 1; k >= 0; k--) {
             char thechar = ref.charAt(k);
             if (thechar == ABSOLUTE_REFERENCE_MARKER) {
                 if (k != 0) {
@@ -291,24 +282,23 @@ public class CellRefUtil {
             }
             // Character.getNumericValue() returns the values
             //  10-35 for the letter A-Z
-            int shift = (int)Math.pow(26, pos);
-            retval += (Character.getNumericValue(thechar)-9) * shift;
+            int shift = (int) Math.pow(26, pos);
+            retval += (Character.getNumericValue(thechar) - 9) * shift;
             pos++;
         }
-        return retval-1;
+        return retval - 1;
     }
 
     public static String[] separateRefParts(String reference) {
         int plingPos = reference.lastIndexOf(SHEET_NAME_DELIMITER);
         String sheetName = parseSheetName(reference, plingPos);
-        int start = plingPos+1;
+        int start = plingPos + 1;
 
         int length = reference.length();
 
-
         int loc = start;
         // skip initial dollars
-        if (reference.charAt(loc)== ABSOLUTE_REFERENCE_MARKER) {
+        if (reference.charAt(loc) == ABSOLUTE_REFERENCE_MARKER) {
             loc++;
         }
         // step over column name chars until first digit (or dollars) for row number.
@@ -326,16 +316,16 @@ public class CellRefUtil {
     }
 
     public static String parseSheetName(String reference, int indexOfSheetNameDelimiter) {
-        if(indexOfSheetNameDelimiter < 0) {
+        if (indexOfSheetNameDelimiter < 0) {
             return null;
         }
 
         boolean isQuoted = reference.charAt(0) == SPECIAL_NAME_DELIMITER;
-        if(!isQuoted) {
+        if (!isQuoted) {
             return reference.substring(0, indexOfSheetNameDelimiter);
         }
         int lastQuotePos = indexOfSheetNameDelimiter-1;
-        if(reference.charAt(lastQuotePos) != SPECIAL_NAME_DELIMITER) {
+        if (reference.charAt(lastQuotePos) != SPECIAL_NAME_DELIMITER) {
             throw new JxlsException("Mismatched quotes: (" + reference + ")");
         }
 
@@ -348,13 +338,13 @@ public class CellRefUtil {
 
         StringBuilder sb = new StringBuilder(indexOfSheetNameDelimiter);
 
-        for(int i=1; i<lastQuotePos; i++) { // Note boundaries - skip outer quotes
+        for(int i = 1; i < lastQuotePos; i++) { // Note boundaries - skip outer quotes
             char ch = reference.charAt(i);
-            if(ch != SPECIAL_NAME_DELIMITER) {
+            if (ch != SPECIAL_NAME_DELIMITER) {
                 sb.append(ch);
                 continue;
             }
-            if(i < lastQuotePos && reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
+            if (i < lastQuotePos && reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
                 // two consecutive quotes is the escape sequence for a single one
                 i++; // skip this and keep parsing the special name
                 sb.append(ch);
@@ -376,11 +366,11 @@ public class CellRefUtil {
         int len = reference.length();
         int delimiterPos = -1;
         boolean insideDelimitedName = false;
-        for(int i=0; i<len; i++) {
-            switch(reference.charAt(i)) {
+        for (int i = 0; i < len; i++) {
+            switch (reference.charAt(i)) {
                 case CELL_DELIMITER:
-                    if(!insideDelimitedName) {
-                        if(delimiterPos >=0) {
+                    if (!insideDelimitedName) {
+                        if (delimiterPos >= 0) {
                             throw new IllegalArgumentException("More than one cell delimiter '"
                                     + CELL_DELIMITER + "' appears in area reference '" + reference + "'");
                         }
@@ -391,18 +381,18 @@ public class CellRefUtil {
                 case SPECIAL_NAME_DELIMITER:
                     // fall through
             }
-            if(!insideDelimitedName) {
+            if (!insideDelimitedName) {
                 insideDelimitedName = true;
                 continue;
             }
 
-            if(i >= len-1) {
+            if (i >= len - 1) {
                 // reference ends with the delimited name.
                 // Assume names like: "Sheet1!'A1'" are never legal.
                 throw new IllegalArgumentException("Area reference '" + reference
                         + "' ends with special name delimiter '"  + SPECIAL_NAME_DELIMITER + "'");
             }
-            if(reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
+            if (reference.charAt(i + 1) == SPECIAL_NAME_DELIMITER) {
                 // two consecutive quotes is the escape sequence for a single one
                 i++; // skip this and keep parsing the special name
             } else {
@@ -410,31 +400,31 @@ public class CellRefUtil {
                 insideDelimitedName = false;
             }
         }
-        if(delimiterPos < 0) {
-            return new String[] { reference, };
+        if (delimiterPos < 0) {
+            return new String[] { reference };
         }
 
         String partA = reference.substring(0, delimiterPos);
         String partB = reference.substring(delimiterPos+1);
-        if(partB.indexOf(SHEET_NAME_DELIMITER) >=0) {
+        if (partB.indexOf(SHEET_NAME_DELIMITER) >= 0) {
             throw new JxlsException("Unexpected " + SHEET_NAME_DELIMITER
                     + " in second cell reference of '" + reference + "'");
         }
 
         int plingPos = partA.lastIndexOf(SHEET_NAME_DELIMITER);
-        if(plingPos < 0) {
-            return new String [] { partA, partB, };
+        if (plingPos < 0) {
+            return new String[] { partA, partB, };
         }
 
         String sheetName = partA.substring(0, plingPos + 1); // +1 to include delimiter
 
-        return new String [] { partA, sheetName + partB, };
+        return new String[] { partA, sheetName + partB, };
     }
 
     public static boolean isPlainColumn(String refPart) {
-        for(int i=refPart.length()-1; i>=0; i--) {
+        for (int i = refPart.length() - 1; i >= 0; i--) {
             int ch = refPart.charAt(i);
-            if (ch == '$' && i==0) {
+            if (ch == '$' && i == 0) {
                 continue;
             }
             if (ch < 'A' || ch > 'Z') {

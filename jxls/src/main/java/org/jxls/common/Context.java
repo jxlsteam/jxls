@@ -5,8 +5,9 @@ import java.util.Map;
 
 /**
  * Map bean context
- * Date: Nov 2, 2009
+ * 
  * @author Leonid Vysochyn
+ * @since Nov 2, 2009
  */
 public class Context {
     protected Map<String, Object> varMap = new HashMap<String, Object>();
@@ -21,11 +22,11 @@ public class Context {
         }
     }
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         return varMap;
     }
-    
-    public Object getVar(String name){
+
+    public Object getVar(String name) {
         return varMap.get(name);
     }
 
@@ -43,8 +44,7 @@ public class Context {
 
     @Override
     public String toString() {
-        return "Context" +
-                varMap;
+        return "Context" + varMap;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Context {
      */
     public class Config {
         private boolean ignoreSourceCellStyle = false;
-        private Map<String,String> cellStyleMap = new HashMap<>();
+        private Map<String, String> cellStyleMap = new HashMap<>();
         private boolean isFormulaProcessingRequired = true;
 
         public boolean isFormulaProcessingRequired() {

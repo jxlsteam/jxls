@@ -1,5 +1,11 @@
 package org.jxls.transform.poi;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -30,12 +36,6 @@ import org.jxls.common.Size;
 import org.jxls.transform.AbstractTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * POI implementation of {@link org.jxls.transform.Transformer} interface
@@ -154,6 +154,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
+    @Override
     public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeightFlag) {
         CellData cellData = isTransformable(srcCellRef, targetCellRef);
         if (cellData == null) {
@@ -248,6 +249,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
+    @Override
     public void setFormula(CellRef cellRef, String formulaString) {
         if (cellRef == null || cellRef.getSheetName() == null) return;
         Sheet sheet = workbook.getSheet(cellRef.getSheetName());
@@ -269,6 +271,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
+    @Override
     public void clearCell(CellRef cellRef) {
         if (cellRef == null || cellRef.getSheetName() == null) return;
         Sheet sheet = workbook.getSheet(cellRef.getSheetName());
@@ -305,6 +308,7 @@ public class PoiTransformer extends AbstractTransformer {
         cell.removeCellComment();
     }
 
+    @Override
     public List<CellData> getCommentedCells() {
         List<CellData> commentedCells = new ArrayList<CellData>();
         for (SheetData sheetData : sheetMap.values()) {
@@ -333,12 +337,14 @@ public class PoiTransformer extends AbstractTransformer {
         drawing.createPicture(anchor, imageIdx);
     }
 
+    @Override
     public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
         int poiPictureType = findPoiPictureTypeByImageType(imageType);
         int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
         addImage(areaRef, pictureIdx);
     }
 
+    @Override
     public void write() throws IOException {
         if (outputStream == null) {
             throw new IllegalStateException("Cannot write a workbook with an uninitialized output stream");

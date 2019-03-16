@@ -1,7 +1,5 @@
 package org.jxls.jdbc;
 
-import org.jxls.common.JxlsException;
-
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
@@ -12,6 +10,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jxls.common.JxlsException;
 
 /**
  * A class to help execute SQL queries via JDBC
@@ -28,11 +28,9 @@ public class JdbcHelper {
         if (conn == null) {
             throw new JxlsException("Null jdbc connection");
         }
-
         if (sql == null) {
             throw new JxlsException("Null SQL statement");
         }
-
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillStatement(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -41,13 +39,10 @@ public class JdbcHelper {
         } catch (Exception e) {
             throw new JxlsException("Failed to execute sql", e);
         }
-
         return result;
     }
 
-    /*
-     * The implementation is a slightly modified version of a similar method of AbstractQueryRunner in Apache DBUtils
-     */
+    // The implementation is a slightly modified version of a similar method of AbstractQueryRunner in Apache DBUtils
     private void fillStatement(PreparedStatement stmt, Object[] params) throws SQLException {
         // nothing to do here
         if (params == null) {
@@ -119,6 +114,4 @@ public class JdbcHelper {
         }
         return result;
     }
-
-
 }

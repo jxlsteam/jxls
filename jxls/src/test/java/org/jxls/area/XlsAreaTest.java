@@ -1,5 +1,9 @@
 package org.jxls.area;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.jxls.command.Command;
@@ -10,19 +14,12 @@ import org.jxls.transform.Transformer;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 @RunWith(MockitoJUnitRunner.class)
 public class XlsAreaTest {
     @Mock
     private Transformer transformer;
-
     @Mock
     private Command command1;
-
     @Mock
     private Command command2;
 
@@ -88,5 +85,4 @@ public class XlsAreaTest {
         verify(transformer).transform(new CellRef("sheet1!C7"), new CellRef("sheet2!D7"), context, false);
         verify(transformer).transform(new CellRef("sheet1!C10"), new CellRef("sheet2!D10"), context, false);
     }
-
 }

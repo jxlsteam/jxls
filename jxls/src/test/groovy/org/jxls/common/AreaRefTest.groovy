@@ -4,10 +4,11 @@ import spock.lang.Specification
 
 /**
  * @author Leonid Vysochyn
- * Date: 2/13/12 1:31 PM
+ * @since 2/13/2012
  */
 class AreaRefTest extends Specification{
-    def "test create with first & last cell refs"(){
+
+    def "test create with first & last cell refs"() {
         when:
             def areaRef = new AreaRef(new CellRef("sheet1!A1"), new CellRef("sheet1!D4"))
         then:
@@ -15,7 +16,7 @@ class AreaRefTest extends Specification{
             areaRef.getLastCellRef() == new CellRef("sheet1", 3, 3)
     }
     
-    def "test create with incorrect cell refs"(){
+    def "test create with incorrect cell refs"() {
         when:
             def areaRef = new AreaRef(new CellRef("sheet1!A1"), new CellRef("sheet2!D4"))
         then:
@@ -24,7 +25,7 @@ class AreaRefTest extends Specification{
             e.message == "Cannot create area from specified cell references sheet1!A1, sheet2!D4"
     }
 
-    def "test create with area ref"(){
+    def "test create with area ref"() {
         when:
             def areaRef = new AreaRef("B3:D5")
         then:
@@ -32,14 +33,14 @@ class AreaRefTest extends Specification{
             areaRef.getLastCellRef() == new CellRef("D5")
     }
 
-    def "test get area size"(){
+    def "test get area size"() {
         when:
             def areaRef = new AreaRef("A1:C4")
         then:
             areaRef.getSize() == new Size(3,4)
     }
     
-    def "test create with cellRef and size"(){
+    def "test create with cellRef and size"() {
         when:
             def areaRef = new AreaRef(new CellRef("sheet1!B2"), new Size(1,2))
         then:
@@ -48,14 +49,14 @@ class AreaRefTest extends Specification{
             areaRef.lastCellRef == new CellRef("sheet1!B3")
     }
     
-    def "test get sheet name"(){
+    def "test get sheet name"() {
         when:
             def areaRef = new AreaRef(new CellRef("sheet1!B2"), new Size(1,1))
         then:
             areaRef.sheetName == "sheet1"
     }
 
-    def "test contains another area"(){
+    def "test contains another area"() {
         def area = new AreaRef("sheet1!B1:G8")
         expect:    area.contains(new AreaRef(areaRef)) == result
         where:      areaRef         | result
@@ -67,7 +68,7 @@ class AreaRefTest extends Specification{
                     "sheet1!C8:D8"  | true
     }
     
-    def "test toString"(){
+    def "test toString"() {
         expect:
             new AreaRef(areaRef).toString() == result
         where:
@@ -75,5 +76,4 @@ class AreaRefTest extends Specification{
             "sheet1!A2:B2"      | "sheet1!A2:B2"
             "'sheet 1'!F2:H3"   | "'sheet 1'!F2:H3"
     }
-
 }

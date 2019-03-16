@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * A command interface defines a transformation of a list of areas at a specified cell
  *
- * Date: Mar 13, 2009
  * @author Leonid Vysochyn
+ * @since Mar 13, 2009
  */
 public interface Command {
-    public static final String INNER_SHIFT_MODE = "inner";
-    public static final String ADJACENT_SHIFT_MODE = "adjacent";
+    String INNER_SHIFT_MODE = "inner";
+    String ADJACENT_SHIFT_MODE = "adjacent";
 
     /**
      * @return command name
@@ -29,13 +29,15 @@ public interface Command {
 
     /**
      * Adds an area to this command
-     * @param area -
+     * 
+     * @param area to be added area
      * @return this command instance
      */
     Command addArea(Area area);
 
     /**
      * Applies a command at the given cell reference
+     * 
      * @param cellRef cell reference where the command must be applied
      * @param context bean context to use
      * @return size of enclosing command area after transformation
@@ -47,8 +49,9 @@ public interface Command {
      */
     void reset();
 
+    // TODO MW to Leonid: Javadoc
     void setShiftMode(String mode);
 
+    // TODO MW to Leonid: Javadoc
     String getShiftMode();
-
 }

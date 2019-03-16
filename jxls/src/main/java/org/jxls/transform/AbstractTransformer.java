@@ -1,11 +1,5 @@
 package org.jxls.transform;
 
-import org.jxls.common.CellData;
-import org.jxls.common.CellRef;
-import org.jxls.common.RowData;
-import org.jxls.common.SheetData;
-import org.jxls.common.Size;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -13,19 +7,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jxls.common.CellData;
+import org.jxls.common.CellRef;
+import org.jxls.common.RowData;
+import org.jxls.common.SheetData;
+import org.jxls.common.Size;
+
 /**
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
  *
  * @author Leonid Vysochyn
- *         Date: 2/6/12
+ * @since 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreColumnProps = false;
     private boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<>();
-
     private TransformationConfig transformationConfig = new TransformationConfig();
 
+    @Override
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
         CellData cellData = getCellData(cellRef);
         if (cellData != null) {
@@ -35,6 +35,7 @@ public abstract class AbstractTransformer implements Transformer {
         }
     }
 
+    @Override
     public void resetTargetCellRefs() {
         for (SheetData sheetData : sheetMap.values()) {
             for (int i = 0; i < sheetData.getNumberOfRows(); i++) {
@@ -51,12 +52,19 @@ public abstract class AbstractTransformer implements Transformer {
         }
     }
 
+    @Override
     public CellData getCellData(CellRef cellRef) {
-        if (cellRef == null || cellRef.getSheetName() == null) return null;
+        if (cellRef == null || cellRef.getSheetName() == null) {
+            return null;
+        }
         SheetData sheetData = sheetMap.get(cellRef.getSheetName());
-        if (sheetData == null) return null;
+        if (sheetData == null) {
+            return null;
+        }
         RowData rowData = sheetData.getRowData(cellRef.getRow());
-        if (rowData == null) return null;
+        if (rowData == null) {
+            return null;
+        }
         return rowData.getCellData(cellRef.getCol());
     }
 
@@ -86,6 +94,7 @@ public abstract class AbstractTransformer implements Transformer {
         this.transformationConfig = transformationConfig;
     }
 
+    @Override
     public Set<CellData> getFormulaCells() {
         Set<CellData> formulaCells = new HashSet<CellData>();
         for (SheetData sheetData : sheetMap.values()) {
@@ -126,5 +135,4 @@ public abstract class AbstractTransformer implements Transformer {
     public void mergeCells(CellRef ref, int rows, int cols) {
         throw new UnsupportedOperationException("mergeCells operation is not implemented in the " + this.getClass().getName());
     }
-
 }

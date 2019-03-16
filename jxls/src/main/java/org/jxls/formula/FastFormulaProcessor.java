@@ -20,12 +20,14 @@ import org.jxls.util.Util;
  * It works correctly in 90% of cases and is much more faster than {@link StandardFormulaProcessor}.
  */
 public class FastFormulaProcessor implements FormulaProcessor {
+
     @Deprecated
     @Override
     public void processAreaFormulas(Transformer transformer) {
         processAreaFormulas(transformer, null);
     }
 
+    // TODO method too long
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
@@ -37,7 +39,7 @@ public class FastFormulaProcessor implements FormulaProcessor {
             Map<String, List<CellRef>> jointedCellRefMap = new HashMap<String, List<CellRef>>();
             for (String cellRef : formulaCellRefs) {
                 CellRef pos = new CellRef(cellRef);
-                if( pos.isValid() ) {
+                if (pos.isValid()) {
                     if (pos.getSheetName() == null) {
                         pos.setSheetName(formulaCellData.getSheetName());
                         pos.setIgnoreSheetNameInFormat(true);
@@ -51,12 +53,11 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 List<CellRef> jointedCellRefList = new ArrayList<CellRef>();
                 for (String cellRef : nestedCellRefs) {
                     CellRef pos = new CellRef(cellRef);
-                    if(pos.getSheetName() == null ){
+                    if (pos.getSheetName() == null) {
                         pos.setSheetName(formulaCellData.getSheetName());
                         pos.setIgnoreSheetNameInFormat(true);
                     }
                     List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-
                     jointedCellRefList.addAll(targetCellDataList);
                 }
                 jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
@@ -68,51 +69,59 @@ public class FastFormulaProcessor implements FormulaProcessor {
                 boolean isFormulaCellRefsEmpty = true;
                 for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
                     List<CellRef> targetCells = cellRefEntry.getValue();
-                    if( targetCells.isEmpty() ) {
+                    if (targetCells.isEmpty()) {
                         continue;
                     }
                     isFormulaCellRefsEmpty = false;
                     String replacementString;
-                    if( formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN ){
+                    if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
                         List<CellRef> targetCellRefs = Util.createTargetCellRefListByColumn(targetFormulaCellRef, targetCells, usedCellRefs);
                         usedCellRefs.addAll(targetCellRefs);
                         replacementString = Util.createTargetCellRef(targetCellRefs);
-                    }else if( targetCells.size() == targetFormulaCells.size() ){
+                    } else if (targetCells.size() == targetFormulaCells.size()) {
                         CellRef targetCellRefCellRef = targetCells.get(i);
                         replacementString = targetCellRefCellRef.getCellName();
-                    }else{
-                        List< List<CellRef> > rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
-                        if( rangeList.size() == targetFormulaCells.size() ){
+                    } else {
+                        List<List<CellRef>> rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
+                        if (rangeList.size() == targetFormulaCells.size()) {
                             List<CellRef> range = rangeList.get(i);
                             replacementString = Util.createTargetCellRef(range);
-                        }else{
+                        } else {
                             replacementString = Util.createTargetCellRef(targetCells);
                         }
                     }
-                    targetFormulaString = targetFormulaString.replaceAll(Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry) + Util.getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName())), Matcher.quoteReplacement(replacementString));
+                    String from = Util.regexJointedLookBehind
+                            + Util.sheetNameRegex(cellRefEntry)
+                            + Util.getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName()));
+                    String to = Matcher.quoteReplacement(replacementString);
+                    targetFormulaString = targetFormulaString.replaceAll(from, to);
                 }
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
-                    if( targetCellRefList.isEmpty() ) {
+                    if (targetCellRefList.isEmpty()) {
                         continue;
                     }
                     isFormulaCellRefsEmpty = false;
-                    List< List<CellRef> > rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
+                    List<List<CellRef>> rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
                     String replacementString;
-                    if( rangeList.size() == targetFormulaCells.size() ){
+                    if (rangeList.size() == targetFormulaCells.size()) {
                         List<CellRef> range = rangeList.get(i);
                         replacementString = Util.createTargetCellRef(range);
-                    }else{
+                    } else {
                         replacementString = Util.createTargetCellRef(targetCellRefList);
                     }
                     targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
                 }
                 String sheetNameReplacementRegex = targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER;
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
-                if( isFormulaCellRefsEmpty ){
+                if (isFormulaCellRefsEmpty) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
-                transformer.setFormula(new CellRef(targetFormulaCellRef.getSheetName(), targetFormulaCellRef.getRow(), targetFormulaCellRef.getCol()), targetFormulaString);
+                CellRef ref = new CellRef(
+                        targetFormulaCellRef.getSheetName(),
+                        targetFormulaCellRef.getRow(),
+                        targetFormulaCellRef.getCol());
+                transformer.setFormula(ref, targetFormulaString);
             }
         }
     }

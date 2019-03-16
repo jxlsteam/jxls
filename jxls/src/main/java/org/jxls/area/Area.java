@@ -14,13 +14,16 @@ import org.jxls.transform.Transformer;
 
 /**
  * Generic interface for excel area processing
+ * 
  * @author Leonid Vysochyn
- *         Date: 1/18/12
+ * @since 1/18/12
  */
 public interface Area {
+
     Size applyAt(CellRef cellRef, Context context);
 
     CellRef getStartCellRef();
+    
     Size getSize();
     
     AreaRef getAreaRef();
@@ -38,9 +41,11 @@ public interface Area {
     void addCommand(AreaRef ref, Command command);
 
     Transformer getTransformer();
+    
     void processFormulas();
     
     void addAreaListener(AreaListener listener);
+    
     List<AreaListener> getAreaListeners();
 
     List<Command> findCommandByName(String name);
@@ -48,5 +53,6 @@ public interface Area {
     void reset();
 
     Command getParentCommand();
+    
     void setParentCommand(Command command);
 }

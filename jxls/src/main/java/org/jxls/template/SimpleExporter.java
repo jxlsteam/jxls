@@ -41,8 +41,8 @@ public class SimpleExporter {
         templateBytes = os.toByteArray();
     }
 
-    public void gridExport(Iterable<?> headers, Iterable<?> dataObjects, String objectProps, OutputStream outputStream){
-    	if( templateBytes == null ){
+    public void gridExport(Iterable<?> headers, Iterable<?> dataObjects, String objectProps, OutputStream outputStream) {
+        if (templateBytes == null) {
             InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
             try {
                 registerGridTemplate(is);
@@ -66,10 +66,9 @@ public class SimpleExporter {
         try {
             transformer.write();
         } catch (IOException e) {
-            logger.error("Failed to write to output stream", e);
-            throw new JxlsException("Failed to write to output stream", e);
+            final String msg = "Failed to write to output stream";
+            logger.error(msg, e);
+            throw new JxlsException(msg, e);
         }
-
     }
-
 }

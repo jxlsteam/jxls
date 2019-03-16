@@ -12,14 +12,25 @@ import org.jxls.common.ImageType;
 import org.jxls.common.Size;
 
 /**
- * Defines interface methods for excel operations
+ * Defines interface methods for Excel operations
  *
  * @author Leonid Vysochyn
- *         Date: 1/23/12
+ * @since 1/23/12
  */
 public interface Transformer {
 
+    void setTransformationConfig(TransformationConfig transformationConfig);
+
+    TransformationConfig getTransformationConfig();
+
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
+
+    /**
+     * Writes Excel workbook to output stream and disposes the workbook.
+     * 
+     * @throws IOException
+     */
+    void write() throws IOException;
     
     /**
      * Must be called after use. write() calls this method.
@@ -43,17 +54,6 @@ public interface Transformer {
     List<CellData> getCommentedCells();
 
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
-
-    /**
-     * Writes Excel workbook to output stream and disposes the workbook.
-     * 
-     * @throws IOException
-     */
-    void write() throws IOException;
-
-    TransformationConfig getTransformationConfig();
-
-    void setTransformationConfig(TransformationConfig transformationConfig);
 
     boolean deleteSheet(String sheetName);
 

@@ -1,9 +1,9 @@
 package org.jxls.transform;
 
+import java.util.regex.Pattern;
+
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
-
-import java.util.regex.Pattern;
 
 /**
  * Transformation configuration class
@@ -19,7 +19,7 @@ public class TransformationConfig {
     private String expressionNotationEnd = DEFAULT_EXPRESSION_END;
     private Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
 
-    public void buildExpressionNotation(String expressionBegin, String expressionEnd){
+    public void buildExpressionNotation(String expressionBegin, String expressionEnd) {
         this.expressionNotationBegin = expressionBegin;
         this.expressionNotationEnd = expressionEnd;
         String regexExpression = Pattern.quote(expressionNotationBegin) + EXPRESSION_PART + Pattern.quote(expressionNotationEnd);
@@ -42,7 +42,7 @@ public class TransformationConfig {
         return expressionNotationEnd;
     }
 
-    public Pattern getExpressionNotationPattern(){
+    public Pattern getExpressionNotationPattern() {
         return expressionNotationPattern;
     }
 }

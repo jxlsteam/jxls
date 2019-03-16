@@ -7,26 +7,26 @@ import org.jxls.common.CellRef;
 
 /**
  * A command holder class
+ * 
  * @author Leonid Vysochyn
- *         Date: 1/25/12 1:12 PM
+ * @since 1/25/12 1:12 PM
  */
 public class CommandData {
     private CellRef sourceStartCellRef;
     private Size sourceSize;
-
     private CellRef startCellRef;
     private Size size;
     private Command command;
-    
-    public CommandData(AreaRef areaRef, Command command){
+
+    public CommandData(AreaRef areaRef, Command command) {
         startCellRef = areaRef.getFirstCellRef();
         size = areaRef.getSize();
         this.command = command;
         sourceStartCellRef = startCellRef;
         sourceSize = size;
     }
-    
-    public CommandData(String areaRef, Command command){
+
+    public CommandData(String areaRef, Command command) {
         this(new AreaRef(areaRef), command);
     }
 
@@ -35,8 +35,8 @@ public class CommandData {
         this.size = size;
         this.command = command;
     }
-    
-    public AreaRef getAreaRef(){
+
+    public AreaRef getAreaRef() {
         return new AreaRef(startCellRef, size);
     }
 
@@ -72,13 +72,13 @@ public class CommandData {
         this.sourceSize = sourceSize;
     }
 
-    void reset(){
+    void reset() {
         startCellRef = sourceStartCellRef;
         size = sourceSize;
         command.reset();
     }
 
-    void resetStartCellAndSize(){
+    void resetStartCellAndSize() {
         startCellRef = sourceStartCellRef;
         size = sourceSize;
     }

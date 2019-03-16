@@ -1,5 +1,15 @@
 package org.jxls.builder.xml;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jxls.area.Area;
+import org.jxls.area.XlsArea;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.transform.Transformer;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
@@ -7,33 +17,24 @@ import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.jxls.area.Area;
-import org.jxls.area.XlsArea;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.transform.Transformer;
-
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Creates an area through  XML definition
+ * Creates an area based on the XML definition
+ * 
  * @author Leonid Vysochyn
- *         Date: 2/14/12 11:50 AM
+ * @since 2/14/12 11:50 AM
  */
 public class XmlAreaBuilder implements AreaBuilder {
+    private final InputStream xmlInputStream;
     private Transformer transformer;
-    private InputStream xmlInputStream;
-    private boolean clearTemplateCells = true;
+    private final boolean clearTemplateCells;
 
     public XmlAreaBuilder(Transformer transformer) {
-        this.transformer = transformer;
+        this(null, transformer, true);
     }
 
     public XmlAreaBuilder(InputStream xmlInputStream, Transformer transformer) {
-        this.xmlInputStream = xmlInputStream;
-        this.transformer = transformer;
+        this(xmlInputStream, transformer, true);
     }
 
     public XmlAreaBuilder(InputStream xmlInputStream, Transformer transformer, boolean clearTemplateCells) {
@@ -61,6 +62,9 @@ public class XmlAreaBuilder implements AreaBuilder {
         ruleMap.put(new ElementSelector("*/if"), new IfAction());
         ruleMap.put(new ElementSelector("*/user-command"), new UserCommandAction());
         ruleMap.put(new ElementSelector("*/grid"), new GridAction());
+        // TODO ImageAction
+        // TODO UpdateCellAction
+        // TODO MergeCellsAction (plus documentation)
 
         ruleMap.put(new ElementSelector("*/user-action"), new NewRuleAction());
 
@@ -73,14 +77,15 @@ public class XmlAreaBuilder implements AreaBuilder {
         } catch (JoranException e) {
             printOccurredErrors(context);
         }
-        if( clearTemplateCells ){
-            for(Area area: areaAction.getAreaList()){
-                ((XlsArea)area).clearCells();
+        if (clearTemplateCells) {
+            for (Area area : areaAction.getAreaList()) {
+                ((XlsArea) area).clearCells();
             }
         }
         return areaAction.getAreaList();
     }
 
+    @Override
     public List<Area> build() {
         return build(xmlInputStream);
     }

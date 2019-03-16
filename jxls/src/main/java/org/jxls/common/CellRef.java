@@ -4,15 +4,15 @@ import org.jxls.util.CellRefUtil;
 
 /**
  * Represents cell reference
+ * 
  * @author Leonid Vysochyn
- *         Date: 1/25/12
+ * @since 1/25/12
  */
 public class CellRef implements Comparable<CellRef>{
-    final static CellRef NONE = new CellRef("NONE", -1, -1);
+    static final CellRef NONE = new CellRef("NONE", -1, -1);
 
     private int col;
     private int row;
-
     private String sheetName;
     private boolean isColAbs;
     private boolean isRowAbs;
@@ -28,8 +28,8 @@ public class CellRef implements Comparable<CellRef>{
         this(null, row, col);
     }
     
-    public CellRef(String cellRef){
-        if(cellRef.endsWith("#REF!")) {
+    public CellRef(String cellRef) {
+        if (cellRef.endsWith("#REF!")) {
             throw new IllegalArgumentException("Cell reference invalid: " + cellRef);
         }
 
@@ -37,28 +37,28 @@ public class CellRef implements Comparable<CellRef>{
         sheetName = parts[0];
         String colRef = parts[1];
         if (colRef.length() < 1) {
-            throw new IllegalArgumentException("Invalid Formula cell reference: '"+cellRef+"'");
+            throw new IllegalArgumentException("Invalid formula cell reference: '" + cellRef + "'");
         }
         isColAbs = colRef.charAt(0) == '$';
         if (isColAbs) {
-            colRef=colRef.substring(1);
+            colRef = colRef.substring(1);
         }
         col = CellRefUtil.convertColStringToIndex(colRef);
 
-        String rowRef=parts[2];
+        String rowRef = parts[2];
         if (rowRef.length() < 1) {
-            throw new IllegalArgumentException("Invalid Formula cell reference: '"+cellRef+"'");
+            throw new IllegalArgumentException("Invalid formula cell reference: '" + cellRef + "'");
         }
         isRowAbs = rowRef.charAt(0) == '$';
         if (isRowAbs) {
-            rowRef=rowRef.substring(1);
+            rowRef = rowRef.substring(1);
         }
-        row = Integer.parseInt(rowRef)-1; // -1 to convert 1-based to zero-based
+        row = Integer.parseInt(rowRef) - 1; // -1 to convert 1-based to zero-based
     }
 
-    public String getCellName(){
+    public String getCellName() {
         StringBuilder sb = new StringBuilder(32);
-        if(sheetName != null && !ignoreSheetNameInFormat) {
+        if (sheetName != null && !ignoreSheetNameInFormat) {
             CellRefUtil.appendFormat(sb, sheetName);
             sb.append(CellRefUtil.SHEET_NAME_DELIMITER);
         }
@@ -66,7 +66,7 @@ public class CellRef implements Comparable<CellRef>{
         return sb.toString();
     }
 
-    public String getFormattedSheetName(){
+    public String getFormattedSheetName() {
         StringBuilder sb = new StringBuilder(32);
         CellRefUtil.appendFormat(sb, sheetName);
         return sb.toString();
@@ -96,14 +96,14 @@ public class CellRef implements Comparable<CellRef>{
      * @param sb
      */
     StringBuilder appendCellReference(StringBuilder sb) {
-        if(isColAbs) {
+        if (isColAbs) {
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
-        sb.append( CellRefUtil.convertNumToColString(col));
-        if(isRowAbs) {
+        sb.append(CellRefUtil.convertNumToColString(col));
+        if (isRowAbs) {
             sb.append(CellRefUtil.ABSOLUTE_REFERENCE_MARKER);
         }
-        sb.append(row+1);
+        sb.append(row + 1);
         return sb;
     }
 
@@ -145,16 +145,16 @@ public class CellRef implements Comparable<CellRef>{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CellRef cellRef = (CellRef) o;
-
-        if (col != cellRef.col) return false;
-        if (row != cellRef.row) return false;
-        if (sheetName != null ? !sheetName.equals(cellRef.sheetName) : cellRef.sheetName != null) return false;
-
-        return true;
+        return !(col != cellRef.col
+              || row != cellRef.row
+              || (sheetName == null ? cellRef.sheetName != null : !sheetName.equals(cellRef.sheetName)));
     }
 
     @Override
@@ -165,7 +165,7 @@ public class CellRef implements Comparable<CellRef>{
         return result;
     }
     
-    public String toString(boolean ignoreSheetName){
+    public String toString(boolean ignoreSheetName) {
         boolean currentIgnoreSheetValue = ignoreSheetNameInFormat;
         ignoreSheetNameInFormat = ignoreSheetName;
         String result = getCellName();
@@ -173,7 +173,7 @@ public class CellRef implements Comparable<CellRef>{
         return result;
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         return col >= 0 && row >= 0;
     }
 
@@ -184,19 +184,19 @@ public class CellRef implements Comparable<CellRef>{
 
     @Override
     public int compareTo(CellRef that) {
-        if (this == that){
+        if (this == that) {
             return 0;
         }
-        if( col < that.col){
+        if (col < that.col) {
             return -1;
         }
-        if( col > that.col ){
+        if (col > that.col) {
             return 1;
         }
-        if( row < that.row ){
+        if (row < that.row) {
             return -1;
         }
-        if( row > that.row ){
+        if (row > that.row) {
             return 1;
         }
         return 0;

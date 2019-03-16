@@ -1,22 +1,21 @@
 package org.jxls.common;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+
 /**
- * Date: Nov 10, 2009
- *
  * @author Leonid Vysochyn
  */
 public class ContextTest {
+
     @Test
-    public void addVars(){
+    public void addVars() {
         Context context = new Context();
         context.putVar("col", 1);
         context.putVar("row", 2);
@@ -28,7 +27,7 @@ public class ContextTest {
     }
 
     @Test
-    public void removeVar(){
+    public void removeVar() {
         Context context = new Context();
         context.putVar("col", 1);
         Map<String, Object> vars = context.toMap();
@@ -39,7 +38,7 @@ public class ContextTest {
     }
     
     @Test 
-    public void testToString(){
+    public void testToString() {
         Context context = new Context();
         context.putVar("x", 1);
         context.putVar("y", "Abc");
@@ -48,7 +47,7 @@ public class ContextTest {
     }
 
     @Test
-    public void testCreateFromMap(){
+    public void testCreateFromMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("x", "Abc");
         map.put("y", 10);

@@ -1,29 +1,26 @@
 package org.jxls.expression;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 /**
- * Date: Nov 2, 2009
- *
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluatorNoThreadLocalTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-
     @Test
-    public void simple2VarExpression(){
+    public void simple2VarExpression() {
         String expression = "2 * x + y";
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
@@ -35,7 +32,7 @@ public class JexlExpressionEvaluatorNoThreadLocalTest {
     }
 
     @Test
-    public void shouldThrowEvaluationExceptionWhenError(){
+    public void shouldThrowEvaluationExceptionWhenError() {
         String expression = "2 * x + y )";
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
@@ -44,11 +41,11 @@ public class JexlExpressionEvaluatorNoThreadLocalTest {
         thrown.expect(EvaluationException.class);
         thrown.expectMessage(CoreMatchers.both(CoreMatchers.containsString("error")).and(CoreMatchers.containsString(expression)));
         Object result = expressionEvaluator.evaluate( expression, vars );
-        assertNotNull( result );
+        assertNotNull(result);
     }
 
     @Test
-    public void evaluateWhenVarIsNull(){
+    public void evaluateWhenVarIsNull() {
         String expression = "2*x + dummy.intValue";
         Map<String, Object> vars = new HashMap<>();
         vars.put("x", 2);
@@ -59,12 +56,11 @@ public class JexlExpressionEvaluatorNoThreadLocalTest {
     }
     
     @Test 
-    public void evaluateWhenExpressionVarIsUndefined(){
+    public void evaluateWhenExpressionVarIsUndefined() {
         String expression = "dummy.intValue";
         Map<String, Object> vars = new HashMap<>();
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluatorNoThreadLocal();
         Object result = expressionEvaluator.evaluate( expression, vars );
         assertNull(result);
     }
-
 }
