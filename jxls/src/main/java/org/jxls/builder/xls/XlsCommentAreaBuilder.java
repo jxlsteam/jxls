@@ -1,10 +1,10 @@
 package org.jxls.builder.xls;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,7 +113,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     
-    private static Map<String, Class<? extends Command>> commandMap = new HashMap<>();
+    private static Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
     static {
