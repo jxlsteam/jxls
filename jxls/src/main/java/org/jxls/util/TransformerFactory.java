@@ -15,9 +15,15 @@ import org.slf4j.LoggerFactory;
  */
 public class TransformerFactory {
     public static final String POI_CLASS_NAME = "org.jxls.transform.poi.PoiTransformer";
+    /**
+     * @deprecated Use POI_CLASS_NAME. JEXCEL_CLASS_NAME might be removed in a future release.
+     */
     public static final String JEXCEL_CLASS_NAME = "org.jxls.transform.jexcel.JexcelTransformer";
     public static final String INIT_METHOD = "createTransformer";
     public static final String TRANSFORMER_SYSTEM_PROPERTY = "jxlstransformer";
+    /**
+     * @deprecated Use POI_TRANSFORMER. JEXCEL_TRANSFORMER might be removed in a future release.
+     */
     public static final String JEXCEL_TRANSFORMER = "jexcel";
     public static final String POI_TRANSFORMER = "poi";
     private static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
@@ -56,6 +62,7 @@ public class TransformerFactory {
             return POI_TRANSFORMER;
         }
         if (JEXCEL_CLASS_NAME.equalsIgnoreCase(transformerClass.getName())) {
+            logger.warn("jxls-jexcel is deprecated");
             return JEXCEL_TRANSFORMER;
         }
         return transformerClass.getName();
@@ -89,6 +96,7 @@ public class TransformerFactory {
     }
 
     private static Class<?> loadJexcelTransformer() {
+        logger.warn("jxls-jexcel is deprecated");
         try {
             return Class.forName(JEXCEL_CLASS_NAME);
         } catch (Exception e) {
