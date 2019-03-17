@@ -7,10 +7,9 @@ import org.jxls.common.Context;
 import org.jxls.common.ImageType;
 import org.jxls.common.Size;
 
-// TODO MW to Leonid: Is the Javadoc true? (Does this class support an image index??)
 /**
  * <p>Implements image rendering</p>
- * <p>Image is specified with image index in the workbook or by providing image bytes and type.</p>
+ * <p>Image is specified by providing image bytes and type.</p>
  * 
  * @author Leonid Vysochyn
  */
@@ -25,13 +24,21 @@ public class ImageCommand extends AbstractCommand {
     public ImageCommand() {
     }
 
-    // TODO MW to Leonid: Javadoc
+    /**
+     * Creates the command from an image in the context
+     * @param image name of the context attribute with the image bytes
+     * @param imageType
+     */
     public ImageCommand(String image, ImageType imageType) {
         this.src = image;
         this.imageType = imageType;
     }
 
-    // TODO MW to Leonid: Javadoc
+    /**
+     * Creates the command from the image bytes
+     * @param imageBytes the image byte array
+     * @param imageType the type of the image to render (e.g. PNG, JPEG etc)
+     */
     public ImageCommand(byte[] imageBytes, ImageType imageType) {
         this.imageBytes = imageBytes;
         this.imageType = imageType;

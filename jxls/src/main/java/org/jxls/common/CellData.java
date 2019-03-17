@@ -298,7 +298,10 @@ public class CellData {
         }
     }
 
-    // TODO MW to Leonid: question: is this code only used by jxls-poi? So it can be moved to jxls-poi (if possible)?
+    /**
+     * The method parses jx:params attribute from a cell comment
+     * @param cellComment the comment string
+     */
     protected void processJxlsParams(String cellComment) {
         int nameEndIndex = cellComment.indexOf(ATTR_PREFIX, JX_PARAMS_PREFIX.length());
         if (nameEndIndex < 0) {
