@@ -49,14 +49,10 @@ public class GridCommand extends AbstractCommand {
     }
 
     public GridCommand(String headers, String data, String props, Area headerArea, Area bodyArea) {
-        this.headers = headers;
-        this.data = data;
+        this(headers, data, headerArea, bodyArea);
         this.props = props;
-        this.headerArea = headerArea;
-        this.bodyArea = bodyArea;
     }
 
-    // TODO MW to Leonid: looks a bit strange that here are addArea() calls and in the above constructor not
     public GridCommand(String headers, String data, Area headerArea, Area bodyArea) {
         this.headers = headers;
         this.data = data;

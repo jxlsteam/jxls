@@ -211,7 +211,9 @@ public class PoiCellData extends org.jxls.common.CellData {
             case ERROR:
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
-            // TODO MW to Leonid: case BLANK: code needed?
+            case BLANK:
+                cell.setCellType(org.apache.poi.ss.usermodel.CellType.BLANK);
+                break;
         }
     }
 

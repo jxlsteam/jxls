@@ -190,8 +190,7 @@ public class PoiTransformer extends AbstractTransformer {
             destSheet.setColumnWidth(targetCellRef.getCol(), sheetData.getColumnWidth(srcCellRef.getCol()));
         }
         if (updateRowHeightFlag && !isIgnoreRowProps()) {
-            Row row = destSheet.getRow(targetCellRef.getRow()); // TODO MW to Leonid: Wouldn't the use of destRow be better here? NPE?
-            row.setHeight((short) sheetData.getRowData(srcCellRef.getRow()).getHeight());
+            destRow.setHeight((short) sheetData.getRowData(srcCellRef.getRow()).getHeight());
         }
         org.apache.poi.ss.usermodel.Cell destCell = destRow.getCell(targetCellRef.getCol());
         if (destCell == null) {

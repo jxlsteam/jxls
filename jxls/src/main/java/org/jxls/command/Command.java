@@ -49,9 +49,23 @@ public interface Command {
      */
     void reset();
 
-    // TODO MW to Leonid: Javadoc
+    /**
+     * Defines the {@link org.jxls.common.cellshift.CellShiftStrategy} to use
+     * when shifting the cells for the command while transforming an area
+     * The mode value "inner" sets the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} (default)
+     * The mode value "adjacent" sets the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy}
+     * @param mode cell shifting mode with possible values "inner" or "adjacent"
+     */
     void setShiftMode(String mode);
 
-    // TODO MW to Leonid: Javadoc
+    /**
+     * Returns the cell shifting mode defining
+     * the {@link org.jxls.common.cellshift.CellShiftStrategy} to use for the command
+     * Possible values are
+     *      "inner" defining the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} to use
+     *      "adjacent" defining the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy} to use
+     *      null value means the default strategy will be used ({@link org.jxls.common.cellshift.InnerCellShiftStrategy})
+     * @return cell shifting mode ("inner" or "adjacent")
+     */
     String getShiftMode();
 }
