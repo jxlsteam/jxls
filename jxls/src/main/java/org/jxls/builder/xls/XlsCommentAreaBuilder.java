@@ -74,10 +74,10 @@ import org.slf4j.LoggerFactory;
  * <p>Here we define {@link org.jxls.command.EachCommand} with items attribute set to 'department.staff' and var attribute set to 'employee'.
  * The command area is defined from the cell where the comment is defined and till the lastCell "F9"</p>
  *
- * <pre> jx:area(lastCell="G26" clearCells="true")</pre>
+ * <pre> jx:area(lastCell="G26")</pre>
  *
  * <p>Specifies the top area range with {@link AreaCommand} starting from the cell where the comment is defined and in
- * the cell defined in lastCell("G26"). clearCells attribute defines if it is required to clear area cell values after processing</p>
+ * the cell defined in lastCell("G26").</p>
  *
  * <p>Note: Clearing comments from the cells appears to have some issues in POI so should be used with caution.
  * The easiest approach will be just removing the template sheet.</p>

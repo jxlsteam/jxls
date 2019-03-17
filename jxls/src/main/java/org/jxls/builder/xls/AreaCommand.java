@@ -13,8 +13,6 @@ import org.jxls.common.Size;
 public class AreaCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "area";
 
-    private String clearCells;
-
     @Override
     public String getName() {
         return COMMAND_NAME;
@@ -23,13 +21,5 @@ public class AreaCommand extends AbstractCommand {
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         return Size.ZERO_SIZE;
-    }
-
-    public String getClearCells() {
-        return clearCells;
-    }
-
-    public void setClearCells(String clearCells) {
-        this.clearCells = clearCells;
     }
 }
