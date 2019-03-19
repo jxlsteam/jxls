@@ -48,6 +48,12 @@ public class Util {
     private static final Pattern regexJointedCellRefPattern = Pattern.compile(regexJointedCellRef);
     public static final String regexExcludePrefixSymbols = "(?<!\\w)";
 
+    /**
+     * Parses a formula and returns a list of cell names used in it
+     * E.g. for formula "B4*(1+C4)" the returned list will contain "B4", "C4"
+     * @param formula string
+     * @return a list of cell names used in the formula
+     */
     public static List<String> getFormulaCellRefs(String formula) {
         return getStringPartsByPattern(formula, regexCellRefExcludingJointedPattern);
     }
@@ -63,10 +69,23 @@ public class Util {
         return cellRefs;
     }
 
+    /**
+     * Parses a formula to extract a list of so called "jointed cells"
+     * The jointed cells are cells combined with a special notation "U_(cell1, cell2)" into a single cell
+     * They are used in formulas like this "$[SUM(U_(F8,F13))]".
+     * Here the formula will use both F8 and F13 source cells to calculate the sum
+     * @param formula a formula string to parse
+     * @return a list of jointed cells used in the formula
+     */
     public static List<String> getJointedCellRefs(String formula) {
         return getStringPartsByPattern(formula, regexJointedCellRefPattern);
     }
 
+    /**
+     * Parses a "jointed cell" reference and extracts individual cell references
+     * @param jointedCellRef a jointed cell reference to parse
+     * @return a list of cell names extracted from the jointed cell reference
+     */
     public static List<String> getCellRefsFromJointedCellRef(String jointedCellRef) {
         return getStringPartsByPattern(jointedCellRef, regexCellRefPattern);
     }
@@ -124,6 +143,12 @@ public class Util {
         return sb.toString();
     }
 
+    /**
+     * Groups a list of cell references into a list ranges which can be used in a formula substitution
+     * @param cellRefList a list of cell references
+     * @param targetRangeCount a number of ranges to use when grouping
+     * @return a list of cell ranges grouped by row or by column
+     */
     public static List<List<CellRef>> groupByRanges(List<CellRef> cellRefList, int targetRangeCount) {
         List<List<CellRef>> colRanges = groupByColRange(cellRefList);
         if (targetRangeCount == 0 || colRanges.size() == targetRangeCount) {

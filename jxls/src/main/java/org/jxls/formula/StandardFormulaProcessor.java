@@ -3,7 +3,6 @@ package org.jxls.formula;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,10 +21,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a standard formula processor implementation which takes into account
- * all performed cell transformations to properly evaluate all the formulas even
- * for complex templates. But it is very-very slow. In many cases it is better
- * to use {@link FastFormulaProcessor} as it is much-much faster although may
- * produce incorrect results in some specific cases.
+ * all the performed cell transformations to properly evaluate all the formulas even
+ * for complex templates.
+ * However for simple templates you may consider using the {@link FastFormulaProcessor} instead
+ * because it is much faster although may not provide the correct results for more complex cases.
  */
 public class StandardFormulaProcessor implements FormulaProcessor {
     private static Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
@@ -38,45 +37,25 @@ public class StandardFormulaProcessor implements FormulaProcessor {
     }
 
     // TODO method too long
+    /**
+     * The method transforms all the formula cells according to the command
+     * transformations happened during the area processing
+     * @param transformer transformer to use for formula processing
+     * @param area - xls area for which the formula processing is invoked
+     */
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
+        FormulaHelper helper = new FormulaHelper();
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
             logger.debug("Processing formula cell {}", formulaCellData);
-            List<String> formulaCellRefs = Util.getFormulaCellRefs(formulaCellData.getFormula());
-            List<String> jointedCellRefs = Util.getJointedCellRefs(formulaCellData.getFormula());
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
-            Map<CellRef, List<CellRef>> targetCellRefMap = new LinkedHashMap<>();
-            Map<String, List<CellRef>> jointedCellRefMap = new LinkedHashMap<>();
-            for (String cellRef : formulaCellRefs) {
-                CellRef pos = new CellRef(cellRef);
-                if (pos.isValid()) {
-                    if (pos.getSheetName() == null) {
-                        pos.setSheetName(formulaCellData.getSheetName());
-                        pos.setIgnoreSheetNameInFormat(true);
-                    }
-                    List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                    if (targetCellDataList.isEmpty() && area != null && !area.getAreaRef().contains(pos)) {
-                        targetCellDataList.add(pos);
-                    }
-                    targetCellRefMap.put(pos, targetCellDataList);
-                }
-            }
-            for (String jointedCellRef : jointedCellRefs) {
-                List<String> nestedCellRefs = Util.getCellRefsFromJointedCellRef(jointedCellRef);
-                List<CellRef> jointedCellRefList = new ArrayList<CellRef>();
-                for (String cellRef : nestedCellRefs) {
-                    CellRef pos = new CellRef(cellRef);
-                    if (pos.getSheetName() == null) {
-                        pos.setSheetName(formulaCellData.getSheetName());
-                        pos.setIgnoreSheetNameInFormat(true);
-                    }
-                    List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                    jointedCellRefList.addAll(targetCellDataList);
-                }
-                jointedCellRefMap.put(jointedCellRef, jointedCellRefList);
-            }
+            Map<CellRef, List<CellRef>> targetCellRefMap = helper.buildTargetCellRefMap(transformer, area, formulaCellData);
+            Map<String, List<CellRef>> jointedCellRefMap = helper.buildJointedCellRefMap(transformer, formulaCellData);
             List<CellRef> usedCellRefs = new ArrayList<>();
+
+            // process all of the result (target) formula cells
+            // a result formula cell is a cell into which the original cell with the formula was transformed
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
@@ -95,6 +74,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef,
                             formulaTargetAreaRef, cellRefEntry);
                     if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
+                        // for BY_COLUMN formula strategy we take only a subset of the cells
                         replacementCells = Util.createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells,
                                 usedCellRefs);
                         usedCellRefs.addAll(replacementCells);
@@ -105,7 +85,6 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         // Excel doesn't support more than 255 arguments in functions.
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
-                        System.out.println(targetFormulaString); // TODO
                     } else {
                         String from = Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry)
                                 + Util.regexExcludePrefixSymbols
@@ -114,13 +93,15 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                         targetFormulaString = targetFormulaString.replaceAll(from, to);
                     }
                 }
+                boolean isFormulaJointedCellRefsEmpty = true;
+                // iterate through all the jointed cell references used in the formula
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
                     Collections.sort(targetCellRefList);
                     if (targetCellRefList.isEmpty()) {
                         continue;
                     }
-                    isFormulaCellRefsEmpty = false;
+                    isFormulaJointedCellRefsEmpty = false;
                     Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
                             new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef,
@@ -130,7 +111,9 @@ public class StandardFormulaProcessor implements FormulaProcessor {
                 }
                 String sheetNameReplacementRegex = Pattern.quote(targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER);
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
-                if (isFormulaCellRefsEmpty) {
+                // if there were no regular or jointed cell references found for this formula use a default value
+                // if set or 0
+                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
                 if (!targetFormulaString.isEmpty()) {
@@ -158,8 +141,7 @@ public class StandardFormulaProcessor implements FormulaProcessor {
         // cells related to particular transformation.
         // We'll iterate through all target cell references and find all the ones which
         // belong to the target formula area.
-        List<CellRef> relevantCellRefs = findRelevantCellReferences(cellReferenceTargets, formulaTargetAreaRef);
-        return relevantCellRefs;
+        return findRelevantCellReferences(cellReferenceTargets, formulaTargetAreaRef);
     }
 
     private List<CellRef> findRelevantCellReferences(List<CellRef> cellReferenceTargets, AreaRef targetFormulaArea) {
