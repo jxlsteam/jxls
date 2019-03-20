@@ -90,9 +90,9 @@ public class UtilWrapper {
         return Util.transformToCollectionObject(expressionEvaluator, collectionName, context);
     }
 
-    public Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName,
+    public Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName,
             Context context) {
-        return Util.transformToIterableObject(expressionEvaluator, collectionName, context);
+        return (Iterable<Object>) Util.transformToIterableObject(expressionEvaluator, collectionName, context);
     }
 
     public String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {

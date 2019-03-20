@@ -1,5 +1,12 @@
 package org.jxls.command;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.jxls.area.Area;
@@ -11,13 +18,6 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.UtilWrapper;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EachCommandJTest {
@@ -38,7 +38,10 @@ public class EachCommandJTest {
         CellRef cellRef = new CellRef("A1");
         Context context = new Context();
         context.putVar("myVar", "Value 1");
-        List list = Arrays.asList("item 1", "item 2", "item 3");
+        List<Object> list = new ArrayList<>();
+        list.add("item 1");
+        list.add("item 2");
+        list.add("item 3");
         context.putVar("items", list);
         EachCommand eachCommand = new EachCommand("myVar", "items", area);
         eachCommand.setUtil(util);

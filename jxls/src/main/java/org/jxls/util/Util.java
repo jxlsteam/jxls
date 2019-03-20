@@ -408,12 +408,16 @@ public class Util {
         return count;
     }
 
-    public static Iterable<?> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
+    public static Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
-        if (!(collectionObject instanceof Iterable<?>)) {
+        if (!(collectionObject instanceof Iterable)) {
             throw new JxlsException(collectionName + " expression is not a collection");
         }
-        return (Iterable<?>) collectionObject;
+        List<Object> ret = new ArrayList<>();
+        for (Object i : (Iterable) collectionObject) {
+            ret.add(i);
+        }
+        return ret;
     }
 
     public static String getStrictCellNameRegex(String name) {
