@@ -216,6 +216,9 @@ public class CellData {
         return targetParentAreaRef;
     }
 
+    /**
+     * @return a list of cell refs into which the current cell was transformed
+     */
     public List<CellRef> getTargetPos() {
         return targetPos;
     }
@@ -300,6 +303,10 @@ public class CellData {
 
     /**
      * The method parses jx:params attribute from a cell comment
+     * <p>jx:params can be used e.g.</p><ul>
+     * <li>to set {@link FormulaStrategy} via 'formulaStrategy' param</li>
+     * <li>to set the formula default value via 'defaultValue' param</li></ul>
+     * 
      * @param cellComment the comment string
      */
     protected void processJxlsParams(String cellComment) {

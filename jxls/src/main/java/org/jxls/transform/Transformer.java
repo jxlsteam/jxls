@@ -43,6 +43,10 @@ public interface Transformer {
 
     CellData getCellData(CellRef cellRef);
 
+    /**
+     * @param cellRef a source cell reference
+     * @return a list of cell references into which the source cell was transformed
+     */
     List<CellRef> getTargetCellRef(CellRef cellRef);
 
     void resetTargetCellRefs();
