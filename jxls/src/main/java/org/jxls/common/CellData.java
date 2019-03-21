@@ -303,9 +303,10 @@ public class CellData {
 
     /**
      * The method parses jx:params attribute from a cell comment
-     * jx:params can be used e.g.
-     * a. to set {@link FormulaStrategy} via 'formulaStrategy' param
-     * b. to set the formula default value via 'defaultValue' param
+     * <p>jx:params can be used e.g.</p><ul>
+     * <li>to set {@link FormulaStrategy} via 'formulaStrategy' param</li>
+     * <li>to set the formula default value via 'defaultValue' param</li></ul>
+     * 
      * @param cellComment the comment string
      */
     protected void processJxlsParams(String cellComment) {

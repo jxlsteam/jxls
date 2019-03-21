@@ -23,18 +23,12 @@ import org.slf4j.LoggerFactory;
  * This is a standard formula processor implementation which takes into account
  * all the performed cell transformations to properly evaluate all the formulas even
  * for complex templates.
- * However for simple templates you may consider using the {@link FastFormulaProcessor} instead
- * because it is much faster although may not provide the correct results for more complex cases.
+ * <p>However for simple templates you may consider using the {@link FastFormulaProcessor} instead
+ * because it is much faster although may not provide the correct results for more complex cases.</p>
  */
-public class StandardFormulaProcessor implements FormulaProcessor {
+public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     private static Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
-
-    @Deprecated
-    @Override
-    public void processAreaFormulas(Transformer transformer) {
-        processAreaFormulas(transformer, null);
-    }
 
     // TODO method too long
     /**
@@ -45,13 +39,12 @@ public class StandardFormulaProcessor implements FormulaProcessor {
      */
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
-        FormulaHelper helper = new FormulaHelper();
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
             logger.debug("Processing formula cell {}", formulaCellData);
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
-            Map<CellRef, List<CellRef>> targetCellRefMap = helper.buildTargetCellRefMap(transformer, area, formulaCellData);
-            Map<String, List<CellRef>> jointedCellRefMap = helper.buildJointedCellRefMap(transformer, formulaCellData);
+            Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
+            Map<String, List<CellRef>> jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);
             List<CellRef> usedCellRefs = new ArrayList<>();
 
             // process all of the result (target) formula cells

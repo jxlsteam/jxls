@@ -1,7 +1,6 @@
 package org.jxls.formula;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,23 +18,16 @@ import org.jxls.util.Util;
  * Fast formula processor implementation.
  * It works correctly in 90% of cases and is much more faster than {@link StandardFormulaProcessor}.
  */
-public class FastFormulaProcessor implements FormulaProcessor {
-
-    @Deprecated
-    @Override
-    public void processAreaFormulas(Transformer transformer) {
-        processAreaFormulas(transformer, null);
-    }
+public class FastFormulaProcessor extends AbstractFormulaProcessor {
 
     // TODO method too long
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
-        FormulaHelper helper = new FormulaHelper();
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
-            Map<CellRef, List<CellRef>> targetCellRefMap = helper.buildTargetCellRefMap(transformer, area, formulaCellData);
-            Map<String, List<CellRef>> jointedCellRefMap = helper.buildJointedCellRefMap(transformer, formulaCellData);
+            Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
+            Map<String, List<CellRef>> jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);
             List<CellRef> usedCellRefs = new ArrayList<>();
 
             // process all of the result (target) formula cells
