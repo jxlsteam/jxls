@@ -54,6 +54,8 @@ public class PoiTransformer extends AbstractTransformer {
     private InputStream inputStream;
     private Integer lastCommentedColumn = MAX_COLUMN_TO_READ_COMMENT;
     private final boolean isSXSSF;
+    /** false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing */
+    private boolean evaluateFormulas = false;
 
     /**
      * No streaming
@@ -351,6 +353,9 @@ public class PoiTransformer extends AbstractTransformer {
         if (workbook == null) {
             throw new IllegalStateException("Cannot write an uninitialized workbook");
         }
+        if (isEvaluateFormulas()) {
+            workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+        }
         workbook.write(outputStream);
         outputStream.close();
         dispose();
@@ -530,5 +535,19 @@ public class PoiTransformer extends AbstractTransformer {
                 }
             }
         }
+    }
+
+    /**
+     * @return false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     */
+    public boolean isEvaluateFormulas() {
+        return evaluateFormulas;
+    }
+
+    /**
+     * @param evaluateFormulas false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     */
+    public void setEvaluateFormulas(boolean evaluateFormulas) {
+        this.evaluateFormulas = evaluateFormulas;
     }
 }
