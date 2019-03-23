@@ -105,9 +105,9 @@
                 <configuration>
                     <pushChanges>false</pushChanges>
                     <localCheckout>true</localCheckout>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
+                    <autoVersionSubmodules>false</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>

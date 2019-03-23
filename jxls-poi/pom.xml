@@ -14,7 +14,7 @@
     <properties>
         <spockVersion>1.0-groovy-2.4</spockVersion>
         <poi.version>4.0.1</poi.version>
-        <jxls.version>2.6.0-rc1</jxls.version>
+        <jxls.version>2.6.0-SNAPSHOT</jxls.version>
     </properties>
 
     <build>
