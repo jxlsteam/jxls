@@ -75,8 +75,8 @@ public class MainDemo {
             UserCommandExcelMarkupDemo.main(args);
             UserCommandDemo.main(args);
             AreaListenerDemo.main(args);
-//            StressXlsxDemo.executeStress1();
-//            StressXlsxDemo.executeStress2();
+            StressXlsxDemo.executeStress1();
+            StressXlsxDemo.executeStress2();
             SxssfDemo.simpleSxssf();
             SxssfDemo.executeStress1();
             SxssfDemo.executeStress2();
