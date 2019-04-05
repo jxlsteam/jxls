@@ -56,6 +56,12 @@ public class PoiTransformer extends AbstractTransformer {
     private final boolean isSXSSF;
 
     /**
+     * The cell style is lost after the merge, the following operation restores the merged cell
+     * to the style of the first cell before the merge.
+     */
+    private CellStyle cellStyle;
+
+    /**
      * No streaming
      * @param workbook
      */
@@ -502,15 +508,9 @@ public class PoiTransformer extends AbstractTransformer {
                 cellRef.getCol() + cols - 1);
         sheet.addMergedRegion(region);
 
-        /* The cell style is lost after the merge, the following operation restores the merged cell
-           to the style of the first cell before the merge. */
-        CellStyle cellStyle = null;
         try {
             cellStyle = getCellStyle(cellRef);
         } catch (Exception ignore) {
-        }
-        if (cellStyle == null) {
-            return;
         }
         for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
             Row row = sheet.getRow(i);
