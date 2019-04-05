@@ -2,6 +2,7 @@
 target/
 .idea/
 /bin/
-/.classpath
-/.project
-/.settings/
+.classpath
+.project
+.settings/
+/derby.log
