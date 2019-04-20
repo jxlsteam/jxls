@@ -25,6 +25,14 @@ public interface Transformer {
 
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
 
+    /***
+     * Writes Excel workbook to output stream but not close the stream
+     * designed to use with ZipOutputStream or other OutputStream
+     * for creates several xls files one time.
+     * @throws IOException
+     */
+    void writeButNotCloseStream() throws IOException;
+
     /**
      * Writes Excel workbook to output stream and disposes the workbook.
      * 
