@@ -1,5 +1,6 @@
 package org.jxls.transform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -134,5 +135,10 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void mergeCells(CellRef ref, int rows, int cols) {
         throw new UnsupportedOperationException("mergeCells operation is not implemented in the " + this.getClass().getName());
+    }
+
+    @Override
+    public void writeButNotCloseStream() throws IOException, UnsupportedOperationException {
+        throw new UnsupportedOperationException("writeButNotCloseStream operation is not implemented in the " + this.getClass().getName());
     }
 }
