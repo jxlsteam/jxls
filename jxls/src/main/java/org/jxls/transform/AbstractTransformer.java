@@ -138,7 +138,7 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     @Override
-    public void writeButNotCloseStream() throws IOException, UnsupportedOperationException {
+    public void writeButNotCloseStream() throws IOException {
         throw new UnsupportedOperationException("writeButNotCloseStream operation is not implemented in the " + this.getClass().getName());
     }
 }
