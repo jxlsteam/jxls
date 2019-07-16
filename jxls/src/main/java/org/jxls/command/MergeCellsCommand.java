@@ -7,7 +7,7 @@ import org.jxls.common.Size;
 
 /**
  * <p>Merge cells</p>
- * <pre>jx:merge(
+ * <pre>jx:mergeCells(
  * lastCell="Merge cell ranges"
  * [, cols="Number of columns combined"]
  * [, rows="Number of rows combined"]
