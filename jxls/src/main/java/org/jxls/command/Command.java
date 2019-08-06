@@ -68,4 +68,17 @@ public interface Command {
      * @return cell shifting mode ("inner" or "adjacent")
      */
     String getShiftMode();
+
+    /**
+     * Other commands will no longer execute in this area after locking
+     * @param isLock Whether the command area is locked, value should be "true","false",null
+     */
+    void setLockRange(String isLock);
+
+    /**
+     * Whether the command area is locked
+     * Other commands will no longer execute in this area after locking
+     * @return true or false (default true)
+     */
+    Boolean getLockRange();
 }
