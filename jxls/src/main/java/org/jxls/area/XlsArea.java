@@ -134,16 +134,23 @@ public class XlsArea implements Area {
         this.transformer = transformer;
     }
 
+    private void excludeCells(CellRef startCellRef, Size size) {
+        cellRange.excludeCells(
+                startCellRef.getCol() - this.startCellRef.getCol(),
+                startCellRef.getCol() - this.startCellRef.getCol() + size.getWidth() - 1,
+                startCellRef.getRow() - this.startCellRef.getRow(),
+                startCellRef.getRow() - this.startCellRef.getRow() + size.getHeight() - 1
+        );
+    }
+
     private void createCellRange() {
         cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
         for (CommandData commandData : commandDataList) {
             CellRef startCellRef = commandData.getSourceStartCellRef();
             Size size = commandData.getSourceSize();
-            cellRange.excludeCells(
-                    startCellRef.getCol() - this.startCellRef.getCol(),
-                    startCellRef.getCol() - this.startCellRef.getCol() + size.getWidth() - 1,
-                    startCellRef.getRow() - this.startCellRef.getRow(),
-                    startCellRef.getRow() - this.startCellRef.getRow() + size.getHeight() - 1);
+            if (commandData.getCommand().getLockRange()) {
+                excludeCells(startCellRef, size);
+            }
         }
     }
 
