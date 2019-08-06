@@ -74,6 +74,8 @@ public class XlsAreaTest {
         Context context = new Context();
         when(command1.applyAt(new CellRef("sheet2!C4"), context)).thenReturn(new Size(2, 2));
         when(command2.applyAt(new CellRef("sheet2!B8"), context)).thenReturn(new Size(2, 2));
+        when(command1.getLockRange()).thenReturn(true);
+        when(command2.getLockRange()).thenReturn(true);
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 7, size.getWidth());
         assertEquals("Height is wrong", 10, size.getHeight());
