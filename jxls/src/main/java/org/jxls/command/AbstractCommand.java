@@ -3,7 +3,6 @@ package org.jxls.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.xml.internal.fastinfoset.stax.events.Util;
 import org.jxls.area.Area;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
@@ -69,7 +68,7 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void setLockRange(String isLock) {
-        if (!Util.isEmptyString(isLock)) {
+        if (isLock != null && !"".equals(isLock)) {
             this.lockRange = Boolean.valueOf(isLock);
         }
     }
