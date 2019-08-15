@@ -67,6 +67,8 @@ public interface Transformer {
 
     void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
 
+    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY);
+
     boolean deleteSheet(String sheetName);
 
     void setHidden(String sheetName, boolean hidden);
