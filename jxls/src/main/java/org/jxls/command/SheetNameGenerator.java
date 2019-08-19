@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.apache.poi.ss.util.WorkbookUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jxls.transform.SafeSheetNameBuilder;
 
 /**
  * Creates cell references based on passed sheet names
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 public class SheetNameGenerator implements CellRefGenerator {
     private final List<String> sheetNames;
     private final CellRef startCellRef;
-    private static Logger logger = LoggerFactory.getLogger(SheetNameGenerator.class);
 
     public SheetNameGenerator(List<String> sheetNames, CellRef startCellRef) {
         this.sheetNames = sheetNames;
@@ -26,11 +23,11 @@ public class SheetNameGenerator implements CellRefGenerator {
         if (sheetNames.size() <= index) {
             return null;
         }
-
-        String givenSheetName = sheetNames.get(index);
-        String sheetName = WorkbookUtil.createSafeSheetName(givenSheetName);
-        if (givenSheetName != sheetName) {
-            logger.warn("Given sheet name was invalid, updating. originalSheetName={} newSheetName={}", givenSheetName, sheetName);
+        String sheetName = sheetNames.get(index);
+        Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
+        if (builder instanceof SafeSheetNameBuilder) {
+            sheetName = ((SafeSheetNameBuilder) builder).createSafeSheetName(sheetName);
+            
         }
         return new CellRef(sheetName, startCellRef.getRow(), startCellRef.getCol());
     }

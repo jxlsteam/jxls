@@ -14,7 +14,6 @@
 
 	<properties>
 		<spockVersion>1.0-groovy-2.4</spockVersion>
-		<poi.version>4.0.1</poi.version>
 		<jexl.version>3.1</jexl.version>
 	</properties>
 
@@ -89,11 +88,6 @@
 			<artifactId>jxls-jexcel</artifactId>
 			<version>1.0.8</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>${poi.version}</version>
 		</dependency>
 	</dependencies>
 
