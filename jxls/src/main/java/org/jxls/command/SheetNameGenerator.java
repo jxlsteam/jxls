@@ -20,14 +20,13 @@ public class SheetNameGenerator implements CellRefGenerator {
 
     @Override
     public CellRef generateCellRef(int index, Context context) {
-        if (sheetNames.size() <= index) {
-            return null;
-        }
-        String sheetName = sheetNames.get(index);
+        String sheetName = index >= 0 && index < sheetNames.size() ? sheetNames.get(index) : null;
         Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
         if (builder instanceof SafeSheetNameBuilder) {
-            sheetName = ((SafeSheetNameBuilder) builder).createSafeSheetName(sheetName);
-            
+            sheetName = ((SafeSheetNameBuilder) builder).createSafeSheetName(sheetName, index);
+        }
+        if (sheetName == null) {
+            return null;
         }
         return new CellRef(sheetName, startCellRef.getRow(), startCellRef.getCol());
     }
