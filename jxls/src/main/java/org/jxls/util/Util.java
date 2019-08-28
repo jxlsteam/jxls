@@ -17,6 +17,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jxls.area.Area;
+import org.jxls.command.Command;
+import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.CellRefColPrecedenceComparator;
 import org.jxls.common.CellRefRowPrecedenceComparator;
@@ -447,5 +450,25 @@ public class Util {
 
     public static String getStrictCellNameRegex(String name) {
         return "(?<=[^A-Z]|^)" + name + "(?=\\D|$)";
+    }
+
+    /**
+     * Return names of all multi sheet template
+     *
+     * @param areaList list of area
+     * @return string array
+     */
+    static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
+        List<String> templateSheetsName = new ArrayList<>();
+        for (Area xlsArea : areaList) {
+            for (Command command : xlsArea.findCommandByName("each")) {
+                boolean isAreaHasMultiSheetAttribute = ((EachCommand) command).getMultisheet() != null && !((EachCommand) command).getMultisheet().isEmpty();
+                if (isAreaHasMultiSheetAttribute) {
+                    templateSheetsName.add(xlsArea.getAreaRef().getSheetName());
+                    break;
+                }
+            }
+        }
+        return templateSheetsName;
     }
 }

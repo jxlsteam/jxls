@@ -1,11 +1,5 @@
 package org.jxls.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.List;
-
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -19,6 +13,14 @@ import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
+
+import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
 
 /**
  * Helper class to simplify JXLS usage
@@ -158,7 +160,7 @@ public class JxlsHelper {
     /**
      * Allows to set custom notation for expressions in the template The notation is
      * used in {@link JxlsHelper#createTransformer(InputStream, OutputStream)}
-     * 
+     *
      * @param expressionNotationBegin notation prefix
      * @param expressionNotationEnd notation suffix
      * @return this
@@ -203,6 +205,18 @@ public class JxlsHelper {
             for (Area xlsArea : xlsAreaList) {
                 setFormulaProcessor(xlsArea);
                 xlsArea.processFormulas();
+            }
+        }
+        if (isHideTemplateSheet()) {
+            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(xlsAreaList);
+            for (String sheetName : sheetNameTemplate) {
+                transformer.setHidden(sheetName, true);
+            }
+        }
+        if (isDeleteTemplateSheet()) {
+            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(xlsAreaList);
+            for (String sheetName : sheetNameTemplate) {
+                transformer.deleteSheet(sheetName);
             }
         }
         transformer.write();
@@ -252,7 +266,7 @@ public class JxlsHelper {
     /**
      * Processes the template from the given input stream using the supplied
      * {@link Context} and the given target cell and writes the result to the output stream
-     * 
+     *
      * @param templateStream source input stream for the template
      * @param targetStream target output stream to write the processing result
      * @param context data map
@@ -290,7 +304,7 @@ public class JxlsHelper {
 
     /**
      * Processes the template with the {@link GridCommand}
-     * 
+     *
      * @param templateStream template input stream
      * @param targetStream output stream for the result
      * @param context data map
@@ -318,7 +332,7 @@ public class JxlsHelper {
     /**
      * Processes the input template with {@link GridCommand} at given target cell
      * using the given object properties and context
-     * 
+     *
      * @param templateStream template input stream
      * @param targetStream result output stream
      * @param context data map
@@ -354,7 +368,7 @@ public class JxlsHelper {
 
     /**
      * Registers grid template to be used with {@link SimpleExporter}
-     * 
+     *
      * @param inputStream template input stream
      * @return this
      * @throws IOException -
@@ -366,7 +380,7 @@ public class JxlsHelper {
 
     /**
      * Performs data grid export using {@link SimpleExporter}
-     * 
+     *
      * @param headers collection of headers to use for the export
      * @param dataObjects collection of data objects to export
      * @param objectProps object properties (comma separated) to use with the {@link GridCommand}
@@ -382,7 +396,7 @@ public class JxlsHelper {
      * Creates {@link Transformer} instance connected to the given input stream and
      * output stream with the default or custom expression notation (see also
      * {@link JxlsHelper#buildExpressionNotation(String, String)}
-     * 
+     *
      * @param templateStream source template input stream
      * @param targetStream target output stream to write the processing result
      * @return created transformer
