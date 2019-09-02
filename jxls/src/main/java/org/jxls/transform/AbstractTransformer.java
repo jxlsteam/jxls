@@ -13,6 +13,8 @@ import org.jxls.common.CellRef;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
+import org.jxls.common.AreaRef;
+import org.jxls.common.ImageType;
 
 /**
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
@@ -140,5 +142,10 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void writeButNotCloseStream() throws IOException {
         throw new UnsupportedOperationException("writeButNotCloseStream operation is not implemented in the " + this.getClass().getName());
+    }
+
+    @Override
+    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
+        throw new UnsupportedOperationException("addImage operation is not implemented in the " + this.getClass().getName());
     }
 }

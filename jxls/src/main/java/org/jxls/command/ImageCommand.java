@@ -20,6 +20,24 @@ public class ImageCommand extends AbstractCommand {
     private Area area;
     /** Expression that can be evaluated to image byte array byte[] */
     private String src;
+    /**
+     * org.apache.poi.ss.usermodel.Picture#resize(double scaleX, double scaleY)
+     * <p>
+     * Resize the image.
+     * <p>
+     * Please note, that this method works correctly only for workbooks
+     * with the default font size (Arial 10pt for .xls and Calibri 11pt for .xlsx).
+     * If the default font is changed the resized image can be streched vertically or horizontally.
+     * </p>
+     * <p>
+     * <code>resize(1.0,1.0)</code> keeps the original size,<br>
+     * <code>resize(0.5,0.5)</code> resize to 50% of the original,<br>
+     * <code>resize(2.0,2.0)</code> resizes to 200% of the original.<br>
+     * <code>resize({@link Double#MAX_VALUE},{@link Double#MAX_VALUE})</code> resizes to the dimension of the embedded image.
+     * </p>
+     */
+    private Double scaleX;
+    private Double scaleY;
 
     public ImageCommand() {
     }
@@ -73,6 +91,31 @@ public class ImageCommand extends AbstractCommand {
         imageType = ImageType.valueOf(strType);
     }
 
+    public Double getScaleX() {
+        return scaleX;
+    }
+
+    public void setScaleX(String scaleX) {
+        this.scaleX = Double.valueOf(scaleX);
+    }
+
+    public Double getScaleY() {
+        return scaleY;
+    }
+
+    public void setScaleY(String scaleY) {
+        this.scaleY = Double.valueOf(scaleY);
+    }
+
+    private boolean needResizePicture() {
+        return this.scaleX != null && this.scaleY != null;
+    }
+
+    @Override
+    public Boolean getLockRange() {
+        return needResizePicture() ? false : super.getLockRange();
+    }
+
     @Override
     public Command addArea(Area area) {
         if (areaList.size() >= 1) {
@@ -105,7 +148,7 @@ public class ImageCommand extends AbstractCommand {
             }
             imgBytes = (byte[]) imgObj;
         }
-        getTransformer().addImage(imageAnchorArea, imgBytes, imageType);
+        getTransformer().addImage(imageAnchorArea, imgBytes, imageType, scaleX, scaleY);
         return area.getSize();
     }
 }

@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -327,7 +328,9 @@ public class PoiTransformer extends AbstractTransformer {
         return commentedCells;
     }
 
-    private void addImage(AreaRef areaRef, int imageIdx) {
+
+    private void addImage(AreaRef areaRef, int imageIdx, Double scaleX, Double scaleY) {
+        boolean pictureResizeFlag = scaleX != null && scaleY != null;
         CreationHelper helper = workbook.getCreationHelper();
         Sheet sheet = workbook.getSheet(areaRef.getSheetName());
         if (sheet == null) {
@@ -337,16 +340,32 @@ public class PoiTransformer extends AbstractTransformer {
         ClientAnchor anchor = helper.createClientAnchor();
         anchor.setCol1(areaRef.getFirstCellRef().getCol());
         anchor.setRow1(areaRef.getFirstCellRef().getRow());
-        anchor.setCol2(areaRef.getLastCellRef().getCol());
-        anchor.setRow2(areaRef.getLastCellRef().getRow());
-        drawing.createPicture(anchor, imageIdx);
+        if (pictureResizeFlag) {
+            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
+            anchor.setCol2(-1);
+            anchor.setRow2(-1);
+        } else {
+            anchor.setCol2(areaRef.getLastCellRef().getCol());
+            anchor.setRow2(areaRef.getLastCellRef().getRow());
+        }
+        Picture picture = drawing.createPicture(anchor, imageIdx);
+        if (pictureResizeFlag) {
+            picture.resize(scaleX, scaleY);
+        }
+    }
+
+    @Override
+    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
+        int poiPictureType = findPoiPictureTypeByImageType(imageType);
+        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
+        addImage(areaRef, pictureIdx, scaleX, scaleY);
     }
 
     @Override
     public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
         int poiPictureType = findPoiPictureTypeByImageType(imageType);
         int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
-        addImage(areaRef, pictureIdx);
+        addImage(areaRef, pictureIdx, null, null);
     }
 
     @Override

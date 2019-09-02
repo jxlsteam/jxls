@@ -28,12 +28,15 @@ public class ImageDemo {
     private static String output = "target/image_output.xlsx";
     private static String output2 = "target/image_output2.xlsx";
     private static String output3 = "target/image_output3.xlsx";
+    private static String template4 = "image_demo4.xlsx";
+    private static String output4 = "target/image_output4.xlsx";
 
     public static void main(String[] args) throws IOException {
         logger.info("Running Image demo");
         execute();
         execute2();
         executeWithNullBytes();
+        executeResizePicture();
     }
 
     public static void execute() throws IOException {
@@ -74,6 +77,20 @@ public class ImageDemo {
             try (OutputStream os = new FileOutputStream(output3)) {
                 Context context = new Context();
                 byte[] imageBytes = null;
+                Department department = new Department("Test Department");
+                department.setImage(imageBytes);
+                context.putVar("dep", department);
+                JxlsHelper.getInstance().processTemplate(is, os, context);
+            }
+        }
+    }
+
+    public static void executeResizePicture() throws IOException {
+        try(InputStream is = ImageDemo.class.getResourceAsStream(template4)) {
+            try (OutputStream os = new FileOutputStream(output4)) {
+                Context context = new Context();
+                InputStream imageInputStream = ImageDemo.class.getResourceAsStream("business.png");
+                byte[] imageBytes = Util.toByteArray(imageInputStream);
                 Department department = new Department("Test Department");
                 department.setImage(imageBytes);
                 context.putVar("dep", department);
