@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jxls.common.AreaRef;
@@ -510,13 +511,18 @@ public class PoiTransformer extends AbstractTransformer {
     public void adjustTableSize(CellRef ref, Size size) {
         XSSFWorkbook xwb = getXSSFWorkbook();
         if (size.getHeight() > 0 && xwb != null) {
-            for (XSSFTable table : xwb.getSheet(ref.getSheetName()).getTables()) {
-                AreaRef areaRef = new AreaRef(table.getSheetName() + "!" + table.getCTTable().getRef());
-                if (areaRef.contains(ref)) {
-                    // Make table higher
-                    areaRef.getLastCellRef().setRow(ref.getRow() + size.getHeight() - 1);
-                    table.getCTTable().setRef(
-                            areaRef.getFirstCellRef().toString(true) + ":" + areaRef.getLastCellRef().toString(true));
+            XSSFSheet sheet = xwb.getSheet(ref.getSheetName());
+            if (sheet == null) {
+                logger.error("Can not access sheet '{}'", ref.getSheetName());
+            } else {
+                for (XSSFTable table : sheet.getTables()) {
+                    AreaRef areaRef = new AreaRef(table.getSheetName() + "!" + table.getCTTable().getRef());
+                    if (areaRef.contains(ref)) {
+                        // Make table higher
+                        areaRef.getLastCellRef().setRow(ref.getRow() + size.getHeight() - 1);
+                        table.getCTTable().setRef(
+                                areaRef.getFirstCellRef().toString(true) + ":" + areaRef.getLastCellRef().toString(true));
+                    }
                 }
             }
         }
