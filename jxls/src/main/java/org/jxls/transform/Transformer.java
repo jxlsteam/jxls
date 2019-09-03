@@ -78,4 +78,14 @@ public interface Transformer {
     void adjustTableSize(CellRef ref, Size size);
 
     void mergeCells(CellRef ref, int rows, int cols);
+
+    /**
+     * @return false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     */
+    boolean isEvaluateFormulas();
+
+    /**
+     * @param evaluateFormulas false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     */
+    void setEvaluateFormulas(boolean evaluateFormulas);
 }

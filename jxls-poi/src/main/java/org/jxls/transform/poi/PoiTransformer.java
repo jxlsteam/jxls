@@ -384,6 +384,9 @@ public class PoiTransformer extends AbstractTransformer {
         if (workbook == null) {
             throw new IllegalStateException("Cannot write an uninitialized workbook");
         }
+        if (isEvaluateFormulas()) {
+            workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+        }
         workbook.write(outputStream);
     }
 

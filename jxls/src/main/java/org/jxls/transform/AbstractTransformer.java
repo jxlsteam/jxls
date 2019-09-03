@@ -27,6 +27,8 @@ public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<>();
     private TransformationConfig transformationConfig = new TransformationConfig();
+    /** false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing */
+    private boolean evaluateFormulas = false;
 
     @Override
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
@@ -147,5 +149,15 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
         throw new UnsupportedOperationException("addImage operation is not implemented in the " + this.getClass().getName());
+    }
+
+    @Override
+    public boolean isEvaluateFormulas() {
+        return evaluateFormulas;
+    }
+
+    @Override
+    public void setEvaluateFormulas(boolean evaluateFormulas) {
+        this.evaluateFormulas = evaluateFormulas;
     }
 }
