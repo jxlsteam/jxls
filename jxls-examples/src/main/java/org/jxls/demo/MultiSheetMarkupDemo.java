@@ -39,7 +39,11 @@ public class MultiSheetMarkupDemo {
                         departments.get(1).getName(),
                         departments.get(2).getName()));
                 // with multi sheets it is better to use StandardFormulaProcessor by disabling the FastFormulaProcessor
-                JxlsHelper.getInstance().setUseFastFormulaProcessor(false).processTemplate(is, os, context);
+                JxlsHelper
+                        .getInstance()
+                        .setUseFastFormulaProcessor(false)
+                        .setDeleteTemplateSheet(true)
+                        .processTemplate(is, os, context);
             }
         }
     }
