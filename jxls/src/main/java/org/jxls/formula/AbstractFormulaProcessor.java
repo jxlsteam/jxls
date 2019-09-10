@@ -28,9 +28,12 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
                     pos.setIgnoreSheetNameInFormat(true);
                 }
                 List<CellRef> targetCellDataList = transformer.getTargetCellRef(pos);
-                // if the cell was not transformed into any cell and it is outside of the source area
+                // if the cell was not transformed into any cell and it is outside of the source area of the current sheet
                 // we set the target cell to be the same as the source cell
-                if (targetCellDataList.isEmpty() && area != null && !area.getAreaRef().contains(pos)) {
+                if (targetCellDataList.isEmpty() &&
+                        area != null &&
+                        area.getStartCellRef().getSheetName().equals(pos.getSheetName()) &&
+                        !area.getAreaRef().contains(pos)) {
                     targetCellDataList.add(pos);
                 }
                 targetCellRefMap.put(pos, targetCellDataList);
