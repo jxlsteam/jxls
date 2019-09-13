@@ -74,6 +74,8 @@ public class CellData {
     private List<AreaRef> targetParentAreaRef = new ArrayList<>();
     private Transformer transformer;
 
+    private List<String> evaluatedFormulas = new ArrayList<>();
+
     public CellData(CellRef cellRef) {
         this.cellRef = cellRef;
     }
@@ -200,8 +202,16 @@ public class CellData {
         this.formula = formula;
     }
 
+    public List<String> getEvaluatedFormulas() {
+        return evaluatedFormulas;
+    }
+
     public boolean isFormulaCell() {
         return formula != null;
+    }
+
+    public boolean isParameterizedFormulaCell(){
+        return isFormulaCell() && isUserFormula(cellValue.toString());
     }
 
     public boolean addTargetPos(CellRef cellRef) {
@@ -238,6 +248,7 @@ public class CellData {
                 if (evaluationResult != null) {
                     targetCellType = CellType.FORMULA;
                     formula = evaluationResult.toString();
+                    evaluatedFormulas.add(formula);
                 }
             } else {
                 evaluate(strValue, context);
