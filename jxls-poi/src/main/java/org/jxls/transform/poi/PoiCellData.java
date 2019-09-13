@@ -166,7 +166,9 @@ public class PoiCellData extends org.jxls.common.CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-        cell.setCellType(getPoiCellType(targetCellType));
+        if (targetCellType != CellType.FORMULA) {
+            cell.setCellType(getPoiCellType(targetCellType));
+        }
         if (hyperlink != null) {
             cell.setHyperlink(hyperlink);
         }
