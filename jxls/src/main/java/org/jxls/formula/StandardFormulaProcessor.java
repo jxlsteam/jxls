@@ -52,6 +52,9 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
+                if (formulaCellData.isParameterizedFormulaCell()){
+                    targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
+                }
                 if (formulaCellData.getArea() == null) {
                     continue;
                 }
@@ -106,7 +109,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 // if there were no regular or jointed cell references found for this formula use a default value
                 // if set or 0
-                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty) {
+                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty && !formulaCellData.isParameterizedFormulaCell()) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
                 if (!targetFormulaString.isEmpty()) {
