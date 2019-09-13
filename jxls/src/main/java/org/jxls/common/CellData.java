@@ -161,7 +161,7 @@ public class CellData {
     }
 
     protected boolean isJxlsParamsComment(String cellComment) {
-        return cellComment.startsWith(JX_PARAMS_PREFIX);
+        return cellComment.trim().startsWith(JX_PARAMS_PREFIX);
     }
 
     public String getSheetName() {
