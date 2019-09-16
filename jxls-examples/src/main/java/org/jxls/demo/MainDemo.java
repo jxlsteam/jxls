@@ -82,11 +82,6 @@ public class MainDemo {
             SxssfDemo.executeStress2();
         }
 
-        if( TransformerFactory.JEXCEL_TRANSFORMER.equals( transformerName)){
-            JexcelAreaListenerDemo.main(args);
-            JexcelUserCommandExcelMarkupDemo.main(args);
-        }
-
 //        StressDemo.executeStress1();
 //        StressDemo.executeStress2();
     }

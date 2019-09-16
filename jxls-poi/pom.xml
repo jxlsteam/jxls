@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jxls</groupId>
 		<artifactId>jxls-project</artifactId>
-		<version>2.6.1-SNAPSHOT</version>
+		<version>2.7.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jxls-poi</artifactId>
@@ -16,7 +16,7 @@
 	<properties>
 		<spockVersion>1.0-groovy-2.4</spockVersion>
 		<poi.version>4.1.0</poi.version>
-		<jxls.version>2.6.1-SNAPSHOT</jxls.version>
+		<jxls.version>2.7.0-SNAPSHOT</jxls.version>
 	</properties>
 
 	<build>

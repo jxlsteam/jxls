@@ -1,9 +1,13 @@
 package org.jxls.formula;
 
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import org.junit.Assert;
+import org.junit.Test;
+import org.jxls.common.CellData;
+import org.jxls.common.CellRef;
+import org.jxls.transform.Transformer;
+import org.jxls.util.TransformerFactory;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,13 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.jxls.common.CellData;
-import org.jxls.common.CellRef;
-import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
-import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Michał Kępkowski
@@ -34,7 +34,7 @@ public class FastFormulaProcessorTest {
         OutputStream outputStream = new ByteArrayOutputStream();
         Transformer transformer = spy(getTransformer(template, outputStream));
         ArgumentCaptor<String> firstFooCaptor = ArgumentCaptor.forClass(String.class);
-        String expected = "IF(AE201=0.0,\"\",AE211/AE201)";
+        String expected = "IF(AE201=0,\"\",AE211/AE201)";
 
         // TEST
         FastFormulaProcessor fastFormulaProcessor = new FastFormulaProcessor();

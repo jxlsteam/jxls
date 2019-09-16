@@ -5,29 +5,32 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jxls.common.JxlsException;
 import org.jxls.transform.Transformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Creates {@link Transformer} instances in runtime
  * @author Leonid Vysochyn
- * @since 11/6/13
  */
 public class TransformerFactory {
     public static final String POI_CLASS_NAME = "org.jxls.transform.poi.PoiTransformer";
-    /**
-     * @deprecated Use POI_CLASS_NAME. JEXCEL_CLASS_NAME might be removed in a future release.
-     */
-    public static final String JEXCEL_CLASS_NAME = "org.jxls.transform.jexcel.JexcelTransformer";
     public static final String INIT_METHOD = "createTransformer";
     public static final String TRANSFORMER_SYSTEM_PROPERTY = "jxlstransformer";
-    /**
-     * @deprecated Use POI_TRANSFORMER. JEXCEL_TRANSFORMER might be removed in a future release.
-     */
-    public static final String JEXCEL_TRANSFORMER = "jexcel";
     public static final String POI_TRANSFORMER = "poi";
     private static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
 
+    /**
+     * Creates a transformer initialized for reading a template from an {@link InputStream} and writing output to {@link OutputStream}
+     * By default it creates a transformer from jxls-poi module
+     * To create a different transformer set `jxlstransformer` system java property to the class name of the transformer
+     * The transformer should have a public static `createTransformer(InputStream is, OutputStream os)` method
+     * which will be invoked to create an instance of the transformer
+     * @param inputStream - an input stream to read an Excel template
+     * @param outputStream - an output stream to write the processed Excel output
+     * @return {@link Transformer}
+     */
     public static Transformer createTransformer(InputStream inputStream, OutputStream outputStream) {
         Class<?> transformer = getTransformerClass();
         if (transformer == null) {
@@ -53,6 +56,10 @@ public class TransformerFactory {
         }
     }
 
+    /**
+     * @deprecated Use {@link #getTransformerClassName()} method instead
+     * @return a name for the {@link Transformer} which is loaded by this factory
+     */
     public static String getTransformerName() {
         Class<?> transformerClass = getTransformerClass();
         if (transformerClass == null) {
@@ -60,48 +67,36 @@ public class TransformerFactory {
         }
         if (POI_CLASS_NAME.equalsIgnoreCase(transformerClass.getName())) {
             return POI_TRANSFORMER;
+        }else{
+            return transformerClass.getName();
         }
-        if (JEXCEL_CLASS_NAME.equalsIgnoreCase(transformerClass.getName())) {
-            logger.warn("jxls-jexcel is deprecated");
-            return JEXCEL_TRANSFORMER;
+    }
+
+    /**
+     * @return the transformer class to be loaded by this factory
+     */
+    public static String getTransformerClassName(){
+        String transformerClassName = System.getProperty(TRANSFORMER_SYSTEM_PROPERTY, POI_CLASS_NAME);
+        // for backwards compatibility we also allow a short name for a poi transformer
+        if (transformerClassName.equalsIgnoreCase(POI_TRANSFORMER)){
+            transformerClassName = POI_CLASS_NAME;
         }
-        return transformerClass.getName();
+        return transformerClassName;
     }
 
     private static Class<?> getTransformerClass() {
-        String transformerName = System.getProperty(TRANSFORMER_SYSTEM_PROPERTY);
-        Class<?> transformer = null;
-        if (transformerName == null) {
-            transformer = loadPoiTransformer();
-            if (transformer == null) {
-                transformer = loadJexcelTransformer();
-            }
-        } else {
-            if (POI_TRANSFORMER.equalsIgnoreCase(transformerName)) {
-                transformer = loadPoiTransformer();
-            } else if (JEXCEL_TRANSFORMER.equalsIgnoreCase(transformerName)) {
-                transformer = loadJexcelTransformer();
-            }
-        }
-        return transformer;
+        String transformerClassName = getTransformerClassName();
+        return loadTransformerByClass(transformerClassName);
     }
 
-    private static Class<?> loadPoiTransformer() {
+    private static Class<?> loadTransformerByClass(String transformerClassName) {
         try {
-            return Class.forName(POI_CLASS_NAME);
+            logger.info("Loading transformer by class {}", transformerClassName);
+            return Class.forName(transformerClassName);
         } catch (Exception e) {
-            logger.warn("Cannot load POI transformer class", e);
-            return null;
+            logger.error("Failed to load transformer class", e);
+            throw new JxlsException("Failed to load transformer class " + transformerClassName, e);
         }
     }
 
-    private static Class<?> loadJexcelTransformer() {
-        logger.warn("jxls-jexcel is deprecated");
-        try {
-            return Class.forName(JEXCEL_CLASS_NAME);
-        } catch (Exception e) {
-            logger.warn("Cannot load JExcel transformer class", e);
-            return null;
-        }
-    }
 }
