@@ -12,6 +12,8 @@ public class Employee {
     private BigDecimal payment;
     private BigDecimal bonus;
 
+    private String buGroup;
+
     public Employee(String name, Date birthDate, BigDecimal payment, BigDecimal bonus) {
         this.name = name;
         this.birthDate = birthDate;
@@ -21,6 +23,18 @@ public class Employee {
 
     public Employee(String name, Date birthDate, double payment, double bonus) {
         this(name, birthDate, new BigDecimal(payment), new BigDecimal(bonus));
+    }
+
+    public Employee(String name, Date birthDate, double payment, double bonus, String buGroup) {
+        this(name, birthDate, new BigDecimal(payment), new BigDecimal(bonus), buGroup);
+    }
+
+    public Employee(String name, Date birthDate, BigDecimal payment, BigDecimal bonus, String buGroup) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.payment = payment;
+        this.bonus = bonus;
+        this.buGroup = buGroup;
     }
 
     public String getName() {
@@ -54,4 +68,14 @@ public class Employee {
     public void setBonus(BigDecimal bonus) {
         this.bonus = bonus;
     }
+
+
+    public String getBuGroup() {
+        return buGroup;
+    }
+
+    public void setBuGroup(String buGroup) {
+        this.buGroup = buGroup;
+    }
+
 }
