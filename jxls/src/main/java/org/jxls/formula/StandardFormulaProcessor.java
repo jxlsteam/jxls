@@ -67,7 +67,8 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                         continue;
                     }
                     isFormulaCellRefsEmpty = false;
-                    List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef,
+                    List<CellRef> replacementCells = findFormulaCellRefReplacements(
+                            transformer, targetFormulaCellRef, formulaSourceAreaRef,
                             formulaTargetAreaRef, cellRefEntry);
                     if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
                         // for BY_COLUMN formula strategy we take only a subset of the cells
@@ -100,7 +101,8 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                     isFormulaJointedCellRefsEmpty = false;
                     Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
                             new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
-                    List<CellRef> replacementCells = findFormulaCellRefReplacements(formulaSourceAreaRef,
+                    List<CellRef> replacementCells = findFormulaCellRefReplacements(
+                            transformer, targetFormulaCellRef, formulaSourceAreaRef,
                             formulaTargetAreaRef, cellRefMapEntryParam);
                     String replacementString = Util.createTargetCellRef(replacementCells);
                     targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
@@ -124,13 +126,35 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
         }
     }
 
-    private List<CellRef> findFormulaCellRefReplacements(AreaRef formulaSourceAreaRef, AreaRef formulaTargetAreaRef,
+    private List<CellRef> findFormulaCellRefReplacements(Transformer transformer, CellRef targetFormulaCellRef, AreaRef formulaSourceAreaRef, AreaRef formulaTargetAreaRef,
             Map.Entry<CellRef, List<CellRef>> cellReferenceEntry) {
         CellRef cellReference = cellReferenceEntry.getKey();
         List<CellRef> cellReferenceTargets = cellReferenceEntry.getValue();
         if (cellReference != null && !formulaSourceAreaRef.contains(cellReference)) {
             // This cell is outside of the formula cell area. So we just return all the cell
             // reference targets `as is`.
+            // However it is possible the cell might be a part of the area replicated in an outer loop
+            // In that case we assume we should just take only the target cell ref which belongs to the same area
+            // as this ref entry
+            CellData cellRefData = transformer.getCellData(cellReference);
+            if (!cellRefData.getTargetParentAreaRef().isEmpty()){
+                // non-empty means that there was an outer replication of this cell onto new areas
+                // we need to find an area which contains both the current formula cell
+                // and the cell reference we are searching replacements for
+                // since we assume the intention is to use only the target cell reference from the same parent area
+                List<CellRef> targetReferences = new ArrayList<>();
+                for (AreaRef targetAreaRef : cellRefData.getTargetParentAreaRef()){
+                    if (targetAreaRef.contains(targetFormulaCellRef)){
+                        for (CellRef targetRef : cellReferenceTargets){
+                            if (targetAreaRef.contains(targetRef)){
+                                targetReferences.add(targetRef);
+                            }
+                        }
+                        return targetReferences;
+                    }
+                }
+            }
+
             return cellReferenceTargets;
         }
         // The source cell reference is inside parent formula area. So let's find target
