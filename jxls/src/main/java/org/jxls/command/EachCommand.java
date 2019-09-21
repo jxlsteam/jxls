@@ -48,6 +48,7 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private String groupBy;
     private String groupOrder;
+    private String varIndex;
 
     public EachCommand() {
     }
@@ -88,6 +89,17 @@ public class EachCommand extends AbstractCommand {
     public EachCommand(String var, String items, Area area, CellRefGenerator cellRefGenerator) {
         this(var, items, area, (Direction) null);
         this.cellRefGenerator = cellRefGenerator;
+    }
+
+    /**
+     * @return variable name to put the current iteration index
+     */
+    public String getVarIndex() {
+        return varIndex;
+    }
+
+    public void setVarIndex(String varIndex) {
+        this.varIndex = varIndex;
     }
 
     UtilWrapper getUtil() {
@@ -294,8 +306,12 @@ public class EachCommand extends AbstractCommand {
 
         CellRef currentCell = cellRef;
         Object currentVarObject = context.getVar(varName);
+        int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
+            if (varIndex != null ){
+                context.putVar(varIndex, currentIndex);
+            }
             if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
                 context.removeVar(varName);
                 continue;
@@ -319,13 +335,18 @@ public class EachCommand extends AbstractCommand {
                 newWidth += size.getWidth();
                 newHeight = Math.max(newHeight, size.getHeight());
             }
+            currentIndex++;
         }
-        if (currentVarObject != null) {
-            context.putVar(varName, currentVarObject);
+        restoreVarObject(context, varName, currentVarObject);
+        return new Size(newWidth, newHeight);
+    }
+
+    private void restoreVarObject(Context context, String varName, Object varObject) {
+        if (varObject != null) {
+            context.putVar(varName, varObject);
         } else {
             context.removeVar(varName);
         }
-        return new Size(newWidth, newHeight);
     }
 
     @SuppressWarnings("unchecked")
