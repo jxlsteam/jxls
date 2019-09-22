@@ -160,4 +160,9 @@ public abstract class AbstractTransformer implements Transformer {
     public void setEvaluateFormulas(boolean evaluateFormulas) {
         this.evaluateFormulas = evaluateFormulas;
     }
+
+    @Override
+    public boolean isForwardOnly() {
+        return false;
+    }
 }

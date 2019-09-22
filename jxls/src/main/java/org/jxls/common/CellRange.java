@@ -179,6 +179,10 @@ public class CellRange {
         return cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
+    public boolean contains(int row, int col){
+        return row >= 0 && row < cells.length && col >= 0 && cells[0].length > col;
+    }
+
     public boolean containsCommandsInRow(int row) {
         for (int col = 0; col < width; col++) {
             if (cells[row][col] == null || cells[row][col] == CellRef.NONE) {

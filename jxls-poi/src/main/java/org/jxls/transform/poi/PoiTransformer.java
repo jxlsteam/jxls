@@ -141,6 +141,11 @@ public class PoiTransformer extends AbstractTransformer {
         return context;
     }
 
+    @Override
+    public boolean isForwardOnly() {
+        return isStreaming();
+    }
+
     public Workbook getWorkbook() {
         return workbook;
     }

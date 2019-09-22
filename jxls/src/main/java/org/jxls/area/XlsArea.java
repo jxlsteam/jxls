@@ -163,7 +163,7 @@ public class XlsArea implements Area {
         logger.debug("Applying XlsArea at {}", cellRef);
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
-        int topStaticAreaLastRow = transformTopStaticArea(cellRef, context);
+        AreaRef commandsArea = transformTopStaticArea(cellRef, context);
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
@@ -235,7 +235,11 @@ public class XlsArea implements Area {
                 }
             }
         }
-        transformStaticCells(cellRef, context, topStaticAreaLastRow + 1);
+        if (!transformer.isForwardOnly()){
+            transformStaticCells(cellRef, context, commandsArea.getFirstCellRef().getRow());
+        }else{
+            transformStaticCells(cellRef, context, commandsArea.getLastCellRef().getRow() + 1);
+        }
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
         AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
@@ -382,33 +386,45 @@ public class XlsArea implements Area {
         }
     }
 
-    private int transformTopStaticArea(CellRef cellRef, Context context) {
-        String sheetName = startCellRef.getSheetName();
-        int startRow = startCellRef.getRow();
-        int startCol = startCellRef.getCol();
-        int topStaticAreaLastRow = findRelativeTopCommandRow() - 1;
+    private AreaRef transformTopStaticArea(CellRef cellRef, Context context) {
+        CellRef topLeftCommandCell = findRelativeTopCommandCellRef();
+        CellRef bottomRightCommandCell = findRelativeBottomCommandCellRef();
+        int topStaticAreaLastRow = topLeftCommandCell.getRow() - 1;
         for (int col = 0; col < size.getWidth(); col++) {
             for (int row = 0; row <= topStaticAreaLastRow; row++) {
-                if (!cellRange.isExcluded(row, col)) {
-                    CellRef relativeCell = cellRange.getCell(row, col);
-                    CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
-                    CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
-                    fireBeforeTransformCell(srcCell, targetCell, context);
-                    try {
-                        updateCellDataArea(srcCell, targetCell, context);
-                        boolean updateRowHeight = parentCommand != null;
-                        transformer.transform(srcCell, targetCell, context, updateRowHeight);
-                    } catch (Exception e) {
-                        logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
-                    }
-                    fireAfterTransformCell(srcCell, targetCell, context);
-                }
+                transformStaticCell(cellRef, context, row, col);
+            }
+        }
+        // update static cells before the command cell for the first top left command
+        for (int col = 0; col < topLeftCommandCell.getCol(); col++) {
+            if (cellRange.contains(topLeftCommandCell.getRow(), col)) {
+                transformStaticCell(cellRef, context, topLeftCommandCell.getRow(), col);
             }
         }
         if (parentCommand == null) {
             updateRowHeights(cellRef, 0, topStaticAreaLastRow);
         }
-        return topStaticAreaLastRow;
+        return new AreaRef(topLeftCommandCell, bottomRightCommandCell);
+    }
+
+    private void transformStaticCell(CellRef cellRef, Context context, int row, int col) {
+        String sheetName = startCellRef.getSheetName();
+        int startRow = startCellRef.getRow();
+        int startCol = startCellRef.getCol();
+        if (!cellRange.isExcluded(row, col)) {
+            CellRef relativeCell = cellRange.getCell(row, col);
+            CellRef srcCell = new CellRef(sheetName, startRow + row, startCol + col);
+            CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
+            fireBeforeTransformCell(srcCell, targetCell, context);
+            try {
+                updateCellDataArea(srcCell, targetCell, context);
+                boolean updateRowHeight = parentCommand != null;
+                transformer.transform(srcCell, targetCell, context, updateRowHeight);
+            } catch (Exception e) {
+                logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
+            }
+            fireAfterTransformCell(srcCell, targetCell, context);
+        }
     }
 
     private void updateRowHeights(CellRef areaStartCellRef, int relativeStartRow, int relativeEndRow) {
@@ -427,12 +443,28 @@ public class XlsArea implements Area {
         }
     }
 
-    private int findRelativeTopCommandRow() {
+    private CellRef findRelativeTopCommandCellRef() {
         int topCommandRow = startCellRef.getRow() + size.getHeight();
+        int topCommandCol = startCellRef.getCol() + size.getWidth();
         for (CommandData data : commandDataList) {
-            topCommandRow = Math.min(data.getStartCellRef().getRow(), topCommandRow);
+            if (data.getStartCellRef().getRow() <= topCommandRow){
+                topCommandRow = data.getStartCellRef().getRow();
+                topCommandCol = data.getStartCellRef().getCol();
+            }
         }
-        return topCommandRow - startCellRef.getRow();
+        return new CellRef(topCommandRow - startCellRef.getRow(), topCommandCol - startCellRef.getCol());
+    }
+
+    private CellRef findRelativeBottomCommandCellRef() {
+        int bottomCommandRow = startCellRef.getRow();
+        int bottomCommandCol = startCellRef.getCol();
+        for (CommandData data : commandDataList) {
+            if (data.getStartCellRef().getRow() + data.getSize().getHeight() >= bottomCommandRow){
+                bottomCommandRow = data.getStartCellRef().getRow() + data.getSize().getHeight() - 1;
+                bottomCommandCol = data.getStartCellRef().getCol() + data.getSize().getWidth() - 1;
+            }
+        }
+        return new CellRef(bottomCommandRow - startCellRef.getRow(), bottomCommandCol - startCellRef.getCol());
     }
 
     private void fireBeforeApplyEvent(CellRef cellRef, Context context) {
