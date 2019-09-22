@@ -139,6 +139,11 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
+    public boolean isForwardOnly() {
+        return transformer.isForwardOnly();
+    }
+
+    @Override
     public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
         transformer.addImage(areaRef, imageBytes, imageType, scaleX, scaleY);
     }

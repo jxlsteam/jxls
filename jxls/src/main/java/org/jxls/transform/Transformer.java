@@ -88,4 +88,9 @@ public interface Transformer {
      * @param evaluateFormulas false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
      */
     void setEvaluateFormulas(boolean evaluateFormulas);
+
+    /**
+     * @return true if the transformer can process cells only in a single pass
+     */
+    boolean isForwardOnly();
 }
