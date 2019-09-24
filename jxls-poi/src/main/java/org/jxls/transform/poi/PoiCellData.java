@@ -66,7 +66,7 @@ public class PoiCellData extends org.jxls.common.CellData {
         if (comment != null) {
             commentAuthor = comment.getAuthor();
         }
-        if (comment != null && comment.getString() != null) {
+        if (comment != null && comment.getString() != null && comment.getString().getString() != null) {
             String commentString = comment.getString().getString();
             String[] commentLines = commentString.split("\\n");
             for (String commentLine : commentLines) {
