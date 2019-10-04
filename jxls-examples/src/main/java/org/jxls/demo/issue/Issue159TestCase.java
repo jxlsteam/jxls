@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A modification of fangzhengjin example
+ * Test case for issue#159 Insert image and text underline issues
+ * A modification of the original example by ZhengJin Fang
  */
 public class Issue159TestCase {
 
