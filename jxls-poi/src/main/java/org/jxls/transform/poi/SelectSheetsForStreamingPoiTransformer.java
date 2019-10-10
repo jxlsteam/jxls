@@ -48,6 +48,9 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
                 if (_sh.getPhysicalNumberOfRows() > 0 && targetCellRef.getRow() <= _sh.getLastRowNum()) {
                     destRow = _sh.getRow(targetCellRef.getRow());
                     destSheet = _sh;
+                    if (destRow == null) {
+                        destRow = destSheet.createRow(targetCellRef.getRow());
+                    }
                 } else {
                     destRow = destSheet.createRow(targetCellRef.getRow());
                 }
