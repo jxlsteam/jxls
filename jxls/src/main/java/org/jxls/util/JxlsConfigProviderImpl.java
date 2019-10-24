@@ -1,5 +1,8 @@
 package org.jxls.util;
 
+/**
+ * {@link JxlsConfigProvider} based on java system properties
+ */
 public class JxlsConfigProviderImpl implements JxlsConfigProvider {
 
     @Override

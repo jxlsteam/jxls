@@ -11,7 +11,6 @@ import java.util.List;
  * A command interface defines a transformation of a list of areas at a specified cell
  *
  * @author Leonid Vysochyn
- * @since Mar 13, 2009
  */
 public interface Command {
     String INNER_SHIFT_MODE = "inner";

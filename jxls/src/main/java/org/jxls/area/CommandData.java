@@ -9,7 +9,6 @@ import org.jxls.common.CellRef;
  * A command holder class
  * 
  * @author Leonid Vysochyn
- * @since 1/25/12 1:12 PM
  */
 public class CommandData {
     private CellRef sourceStartCellRef;

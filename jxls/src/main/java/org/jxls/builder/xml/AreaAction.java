@@ -16,7 +16,6 @@ import java.util.List;
  * Builds {@link org.jxls.builder.xls.AreaCommand} from XML
  * 
  * @author Leonid Vysochyn
- * @since 2/14/12
  */
 class AreaAction extends Action {
     private static final String REF_ATTR = "ref";

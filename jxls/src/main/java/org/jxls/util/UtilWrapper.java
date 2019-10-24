@@ -12,6 +12,9 @@ import org.jxls.common.Context;
 import org.jxls.common.GroupData;
 import org.jxls.expression.ExpressionEvaluator;
 
+/**
+ * A wrapper around {@link Util} class to prevent static methods spreading
+ */
 public class UtilWrapper {
 
     public List<String> getFormulaCellRefs(String formula) {

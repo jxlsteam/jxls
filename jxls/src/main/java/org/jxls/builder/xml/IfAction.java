@@ -13,7 +13,6 @@ import org.xml.sax.Attributes;
  * Builds {@link IfCommand} from XML
  * 
  * @author Leonid Vysochyn
- * @since 2/14/12 1:23 PM
  */
 public class IfAction extends Action {
     public static final String REF_ATTR = "ref";

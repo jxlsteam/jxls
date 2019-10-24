@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Row;
  * Row data wrapper for POI row
  * 
  * @author Leonid Vysochyn
- * @since 2/1/12
  */
 public class PoiRowData extends RowData {
     private Row row;

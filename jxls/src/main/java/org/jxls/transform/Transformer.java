@@ -15,7 +15,6 @@ import org.jxls.common.Size;
  * Defines interface methods for Excel operations
  *
  * @author Leonid Vysochyn
- * @since 1/23/12
  */
 public interface Transformer {
 

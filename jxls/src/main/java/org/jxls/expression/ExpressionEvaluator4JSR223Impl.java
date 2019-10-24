@@ -7,6 +7,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+/**
+ * JSR 223 based implementation of the {@link ExpressionEvaluator} interface
+ */
 public class ExpressionEvaluator4JSR223Impl implements ExpressionEvaluator {
 	private final String expression;
 	private final ScriptEngine scriptEngine;

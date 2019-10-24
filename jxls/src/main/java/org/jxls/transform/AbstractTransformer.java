@@ -20,7 +20,6 @@ import org.jxls.common.ImageType;
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
  *
  * @author Leonid Vysochyn
- * @since 2/6/12
  */
 public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreColumnProps = false;

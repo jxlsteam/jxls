@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
  * Cell data wrapper for POI cell
  * 
  * @author Leonid Vysochyn
- * @since 1/23/12
  */
 public class PoiCellData extends org.jxls.common.CellData {
     private static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
@@ -82,6 +81,10 @@ public class PoiCellData extends org.jxls.common.CellData {
 
     public CellStyle getCellStyle() {
         return cellStyle;
+    }
+
+    public void setCellStyle(CellStyle cellStyle) {
+        this.cellStyle = cellStyle;
     }
 
     private void readCellContents(Cell cell) {

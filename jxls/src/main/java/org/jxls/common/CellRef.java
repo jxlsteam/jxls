@@ -6,7 +6,6 @@ import org.jxls.util.CellRefUtil;
  * Represents cell reference
  * 
  * @author Leonid Vysochyn
- * @since 1/25/12
  */
 public class CellRef implements Comparable<CellRef>{
     static final CellRef NONE = new CellRef("NONE", -1, -1);

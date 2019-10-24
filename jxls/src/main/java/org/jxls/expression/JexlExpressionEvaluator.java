@@ -10,6 +10,7 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
 
 /**
+ * JEXL based implementation of {@link ExpressionEvaluator} interface
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluator implements ExpressionEvaluator {

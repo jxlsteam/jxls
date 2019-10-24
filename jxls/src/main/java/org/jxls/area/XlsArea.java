@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
  * Core implementation of {@link Area} interface
  *
  * @author Leonid Vysochyn
- * @since 1/16/12
  */
 public class XlsArea implements Area {
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);

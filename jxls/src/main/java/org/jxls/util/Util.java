@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  * Utility class with various helper methods used by other classes
  *
  * @author Leonid Vysochyn
- * @since 2/3/12
  */
 public class Util {
     private static Logger logger = LoggerFactory.getLogger(Util.class);
@@ -93,10 +92,22 @@ public class Util {
         return getStringPartsByPattern(jointedCellRef, regexCellRefPattern);
     }
 
+    /**
+     * Checks if the formula contains jointed cell references
+     * Jointed references have format U_(cell1, cell2) e.g. $[SUM(U_(F8,F13))]
+     * @param formula string
+     * @return true if the formula contains jointed cell references
+     */
     public static boolean formulaContainsJointedCellRef(String formula) {
         return regexJointedCellRefPattern.matcher(formula).find();
     }
 
+    /**
+     * Combines a list of cell references into a range
+     * E.g. for cell references A1, A2, A3, A4 it returns A1:A4
+     * @param targetCellDataList
+     * @return a range containing all the cell references if such range exists or otherwise the passed cells separated by commas
+     */
     public static String createTargetCellRef(List<CellRef> targetCellDataList) {
         String resultRef = "";
         if (targetCellDataList == null || targetCellDataList.isEmpty()) {
@@ -136,6 +147,12 @@ public class Util {
         return resultRef;
     }
 
+    /**
+     * Joins strings with a separator
+     * @param strings
+     * @param separator
+     * @return a string consisting of all the passed strings joined with the separator
+     */
     public static String joinStrings(List<String> strings, String separator) {
         StringBuilder sb = new StringBuilder();
         String sep = "";
@@ -165,6 +182,11 @@ public class Util {
         }
     }
 
+    /**
+     * Groups a list of cell references in a column into a list of ranges
+     * @param cellRefList
+     * @return a list of cell reference groups
+     */
     public static List<List<CellRef>> groupByColRange(List<CellRef> cellRefList) {
         List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
         if (cellRefList == null || cellRefList.size() == 0) {
@@ -206,6 +228,11 @@ public class Util {
         return rangeList;
     }
 
+    /**
+     * Groups a list of cell references in a row into a list of ranges
+     * @param cellRefList
+     * @return
+     */
     public static List<List<CellRef>> groupByRowRange(List<CellRef> cellRefList) {
         List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
         if (cellRefList == null || cellRefList.size() == 0) {
@@ -247,6 +274,13 @@ public class Util {
         return rangeList;
     }
 
+    /**
+     * Evaluates if the passed condition is true
+     * @param evaluator expression evaluator instance
+     * @param condition condition string
+     * @param context Jxls context to use for evaluation
+     * @return true if the condition is evaluated to true or false otherwise
+     */
     public static Boolean isConditionTrue(ExpressionEvaluator evaluator, String condition, Context context) {
         Object conditionResult = evaluator.evaluate(condition, context.toMap());
         if (!(conditionResult instanceof Boolean)) {
@@ -255,6 +289,12 @@ public class Util {
         return (Boolean) conditionResult;
     }
 
+    /**
+     * Evaluates if the passed condition is true
+     * @param evaluator
+     * @param context Jxls context to use for evaluation
+     * @return true if the condition is evaluated to true or false otherwise
+     */
     public static Boolean isConditionTrue(ExpressionEvaluator evaluator, Context context) {
         Object conditionResult = evaluator.evaluate(context.toMap());
         if (!(conditionResult instanceof Boolean)) {
@@ -263,6 +303,13 @@ public class Util {
         return (Boolean) conditionResult;
     }
 
+    /**
+     * Dynamically sets an object property via reflection
+     * @param obj
+     * @param propertyName
+     * @param propertyValue
+     * @param ignoreNonExisting
+     */
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
         try {
             setObjectProperty(obj, propertyName, propertyValue);
@@ -277,6 +324,15 @@ public class Util {
         }
     }
 
+    /**
+     * Dynamically sets an object property via reflection
+     * @param obj
+     * @param propertyName
+     * @param propertyValue
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String name = "set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
@@ -284,6 +340,13 @@ public class Util {
         method.invoke(obj, propertyValue);
     }
 
+    /**
+     * Gets value of the passed object property name
+     * @param obj
+     * @param propertyName
+     * @param failSilently
+     * @return
+     */
     public static Object getObjectProperty(Object obj, String propertyName, boolean failSilently) {
         try {
             return getObjectProperty(obj, propertyName);
@@ -299,6 +362,15 @@ public class Util {
         }
     }
 
+    /**
+     * Gets value of the passed object property name
+     * @param obj
+     * @param propertyName
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (obj instanceof Map) {
             return ((Map<?, ?>) obj).get(propertyName);
@@ -308,7 +380,13 @@ public class Util {
         return method.invoke(obj);
     }
 
-    // TODO MW: groupCollection vs. groupIterable: duplicate code?
+    /**
+     * Similar to {@link this#groupIterable(Iterable, String, String)} method but works for collections
+     * @param collection
+     * @param groupProperty
+     * @param groupOrder
+     * @return a collection of group data objects
+     */
     public static Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder) {
         Collection<GroupData> result = new ArrayList<GroupData>();
         if (collection == null) {
@@ -342,6 +420,13 @@ public class Util {
         return result;
     }
 
+    /**
+     * Groups items from an iterable collection using passed group property and group order
+     * @param iterable iterable object
+     * @param groupProperty property to use to group the items
+     * @param groupOrder an order to sort the groups
+     * @return a collection of group data objects
+     */
     public static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder) {
         Collection<GroupData> result = new ArrayList<GroupData>();
         if (iterable == null) {
@@ -400,6 +485,13 @@ public class Util {
         return baos.toByteArray();
     }
 
+    /**
+     * Evaluates passed collection name into a {@link Collection} object
+     * @param expressionEvaluator
+     * @param collectionName
+     * @param context
+     * @return an evaluated {@link Collection} instance
+     */
     public static Collection<?> transformToCollectionObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if (!(collectionObject instanceof Collection)) {
@@ -408,10 +500,21 @@ public class Util {
         return (Collection<?>) collectionObject;
     }
 
+    /**
+     * @param cellRefEntry
+     * @return the sheet name regular expression string
+     */
     public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
         return (cellRefEntry.getKey().isIgnoreSheetNameInFormat() ? "(?<!!)" : "");
     }
 
+    /**
+     * Creates a list of target formula cell references
+     * @param targetFormulaCellRef
+     * @param targetCells
+     * @param cellRefsToExclude
+     * @return
+     */
     public static List<CellRef> createTargetCellRefListByColumn(CellRef targetFormulaCellRef, List<CellRef> targetCells,
             List<CellRef> cellRefsToExclude) {
         List<CellRef> resultCellList = new ArrayList<>();
@@ -426,6 +529,12 @@ public class Util {
         return resultCellList;
     }
 
+    /**
+     * Calculates a number of occurences of a symbol in the string
+     * @param str
+     * @param ch
+     * @return
+     */
     public static int countOccurences(String str, char ch) {
         int count = 0;
         for (int i = 0; i < str.length(); i++) {
@@ -436,6 +545,13 @@ public class Util {
         return count;
     }
 
+    /**
+     * Evaluates the passed collection name into an {@link Iterable} object
+     * @param expressionEvaluator
+     * @param collectionName
+     * @param context
+     * @return an iterable object from the {@link Context} under given name
+     */
     public static Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if (!(collectionObject instanceof Iterable)) {
@@ -448,6 +564,10 @@ public class Util {
         return ret;
     }
 
+    /**
+     * @param name
+     * @return regular expression to detect the passed cell name
+     */
     public static String getStrictCellNameRegex(String name) {
         return "(?<=[^A-Z]|^)" + name + "(?=\\D|$)";
     }

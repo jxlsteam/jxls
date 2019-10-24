@@ -7,7 +7,6 @@ import org.jxls.common.cellshift.InnerCellShiftStrategy;
  * Represents an Excel cell range
  * 
  * @author Leonid Vysochyn
- * @since 1/26/12
  */
 public class CellRange {
     private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();

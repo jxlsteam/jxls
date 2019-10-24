@@ -11,7 +11,6 @@ import org.jxls.util.Util;
  * Implements if-else logic
  * 
  * @author Leonid Vysochyn
- * @since Sep 11, 2009
  */
 public class IfCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "if";

@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
  * Represents an Excel cell data holder and cell value evaluator
  * 
  * @author Leonid Vysochyn
- * @since 2/3/2012
  */
 public class CellData {
     private static final String USER_FORMULA_PREFIX = "$[";

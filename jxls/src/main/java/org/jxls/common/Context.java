@@ -7,7 +7,6 @@ import java.util.Map;
  * Map bean context
  * 
  * @author Leonid Vysochyn
- * @since Nov 2, 2009
  */
 public class Context {
     protected Map<String, Object> varMap = new HashMap<String, Object>();

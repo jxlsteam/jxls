@@ -12,7 +12,6 @@ import java.util.List;
  * Sheet data wrapper for POI sheet
  * 
  * @author Leonid Vysochyn
- * @since 2/1/12
  */
 public class PoiSheetData extends SheetData {
     private List<CellRangeAddress> mergedRegions = new ArrayList<>();

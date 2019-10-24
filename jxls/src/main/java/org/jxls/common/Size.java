@@ -2,7 +2,6 @@ package org.jxls.common;
 
 /**
  * @author Leonid Vysochyn
- * @since 03/13/2009
  */
 public class Size {
     public static final Size ZERO_SIZE = new Size(0,0);

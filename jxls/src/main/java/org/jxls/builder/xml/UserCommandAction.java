@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
  * Builds custom user command from XML
  * 
  * @author Leonid Vysochyn
- * @since 2/21/12
  */
 public class UserCommandAction extends Action {
     public static final String ATTR = "attr";

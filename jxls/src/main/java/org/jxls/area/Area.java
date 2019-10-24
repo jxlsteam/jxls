@@ -16,7 +16,6 @@ import org.jxls.transform.Transformer;
  * Generic interface for excel area processing
  * 
  * @author Leonid Vysochyn
- * @since 1/18/12
  */
 public interface Area {
 

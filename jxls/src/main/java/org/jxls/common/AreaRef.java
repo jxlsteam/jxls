@@ -6,7 +6,6 @@ import org.jxls.util.CellRefUtil;
  * Defines area bounds
  * 
  * @author Leonid Vysochyn
- * @since 2/13/12
  */
 public class AreaRef {
     private CellRef firstCellRef;

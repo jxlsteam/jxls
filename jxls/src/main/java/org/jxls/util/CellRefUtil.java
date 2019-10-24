@@ -10,7 +10,6 @@ import org.jxls.common.JxlsException;
  * The current code is taken from Apache POI CellReference class ( http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html ).
  * 
  * @author Leonid Vysochyn
- * @since 2/6/12
  */
 public class CellRefUtil {
     private static final char DELIMITER = '\'';

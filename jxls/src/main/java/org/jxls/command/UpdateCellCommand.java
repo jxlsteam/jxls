@@ -8,14 +8,16 @@ import org.jxls.common.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO Javadoc
+/**
+ * Allows to update a cell data dynamically for any cell
+ */
 public class UpdateCellCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "updateCell";
     private static Logger logger = LoggerFactory.getLogger(UpdateCellCommand.class);
 
     private Area area;
     private String updater;
-    private CellDataUpdater cellDataUpdater; // TODO not used, please fix
+    private CellDataUpdater cellDataUpdater;
 
     @Override
     public String getName() {

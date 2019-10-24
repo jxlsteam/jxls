@@ -18,7 +18,7 @@ import org.jxls.common.Size;
  * the merged cell exists for the merged cell</p>
  *
  * @author lnk
- * @since 2019/2/14
+ * @since 2.6.0
  */
 public class MergeCellsCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "mergeCells";

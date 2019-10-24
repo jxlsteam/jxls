@@ -7,7 +7,6 @@ import org.jxls.common.Context;
  * Defines generic method for generating new cell references during {@link EachCommand} command iteration
  * 
  * @author Leonid Vysochyn
- * @since 2/17/12
  */
 public interface CellRefGenerator {
     

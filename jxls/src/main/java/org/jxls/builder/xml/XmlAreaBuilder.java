@@ -22,7 +22,6 @@ import ch.qos.logback.core.util.StatusPrinter;
  * Creates an area based on the XML definition
  * 
  * @author Leonid Vysochyn
- * @since 2/14/12 11:50 AM
  */
 public class XmlAreaBuilder implements AreaBuilder {
     private final InputStream xmlInputStream;

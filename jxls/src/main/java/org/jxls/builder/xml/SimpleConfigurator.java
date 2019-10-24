@@ -14,7 +14,6 @@ import java.util.Map;
  * Configurator used by XmlAreaBuilder to configure building rules
  * 
  * @author Leonid Vysochyn
- * @since 2/14/12
  */
 class SimpleConfigurator extends GenericConfigurator {
     private final Map<ElementSelector, Action> ruleMap;

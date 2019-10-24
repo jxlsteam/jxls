@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * POI implementation of {@link org.jxls.transform.Transformer} interface
  *
  * @author Leonid Vysochyn
- * @since 1/23/12
  */
 public class PoiTransformer extends AbstractTransformer {
     private static final int MAX_COLUMN_TO_READ_COMMENT = 50;
@@ -107,6 +106,14 @@ public class PoiTransformer extends AbstractTransformer {
         inputStream = is;
     }
 
+    /**
+     * Creates transformer from an input steam template and output stream
+     * @param is input stream to read the Excel template file
+     * @param os output stream to write the Excel file
+     * @return {@link PoiTransformer} instance
+     * @throws IOException
+     * @throws InvalidFormatException
+     */
     public static PoiTransformer createTransformer(InputStream is, OutputStream os) throws IOException, InvalidFormatException {
         PoiTransformer transformer = createTransformer(is);
         transformer.setOutputStream(os);
@@ -114,23 +121,55 @@ public class PoiTransformer extends AbstractTransformer {
         return transformer;
     }
 
+    /**
+     * Creates transformer instance from an input stream for the Excel template
+     * @param is input stream for the Excel template file
+     * @return transformer instance reading the template from the passed input stream
+     * @throws IOException
+     * @throws InvalidFormatException
+     */
     public static PoiTransformer createTransformer(InputStream is) throws IOException, InvalidFormatException {
         Workbook workbook = WorkbookFactory.create(is);
         return createTransformer(workbook);
     }
 
+    /**
+     * Creates transformer instance from a {@link Workbook} instance
+     * @param workbook
+     * @return
+     */
     public static PoiTransformer createTransformer(Workbook workbook) {
         return new PoiTransformer(workbook);
     }
 
+    /**
+     * Creates transformer from SXSSF workbook
+     * @param workbook
+     * @return
+     */
     public static PoiTransformer createSxssfTransformer(Workbook workbook) {
         return createSxssfTransformer(workbook, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, false);
     }
 
+    /**
+     * Creates SXSSF transformer from a workbook and streaming parameters
+     * @param workbook
+     * @param rowAccessWindowSize
+     * @param compressTmpFiles
+     * @return
+     */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
         return createSxssfTransformer(workbook, rowAccessWindowSize, compressTmpFiles, false);
     }
 
+    /**
+     * Creates SXSSF transformer from a workbook and streaming parameters
+     * @param workbook
+     * @param rowAccessWindowSize
+     * @param compressTmpFiles
+     * @param useSharedStringsTable
+     * @return
+     */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
         return new PoiTransformer(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
     }

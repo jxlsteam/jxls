@@ -6,7 +6,6 @@ import java.util.Comparator;
  * Cell comparator used to order cell by rows first and then by columns
  * 
  * @author Leonid Vysochyn
- * @since 2/8/12
  */
 public class CellRefRowPrecedenceComparator implements Comparator<CellRef> {
 

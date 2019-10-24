@@ -7,6 +7,9 @@ import org.jxls.template.SimpleExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * SPI creator factory
+ */
 public class ServiceFactoryDefaultImpl implements ServiceFactory {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SimpleExporter.class);
 	

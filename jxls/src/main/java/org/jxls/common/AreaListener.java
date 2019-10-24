@@ -4,7 +4,6 @@ package org.jxls.common;
  * Defines callback methods to be called during area processing
  * 
  * @author Leonid Vysochyn
- * @since 2/16/12
  */
 public interface AreaListener {
 

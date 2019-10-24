@@ -6,7 +6,6 @@ import java.util.Map;
  * An interface to evaluate expressions
  * 
  * @author Leonid Vysochyn
- * @since 11/02/2009
  */
 public interface ExpressionEvaluator {
 

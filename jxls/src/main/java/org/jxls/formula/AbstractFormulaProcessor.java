@@ -11,6 +11,11 @@ import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.Util;
 
+/**
+ * Partial implementation of {@link FormulaProcessor} interface
+ * It implements only some helper methods to allow their reuse for
+ * {@link FastFormulaProcessor} and {@link StandardFormulaProcessor}
+ */
 public abstract class AbstractFormulaProcessor implements FormulaProcessor {
 
     // building a map of all the cell references used in a formula

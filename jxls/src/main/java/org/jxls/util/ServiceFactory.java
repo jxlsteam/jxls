@@ -1,5 +1,8 @@
 package org.jxls.util;
 
+/**
+ * Service factory to load different SPI
+ */
 public interface ServiceFactory {
 	
 	ServiceFactory DEFAULT = new ServiceFactoryDefaultImpl();

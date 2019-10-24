@@ -11,7 +11,6 @@ import org.jxls.common.Context;
 /**
  * Writable cell value implementation for Hyperlink
  * @author Leonid Vysochyn
- * @since 6/18/12
  */
 public class WritableHyperlink implements WritableCellValue {
     public static final String LINK_URL = "URL";

@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
  * Implements basic command methods and is a convenient base class for other commands
  *
  * @author Leonid Vysochyn
- * @since 21.03.2009
  */
 public abstract class AbstractCommand implements Command {
     private Logger logger = LoggerFactory.getLogger(AbstractCommand.class);

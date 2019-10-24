@@ -13,7 +13,6 @@ import org.xml.sax.Attributes;
  * Builds {@link org.jxls.command.EachCommand} from XML
  * 
  * @author Leonid Vysochyn
- * @since 2/14/12
  */
 public class EachAction extends Action {
     public static final String ITEMS_ATTR = "items";

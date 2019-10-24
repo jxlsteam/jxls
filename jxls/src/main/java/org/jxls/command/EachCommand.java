@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * @author Leonid Vysochyn
- * @since Nov 10, 2009
  */
 public class EachCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "each";

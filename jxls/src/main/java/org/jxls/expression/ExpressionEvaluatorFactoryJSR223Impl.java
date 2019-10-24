@@ -7,6 +7,9 @@ import org.jxls.util.JxlsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A factory to create {@link ExpressionEvaluator} instance which is based on JSR 223
+ */
 public final class ExpressionEvaluatorFactoryJSR223Impl implements ExpressionEvaluatorFactory {
     private static final Logger LOG = LoggerFactory.getLogger(ExpressionEvaluatorFactoryJSR223Impl.class);
     private final ScriptEngineManager manager = new ScriptEngineManager();
