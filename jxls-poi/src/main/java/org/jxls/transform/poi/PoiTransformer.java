@@ -15,15 +15,16 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,6 +37,7 @@ import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
 import org.jxls.transform.AbstractTransformer;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,8 +319,22 @@ public class PoiTransformer extends AbstractTransformer {
         }
         try {
             poiCell.setCellFormula(formulaString);
+            clearCellValue(poiCell);
         } catch (Exception e) {
             logger.error("Failed to set formula = " + formulaString + " into cell = " + cellRef.getCellName(), e);
+        }
+    }
+    
+    // protected so any user can change this piece of code
+    protected void clearCellValue(org.apache.poi.ss.usermodel.Cell poiCell) {
+        if (poiCell instanceof XSSFCell) {
+            CTCell cell = ((XSSFCell) poiCell).getCTCell(); // POI internal access, but there's no other way
+            // Now do the XSSFCell.setFormula code that was done before POI commit https://github.com/apache/poi/commit/1253a29
+            // After setting the formula in attribute f we clear the value attribute v if set. This causes a recalculation
+            // and prevents wrong formula results.
+            if (cell.isSetV()) {
+                cell.unsetV();
+            }
         }
     }
 
@@ -428,7 +444,7 @@ public class PoiTransformer extends AbstractTransformer {
         if (workbook == null) {
             throw new IllegalStateException("Cannot write an uninitialized workbook");
         }
-        if (isEvaluateFormulas()) {
+        if (!isStreaming() && isEvaluateFormulas()) {
             workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
         }
         workbook.write(outputStream);

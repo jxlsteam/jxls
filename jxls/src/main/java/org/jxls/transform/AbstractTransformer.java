@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.common.ImageType;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
-import org.jxls.common.AreaRef;
-import org.jxls.common.ImageType;
 
 /**
  * Base transformer class providing basic implementation for some of the {@link Transformer} interface methods
@@ -26,8 +26,7 @@ public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<>();
     private TransformationConfig transformationConfig = new TransformationConfig();
-    /** false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing */
-    private boolean evaluateFormulas = false;
+    private boolean evaluateFormulas = true;
 
     @Override
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
@@ -155,6 +154,12 @@ public abstract class AbstractTransformer implements Transformer {
         return evaluateFormulas;
     }
 
+    /**
+     * This option does not work for streaming.
+     * 
+     * @param evaluateFormulas false: formulas will be evaluated by MS Excel when opening the Excel file;
+     * true (default): evaluate formulas before writing.
+     */
     @Override
     public void setEvaluateFormulas(boolean evaluateFormulas) {
         this.evaluateFormulas = evaluateFormulas;
