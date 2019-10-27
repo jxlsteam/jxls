@@ -45,7 +45,7 @@ public class ImageCommand extends AbstractCommand {
     /**
      * Creates the command from an image in the context
      * @param image name of the context attribute with the image bytes
-     * @param imageType
+     * @param imageType type of the image
      */
     public ImageCommand(String image, ImageType imageType) {
         this.src = image;
