@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jxls.version>2.7.0-SNAPSHOT</jxls.version>
-        <jxls.poi.version>1.2.1-SNAPSHOT</jxls.poi.version>
+        <jxls.poi.version>1.3.0-SNAPSHOT</jxls.poi.version>
         <jxls.reader.version>2.0.5</jxls.reader.version>
         <slf4j.version>1.7.26</slf4j.version>
     </properties>
