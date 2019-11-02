@@ -1,9 +1,6 @@
 package org.jxls.transform.poi;
 
-import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
-import org.apache.poi.ss.formula.EvaluationConditionalFormatRule;
 import org.apache.poi.ss.formula.FormulaParseException;
-import org.apache.poi.ss.formula.WorkbookEvaluatorProvider;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Comment;
@@ -18,9 +15,7 @@ import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +33,6 @@ public class PoiCellData extends org.jxls.common.CellData {
     private Comment comment;
     private String commentAuthor;
     private Cell cell;
-    List<EvaluationConditionalFormatRule> rules = new ArrayList<>();
 
     public PoiCellData(CellRef cellRef) {
         super(cellRef);
@@ -50,15 +44,10 @@ public class PoiCellData extends org.jxls.common.CellData {
     }
 
     public static PoiCellData createCellData(PoiRowData poiRowData, CellRef cellRef, Cell cell){
-        final WorkbookEvaluatorProvider wbEvalProv = (WorkbookEvaluatorProvider) cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
-        final ConditionalFormattingEvaluator cfEval = new ConditionalFormattingEvaluator(cell.getRow().getSheet().getWorkbook(), wbEvalProv);
-        final List<EvaluationConditionalFormatRule> rules = cfEval.getConditionalFormattingForCell(cell);
-
         PoiCellData cellData = new PoiCellData(cellRef, cell);
         cellData.poiRowData = poiRowData;
         cellData.readCell(cell);
         cellData.updateFormulaValue();
-        cellData.rules = rules;
         return cellData;
     }
 
