@@ -1,23 +1,19 @@
 package org.jxls.transform.poi;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -40,6 +36,12 @@ import org.jxls.transform.AbstractTransformer;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * POI implementation of {@link org.jxls.transform.Transformer} interface
@@ -251,6 +253,7 @@ public class PoiTransformer extends AbstractTransformer {
             destCell = destRow.createCell(targetCellRef.getCol());
         }
         try {
+            // conditional formatting
             destCell.setCellType(CellType.BLANK);
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
@@ -261,11 +264,34 @@ public class PoiTransformer extends AbstractTransformer {
 
     @Override
     public void resetArea(AreaRef areaRef) {
-        // removing merged regions
+        removeMergedRegions(areaRef);
+        removeConditionalFormatting(areaRef);
+    }
+
+    private void removeMergedRegions(AreaRef areaRef) {
         Sheet destSheet = workbook.getSheet(areaRef.getSheetName());
         int numMergedRegions = destSheet.getNumMergedRegions();
         for (int i = numMergedRegions; i > 0; i--) {
             destSheet.removeMergedRegion(i - 1);
+        }
+    }
+
+    // this method updates conditional formatting ranges only when the range is inside the passed areaRef
+    private void removeConditionalFormatting(AreaRef areaRef) {
+        Sheet destSheet = workbook.getSheet(areaRef.getSheetName());
+        CellRangeAddress areaRange = CellRangeAddress.valueOf(areaRef.toString());
+        SheetConditionalFormatting sheetConditionalFormatting = destSheet.getSheetConditionalFormatting();
+        int numConditionalFormattings = sheetConditionalFormatting.getNumConditionalFormattings();
+        for (int index = 0; index < numConditionalFormattings; index++){
+            ConditionalFormatting conditionalFormatting = sheetConditionalFormatting.getConditionalFormattingAt(index);
+            CellRangeAddress[] ranges = conditionalFormatting.getFormattingRanges();
+            List<CellRangeAddress> newRanges = new ArrayList<>();
+            for (CellRangeAddress range : ranges) {
+                if (!areaRange.isInRange(range.getFirstRow(), range.getFirstColumn()) || !areaRange.isInRange(range.getLastRow(), range.getLastColumn())) {
+                    newRanges.add(range);
+                }
+            }
+            conditionalFormatting.setFormattingRanges(newRanges.toArray(new CellRangeAddress[]{}));
         }
     }
 
