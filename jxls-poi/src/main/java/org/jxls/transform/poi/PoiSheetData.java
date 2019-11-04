@@ -63,19 +63,17 @@ public class PoiSheetData extends SheetData {
         return sheet;
     }
 
-    public void updateConditionalFormatting(PoiCellData srcCellData, Cell targetCell){
-        if (!poiConditionalFormattings.isEmpty()) {
-            for (PoiConditionalFormatting conditionalFormatting : poiConditionalFormattings) {
-                List<CellRangeAddress> ranges = conditionalFormatting.getRanges();
-                for (CellRangeAddress range : ranges) {
-                    if (range.isInRange(srcCellData.getRow(), srcCellData.getCol())){
-                        CellRangeAddress newRange = new CellRangeAddress(targetCell.getRowIndex(), targetCell.getRowIndex(),
-                                targetCell.getColumnIndex(), targetCell.getColumnIndex());
-                        Sheet targetSheet = targetCell.getSheet();
-                        SheetConditionalFormatting targetSheetConditionalFormatting = targetSheet.getSheetConditionalFormatting();
-                        for (ConditionalFormattingRule rule : conditionalFormatting.getRules()){
-                            targetSheetConditionalFormatting.addConditionalFormatting(new CellRangeAddress[]{newRange}, rule);
-                        }
+    public void updateConditionalFormatting(PoiCellData srcCellData, Cell targetCell) {
+        for (PoiConditionalFormatting conditionalFormatting : poiConditionalFormattings) {
+            List<CellRangeAddress> ranges = conditionalFormatting.getRanges();
+            for (CellRangeAddress range : ranges) {
+                if (range.isInRange(srcCellData.getRow(), srcCellData.getCol())) {
+                    CellRangeAddress newRange = new CellRangeAddress(targetCell.getRowIndex(), targetCell.getRowIndex(),
+                            targetCell.getColumnIndex(), targetCell.getColumnIndex());
+                    Sheet targetSheet = targetCell.getSheet();
+                    SheetConditionalFormatting targetSheetConditionalFormatting = targetSheet.getSheetConditionalFormatting();
+                    for (ConditionalFormattingRule rule : conditionalFormatting.getRules()) {
+                        targetSheetConditionalFormatting.addConditionalFormatting(new CellRangeAddress[] { newRange }, rule);
                     }
                 }
             }
