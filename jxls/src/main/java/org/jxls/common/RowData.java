@@ -13,7 +13,7 @@ import org.jxls.transform.Transformer;
  */
 public class RowData implements Iterable<CellData> {
     protected int height;
-    private List<CellData> cellDataList = new ArrayList<CellData>();
+    private final List<CellData> cellDataList = new ArrayList<CellData>();
     private Transformer transformer;
 
     public Transformer getTransformer() {

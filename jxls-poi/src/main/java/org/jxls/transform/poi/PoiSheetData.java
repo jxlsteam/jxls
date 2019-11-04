@@ -1,5 +1,8 @@
 package org.jxls.transform.poi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
@@ -9,18 +12,15 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Sheet data wrapper for POI sheet
  * 
  * @author Leonid Vysochyn
  */
 public class PoiSheetData extends SheetData {
-    private List<CellRangeAddress> mergedRegions = new ArrayList<>();
+    private final List<CellRangeAddress> mergedRegions = new ArrayList<>();
     private Sheet sheet;
-    private List<PoiConditionalFormatting> poiConditionalFormattings = new ArrayList<>();
+    private final List<PoiConditionalFormatting> poiConditionalFormattings = new ArrayList<>();
 
     public static PoiSheetData createSheetData(Sheet sheet, PoiTransformer transformer) {
         PoiSheetData sheetData = new PoiSheetData();
@@ -64,7 +64,7 @@ public class PoiSheetData extends SheetData {
     }
 
     public void updateConditionalFormatting(PoiCellData srcCellData, Cell targetCell){
-        if (!poiConditionalFormattings.isEmpty()){
+        if (!poiConditionalFormattings.isEmpty()) {
             for (PoiConditionalFormatting conditionalFormatting : poiConditionalFormattings) {
                 List<CellRangeAddress> ranges = conditionalFormatting.getRanges();
                 for (CellRangeAddress range : ranges) {
