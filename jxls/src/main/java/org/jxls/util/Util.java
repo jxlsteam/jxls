@@ -17,6 +17,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.beanutils.DynaBean;
 import org.jxls.area.Area;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -341,11 +342,11 @@ public class Util {
     }
 
     /**
-     * Gets value of the passed object property name
-     * @param obj
+     * Gets value of the passed object by the given property name.
+     * @param obj Map, DynaBean or Java bean
      * @param propertyName
      * @param failSilently
-     * @return
+     * @return value (can be null)
      */
     public static Object getObjectProperty(Object obj, String propertyName, boolean failSilently) {
         try {
@@ -363,10 +364,10 @@ public class Util {
     }
 
     /**
-     * Gets value of the passed object property name
-     * @param obj
+     * Gets value of the passed object by the given property name.
+     * @param obj Map, DynaBean or Java bean
      * @param propertyName
-     * @return
+     * @return value (can be null)
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
@@ -374,6 +375,12 @@ public class Util {
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (obj instanceof Map) {
             return ((Map<?, ?>) obj).get(propertyName);
+        } else if (obj instanceof DynaBean) {
+            try {
+                return ((DynaBean) obj).get(propertyName);
+            } catch (IllegalArgumentException e) {
+                throw new NoSuchMethodException(e.getMessage());
+            }
         }
         String name = "get" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
         Method method = obj.getClass().getMethod(name);
