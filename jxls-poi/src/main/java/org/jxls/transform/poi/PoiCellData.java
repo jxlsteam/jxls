@@ -1,7 +1,5 @@
 package org.jxls.transform.poi;
 
-import java.util.Date;
-import java.util.Map;
 import org.apache.poi.ss.formula.FormulaParseException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -17,6 +15,9 @@ import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
  * Cell data wrapper for POI cell
  * 
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 public class PoiCellData extends org.jxls.common.CellData {
     private static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
 
+    private PoiRowData poiRowData;
     private RichTextString richTextString;
     private CellStyle cellStyle;
     private Hyperlink hyperlink;
@@ -41,8 +43,9 @@ public class PoiCellData extends org.jxls.common.CellData {
         this.cell = cell;
     }
 
-    public static PoiCellData createCellData(CellRef cellRef, Cell cell){
+    public static PoiCellData createCellData(PoiRowData poiRowData, CellRef cellRef, Cell cell){
         PoiCellData cellData = new PoiCellData(cellRef, cell);
+        cellData.poiRowData = poiRowData;
         cellData.readCell(cell);
         cellData.updateFormulaValue();
         return cellData;
@@ -149,6 +152,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 }
             }
             updateCellStyle(cell, targetCellStyle);
+            poiRowData.getPoiSheetData().updateConditionalFormatting(this, cell);
         }
     }
 
