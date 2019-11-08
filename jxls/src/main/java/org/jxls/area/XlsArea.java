@@ -33,7 +33,7 @@ public class XlsArea implements Area {
 
     private List<CommandData> commandDataList = new ArrayList<CommandData>();
     private Transformer transformer;
-    Command parentCommand; // TODO Why not private?
+    private Command parentCommand;
     private CellRange cellRange;
     private CellRef startCellRef;
     private Size size;
