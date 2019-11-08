@@ -1,5 +1,11 @@
 package org.jxls.demo;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -14,12 +20,6 @@ import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 
 /**
  * @author Leonid Vysochyn
@@ -36,7 +36,7 @@ public class StressXlsxDemo {
         executeStress2();
     }
 
-    public static void executeStress1() throws IOException, InvalidFormatException {
+    public static void executeStress1() throws IOException {
         logger.info("Running Stress Xlsx demo 1");
         logger.info("Generating " + EMPLOYEE_COUNT + " employees..");
         List<Employee> employees = Employee.generate(EMPLOYEE_COUNT);
@@ -60,7 +60,7 @@ public class StressXlsxDemo {
         }
     }
 
-    public static void executeStress2() throws IOException, InvalidFormatException {
+    public static void executeStress2() throws IOException {
         logger.info("Running Stress Xlsx demo 2");
         logger.info("Generating " + DEPARTMENT_COUNT + " departments with " + DEP_EMPLOYEE_COUNT + " employees in each");
         List<Department> departments = Department.generate(DEPARTMENT_COUNT, DEP_EMPLOYEE_COUNT);
