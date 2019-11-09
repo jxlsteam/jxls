@@ -1,15 +1,5 @@
 package org.jxls.demo.guide;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
-import org.jxls.common.CellRef;
-import org.jxls.common.Context;
-import org.jxls.transform.poi.PoiTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.jxls.area.Area;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.common.CellRef;
+import org.jxls.common.Context;
+import org.jxls.transform.poi.PoiTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Leonid Vysochyn
  *         Date: 10/22/13
@@ -27,7 +26,7 @@ import java.util.Locale;
 public class HighlightDemo {
     static Logger logger = LoggerFactory.getLogger(HighlightDemo.class);
 
-    public static void main(String[] args) throws ParseException, IOException, InvalidFormatException {
+    public static void main(String[] args) throws ParseException, IOException {
         logger.info("Running Highlight demo");
         List<Employee> employees = generateSampleEmployeeData();
         try(InputStream is = HighlightDemo.class.getResourceAsStream("highlight_template.xls")) {

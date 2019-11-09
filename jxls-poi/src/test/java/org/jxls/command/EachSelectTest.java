@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import org.jxls.util.JxlsHelper;
 public class EachSelectTest {
 
     @Test
-    public void test() throws Exception {
+    public void test() throws IOException {
         InputStream in = EachSelectTest.class.getResourceAsStream("eachSelect.xlsx");
         File outputFile = new File("target/eachSelect-output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);

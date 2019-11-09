@@ -45,6 +45,9 @@ public class TransformerFactory {
             logger.error("The specified public method " + INIT_METHOD + " does not exist in " + transformer.getName());
             return null;
         } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof CannotOpenWorkbookException) {
+                throw (CannotOpenWorkbookException) e.getCause();
+            }
             logger.error("Method " + INIT_METHOD + " of " + transformer.getName() + " class thrown an Exception", e);
             return null;
         } catch (IllegalAccessException e) {

@@ -2,6 +2,7 @@ package org.jxls.transform.poi;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public class PivotTableTest {
      * issue 155: Pivot table does not work with NLS
      */
     @Test
-    public void nls() throws Exception {
+    public void nls() throws IOException {
         InputStream in = PivotTableTest.class.getResourceAsStream("pivottable.xlsx");
         File outputFile = new File("target/pivottable.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
