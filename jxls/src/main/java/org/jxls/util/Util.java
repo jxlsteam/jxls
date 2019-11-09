@@ -561,7 +561,9 @@ public class Util {
      */
     public static Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
-        if (!(collectionObject instanceof Iterable)) {
+        if (collectionObject == null) {
+            throw new JxlsException("Expression " + collectionName + " is null");
+        } else if (!(collectionObject instanceof Iterable)) {
             throw new JxlsException(collectionName + " expression is not a collection");
         }
         List<Object> ret = new ArrayList<>();
