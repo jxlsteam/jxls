@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls.entity;
 
 import java.math.BigDecimal;
 

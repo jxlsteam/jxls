@@ -1,4 +1,4 @@
-package org.jxls.transform.poi;
+package org.jxls.templatebasedtests.multisheet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -10,6 +10,8 @@ import org.jxls.command.DynamicSheetNameGenerator;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.SafeSheetNameBuilder;
+import org.jxls.transform.poi.PoiContext;
+import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
 
 public class DynamicSheetNameGeneratorTest extends AbstractMultiSheetTest {
 

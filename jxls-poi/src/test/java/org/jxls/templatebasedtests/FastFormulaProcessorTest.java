@@ -1,13 +1,9 @@
-package org.jxls.formula;
+package org.jxls.templatebasedtests;
 
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.jxls.common.CellData;
-import org.jxls.common.CellRef;
-import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
-import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,9 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import org.junit.Assert;
+import org.junit.Test;
+import org.jxls.common.CellData;
+import org.jxls.common.CellRef;
+import org.jxls.formula.FastFormulaProcessor;
+import org.jxls.transform.Transformer;
+import org.jxls.util.TransformerFactory;
+import org.mockito.ArgumentCaptor;
 
 /**
  * @author Michał Kępkowski
@@ -65,6 +66,6 @@ public class FastFormulaProcessorTest {
     }
 
     private InputStream getTestSheet() {
-        return getClass().getClassLoader().getResourceAsStream("org/jxls/formula/test_formula.xls");
+        return getClass().getResourceAsStream("test_formula.xls");
     }
 }

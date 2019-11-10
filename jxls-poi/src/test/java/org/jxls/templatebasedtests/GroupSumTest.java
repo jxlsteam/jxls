@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,9 @@ import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.entity.TestEmployee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;

@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;

@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.poi.PoiTransformer;

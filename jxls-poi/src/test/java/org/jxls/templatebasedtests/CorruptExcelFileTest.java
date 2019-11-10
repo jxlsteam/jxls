@@ -1,4 +1,4 @@
-package org.jxls.transform.poi;
+package org.jxls.templatebasedtests;
 
 import java.io.File;
 import java.io.FileOutputStream;

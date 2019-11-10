@@ -1,4 +1,4 @@
-package org.jxls.transform.poi;
+package org.jxls.templatebasedtests;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.common.Context;
+import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.transformer.TestPTTransformer;
 import org.jxls.util.JxlsHelper;
 
 public class PivotTableTest {

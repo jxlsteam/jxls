@@ -1,4 +1,4 @@
-package org.jxls.transform.poi;
+package org.jxls.templatebasedtests;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.SelectSheetsForStreamingPoiTransformer;
 import org.jxls.util.JxlsHelper;
 
 public class TableTest {

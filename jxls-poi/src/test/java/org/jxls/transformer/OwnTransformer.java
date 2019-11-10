@@ -1,8 +1,10 @@
-package org.jxls.transform.poi;
+package org.jxls.transformer;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.templatebasedtests.UseOwnTransformerTest;
+import org.jxls.transform.poi.PoiTransformer;
 
 /**
  * Own implementation of PoiTransformer, always with streaming.

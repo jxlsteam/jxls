@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,9 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.entity.TestEmployee;
 import org.jxls.util.JxlsHelper;
 
 /**

@@ -1,4 +1,4 @@
-package org.jxls.command;
+package org.jxls;
 
 import java.io.File;
 import java.io.IOException;

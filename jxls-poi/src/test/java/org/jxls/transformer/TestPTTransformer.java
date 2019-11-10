@@ -1,12 +1,14 @@
-package org.jxls.transform.poi;
+package org.jxls.transformer;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFTableColumn;
 import org.jxls.common.Context;
+import org.jxls.templatebasedtests.PivotTableTest;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.TransformerDelegator;
+import org.jxls.transform.poi.PoiTransformer;
 
 /**
  * @see PivotTableTest

@@ -1,4 +1,4 @@
-package org.jxls.transform.poi;
+package org.jxls.templatebasedtests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
+import org.jxls.transformer.OwnTransformer;
 import org.jxls.util.JxlsHelper;
 
 /**
