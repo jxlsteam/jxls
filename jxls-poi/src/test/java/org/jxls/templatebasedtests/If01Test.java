@@ -26,8 +26,8 @@ public class If01Test {
     /** Tests the English version with many rows of type buy and sell. */
     @Test
     public void testEnglish() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
-        File outputFile = new File("target/if01_output_English.xlsx");
+        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
+        File outputFile = new File("target/If01Test_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("lang", "en");
@@ -51,8 +51,8 @@ public class If01Test {
     /** Tests the German version with many rows of type buy and sell. */
     @Test
     public void testGerman() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
-        File outputFile = new File("target/if01_output_German.xlsx");
+        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
+        File outputFile = new File("target/If01Test_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("lang", "de");
@@ -76,8 +76,8 @@ public class If01Test {
     /** Tests empty list */
     @Test
     public void testEmpty() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
-        File outputFile = new File("target/if01_output_empty.xlsx");
+        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
+        File outputFile = new File("target/If01Test_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("lang", "en");
@@ -97,8 +97,8 @@ public class If01Test {
     /** Tests list with 1 row. */
     @Test
     public void test1row() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
-        File outputFile = new File("target/if01_output_1row.xlsx");
+        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
+        File outputFile = new File("target/If01Test_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("lang", "en");

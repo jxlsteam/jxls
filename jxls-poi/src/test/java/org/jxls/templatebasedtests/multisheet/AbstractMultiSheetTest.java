@@ -8,21 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.templatebasedtests.TableTest;
 import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
 
-public class AbstractMultiSheetTest {
-    private static final File dir = new File("test-output");
+public abstract class AbstractMultiSheetTest {
     
-    @BeforeClass
-    public static void init() {
-        dir.mkdirs();
-    }
-
     public static class TestSheet {
         private String name;
         private final List<String> items = new ArrayList<>();
@@ -66,10 +58,11 @@ public class AbstractMultiSheetTest {
         return sheetnames;
     }
 
+    // TODO MW issue#186: will possibly be moved
     protected void createExcel(Context ctx, String file, String outfile) throws IOException {
-        InputStream in = TableTest.class.getResourceAsStream(file);
+        InputStream in = AbstractMultiSheetTest.class.getResourceAsStream(file);
         try {
-            FileOutputStream out = new FileOutputStream(new File(dir, outfile));
+            FileOutputStream out = new FileOutputStream(new File(outfile));
             try {
                 Transformer transformer = JxlsHelper.getInstance().createTransformer(in, out);
                 JxlsHelper.getInstance().processTemplate(ctx, transformer);

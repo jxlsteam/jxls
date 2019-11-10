@@ -22,8 +22,8 @@ public class PivotTableTest {
      */
     @Test
     public void nls() throws IOException {
-        InputStream in = PivotTableTest.class.getResourceAsStream("pivottable.xlsx");
-        File outputFile = new File("target/pivottable.xlsx");
+        InputStream in = PivotTableTest.class.getResourceAsStream("PivotTableTest.xlsx");
+        File outputFile = new File("target/PivotTableTest_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("R", getResources()); // NLS

@@ -66,6 +66,6 @@ public class FastFormulaProcessorTest {
     }
 
     private InputStream getTestSheet() {
-        return getClass().getResourceAsStream("test_formula.xls");
+        return getClass().getResourceAsStream("FastFormulaProcessorTest.xls");
     }
 }

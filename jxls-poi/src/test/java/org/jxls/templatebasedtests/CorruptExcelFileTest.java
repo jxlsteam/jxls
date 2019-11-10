@@ -23,8 +23,8 @@ public class CorruptExcelFileTest {
 
     @Test(expected = CannotOpenWorkbookException.class)
     public void test() throws Exception {
-        String out = "target/ja_output.xlsx";
-        try (InputStream is = getClass().getResourceAsStream("ja.png")) { // corrupt Excel file
+        String out = "target/CorruptExcelFileTest_output.xlsx";
+        try (InputStream is = getClass().getResourceAsStream("CorruptExcelFileTest.xlsx")) { // corrupt Excel file (It's a .png file.)
             try (OutputStream os = new FileOutputStream(out)) {
                 JxlsHelper.getInstance().processTemplate(is, os, new Context());
             }

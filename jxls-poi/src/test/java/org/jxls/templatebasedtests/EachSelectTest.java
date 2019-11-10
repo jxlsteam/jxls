@@ -27,8 +27,8 @@ public class EachSelectTest {
 
     @Test
     public void test() throws IOException {
-        InputStream in = EachSelectTest.class.getResourceAsStream("eachSelect.xlsx");
-        File outputFile = new File("target/eachSelect-output.xlsx");
+        InputStream in = EachSelectTest.class.getResourceAsStream("EachSelectTest.xlsx");
+        File outputFile = new File("target/EachSelectTest_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("list", getTestData());

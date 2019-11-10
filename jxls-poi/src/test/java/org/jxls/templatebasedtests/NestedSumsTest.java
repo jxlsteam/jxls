@@ -33,8 +33,8 @@ public class NestedSumsTest {
     @Test
     public void nestedSums() throws IOException {
         // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums.xlsx");
-        File outputFile = new File("target/nestedsums-output.xlsx");
+        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums.xlsx");
+        File outputFile = new File("target/NestedSumsTest_nestedSums_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         List<Map<String, Object>> testData = getTestData();
@@ -72,8 +72,8 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf() throws IOException {
         // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums_if.xlsx");
-        File outputFile = new File("target/nestedsums_if-output.xlsx");
+        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums_withIf.xlsx"); // NestedSumsTest_nestedSums_withIf
+        File outputFile = new File("target/NestedSumsTest_nestedSums_withIf_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
@@ -108,8 +108,8 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf2() throws IOException {
         // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums_if2.xlsx");
-        File outputFile = new File("target/nestedsums_if2-output.xlsx");
+        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums_withIf2.xlsx");
+        File outputFile = new File("target/NestedSumsTest_nestedSums_withIf2_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));

@@ -23,8 +23,8 @@ public class ConditionalFormattingTest {
     @Test
     public void shouldCopyConditionalFormatInEachCommandLoop() throws IOException {
         // Prepare
-        InputStream is = getClass().getResourceAsStream("cond_format_template.xlsx");
-        String outputFileName = "target/cond_format_output.xlsx";
+        InputStream is = getClass().getResourceAsStream("ConditionalFormattingTest.xlsx");
+        String outputFileName = "target/ConditionalFormattingTest_output.xlsx";
         File outputFile = new File(outputFileName);
         FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();

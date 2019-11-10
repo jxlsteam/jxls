@@ -74,8 +74,8 @@ public class GroupSumTest {
     
     private void check(Context context) throws IOException {
         // Test
-        InputStream in = GroupSumTest.class.getResourceAsStream("groupSum.xlsx");
-        File outputFile = new File("target/groupSum.xlsx");
+        InputStream in = GroupSumTest.class.getResourceAsStream("GroupSumTest.xlsx");
+        File outputFile = new File("target/GroupSumTest_output.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
         PoiTransformer transformer = PoiTransformer.createTransformer(in, out);
         JxlsHelper.getInstance().processTemplate(context, transformer);

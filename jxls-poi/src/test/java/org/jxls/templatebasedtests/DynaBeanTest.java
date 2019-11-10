@@ -33,10 +33,10 @@ public class DynaBeanTest {
         // Prepare
         Context context = new Context();
         context.putVar("employees", generateDynaSampleEmployeeData());
-        String out = "target/dynabean_output.xlsx";
+        String out = "target/DynaBeanTest_output.xlsx";
 
         // Test
-        try (InputStream is = getClass().getResourceAsStream("dynabean.xlsx")) {
+        try (InputStream is = getClass().getResourceAsStream("DynaBeanTest.xlsx")) {
             try (OutputStream os = new FileOutputStream(out)) {
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }
@@ -84,10 +84,10 @@ public class DynaBeanTest {
         // Prepare
         Context context = new Context();
         context.putVar("employees", generateStaticSampleEmployeeData());
-        String out = "target/dynabean_output.xlsx";
+        String out = "target/DynaBeanTest_output.xlsx";
 
         // Test
-        try (InputStream is = getClass().getResourceAsStream("dynabean.xlsx")) {
+        try (InputStream is = getClass().getResourceAsStream("DynaBeanTest.xlsx")) {
             try (OutputStream os = new FileOutputStream(out)) {
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }

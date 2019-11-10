@@ -21,7 +21,7 @@ public class UseOwnTransformerTest {
 
     @Test
     public void testReplacementOfPoiTransformer() throws EncryptedDocumentException, IOException {
-        InputStream in = UseOwnTransformerTest.class.getResourceAsStream("a_file.xlsx"); // simple XLSX file with 1 jx:area and 1 jx:each.
+        InputStream in = UseOwnTransformerTest.class.getResourceAsStream("UseOwnTransformerTest.xlsx"); // simple XLSX file with 1 jx:area and 1 jx:each.
         try {
             Workbook workbook = WorkbookFactory.create(in);
             try {

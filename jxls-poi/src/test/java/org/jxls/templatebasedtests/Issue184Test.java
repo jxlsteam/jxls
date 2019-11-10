@@ -27,8 +27,8 @@ public class Issue184Test {
     @Test
     public void test() throws Exception {
         // Prepare
-        String in = "issue184_template.xls";
-        File out = new File("target/issue184_output.xls");
+        String in = "Issue184Test.xls";
+        File out = new File("target/Issue184Test_output.xls");
         List<Integer> data = new ArrayList<>();
         for (int j = 1; j <= 3; j++) {
             data.add(j);

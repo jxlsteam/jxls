@@ -41,9 +41,9 @@ public class TableTest {
 
     private void checkTable(int max) throws IOException {
         Context ctx = createContextWithTestData(max);
-        InputStream in = TableTest.class.getResourceAsStream("table.xlsx");
+        InputStream in = TableTest.class.getResourceAsStream("TableTest.xlsx");
         try {
-            FileOutputStream out = new FileOutputStream(new File(dir, "table_" + max + ".xlsx"));
+            FileOutputStream out = new FileOutputStream(new File(dir, "TableTest_output.xlsx"));
             try {
                 Transformer transformer = JxlsHelper.getInstance().createTransformer(in, out);
                 JxlsHelper.getInstance().processTemplate(ctx, transformer);
@@ -76,9 +76,9 @@ public class TableTest {
      */
     private void checkTableWithStreaming(int max) throws IOException {
         Context ctx = createContextWithTestData(max);
-        InputStream in = TableTest.class.getResourceAsStream("table.xlsx");
+        InputStream in = TableTest.class.getResourceAsStream("TableTest.xlsx");
         try {
-            FileOutputStream out = new FileOutputStream(new File(dir, "table_" + max + "_streaming.xlsx"));
+            FileOutputStream out = new FileOutputStream(new File(dir, "TableTest_output.xlsx"));
             try {
                 Workbook workbook = WorkbookFactory.create(in);
                 SelectSheetsForStreamingPoiTransformer transformer = new SelectSheetsForStreamingPoiTransformer(workbook);
