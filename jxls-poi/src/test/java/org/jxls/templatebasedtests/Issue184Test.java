@@ -2,16 +2,13 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Issue 184
@@ -25,10 +22,8 @@ import org.jxls.util.JxlsHelper;
 public class Issue184Test {
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         // Prepare
-        String in = "Issue184Test.xls";
-        File out = new File("target/Issue184Test_output.xls");
         List<Integer> data = new ArrayList<>();
         for (int j = 1; j <= 3; j++) {
             data.add(j);
@@ -37,14 +32,11 @@ public class Issue184Test {
         context.putVar("data", data);
         
         // Test
-        try (InputStream is = getClass().getResource(in).openStream()) {
-            try (FileOutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, context);
-            }
-        }
+        JxlsTester tester = JxlsTester.xls(getClass());
+        tester.processTemplate(context);
         
         // Verify
-        try (TestWorkbook w = new TestWorkbook(out)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Bug");
             assertEquals(6d, w.getCellValueAsDouble(5, 3), 0.01d);
             assertEquals(6d, w.getCellValueAsDouble(5, 4), 0.01d);

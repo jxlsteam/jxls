@@ -1,17 +1,10 @@
 package org.jxls.templatebasedtests.multisheet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.transform.Transformer;
-import org.jxls.util.JxlsHelper;
 
 public abstract class AbstractMultiSheetTest {
     
@@ -56,22 +49,6 @@ public abstract class AbstractMultiSheetTest {
             sheetnames.add(i.getName());
         }
         return sheetnames;
-    }
-
-    // TODO MW issue#186: will possibly be moved
-    protected void createExcel(Context ctx, String file, String outfile) throws IOException {
-        InputStream in = AbstractMultiSheetTest.class.getResourceAsStream(file);
-        try {
-            FileOutputStream out = new FileOutputStream(new File(outfile));
-            try {
-                Transformer transformer = JxlsHelper.getInstance().createTransformer(in, out);
-                JxlsHelper.getInstance().processTemplate(ctx, transformer);
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
-        }
     }
 
     public static class TestExpressionEvaluator implements ExpressionEvaluator {

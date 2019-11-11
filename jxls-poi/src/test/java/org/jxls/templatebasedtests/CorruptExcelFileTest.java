@@ -1,14 +1,9 @@
 package org.jxls.templatebasedtests;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 import org.jxls.util.CannotOpenWorkbookException;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Issue 185 - Better error message for corrupt Excel file
@@ -23,13 +18,8 @@ public class CorruptExcelFileTest {
 
     @Test(expected = CannotOpenWorkbookException.class)
     public void test() throws Exception {
-        String out = "target/CorruptExcelFileTest_output.xlsx";
-        try (InputStream is = getClass().getResourceAsStream("CorruptExcelFileTest.xlsx")) { // corrupt Excel file (It's a .png file.)
-            try (OutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, new Context());
-            }
-        } finally {
-            new File(out).delete();
+        try (JxlsTester tester = JxlsTester.xlsx(getClass())) {
+            tester.processTemplate(new Context());
         }
     }
 }

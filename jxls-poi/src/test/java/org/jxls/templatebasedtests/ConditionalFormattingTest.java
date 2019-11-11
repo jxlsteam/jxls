@@ -2,10 +2,6 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,20 +9,16 @@ import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 
 public class ConditionalFormattingTest {
     private static final double EPSILON = 0.001;
 
     @Test
-    public void shouldCopyConditionalFormatInEachCommandLoop() throws IOException {
+    public void shouldCopyConditionalFormatInEachCommandLoop() {
         // Prepare
-        InputStream is = getClass().getResourceAsStream("ConditionalFormattingTest.xlsx");
-        String outputFileName = "target/ConditionalFormattingTest_output.xlsx";
-        File outputFile = new File(outputFileName);
-        FileOutputStream out = new FileOutputStream(outputFile);
         Context context = new Context();
         List<Integer> list = Arrays.asList(2, 1, 4, 3, 5);
         context.putVar("numbers", list);
@@ -34,17 +26,18 @@ public class ConditionalFormattingTest {
         context.putVar("val2", 7);
         
         // Test
-        JxlsHelper.getInstance().processTemplate(is, out, context);
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
 
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(outputFile)) {
-            xls.selectSheet(0);
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
             for (int i = 0; i < list.size(); i++) {
-                double val = xls.getCellValueAsDouble(i + 2, 2);
+                double val = w.getCellValueAsDouble(i + 2, 2);
                 assertEquals(list.get(i).doubleValue(), val, EPSILON);
             }
 
-            SheetConditionalFormatting sheetConditionalFormatting = xls.getSheetConditionalFormatting();
+            SheetConditionalFormatting sheetConditionalFormatting = w.getSheetConditionalFormatting();
             int conditionalFormattingCount = 0;
             for (int i = 0; i < sheetConditionalFormatting.getNumConditionalFormattings(); i++) {
                 ConditionalFormatting conditionalFormatting = sheetConditionalFormatting.getConditionalFormattingAt(i);

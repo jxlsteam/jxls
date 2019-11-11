@@ -1,71 +1,52 @@
 package org.jxls.templatebasedtests;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.jxls.JxlsTester;
+import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.transform.poi.SelectSheetsForStreamingPoiTransformer;
-import org.jxls.util.JxlsHelper;
 
+// TODO MW: missing assertions (can file be opened? record size okay? speed okay?)
 public class TableTest {
-    private static final File dir = new File("test-output");
-    
-    @BeforeClass
-    public static void init() {
-        dir.mkdirs();
-    }
     
     @Test
-    public void testTable() throws IOException {
+    public void testTable() {
         checkTable(101);
         // Please test here, if the table has been extended.
     }
 
     @Test
-    public void testEmptyTable() throws IOException {
+    public void testEmptyTable() {
         // This 'empty table' testcase uses the standard PoiTransformer.
         checkTable(0);
         // Here you can test if you can open the result file.
     }
 
-    private void checkTable(int max) throws IOException {
-        Context ctx = createContextWithTestData(max);
-        InputStream in = TableTest.class.getResourceAsStream("TableTest.xlsx");
-        try {
-            FileOutputStream out = new FileOutputStream(new File(dir, "TableTest_output.xlsx"));
-            try {
-                Transformer transformer = JxlsHelper.getInstance().createTransformer(in, out);
-                JxlsHelper.getInstance().processTemplate(ctx, transformer);
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
-        }
+    private void checkTable(int max) {
+        Context context = createContextWithTestData(max);
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
     }
 
     /**
      * With streaming this testcase takes less than 5 seconds. Without streaming it takes much more time.
      */
     @Test
-    public void testTableWithStreaming() throws IOException {
+    public void testTableWithStreaming() {
         checkTableWithStreaming(100000);
         // Please test if the file has been created fast and low in memory.
     }
 
     @Test
-    public void testEmptyTableWithStreaming() throws IOException {
+    public void testEmptyTableWithStreaming() {
         // This 'empty table' testcase uses a special streaming transformer.
         checkTableWithStreaming(0);
         // Here you can test if you can open the result file.
@@ -74,25 +55,25 @@ public class TableTest {
     /**
      * Use streaming only for the sheet named "table".
      */
-    private void checkTableWithStreaming(int max) throws IOException {
-        Context ctx = createContextWithTestData(max);
-        InputStream in = TableTest.class.getResourceAsStream("TableTest.xlsx");
-        try {
-            FileOutputStream out = new FileOutputStream(new File(dir, "TableTest_output.xlsx"));
-            try {
-                Workbook workbook = WorkbookFactory.create(in);
+    private void checkTableWithStreaming(int max) {
+        Context context = createContextWithTestData(max);
+        
+        TransformerChecker useStreamingTransformer = new TransformerChecker() {
+            @Override
+            public Transformer checkTransformer(Transformer pTransformer) {
+                PoiTransformer poiTr = (PoiTransformer) pTransformer;
+                Workbook workbook = poiTr.getWorkbook();
                 SelectSheetsForStreamingPoiTransformer transformer = new SelectSheetsForStreamingPoiTransformer(workbook);
+                transformer.setOutputStream(poiTr.getOutputStream());
                 Set<String> streamedSheets = new HashSet<String>();
                 streamedSheets.add("table");
                 transformer.setDataSheetsToUseStreaming(streamedSheets);
-                transformer.setOutputStream(out);
-                JxlsHelper.getInstance().processTemplate(ctx, transformer);
-            } finally {
-                out.close();
+                return transformer;
             }
-        } finally {
-            in.close();
-        }
+        };
+        
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.createTransformerAndProcessTemplate(context, useStreamingTransformer);
     }
 
     private Context createContextWithTestData(int max) {

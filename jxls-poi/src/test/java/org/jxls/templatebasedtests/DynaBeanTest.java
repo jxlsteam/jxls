@@ -2,10 +2,6 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +10,10 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.entity.TestEmployee;
-import org.jxls.util.JxlsHelper;
 
 /**
  * This test class checks whether grouping works with DynaBeans. (Issue 182)
@@ -33,26 +29,22 @@ public class DynaBeanTest {
         // Prepare
         Context context = new Context();
         context.putVar("employees", generateDynaSampleEmployeeData());
-        String out = "target/DynaBeanTest_output.xlsx";
 
         // Test
-        try (InputStream is = getClass().getResourceAsStream("DynaBeanTest.xlsx")) {
-            try (OutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, context);
-            }
-        }
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
         
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(new File(out))) {
-            xls.selectSheet("grouping");
-            assertEquals("Elsa", xls.getCellValueAsString(2, 1));
-            assertEquals("John", xls.getCellValueAsString(3, 1));
-            assertEquals("Oleg", xls.getCellValueAsString(4, 1));
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("grouping");
+            assertEquals("Elsa", w.getCellValueAsString(2, 1));
+            assertEquals("John", w.getCellValueAsString(3, 1));
+            assertEquals("Oleg", w.getCellValueAsString(4, 1));
             
-            xls.selectSheet("simple"); // no grouping
-            assertEquals("Elsa", xls.getCellValueAsString(2, 1));
-            assertEquals("Oleg", xls.getCellValueAsString(3, 1));
-            assertEquals("John", xls.getCellValueAsString(4, 1));
+            w.selectSheet("simple"); // no grouping
+            assertEquals("Elsa", w.getCellValueAsString(2, 1));
+            assertEquals("Oleg", w.getCellValueAsString(3, 1));
+            assertEquals("John", w.getCellValueAsString(4, 1));
         }
     }
 
@@ -84,17 +76,13 @@ public class DynaBeanTest {
         // Prepare
         Context context = new Context();
         context.putVar("employees", generateStaticSampleEmployeeData());
-        String out = "target/DynaBeanTest_output.xlsx";
 
         // Test
-        try (InputStream is = getClass().getResourceAsStream("DynaBeanTest.xlsx")) {
-            try (OutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, context);
-            }
-        }
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
         
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(new File(out))) {
+        try (TestWorkbook xls = tester.getWorkbook()) {
             xls.selectSheet("grouping");
             assertEquals("Elsa", xls.getCellValueAsString(2, 1));
             assertEquals("John", xls.getCellValueAsString(3, 1));

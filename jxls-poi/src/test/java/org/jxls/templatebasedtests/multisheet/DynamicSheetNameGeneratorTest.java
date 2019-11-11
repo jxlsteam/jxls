@@ -1,8 +1,7 @@
 package org.jxls.templatebasedtests.multisheet;
 
-import java.io.IOException;
-
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 import org.jxls.unittests.DynamicSheetNameGeneratorUnitTest;
 
@@ -18,10 +17,13 @@ public class DynamicSheetNameGeneratorTest extends AbstractMultiSheetTest {
      * jx:each(items="sheets", var="sh", multisheet="sh.name", lastCell="A2")
      */
     @Test
-    public void testWithExpression() throws IOException {
-        Context ctx = new Context();
-        ctx.putVar("sheets", getTestSheets());
-        createExcel(ctx, "DynamicSheetNameGeneratorTest.xlsx", "target/DynamicSheetNameGeneratorTest_output.xlsx");
+    public void testWithExpression() {
+        Context context = new Context();
+        context.putVar("sheets", getTestSheets());
+        
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
+        
         // Result: Sheets with name "data" and "parameters" created.
     }
 }

@@ -1,38 +1,46 @@
 package org.jxls.templatebasedtests;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.jxls.EnglishTestRule;
+import org.jxls.JxlsTester;
+import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.common.Context;
-import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.transform.Transformer;
 import org.jxls.transformer.TestPTTransformer;
-import org.jxls.util.JxlsHelper;
 
 public class PivotTableTest {
+    @Rule
+    public EnglishTestRule english = new EnglishTestRule();
 
     /**
-     * issue 155: Pivot table does not work with NLS
+     * Issue 155: Pivot table does not work with NLS
      */
     @Test
-    public void nls() throws IOException {
-        InputStream in = PivotTableTest.class.getResourceAsStream("PivotTableTest.xlsx");
-        File outputFile = new File("target/PivotTableTest_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
-        Context context = new Context();
+    public void nls() {
+        // Prepare
+        final Context context = new Context();
         context.putVar("R", getResources()); // NLS
         context.putVar("list", getTestData());
-        TestPTTransformer transformer = new TestPTTransformer(PoiTransformer.createTransformer(in, out), context);
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+        TransformerChecker useMyTransformer = new TransformerChecker() {
+            @Override
+            public Transformer checkTransformer(Transformer transformer) {
+                return new TestPTTransformer(transformer, context);
+            }
+        };
         
-        System.out.println(outputFile.getAbsolutePath()); // XXX
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.createTransformerAndProcessTemplate(context, useMyTransformer);
+        
+        // Verify
         // result: broken PivotTable
+        // TODO
     }
 
     private Map<String, String> getResources() {

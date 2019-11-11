@@ -2,19 +2,14 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Tests if/else - each - if/else combination with an Excel file using Excel comments.
@@ -25,17 +20,18 @@ public class If01Test {
 
     /** Tests the English version with many rows of type buy and sell. */
     @Test
-    public void testEnglish() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
-        File outputFile = new File("target/If01Test_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void testEnglish() {
+        // Prepare
         Context context = new Context();
         context.putVar("lang", "en");
         context.putVar("list", getTestData());
-        JxlsHelper.getInstance().processTemplate(context, PoiTransformer.createTransformer(in, out));
-        
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
+
         // Verify
-        try (TestWorkbook w = new TestWorkbook(outputFile)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("if01");
             assertEquals("English report", w.getCellValueAsString(1, 1));
             assertEquals("Buy", w.getCellValueAsString(4, 5));
@@ -50,17 +46,17 @@ public class If01Test {
 
     /** Tests the German version with many rows of type buy and sell. */
     @Test
-    public void testGerman() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
-        File outputFile = new File("target/If01Test_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void testGerman() {
         Context context = new Context();
         context.putVar("lang", "de");
         context.putVar("list", getTestData());
-        JxlsHelper.getInstance().processTemplate(context, PoiTransformer.createTransformer(in, out));
-        
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
+
         // Verify
-        try (TestWorkbook w = new TestWorkbook(outputFile)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("if01");
             assertEquals("Deutscher Bericht", w.getCellValueAsString(1, 1));
             assertEquals("Kauf", w.getCellValueAsString(4, 5));
@@ -75,17 +71,17 @@ public class If01Test {
 
     /** Tests empty list */
     @Test
-    public void testEmpty() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
-        File outputFile = new File("target/If01Test_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void testEmpty() {
         Context context = new Context();
         context.putVar("lang", "en");
         context.putVar("list", new ArrayList<Commodity>());
-        JxlsHelper.getInstance().processTemplate(context, PoiTransformer.createTransformer(in, out));
-        
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
+
         // Verify
-        try (TestWorkbook w = new TestWorkbook(outputFile)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("if01");
             assertEquals("English report", w.getCellValueAsString(1, 1));
             assertEquals("Subject", w.getCellValueAsString(3, 1));
@@ -96,19 +92,19 @@ public class If01Test {
 
     /** Tests list with 1 row. */
     @Test
-    public void test1row() throws IOException {
-        InputStream in = If01Test.class.getResourceAsStream("If01Test.xlsx");
-        File outputFile = new File("target/If01Test_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void test1row() {
         Context context = new Context();
         context.putVar("lang", "en");
         List<Commodity> testData = new ArrayList<Commodity>();
         testData.add(new Commodity("1 row", 10d, 100d, "buy"));
         context.putVar("list", testData);
-        JxlsHelper.getInstance().processTemplate(context, PoiTransformer.createTransformer(in, out));
-        
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
+
         // Verify
-        try (TestWorkbook w = new TestWorkbook(outputFile)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("if01");
             assertEquals(10d, w.getCellValueAsDouble(4, 2), 0.005d);
             assertEquals("Buy", w.getCellValueAsString(4, 5));

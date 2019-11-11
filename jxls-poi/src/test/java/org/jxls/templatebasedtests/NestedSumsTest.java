@@ -3,26 +3,24 @@ package org.jxls.templatebasedtests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.jxls.JxlsTester;
+import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
 import org.jxls.transform.Transformer;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.JxlsHelper;
 
 /**
- * Simplified real world testcase (XDEV-3784)
+ * Simplified real world testcase for nested sums
+ * 
+ * @author Marcus Warm (XDEV-3784)
  */
 public class NestedSumsTest {
     
@@ -31,37 +29,42 @@ public class NestedSumsTest {
      * Works with Excel sums.
      */
     @Test
-    public void nestedSums() throws IOException {
-        // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums.xlsx");
-        File outputFile = new File("target/NestedSumsTest_nestedSums_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void nestedSums() {
+        // Prepare
         Context context = new Context();
         List<Map<String, Object>> testData = getTestData();
         testData.get(2).put("class2", "Liegenschaften");
         context.putVar("list", testData);
-        Transformer transformer = PoiTransformer.createTransformer(in, out);
-        assertTrue(transformer.isEvaluateFormulas());
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+        TransformerChecker transformerChecker = new TransformerChecker() {
+            @Override
+            public Transformer checkTransformer(Transformer transformer) {
+                assertTrue(transformer.isEvaluateFormulas());
+                return transformer;
+            }
+        };
+        
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums");
+        tester.createTransformerAndProcessTemplate(context, transformerChecker);
 
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(outputFile)) {
-            xls.selectSheet("nestedsums");
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("nestedsums");
 
-            assertEquals("Wrong amount in D25!\n", Double.valueOf(123d), xls.getCellValueAsDouble(25, 4));
+            assertEquals("Wrong amount in D25!\n", Double.valueOf(123d), w.getCellValueAsDouble(25, 4));
 
-            assertEquals("Wrong group sum in D9!\n", Double.valueOf(1000d), xls.getCellValueAsDouble(9, 4));
-            assertEquals("Wrong group sum in D15!\n", Double.valueOf(700d), xls.getCellValueAsDouble(15, 4));
-            assertEquals("Wrong sum in D16!\n", Double.valueOf(1700d), xls.getCellValueAsDouble(16, 4));
+            assertEquals("Wrong group sum in D9!\n", Double.valueOf(1000d), w.getCellValueAsDouble(9, 4));
+            assertEquals("Wrong group sum in D15!\n", Double.valueOf(700d), w.getCellValueAsDouble(15, 4));
+            assertEquals("Wrong sum in D16!\n", Double.valueOf(1700d), w.getCellValueAsDouble(16, 4));
             
-            assertEquals("Wrong group sum in D23!\n", Double.valueOf(600d), xls.getCellValueAsDouble(23, 4));
-            assertEquals("Wrong group sum in D26!\n", Double.valueOf(123d), xls.getCellValueAsDouble(26, 4));
-            assertEquals("Wrong sum in D27!\n", Double.valueOf(723d), xls.getCellValueAsDouble(27, 4));
+            assertEquals("Wrong group sum in D23!\n", Double.valueOf(600d), w.getCellValueAsDouble(23, 4));
+            assertEquals("Wrong group sum in D26!\n", Double.valueOf(123d), w.getCellValueAsDouble(26, 4));
+            assertEquals("Wrong sum in D27!\n", Double.valueOf(723d), w.getCellValueAsDouble(27, 4));
             
-            assertEquals("Wrong group sum in D32!\n", Double.valueOf(0.31d), xls.getCellValueAsDouble(32, 4));
-            assertEquals("Wrong sum in D33!\n", Double.valueOf(0.31d), xls.getCellValueAsDouble(33, 4));
+            assertEquals("Wrong group sum in D32!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(32, 4));
+            assertEquals("Wrong sum in D33!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(33, 4));
             
-            assertEquals("Wrong grand total! (D35)\n", Double.valueOf(2423.31d), xls.getCellValueAsDouble(35, 4));
+            assertEquals("Wrong grand total! (D35)\n", Double.valueOf(2423.31d), w.getCellValueAsDouble(35, 4));
         }
     }
 
@@ -70,27 +73,26 @@ public class NestedSumsTest {
      * Solution: use GroupSum for 1st layer sum.
      */
     @Test
-    public void nestedSums_withIf() throws IOException {
-        // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums_withIf.xlsx"); // NestedSumsTest_nestedSums_withIf
-        File outputFile = new File("target/NestedSumsTest_nestedSums_withIf_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void nestedSums_withIf() {
+        // Prepare
         Context context = new Context();
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
         context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
-        Transformer transformer = PoiTransformer.createTransformer(in, out);
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+        
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf");
+        tester.processTemplate(context);
 
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(outputFile)) {
-            xls.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), xls.getCellValueAsDouble(5, 4));
-            assertEquals(Double.valueOf( 600d), xls.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 123d), xls.getCellValueAsDouble(15, 4));
-            assertEquals(Double.valueOf( 723d), xls.getCellValueAsDouble(16, 4));
-            assertEquals(Double.valueOf(0.31d), xls.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf(2423.31), xls.getCellValueAsDouble(21, 4));
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("nestedsums");
+            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(5, 4));
+            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(12, 4));
+            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(15, 4));
+            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(16, 4));
+            assertEquals(Double.valueOf(0.31d), w.getCellValueAsDouble(19, 4));
+            assertEquals(Double.valueOf(2423.31), w.getCellValueAsDouble(21, 4));
         }
     }
 
@@ -106,25 +108,24 @@ public class NestedSumsTest {
      * Solution: use GroupSum for 1st and 2nd layer sums.
      */
     @Test
-    public void nestedSums_withIf2() throws IOException {
-        // Test
-        InputStream in = NestedSumsTest.class.getResourceAsStream("NestedSumsTest_nestedSums_withIf2.xlsx");
-        File outputFile = new File("target/NestedSumsTest_nestedSums_withIf2_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
+    public void nestedSums_withIf2() {
+        // Prepare
         Context context = new Context();
         context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
-        Transformer transformer = PoiTransformer.createTransformer(in, out);
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf2");
+        tester.processTemplate(context);
 
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(outputFile)) {
-            xls.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), xls.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 600d), xls.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf( 123d), xls.getCellValueAsDouble(22, 4));
-            assertEquals(Double.valueOf( 723d), xls.getCellValueAsDouble(23, 4));
-            assertEquals(Double.valueOf(2423.31d), xls.getCellValueAsDouble(29, 4));
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("nestedsums");
+            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(12, 4));
+            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(19, 4));
+            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(22, 4));
+            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(23, 4));
+            assertEquals(Double.valueOf(2423.31d), w.getCellValueAsDouble(29, 4));
         }
     }
     

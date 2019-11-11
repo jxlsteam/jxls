@@ -2,26 +2,20 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
+import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.entity.TestEmployee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Group sum test
@@ -34,7 +28,7 @@ public class GroupSumTest {
      * This test uses Map objects. The salary is of type Double.
      */
     @Test
-    public void testWithMapsAndDouble() throws IOException, InvalidFormatException {
+    public void testWithMapsAndDouble() {
         List<Map<String, Object>> maps = new ArrayList<>();
         maps.add(createEmployee("03 Finance department", "Christiane", "Operator", "Hartefeld", 40000));
         maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
@@ -60,7 +54,7 @@ public class GroupSumTest {
      * This test uses beans. The salary is of type BigDecimal.
      */
     @Test
-    public void testWithBeansAndBigDecimal() throws IOException, InvalidFormatException {
+    public void testWithBeansAndBigDecimal() {
         List<TestEmployee> beans = new ArrayList<>();
         beans.add(new TestEmployee("03 Finance department", "Christiane", "Operator", "Hartefeld", 40000));
         beans.add(new TestEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
@@ -72,20 +66,17 @@ public class GroupSumTest {
         check(context);
     }
     
-    private void check(Context context) throws IOException {
+    private void check(Context context) {
         // Test
-        InputStream in = GroupSumTest.class.getResourceAsStream("GroupSumTest.xlsx");
-        File outputFile = new File("target/GroupSumTest_output.xlsx");
-        FileOutputStream out = new FileOutputStream(outputFile);
-        PoiTransformer transformer = PoiTransformer.createTransformer(in, out);
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+        JxlsTester tester = JxlsTester.xlsx(getClass());
+        tester.processTemplate(context);
         
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(outputFile)) {
-            xls.selectSheet("Group sums");
-            assertEquals("1st group sum is wrong! (Main department) E5\n", Double.valueOf(170000d), xls.getCellValueAsDouble(5, 5));
-            assertEquals("2nd group sum is wrong! (Finance department) E10\n", Double.valueOf(130000d), xls.getCellValueAsDouble(10, 5));
-            assertEquals("Total sum (calculated by fx:sum) in cell E12 is wrong!\n", Double.valueOf(300000d), xls.getCellValueAsDouble(12, 5));
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Group sums");
+            assertEquals("1st group sum is wrong! (Main department) E5\n", Double.valueOf(170000d), w.getCellValueAsDouble(5, 5));
+            assertEquals("2nd group sum is wrong! (Finance department) E10\n", Double.valueOf(130000d), w.getCellValueAsDouble(10, 5));
+            assertEquals("Total sum (calculated by fx:sum) in cell E12 is wrong!\n", Double.valueOf(300000d), w.getCellValueAsDouble(12, 5));
         }
     }
 }
