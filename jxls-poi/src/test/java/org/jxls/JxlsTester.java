@@ -18,6 +18,7 @@ public class JxlsTester implements AutoCloseable {
     private final Class<?> testclass;
     private final String excelTemplateFilename;
     private final File out;
+    private boolean useFastFormulaProcessor = false;
 
     /**
      * Use this constructor if you really need to change the Excel template filename (reasons can be: different templates in one testclass;
@@ -69,6 +70,9 @@ public class JxlsTester implements AutoCloseable {
     public void processTemplate(Context context) {
         try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
             try (OutputStream os = new FileOutputStream(out)) {
+                if (useFastFormulaProcessor) {
+                    JxlsHelper.getInstance().setUseFastFormulaProcessor(useFastFormulaProcessor);
+                }
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
@@ -86,6 +90,9 @@ public class JxlsTester implements AutoCloseable {
             try (OutputStream os = new FileOutputStream(out)) {
                 Transformer transformer = PoiTransformer.createTransformer(is, os);
                 transformer = transformerChecker.checkTransformer(transformer);
+                if (useFastFormulaProcessor) {
+                    JxlsHelper.getInstance().setUseFastFormulaProcessor(useFastFormulaProcessor);
+                }
                 JxlsHelper.getInstance().processTemplate(context, transformer);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
@@ -129,5 +136,13 @@ public class JxlsTester implements AutoCloseable {
      */
     public static InputStream openInputStream(Class<?> testclass, boolean xlsx) throws IOException {
         return testclass.getResourceAsStream(testclass.getSimpleName() + (xlsx ? ".xlsx" : ".xls"));
+    }
+
+    public boolean isUseFastFormulaProcessor() {
+        return useFastFormulaProcessor;
+    }
+
+    public void setUseFastFormulaProcessor(boolean useFastFormulaProcessor) {
+        this.useFastFormulaProcessor = useFastFormulaProcessor;
     }
 }
