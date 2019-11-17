@@ -1,5 +1,7 @@
 package org.jxls.demo;
 
+import java.io.File;
+
 import org.jxls.demo.guide.GroupingDemo;
 import org.jxls.demo.guide.HighlightDemo;
 import org.jxls.demo.guide.IfCommandDemo;
@@ -14,9 +16,6 @@ import org.jxls.demo.guide.ObjectCollectionJavaAPIDemo;
 import org.jxls.demo.guide.ObjectCollectionXMLBuilderDemo;
 import org.jxls.demo.guide.ParameterizedFormulasDemo;
 import org.jxls.demo.reader.XlsReaderDemo;
-import org.jxls.util.TransformerFactory;
-
-import java.io.File;
 
 /**
  * @author Leonid Vysochyn
@@ -69,18 +68,14 @@ public class MainDemo {
         ShiftWithEmptyList.main(args);
         SqlDemo.main(args);
 
-        String transformerName = TransformerFactory.getTransformerName();
-
-        if( TransformerFactory.POI_TRANSFORMER.equals( transformerName ) ){
-            UserCommandExcelMarkupDemo.main(args);
-            UserCommandDemo.main(args);
-            AreaListenerDemo.main(args);
-            StressXlsxDemo.executeStress1();
-            StressXlsxDemo.executeStress2();
-            SxssfDemo.simpleSxssf();
-            SxssfDemo.executeStress1();
-            SxssfDemo.executeStress2();
-        }
+        UserCommandExcelMarkupDemo.main(args);
+        UserCommandDemo.main(args);
+        AreaListenerDemo.main(args);
+        StressXlsxDemo.executeStress1();
+        StressXlsxDemo.executeStress2();
+        SxssfDemo.simpleSxssf();
+        SxssfDemo.executeStress1();
+        SxssfDemo.executeStress2();
 
 //        StressDemo.executeStress1();
 //        StressDemo.executeStress2();

@@ -6,6 +6,9 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 
+/**
+ * XLS file that has sheet with chart is not being processed
+ */
 public class Issue119Test {
 
     @Test
@@ -17,6 +20,6 @@ public class Issue119Test {
         JxlsTester tester = JxlsTester.xls(getClass());
         tester.processTemplate(context);
         
-        // TODO assertions
+        // TODO assertions -> Ticket state is WONT-FIX. Delete testcase?
     }
 }

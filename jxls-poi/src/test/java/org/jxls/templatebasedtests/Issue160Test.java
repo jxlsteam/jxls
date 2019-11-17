@@ -1,4 +1,17 @@
-package org.jxls.demo.issue;
+package org.jxls.templatebasedtests;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -11,24 +24,17 @@ import org.jxls.common.Context;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-public class Issue160TestCase {
+/**
+ * jx:each with direction=RIGHT with SXSSF Transformer rewrites static cells
+ */
+public class Issue160Test {
 
     public static void main(String[] args) throws IOException, ParseException {
         List<Map<String, Object>> lotsOfStuff = createLotsOfStuff();
         Context context = new PoiContext();
         context.putVar("lotsOfStuff", lotsOfStuff);
         context.putVar("columns", new Columns());
-        try(InputStream in = Issue160TestCase.class.getResourceAsStream("issue160_template.xlsx")) {
+        try(InputStream in = Issue160Test.class.getResourceAsStream("Issue160Test.xlsx")) {
             try (OutputStream os = new FileOutputStream("target/issue160_output.xlsx")) {
                 Workbook workbook = WorkbookFactory.create(in);
                 PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 2, false);
@@ -57,5 +63,33 @@ public class Issue160TestCase {
         stuff2.put("header3_dynamic", "stuff_2_value3");
 
         return Arrays.asList(stuff1, stuff2);
+    }
+    
+    public static class Columns {
+        
+        public Collection<String> keyOf(List<Map<String, Object>> row) {
+            List<String> ret = new ArrayList<>();
+            for (String key : row.get(0).keySet()) {
+                if (key.endsWith("_dynamic")) {
+                    ret.add(key);
+                }
+            }
+            return ret;
+            // Java 8: return row.get(0).keySet().stream().filter(k -> k.endsWith("_dynamic")).collect(Collectors.toList());
+        }
+
+        public Collection<Object> valueOf(Map<String, Object> row) {
+            List<Object> ret = new ArrayList<>();
+            for (Entry<String, Object> entry : row.entrySet()) {
+                if (entry.getKey() != null && entry.getKey().endsWith("_dynamic")) {
+                    ret.add(entry.getValue());
+                }
+            }
+            return ret;
+            /* Java 8: return row.entrySet().stream()
+                    .filter(entry -> entry.getKey() != null && entry.getKey().endsWith("_dynamic"))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toList());*/
+        }
     }
 }

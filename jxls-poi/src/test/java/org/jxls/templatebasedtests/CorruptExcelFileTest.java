@@ -6,7 +6,7 @@ import org.jxls.common.Context;
 import org.jxls.util.CannotOpenWorkbookException;
 
 /**
- * Issue 185 - Better error message for corrupt Excel file
+ * Issue 185: Better error message for corrupt Excel file
  * 
  * <pre> Old error message: java.lang.IllegalStateException: Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath
  * at org.jxls.util.JxlsHelper.createTransformer(JxlsHelper.java:407)

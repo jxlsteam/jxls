@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 
+/**
+ * Wrong cell ref replacement
+ */
 public class Issue122Test {
 
     @Test
@@ -25,6 +28,7 @@ public class Issue122Test {
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.processTemplate(context);
         
+        // TODO Check testcase!
         // TODO assertions
     }
 

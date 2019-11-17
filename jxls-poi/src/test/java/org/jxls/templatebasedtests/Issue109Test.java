@@ -3,7 +3,6 @@ package org.jxls.templatebasedtests;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
@@ -13,7 +12,6 @@ import org.jxls.common.Context;
  */
 public class Issue109Test {
 
-    @Ignore // TODO MW: not working. Exception! Old class in jxls-examples restored.
     @Test
     public void test() throws IOException {
         Context context = new Context();

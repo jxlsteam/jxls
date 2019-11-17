@@ -9,6 +9,9 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 
+/**
+ * Formula handling issues (formula external to any jx:area)
+ */
 public class Issue116Test {
 
     @Test

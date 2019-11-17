@@ -7,6 +7,9 @@ import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 
+/**
+ * Formula substitution does not work when referencing another sheet
+ */
 public class Issue153Test {
 
     @Test
