@@ -35,8 +35,7 @@ public class Issue184Test {
         }
         Context context = new Context();
         context.putVar("data", data);
-        context.putVar("b", 100);
-        
+
         // Test
         try (InputStream is = getClass().getResource(in).openStream()) {
             try (FileOutputStream os = new FileOutputStream(out)) {

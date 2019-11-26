@@ -51,10 +51,20 @@ public class JxlsHelper {
         return ret;
     }
 
+    /**
+     * @return true if formulas will be evaluated after the processing or false otherwise
+     */
     public boolean isEvaluateFormulas() {
         return evaluateFormulas;
     }
 
+    /**
+     * Sets a flag for a transformer to evaluate formulas at the end of the processing
+     * Please be aware that e.g. POI supports only a subset of Excel formulas.
+     * If an unsupported formula is in the template the evaluation will fail
+     * @param evaluateFormulas true if the formulas evaluation should be triggered
+     * @return current JxlsHelper instance
+     */
     public JxlsHelper setEvaluateFormulas(boolean evaluateFormulas) {
         this.evaluateFormulas = evaluateFormulas;
         return this;
