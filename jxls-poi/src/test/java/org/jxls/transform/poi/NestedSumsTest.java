@@ -40,6 +40,7 @@ public class NestedSumsTest {
         testData.get(2).put("class2", "Liegenschaften");
         context.putVar("list", testData);
         Transformer transformer = PoiTransformer.createTransformer(in, out);
+        transformer.setEvaluateFormulas(true);
         assertTrue(transformer.isEvaluateFormulas());
         JxlsHelper.getInstance().processTemplate(context, transformer);
 
@@ -79,6 +80,7 @@ public class NestedSumsTest {
         context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
         Transformer transformer = PoiTransformer.createTransformer(in, out);
+        transformer.setEvaluateFormulas(true);
         JxlsHelper.getInstance().processTemplate(context, transformer);
 
         // Verify
@@ -114,6 +116,7 @@ public class NestedSumsTest {
         context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
         Transformer transformer = PoiTransformer.createTransformer(in, out);
+        transformer.setEvaluateFormulas(true);
         JxlsHelper.getInstance().processTemplate(context, transformer);
 
         // Verify

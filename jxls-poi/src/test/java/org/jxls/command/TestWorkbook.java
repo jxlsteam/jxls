@@ -50,15 +50,25 @@ public class TestWorkbook implements AutoCloseable {
     }
 
     /**
+     * Expects formula cell and returns the formula string.
+     * @param row starts with 1
+     * @param column 1 = A
+     * @return String
+     */
+    public String getFormulaString(int row, int column) {
+        return sheet.getRow(row-1).getCell(column - 1).getCellFormula();
+    }
+
+    /**
      * Expects numeric cell and returns its double value.
      * @param row starts with 1
      * @param column 1 = A
      * @return Double
      */
     public Double getCellValueAsDouble(int row, int column) {
-        return Double.valueOf(sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue());
+        return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
     }
-    
+
     public SheetConditionalFormatting getSheetConditionalFormatting() {
         return sheet.getSheetConditionalFormatting();
     }
