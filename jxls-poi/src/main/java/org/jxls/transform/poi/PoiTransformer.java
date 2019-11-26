@@ -6,18 +6,19 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -37,6 +38,7 @@ import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
 import org.jxls.transform.AbstractTransformer;
+import org.jxls.util.CannotOpenWorkbookException;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,14 +111,12 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     /**
-     * Creates transformer from an input steam template and output stream
-     * @param is input stream to read the Excel template file
-     * @param os output stream to write the Excel file
+     * Creates transformer from an input stream template and output stream
+     * @param is input stream to read the Excel template file. Format can be XLSX (recommended) or XLS.
+     * @param os output stream to write the Excel file. Must be the same format.
      * @return {@link PoiTransformer} instance
-     * @throws IOException
-     * @throws InvalidFormatException
      */
-    public static PoiTransformer createTransformer(InputStream is, OutputStream os) throws IOException, InvalidFormatException {
+    public static PoiTransformer createTransformer(InputStream is, OutputStream os) {
         PoiTransformer transformer = createTransformer(is);
         transformer.setOutputStream(os);
         transformer.setInputStream(is);
@@ -124,53 +124,57 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     /**
-     * Creates transformer instance from an input stream for the Excel template
-     * @param is input stream for the Excel template file
+     * Creates transformer instance for given input stream
+     * @param is input stream for the Excel template file. Format can be XLSX (recommended) or XLS.
      * @return transformer instance reading the template from the passed input stream
-     * @throws IOException
-     * @throws InvalidFormatException
+     * @throws CannotOpenWorkbookException if an error occurs during opening the Excel workbook
      */
-    public static PoiTransformer createTransformer(InputStream is) throws IOException, InvalidFormatException {
-        Workbook workbook = WorkbookFactory.create(is);
+    public static PoiTransformer createTransformer(InputStream is) {
+        Workbook workbook;
+        try {
+            workbook = WorkbookFactory.create(is);
+        } catch (Exception e) {
+            throw new CannotOpenWorkbookException(e);
+        }
         return createTransformer(workbook);
     }
 
     /**
      * Creates transformer instance from a {@link Workbook} instance
-     * @param workbook
-     * @return
+     * @param workbook Excel template
+     * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createTransformer(Workbook workbook) {
         return new PoiTransformer(workbook);
     }
 
     /**
-     * Creates transformer from SXSSF workbook
-     * @param workbook
-     * @return
+     * Creates transformer for given workbook. Streaming will be used.
+     * @param workbook Excel template. Format must be XLSX.
+     * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook) {
         return createSxssfTransformer(workbook, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, false);
     }
 
     /**
-     * Creates SXSSF transformer from a workbook and streaming parameters
-     * @param workbook
+     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
+     * @param workbook Excel template. Format must be XLSX.
      * @param rowAccessWindowSize
      * @param compressTmpFiles
-     * @return
+     * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
         return createSxssfTransformer(workbook, rowAccessWindowSize, compressTmpFiles, false);
     }
 
     /**
-     * Creates SXSSF transformer from a workbook and streaming parameters
-     * @param workbook
+     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
+     * @param workbook Excel template. Format must be XLSX.
      * @param rowAccessWindowSize
      * @param compressTmpFiles
      * @param useSharedStringsTable
-     * @return
+     * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
         return new PoiTransformer(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
@@ -251,6 +255,7 @@ public class PoiTransformer extends AbstractTransformer {
             destCell = destRow.createCell(targetCellRef.getCol());
         }
         try {
+            // conditional formatting
             destCell.setCellType(CellType.BLANK);
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
@@ -261,11 +266,34 @@ public class PoiTransformer extends AbstractTransformer {
 
     @Override
     public void resetArea(AreaRef areaRef) {
-        // removing merged regions
+        removeMergedRegions(areaRef);
+        removeConditionalFormatting(areaRef);
+    }
+
+    private void removeMergedRegions(AreaRef areaRef) {
         Sheet destSheet = workbook.getSheet(areaRef.getSheetName());
         int numMergedRegions = destSheet.getNumMergedRegions();
         for (int i = numMergedRegions; i > 0; i--) {
             destSheet.removeMergedRegion(i - 1);
+        }
+    }
+
+    // this method updates conditional formatting ranges only when the range is inside the passed areaRef
+    private void removeConditionalFormatting(AreaRef areaRef) {
+        Sheet destSheet = workbook.getSheet(areaRef.getSheetName());
+        CellRangeAddress areaRange = CellRangeAddress.valueOf(areaRef.toString());
+        SheetConditionalFormatting sheetConditionalFormatting = destSheet.getSheetConditionalFormatting();
+        int numConditionalFormattings = sheetConditionalFormatting.getNumConditionalFormattings();
+        for (int index = 0; index < numConditionalFormattings; index++) {
+            ConditionalFormatting conditionalFormatting = sheetConditionalFormatting.getConditionalFormattingAt(index);
+            CellRangeAddress[] ranges = conditionalFormatting.getFormattingRanges();
+            List<CellRangeAddress> newRanges = new ArrayList<>();
+            for (CellRangeAddress range : ranges) {
+                if (!areaRange.isInRange(range.getFirstRow(), range.getFirstColumn()) || !areaRange.isInRange(range.getLastRow(), range.getLastColumn())) {
+                    newRanges.add(range);
+                }
+            }
+            conditionalFormatting.setFormattingRanges(newRanges.toArray(new CellRangeAddress[] {}));
         }
     }
 

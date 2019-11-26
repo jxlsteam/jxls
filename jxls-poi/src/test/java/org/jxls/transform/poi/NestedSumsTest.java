@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class NestedSumsTest {
      * Works with Excel sums.
      */
     @Test
-    public void nestedSums() throws Exception {
+    public void nestedSums() throws IOException {
         // Test
         InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums.xlsx");
         File outputFile = new File("target/nestedsums-output.xlsx");
@@ -69,7 +70,7 @@ public class NestedSumsTest {
      * Solution: use GroupSum for 1st layer sum.
      */
     @Test
-    public void nestedSums_withIf() throws Exception {
+    public void nestedSums_withIf() throws IOException {
         // Test
         InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums_if.xlsx");
         File outputFile = new File("target/nestedsums_if-output.xlsx");
@@ -106,7 +107,7 @@ public class NestedSumsTest {
      * Solution: use GroupSum for 1st and 2nd layer sums.
      */
     @Test
-    public void nestedSums_withIf2() throws Exception {
+    public void nestedSums_withIf2() throws IOException {
         // Test
         InputStream in = NestedSumsTest.class.getResourceAsStream("nestedsums_if2.xlsx");
         File outputFile = new File("target/nestedsums_if2-output.xlsx");

@@ -70,7 +70,7 @@ public class GroupSumTest {
         check(context);
     }
     
-    private void check(Context context) throws IOException, InvalidFormatException {
+    private void check(Context context) throws IOException {
         // Test
         InputStream in = GroupSumTest.class.getResourceAsStream("groupSum.xlsx");
         File outputFile = new File("target/groupSum.xlsx");

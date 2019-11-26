@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class If01Test {
 
     /** Tests the English version with many rows of type buy and sell. */
     @Test
-    public void testEnglish() throws Exception {
+    public void testEnglish() throws IOException {
         InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
         File outputFile = new File("target/if01_output_English.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
@@ -48,7 +49,7 @@ public class If01Test {
 
     /** Tests the German version with many rows of type buy and sell. */
     @Test
-    public void testGerman() throws Exception {
+    public void testGerman() throws IOException {
         InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
         File outputFile = new File("target/if01_output_German.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
@@ -73,7 +74,7 @@ public class If01Test {
 
     /** Tests empty list */
     @Test
-    public void testEmpty() throws Exception {
+    public void testEmpty() throws IOException {
         InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
         File outputFile = new File("target/if01_output_empty.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);
@@ -94,7 +95,7 @@ public class If01Test {
 
     /** Tests list with 1 row. */
     @Test
-    public void test1row() throws Exception {
+    public void test1row() throws IOException {
         InputStream in = If01Test.class.getResourceAsStream("if01.xlsx");
         File outputFile = new File("target/if01_output_1row.xlsx");
         FileOutputStream out = new FileOutputStream(outputFile);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
@@ -29,7 +30,15 @@ public class TestWorkbook implements AutoCloseable {
     public void selectSheet(String name) {
         sheet = workbook.getSheet(name);
     }
-    
+
+    /**
+     * Following operations operate on the given sheet
+     * @param index starts with 0
+     */
+    public void selectSheet(int index) {
+        sheet = workbook.getSheetAt(index);
+    }
+
     /**
      * Expects text cell and returns its content.
      * @param row starts with 1
@@ -58,6 +67,10 @@ public class TestWorkbook implements AutoCloseable {
      */
     public Double getCellValueAsDouble(int row, int column) {
         return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
+    }
+
+    public SheetConditionalFormatting getSheetConditionalFormatting() {
+        return sheet.getSheetConditionalFormatting();
     }
 
     @Override
