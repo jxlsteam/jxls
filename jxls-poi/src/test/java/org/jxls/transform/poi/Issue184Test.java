@@ -35,11 +35,11 @@ public class Issue184Test {
         }
         Context context = new Context();
         context.putVar("data", data);
-        
+
         // Test
         try (InputStream is = getClass().getResource(in).openStream()) {
             try (FileOutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, context);
+                JxlsHelper.getInstance().setEvaluateFormulas(true).processTemplate(is, os, context);
             }
         }
         
@@ -51,6 +51,7 @@ public class Issue184Test {
             assertEquals(6d, w.getCellValueAsDouble(5, 5), 0.01d);
             assertEquals(6d, w.getCellValueAsDouble(5, 1), 0.01d);
             assertEquals(6d, w.getCellValueAsDouble(5, 2), 0.01d);
+            assertEquals("SUM(C2:C4)", w.getFormulaString(5, 3));
         }
     }
 }

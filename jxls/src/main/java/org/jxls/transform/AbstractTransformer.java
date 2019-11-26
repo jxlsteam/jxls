@@ -26,7 +26,7 @@ public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreRowProps = false;
     protected Map<String, SheetData> sheetMap = new LinkedHashMap<>();
     private TransformationConfig transformationConfig = new TransformationConfig();
-    private boolean evaluateFormulas = true;
+    private boolean evaluateFormulas = false;
 
     @Override
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
