@@ -36,7 +36,6 @@
     <modules>
         <module>jxls</module>
         <module>jxls-poi</module>
-        <module>jxls-examples</module>
     </modules>
 
     <dependencyManagement>
