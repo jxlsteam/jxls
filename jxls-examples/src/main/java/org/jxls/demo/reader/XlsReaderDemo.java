@@ -1,5 +1,12 @@
 package org.jxls.demo.reader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jxls.demo.model.Department;
 import org.jxls.demo.model.Employee;
@@ -9,13 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+// TODO Leonid: Please move this to the reader project src/test! After that you can delete jxls-examples.
 /**
  * Created by Leonid Vysochyn on 6/24/2015.
  */

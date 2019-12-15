@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
-// deprecated
+// deprecated  - TODO MW: merge Employee and TestEmployee
 public class Employee {
+    private static final Random random = new Random(System.currentTimeMillis());
+    private static long current = System.currentTimeMillis();
     private String name;
     private Date birthDate;
     private BigDecimal payment;
     private BigDecimal bonus;
-
     private String buGroup;
+    private int age;
 
     public Employee(String name, Date birthDate, BigDecimal payment, BigDecimal bonus) {
         this.name = name;
@@ -90,5 +93,30 @@ public class Employee {
         employees.add( new Employee("Maria", dateFormat.parse("1978-Jan-07"), 1700, 0.15) );
         employees.add( new Employee("John", dateFormat.parse("1969-May-30"), 2800, 0.20) );
         return employees;
+    }
+
+    public static List<Employee> generate(int num) {
+        List<Employee> result = new ArrayList<>();
+        for (int index = 0; index < num; index++) {
+            result.add(generateOne("" + index));
+        }
+        return result;
+    }
+
+    public static Employee generateOne(String nameSuffix) {
+        Employee ret = new Employee("Employee " + nameSuffix,
+                new Date(current - (1000000 + random.nextInt(1000000))),
+                1000 + random.nextDouble() * 5000,
+                random.nextInt(100) / 100.0d);
+        ret.setAge(random.nextInt(100));
+        return ret;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
