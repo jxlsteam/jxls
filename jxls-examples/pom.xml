@@ -48,30 +48,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>org.jxls.demo.MainDemo</mainClass>
-                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                    <!--<systemProperties>-->
-                        <!--<systemProperty>-->
-                            <!--<key>jxlstransformer</key>-->
-                            <!--<value>poi</value>-->
-                        <!--</systemProperty>-->
-                    <!--</systemProperties>-->
-                </configuration>
-            </plugin>
-
             <!--plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -86,6 +62,7 @@
                     </execution>
                 </executions>
             </plugin-->
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
