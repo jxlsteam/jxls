@@ -3,6 +3,7 @@ package org.jxls;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -50,6 +51,16 @@ public class TestWorkbook implements AutoCloseable {
     }
 
     /**
+     * Expects (possibly formatted) text cell and returns its content.
+     * @param row starts with 1
+     * @param column 1 = A
+     * @return RichTextString
+     */
+    public RichTextString getCellValueAsRichString(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue();
+    }
+
+    /**
      * Expects numeric cell and returns its double value.
      * @param row starts with 1
      * @param column 1 = A
@@ -57,6 +68,14 @@ public class TestWorkbook implements AutoCloseable {
      */
     public Double getCellValueAsDouble(int row, int column) {
         return Double.valueOf(sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue());
+    }
+    
+    /**
+     * @param row starts with 1
+     * @return row height in Twips
+     */
+    public short getRowHeight(int row) {
+        return sheet.getRow(row - 1).getHeight();
     }
     
     public SheetConditionalFormatting getSheetConditionalFormatting() {

@@ -145,4 +145,8 @@ public class JxlsTester implements AutoCloseable {
     public void setUseFastFormulaProcessor(boolean useFastFormulaProcessor) {
         this.useFastFormulaProcessor = useFastFormulaProcessor;
     }
+
+    public String getTemplateFilename() {
+        return excelTemplateFilename;
+    }
 }
