@@ -13,29 +13,35 @@ import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 
 /**
- * Test case for issue#159 Insert image and text underline issues A modification
- * of the original example by ZhengJin Fang
+ * Testcase for issues 159 (insert image) and 178 (text underline issues)
+ * A modification of the original example by ZhengJin Fang
  */
 public class Issue159Test {
 
     @Test
     public void test() throws IOException {
+        // Prepare
         Context context = new Context();
         Map<String, Object> model = getModel();
-        for (String x : model.keySet()) {
-            context.putVar(x, model.get(x));
+        for (String key : model.keySet()) {
+            context.putVar(key, model.get(key));
         }
 
+        // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.processTemplate(context);
         
-        // TODO assertions
+        // Verify
+        // TODO I guess in the template file the image command in cell I9 must be extended with: lockRange=false
+        // TODO assertions: What have to be verified?
     }
 
     private Map<String, Object> getModel() throws IOException {
+        // issue 178 >>
         Map<String, Object> model = new HashMap<>();
         model.put("name", "name111111111");
         model.put("remark", "remark remark remark remark remark remark\n remark remark remark remark remark remark\n remark remark remark remark remark remark remark remark remark remark ");
+        // <<
         
         List<Integer> details = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -43,11 +49,13 @@ public class Issue159Test {
         }
         model.put("details", details);
         
+        // issue 159 numbers 1 and 2 >>
         byte[] stampByteArray;
         try (InputStream stamp = Issue159Test.class.getResourceAsStream("stamp.png")) {
             stampByteArray = IOUtils.toByteArray(stamp);
         }
         model.put("stampImage", stampByteArray);
+        // <<
         return model;
     }
 }
