@@ -1,5 +1,7 @@
 package org.jxls.templatebasedtests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.JxlsTester;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 
@@ -20,14 +23,25 @@ public class Issue97Test {
 
     @Test
     public void test() throws Exception {
+        // Prepare
         Context context = new Context();
         context.putVar("map", getBeans());
         context.putVar("employees", generateSampleEmployeeData("ACCOUNT"));
 
+        // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.processTemplate(context);
         
-        // TODO assertions
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            assertEquals(0.161290322580645d, w.getCellValueAsDouble(19, 5), 0.000000000000001d);
+            assertEquals(0.161290322580645d, w.getCellValueAsDouble(20, 5), 0.000000000000001d);
+            assertEquals(0.161290322580645d, w.getCellValueAsDouble(21, 5), 0.000000000000001d);
+            assertEquals(0.247311827956989d, w.getCellValueAsDouble(22, 5), 0.000000000000001d);
+            assertEquals(0.268817204301075d, w.getCellValueAsDouble(23, 5), 0.000000000000001d);
+            assertEquals(0.333333333333333d, w.getCellValueAsDouble(24, 5), 0.000000000000001d);
+        }
     }
 
     private Map<String, List<Employee>> getBeans() throws ParseException {
