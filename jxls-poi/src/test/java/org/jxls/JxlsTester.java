@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jxls.common.Context;
+import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;
@@ -148,5 +149,13 @@ public class JxlsTester implements AutoCloseable {
 
     public String getTemplateFilename() {
         return excelTemplateFilename;
+    }
+    
+    public static void quickProcessXlsTemplate(Class<?> testcase) {
+        Context context = new Context();
+        context.putVar("employees", Employee.generateSampleEmployeeData());
+
+        JxlsTester tester = JxlsTester.xls(testcase);
+        tester.processTemplate(context);
     }
 }

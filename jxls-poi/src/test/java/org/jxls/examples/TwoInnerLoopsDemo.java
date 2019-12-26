@@ -25,6 +25,7 @@ public class TwoInnerLoopsDemo {
 
     @Test
     public void test() throws ParseException, IOException {
+        // TODO MW: Demo Refactoring
         logger.info("Running Two Inner Loops demo");
         List<Department> departments = Department.createDepartments();
         try (InputStream is = TwoInnerLoopsDemo.class.getResourceAsStream("two_inner_loops_demo.xls")) {
