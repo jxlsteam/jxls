@@ -29,8 +29,6 @@ import org.jxls.util.TransformerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO MW: for the files of this package (and below): rename template files, use JxlsTester if possible, merge similar testcases into 1 file
-
 /**
  * @author Leonid Vysochyn Date: 2/16/12 5:39 PM
  */
