@@ -8,6 +8,6 @@ public class IfCommandDemo {
 
     @Test
     public void test() {
-        JxlsTester.xls(getClass()).processTemplate(new Context());
+        JxlsTester.xlsx(getClass()).processTemplate(new Context());
     }
 }
