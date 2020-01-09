@@ -5,7 +5,6 @@ import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 
-// TODO remove sheet "Result" from template
 public class ParameterizedFormulasDemo {
 
     @Test
