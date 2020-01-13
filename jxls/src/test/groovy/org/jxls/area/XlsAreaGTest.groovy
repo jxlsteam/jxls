@@ -121,6 +121,7 @@ class XlsAreaGTest extends Specification{
         when:
             area.applyAt(new CellRef("sheet2", 5, 4), context)
         then:
+            1 * innerCommand.getLockRange() >> new Boolean(true)
             1 * innerCommand.applyAt(new CellRef("sheet2", 7, 5), context) >> new Size(2,5)
     }
     
@@ -185,6 +186,8 @@ class XlsAreaGTest extends Specification{
         1 * transformer.transform(new CellRef("sheet1", 3, 5), new CellRef("sheet1", 7, 9), context, false)
         1 * transformer.transform(new CellRef("sheet1", 14, 2), new CellRef("sheet1", 19, 5), context, false)
         1 * transformer.transform(new CellRef("sheet1", 14, 1), new CellRef("sheet1", 19, 4), context, false)
+        1 * innerCommand1.getLockRange() >> true
+        1 * innerCommand2.getLockRange() >> true
         _ * transformer.getCellData(_) >> cellData
         _ * cellData.setArea(area)
     }
@@ -227,6 +230,7 @@ class XlsAreaGTest extends Specification{
             cellFormula2.addTargetParentAreaRef(new AreaRef("sheet1!V22:X25"))
 
             def cellFormula3 = new CellData("sheet1", 2, 2, CellData.CellType.STRING, '$[SUM(F7)]')
+            cellFormula3.setEvaluatedFormulas(["SUM(F7)"])
             cellFormula3.addTargetPos(new CellRef("sheet1",31,35))
             cellFormula3.setArea(area)
             cellFormula3.addTargetParentAreaRef(new AreaRef("sheet1!AG32:AJ36"))
@@ -249,6 +253,7 @@ class XlsAreaGTest extends Specification{
             1 * transformer.setFormula(new CellRef("sheet1",22,23), "K10 * I20")
             1 * transformer.setFormula(new CellRef("sheet2", 11, 12), "sheet1!A1+M13")
             1 * transformer.setFormula(new CellRef("sheet1", 31, 35), "SUM(R77:R79)")
+
 //            0 * _._
     }
 
@@ -274,6 +279,8 @@ class XlsAreaGTest extends Specification{
             1 * transformer.getTargetCellRef(new CellRef("sheet1!A1")) >> [new CellRef("sheet1!A1"), new CellRef("sheet1!A3"), new CellRef("sheet1!A5")]
             1 * transformer.getTargetCellRef(new CellRef("sheet1!B2")) >> [new CellRef("sheet1!B2"), new CellRef("sheet1!B6"), new CellRef("sheet1!B10")]
             1 * transformer.getTargetCellRef(new CellRef("sheet1!C5")) >> [new CellRef("sheet1!C10")]
+            3 * transformer.getCellData(new CellRef("A1"))
+            3 * transformer.getCellData(new CellRef("C5"))
             1 * transformer.setFormula(new CellRef("sheet1!C2"), "A1,A3,A5+B2+C10")
             1 * transformer.setFormula(new CellRef("sheet1!C6"), "A1,A3,A5+B6+C10")
             1 * transformer.setFormula(new CellRef("sheet1!C10"), "A1,A3,A5+B10+C10")
@@ -403,6 +410,10 @@ class XlsAreaGTest extends Specification{
         1 * transformer.getTargetCellRef(new CellRef("Sheet 3",0,1)) >> [new CellRef("sheet1!C6")]
         1 * transformer.getTargetCellRef(new CellRef("Sheet2",0,1)) >> [new CellRef("Sheet 3!A1")]
         1 * transformer.getTargetCellRef(new CellRef('$ & test@.', 4, 0)) >> [ new CellRef('$ & test@.',4,1)]
+        2 * transformer.getCellData(new CellRef("A1"))
+        1 * transformer.getCellData(new CellRef("'Sheet 3'!B1"))
+        1 * transformer.getCellData(new CellRef("Sheet2!B1"))
+        1 * transformer.getCellData(new CellRef(''''$ & test@.'!A5'''))
         1 * transformer.setFormula(new CellRef("sheet1",5,5), '''F10+Sheet2!A1 + C6 + 'Sheet 3'!A1 * '$ & test@.'!B5''')
         0 * _._
     }
