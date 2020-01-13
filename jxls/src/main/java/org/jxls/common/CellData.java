@@ -225,6 +225,10 @@ public class CellData {
         return targetParentAreaRef;
     }
 
+    public void setEvaluatedFormulas(List<String> evaluatedFormulas) {
+        this.evaluatedFormulas = evaluatedFormulas;
+    }
+
     /**
      * @return a list of cell refs into which the current cell was transformed
      */

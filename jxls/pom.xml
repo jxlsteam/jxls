@@ -16,7 +16,6 @@
 	</properties>
 
 	<build>
-		<pluginManagement>
 			<plugins>
 				<plugin>
 					<!-- The gmavenplus plugin is used to compile Groovy code. To learn 
@@ -33,7 +32,6 @@
 					</executions>
 				</plugin>
 			</plugins>
-		</pluginManagement>
 	</build>
 
 	<dependencies>
