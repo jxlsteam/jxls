@@ -2,12 +2,16 @@ package org.jxls;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * Class that encapsulates POI for testing Excel file contents.
@@ -77,9 +81,31 @@ public class TestWorkbook implements AutoCloseable {
     public short getRowHeight(int row) {
         return sheet.getRow(row - 1).getHeight();
     }
+
+    public int getConditionalFormattingSize() {
+        int conditionalFormattingCount = 0;
+        SheetConditionalFormatting sheetConditionalFormatting = sheet.getSheetConditionalFormatting();
+        for (int i = 0; i < sheetConditionalFormatting.getNumConditionalFormattings(); i++) {
+            ConditionalFormatting conditionalFormatting = sheetConditionalFormatting.getConditionalFormattingAt(i);
+            CellRangeAddress[] ranges = conditionalFormatting.getFormattingRanges();
+            if (ranges.length > 0) {
+                conditionalFormattingCount++;
+            }
+        }
+        return conditionalFormattingCount;
+    }
     
-    public SheetConditionalFormatting getSheetConditionalFormatting() {
-        return sheet.getSheetConditionalFormatting();
+    public List<String> getConditionalFormattingRanges() {
+        List<String> ret = new ArrayList<>();
+        SheetConditionalFormatting sheetConditionalFormatting = sheet.getSheetConditionalFormatting();
+        for (int i = 0; i < sheetConditionalFormatting.getNumConditionalFormattings(); i++) {
+            ConditionalFormatting conditionalFormatting = sheetConditionalFormatting.getConditionalFormattingAt(i);
+            CellRangeAddress[] ranges = conditionalFormatting.getFormattingRanges();
+            for (CellRangeAddress c : ranges) {
+                ret.add(c.formatAsString());
+            }
+        }
+        return ret;
     }
 
     @Override
