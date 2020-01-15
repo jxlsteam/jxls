@@ -17,7 +17,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.DynaBean;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -373,18 +373,11 @@ public class Util {
      * @throws IllegalAccessException
      */
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        if (obj instanceof Map) {
+        if (obj instanceof Map) { // Map access
             return ((Map<?, ?>) obj).get(propertyName);
-        } else if (obj instanceof DynaBean) {
-            try {
-                return ((DynaBean) obj).get(propertyName);
-            } catch (IllegalArgumentException e) {
-                throw new NoSuchMethodException(e.getMessage());
-            }
+        } else { // DynaBean or Java bean access
+            return PropertyUtils.getProperty(obj, propertyName);
         }
-        String name = "get" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
-        Method method = obj.getClass().getMethod(name);
-        return method.invoke(obj);
     }
 
     /**

@@ -8,6 +8,7 @@ public class TestEmployee {
     private String job;
     private String city;
     private BigDecimal salary;
+    private TestDepartment departmentObject;
 
     public TestEmployee(String department, String name, String job, String city, double salary) {
         this.department = department;
@@ -55,5 +56,14 @@ public class TestEmployee {
 
     public void setSalary(BigDecimal salary) {
         this.salary = salary;
+    }
+    
+    public TestDepartment getDepartmentObject() {
+        return departmentObject;
+    }
+    
+    public TestEmployee withDepartmentKey(String key) {
+        departmentObject = new TestDepartment(department, key);
+        return this;
     }
 }

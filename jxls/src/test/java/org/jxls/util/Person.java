@@ -1,9 +1,12 @@
 package org.jxls.util;
 
+import org.jxls.expression.Dummy;
+
 public class Person {
     private String name;
     private int age;
     private String city;
+    private Dummy dummy;
 
     public Person(String name, int age, String city) {
         this.name = name;
@@ -33,5 +36,13 @@ public class Person {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Dummy getDummy() {
+        return dummy;
+    }
+
+    public void setDummy(Dummy dummy) {
+        this.dummy = dummy;
     }
 }
