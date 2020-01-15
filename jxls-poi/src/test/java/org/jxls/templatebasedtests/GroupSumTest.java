@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.entity.TestEmployee;
+import org.jxls.entity.Employee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
@@ -42,11 +42,9 @@ public class GroupSumTest {
 
     private Map<String, Object> createEmployee(String department, String name, String job, String city, double salary) {
         Map<String, Object> map = new HashMap<>();
-        map.put("department", department);
+        map.put("buGroup", department);
         map.put("name", name);
-        map.put("job", job);
-        map.put("city", city);
-        map.put("salary", Double.valueOf(salary));
+        map.put("payment", Double.valueOf(salary));
         return map;
     }
 
@@ -55,15 +53,19 @@ public class GroupSumTest {
      */
     @Test
     public void testWithBeansAndBigDecimal() {
-        List<TestEmployee> beans = new ArrayList<>();
-        beans.add(new TestEmployee("03 Finance department", "Christiane", "Operator", "Hartefeld", 40000));
-        beans.add(new TestEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
-        beans.add(new TestEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
-        beans.add(new TestEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
+        List<Employee> beans = new ArrayList<>();
+        beans.add(newEmployee("03 Finance department", "Christiane", "Operator", "Hartefeld", 40000));
+        beans.add(newEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
+        beans.add(newEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
+        beans.add(newEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
         Context context = new Context();
         context.putVar("details", beans);
         context.putVar("G", new GroupSum<BigDecimal>(context, new BigDecimalSummarizerBuilder()));
         check(context);
+    }
+    
+    private Employee newEmployee(String department, String name, String job, String city, double salary) {
+        return new Employee(name, null, salary, 0, department);
     }
     
     private void check(Context context) {

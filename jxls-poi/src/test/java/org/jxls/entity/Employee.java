@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-// deprecated  - TODO MW: merge Employee and TestEmployee
 public class Employee {
     private static final Random random = new Random(System.currentTimeMillis());
     private static long current = System.currentTimeMillis();

@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.entity.TestEmployee;
+import org.jxls.entity.Employee;
 
 /**
  * Issue 182: This test class checks whether grouping works with DynaBeans.
@@ -95,11 +95,11 @@ public class DynaBeanTest {
         }
     }
 
-    private List<TestEmployee> generateStaticSampleEmployeeData() throws Exception {
-        List<TestEmployee> employees = new ArrayList<>();
-        employees.add(new TestEmployee("", "Elsa", "", "", 0));
-        employees.add(new TestEmployee("", "Oleg", "", "", 0));
-        employees.add(new TestEmployee("", "John", "", "", 0));
+    private List<Employee> generateStaticSampleEmployeeData() throws Exception {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee("Elsa", null, 0, 0));
+        employees.add(new Employee("Oleg", null, 0, 0));
+        employees.add(new Employee("John", null, 0, 0));
         return employees;
     }
 }
