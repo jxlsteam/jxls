@@ -20,13 +20,8 @@ public class Issue133Test {
     @Test
     public void groupingWithNestedGroupKey() throws Exception {
         // Prepare
-        List<TestEmployee> employees = new ArrayList<>();
-        employees.add(new TestEmployee("Mayor", "Sven", "", "", 0).withDepartmentKey("01"));
-        employees.add(new TestEmployee("Finance", "Thomas", "", "", 0).withDepartmentKey("03"));
-        employees.add(new TestEmployee("Mayor", "Herbert", "", "", 0).withDepartmentKey("01"));
-        employees.add(new TestEmployee("Audit office", "Markus", "", "", 0).withDepartmentKey("03-1"));
         Context context = new Context();
-        context.putVar("employees", employees);
+        context.putVar("employees", createEmployees());
         
         // Test
 /*TODO  JxlsTester tester = JxlsTester.xlsx(getClass());
@@ -47,5 +42,15 @@ public class Issue133Test {
             assertEquals("Finance", w.getCellValueAsString(3, 1)); 
             assertEquals("Audit office", w.getCellValueAsString(4, 1)); 
         }
+    }
+
+    // also used by OrderByTest
+    public static List<TestEmployee> createEmployees() {
+        List<TestEmployee> employees = new ArrayList<>();
+        employees.add(new TestEmployee("Mayor", "Sven", "", "", 0).withDepartmentKey("01"));
+        employees.add(new TestEmployee("Finance", "Thomas", "", "", 0).withDepartmentKey("03"));
+        employees.add(new TestEmployee("Mayor", "Herbert", "", "", 0).withDepartmentKey("01"));
+        employees.add(new TestEmployee("Audit office", "Markus", "", "", 0).withDepartmentKey("03-1"));
+        return employees;
     }
 }

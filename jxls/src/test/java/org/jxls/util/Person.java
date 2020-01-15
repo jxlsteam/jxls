@@ -45,4 +45,8 @@ public class Person {
     public void setDummy(Dummy dummy) {
         this.dummy = dummy;
     }
+    
+    public String getNameAndCity() {
+        return name + "/" + city;
+    }
 }

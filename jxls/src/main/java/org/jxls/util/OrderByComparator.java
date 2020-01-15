@@ -15,7 +15,7 @@ import org.jxls.common.JxlsException;
  * last if ascending, and first if descending.</p>
  */
 public class OrderByComparator<T> implements Comparator<T> {
-    private UtilWrapper util;
+    private final UtilWrapper util;
 
     /**
      * Sort ascending (default).
@@ -64,7 +64,7 @@ public class OrderByComparator<T> implements Comparator<T> {
         myProperties = new ArrayList<>(mySize);
         myOrderings = new ArrayList<>(mySize);
         for (String expr : expressions) {
-            String[] parts = expr.split("\\s+");
+            String[] parts = expr.trim().split("\\s+");
             String property;
             int ordering;
             if (parts.length > 0 && parts.length < 5) {
@@ -75,16 +75,13 @@ public class OrderByComparator<T> implements Comparator<T> {
                     // ordering is next.
                     if (ASC.equalsIgnoreCase(parts[1])) {
                         ordering = ORDER_ASC;
-                    }
-                    else if (DESC.equalsIgnoreCase(parts[1])) {
+                    } else if (DESC.equalsIgnoreCase(parts[1])) {
                         ordering = ORDER_DESC;
-                    }
-                    else {
+                    } else {
                         throw new JxlsException("Expected \"" + ASC + "\" or \"" + DESC + ": " + expr);
                     }
                 }
-            }
-            else {
+            } else {
                 throw new JxlsException("Expected \"property\" [" + ASC + "|" + DESC + "] : " + expr);
             }
 
@@ -93,23 +90,6 @@ public class OrderByComparator<T> implements Comparator<T> {
         }
     }
 
-    /**
-     * <p>Compares the given objects to determine order.  Fulfills the
-     * <code>Comparator</code> contract by returning a negative integer, 0, or a
-     * positive integer if <code>o1</code> is less than, equal to, or greater
-     * than <code>o2</code>.</p>
-     * <p>This compare method respects all properties, their order sequences,
-     * and their null order sequences.</p>
-     *
-     * @param o1 The left-hand-side object to compare.
-     * @param o2 The right-hand-side object to compare.
-     * @return A negative integer, 0, or a positive integer if <code>o1</code>
-     *    is less than, equal to, or greater than <code>o2</code>.
-     * @throws UnsupportedOperationException If any property specified in the
-     *    constructor doesn't correspond to a no-argument "get&lt;Property&gt;"
-     *    getter method in <code>T</code>, or if the property's type is not
-     *    <code>Comparable</code>.
-     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public int compare(T o1, T o2) throws UnsupportedOperationException {
@@ -122,71 +102,22 @@ public class OrderByComparator<T> implements Comparator<T> {
             try {
                 value1 = (Comparable) util.getObjectProperty(o1, property);
                 value2 = (Comparable) util.getObjectProperty(o2, property);
+            } catch (ClassCastException e) {
+                throw new JxlsException("Property \"" + property + "\" must implement Comparable.");
+            } catch (Exception e) {
+                throw new JxlsException("Error accessing property \"" + property + "\".", e);
             }
-            catch (Exception e) {
-                throw new JxlsException("No matching method found for \"" + property + "\".", e);
-            }
-            try {
-                if (value1 == null) {
-                    if (value2 == null)
-                        comp = 0;
-                }
-                else {
-                    comp = ordering * value1.compareTo(value2);
-                }
+            if (value1 != null && value2 != null) {
+                comp = value1.compareTo(value2) * ordering;
                 if (comp != 0) {
                     return comp;
-                }
-            }
-            catch (ClassCastException e) {
-                throw new UnsupportedOperationException("Property \"" + property + "\" needs to be Comparable.");
+                } // else: continue with next sort attribute
+            } else if (value1 == null && value2 != null) {
+                return 1 * ordering;
+            } else if (value1 != null && value2 == null) {
+                return -1 * ordering;
             }
         }
         return 0;
-    }
-
-    /**
-     * Indicates whether the given <code>OrderByComparator</code> is equal to
-     * this <code>OrderByComparator</code>.  All property names must match in
-     * order, and all of the order sequences and null order sequences must
-     * match.
-     *
-     * @param obj The other <code>OrderByComparator</code>.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof OrderByComparator) {
-            OrderByComparator otherComp = (OrderByComparator) obj;
-            if (mySize != otherComp.mySize) {
-                return false;
-            }
-            for (int i = 0; i < mySize; i++) {
-                if (!myProperties.get(i).equals(otherComp.myProperties.get(i)))
-                    return false;
-                if (myOrderings.get(i) != otherComp.myOrderings.get(i)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns a <code>List</code> of all properties.
-     * @return A <code>List</code> of all properties.
-     */
-    public List<String> getProperties() {
-        return myProperties;
-    }
-
-    /**
-     * Returns a <code>List</code> of orderings.
-     * @return A <code>List</code> of orderings.
-     * @see #ORDER_ASC
-     * @see #ORDER_DESC
-     */
-    public List<Integer> getOrderings() {
-        return myOrderings;
     }
 }
