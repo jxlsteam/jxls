@@ -1,5 +1,6 @@
 package org.jxls.command;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
+import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ public class EachCommand extends AbstractCommand {
     private String groupBy;
     private String groupOrder;
     private String varIndex;
+    private String orderBy;
 
     public EachCommand() {
     }
@@ -237,6 +240,13 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
+     * @param orderBy property name for ordering the collection
+     */
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    /**
      * @return group order
      */
     public String getGroupOrder() {
@@ -262,11 +272,20 @@ public class EachCommand extends AbstractCommand {
         return super.addArea(area);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         Iterable<?> itemsCollection = null;
         try {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+            if (itemsCollection instanceof List) {
+                OrderByComparator<Object> comp = null;
+                if (orderBy != null && !orderBy.isEmpty()) {
+                    List<String> orderByProps = Arrays.asList(orderBy.split(","));
+                    comp = new OrderByComparator<>(orderByProps, util);
+                    Collections.sort((List<Object>) itemsCollection, comp);
+                }
+            }
         } catch (Exception e) {
             logger.warn("Failed to evaluate collection expression {}", items, e);
             itemsCollection = Collections.emptyList();
