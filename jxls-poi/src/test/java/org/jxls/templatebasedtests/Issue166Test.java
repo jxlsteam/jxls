@@ -7,25 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.TestWorkbook;
-import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
-import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.formula.StandardFormulaProcessor;
-import org.jxls.transform.Transformer;
 
 /**
  * Wrong average on 2nd sheet
  */
 public class Issue166Test {
 
-    @Ignore // TODO #186
     @Test
     public void test() {
     	// Prepare: define result set
@@ -37,28 +28,10 @@ public class Issue166Test {
         }
         final Context context = new Context();
         context.putVar("rs0", rs);
-        
-        TransformerChecker myProcessing = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                transformer.setEvaluateFormulas(false);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-                areaBuilder.setTransformer(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
-                for (Area xlsArea : xlsAreaList) {
-                    xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
-                    // Make sure the StandardFormulaProcessor is used. This will make sure formula
-                    // references on multi-sheet workbooks are correct.
-                    xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
-                    xlsArea.processFormulas();
-                }
-                return transformer;
-            }
-        };
 
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.createTransformerAndProcessTemplate(context, myProcessing);
+        tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
