@@ -20,6 +20,8 @@ public class JxlsTester implements AutoCloseable {
     private final String excelTemplateFilename;
     private final File out;
     private boolean useFastFormulaProcessor = false;
+    /** evaluating formulas turned on by default because in testcases we want to verify the output files */
+    private boolean evaluateFormulas = true;
 
     /**
      * Use this constructor if you really need to change the Excel template filename (reasons can be: different templates in one testclass;
@@ -69,24 +71,13 @@ public class JxlsTester implements AutoCloseable {
      * @param context context for processing template
      */
     public void processTemplate(Context context) {
-        processTemplate(context, null);
-    }
-
-    /** Evaluate Formulas! */
-    public void processTemplateEF(Context context) {
-        processTemplate(context, Boolean.TRUE);
-    }
-
-    private void processTemplate(Context context, Boolean evaluateFormulas) {
         try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
             try (OutputStream os = new FileOutputStream(out)) {
                 JxlsHelper jxls = JxlsHelper.getInstance();
                 if (useFastFormulaProcessor) {
                     jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
                 }
-                if (evaluateFormulas != null) {
-                    jxls.setEvaluateFormulas(Boolean.TRUE.equals(evaluateFormulas));
-                }
+                jxls.setEvaluateFormulas(evaluateFormulas);
                 jxls.processTemplate(is, os, context);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
@@ -104,10 +95,12 @@ public class JxlsTester implements AutoCloseable {
             try (OutputStream os = new FileOutputStream(out)) {
                 Transformer transformer = PoiTransformer.createTransformer(is, os);
                 transformer = transformerChecker.checkTransformer(transformer);
+                JxlsHelper jxls = JxlsHelper.getInstance();
                 if (useFastFormulaProcessor) {
-                    JxlsHelper.getInstance().setUseFastFormulaProcessor(useFastFormulaProcessor);
+                    jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
                 }
-                JxlsHelper.getInstance().processTemplate(context, transformer);
+                jxls.setEvaluateFormulas(evaluateFormulas);
+                jxls.processTemplate(context, transformer);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
             throw new RuntimeException(e);
@@ -150,6 +143,11 @@ public class JxlsTester implements AutoCloseable {
      */
     public static InputStream openInputStream(Class<?> testclass, boolean xlsx) throws IOException {
         return testclass.getResourceAsStream(testclass.getSimpleName() + (xlsx ? ".xlsx" : ".xls"));
+    }
+
+    public JxlsTester dontEvaluateFormulas() {
+        evaluateFormulas = false;
+        return this;
     }
 
     public boolean isUseFastFormulaProcessor() {

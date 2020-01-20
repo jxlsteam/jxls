@@ -18,7 +18,7 @@ public class Issue188Test {
     public void testCrossSheetFormulas() throws IOException {
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplateEF(new Context());
+        tester.processTemplate(new Context());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

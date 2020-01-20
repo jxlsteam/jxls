@@ -25,7 +25,7 @@ public class Issue127Test {
 
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

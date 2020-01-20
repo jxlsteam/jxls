@@ -23,7 +23,7 @@ public class Issue109Test {
 
         // Test
         JxlsTester tester = JxlsTester.xls(getClass());
-        tester.processTemplate(context);
+        tester.dontEvaluateFormulas().processTemplate(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

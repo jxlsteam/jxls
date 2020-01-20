@@ -23,7 +23,7 @@ public class Issue116Test {
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "externalFormulas");
         tester.setUseFastFormulaProcessor(true);
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -57,7 +57,7 @@ public class Issue116Test {
 
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "forEachFormulas");
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

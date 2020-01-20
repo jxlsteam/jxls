@@ -35,7 +35,7 @@ public class NestedSumsTest {
         
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums");
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -72,7 +72,7 @@ public class NestedSumsTest {
         
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf");
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -106,7 +106,7 @@ public class NestedSumsTest {
 
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf2");
-        tester.processTemplateEF(context);
+        tester.processTemplate(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
