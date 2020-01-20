@@ -16,7 +16,8 @@ public class Department {
     private String link;
     private byte[] image;
     private List<Employee> staff2 = new ArrayList<>();
-
+    private String key;
+    
     public Department() {
     }
 
@@ -80,6 +81,14 @@ public class Department {
 
     public void setStaff2(List<Employee> staff2) {
         this.staff2 = staff2;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     @Override

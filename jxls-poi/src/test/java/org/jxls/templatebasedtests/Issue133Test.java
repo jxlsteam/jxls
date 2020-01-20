@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
-import org.jxls.command.TestEmployee;
 import org.jxls.common.Context;
+import org.jxls.entity.Employee;
 
 /**
  * Group by nested property
@@ -36,12 +36,18 @@ public class Issue133Test {
     }
 
     // also used by OrderByTest
-    public static List<TestEmployee> createEmployees() {
-        List<TestEmployee> employees = new ArrayList<>();
-        employees.add(new TestEmployee("Mayor", "Sven", "", "", 0).withDepartmentKey("01"));
-        employees.add(new TestEmployee("Finance", "Thomas", "", "", 0).withDepartmentKey("03"));
-        employees.add(new TestEmployee("Mayor", "Herbert", "", "", 0).withDepartmentKey("01"));
-        employees.add(new TestEmployee("Audit office", "Markus", "", "", 0).withDepartmentKey("03-1"));
+    public static List<Employee> createEmployees() {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(createEmployee("Mayor", "Sven").withDepartmentKey("01"));
+        employees.add(createEmployee("Finance", "Thomas").withDepartmentKey("03"));
+        employees.add(createEmployee("Mayor", "Herbert").withDepartmentKey("01"));
+        employees.add(createEmployee("Audit office", "Markus").withDepartmentKey("03-1"));
         return employees;
+    }
+    
+    private static Employee createEmployee(String department, String name) {
+        Employee employee = new Employee(name, null, 0, 0);
+        employee.setBuGroup(department);
+        return employee;
     }
 }

@@ -18,6 +18,7 @@ public class Employee {
     private BigDecimal bonus;
     private String buGroup;
     private int age;
+    private Department departmentObject;
 
     public Employee(String name, Date birthDate, BigDecimal payment, BigDecimal bonus) {
         this.name = name;
@@ -74,7 +75,6 @@ public class Employee {
         this.bonus = bonus;
     }
 
-
     public String getBuGroup() {
         return buGroup;
     }
@@ -121,5 +121,15 @@ public class Employee {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Department getDepartmentObject() {
+        return departmentObject;
+    }
+    
+    public Employee withDepartmentKey(String key) {
+        departmentObject = new Department();
+        departmentObject.setKey(key);
+        return this;
     }
 }
