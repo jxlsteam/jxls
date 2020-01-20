@@ -1,7 +1,6 @@
 package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +9,10 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
-import org.jxls.transform.Transformer;
 
 /**
  * Simplified real world testcase for nested sums
@@ -35,17 +32,10 @@ public class NestedSumsTest {
         List<Map<String, Object>> testData = getTestData();
         testData.get(2).put("class2", "Liegenschaften");
         context.putVar("list", testData);
-        TransformerChecker transformerChecker = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                assertTrue(transformer.isEvaluateFormulas());
-                return transformer;
-            }
-        };
         
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums");
-        tester.createTransformerAndProcessTemplate(context, transformerChecker);
+        tester.processTemplateEF(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -82,7 +72,7 @@ public class NestedSumsTest {
         
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf");
-        tester.processTemplate(context);
+        tester.processTemplateEF(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -116,7 +106,7 @@ public class NestedSumsTest {
 
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf2");
-        tester.processTemplate(context);
+        tester.processTemplateEF(context);
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

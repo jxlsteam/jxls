@@ -1,5 +1,6 @@
 package org.jxls.command;
 
+@Deprecated
 public class TestDepartment {
     private final String name;
     private final String key;

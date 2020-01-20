@@ -1,13 +1,17 @@
 package org.jxls.templatebasedtests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -21,6 +25,7 @@ import org.jxls.transform.Transformer;
  */
 public class Issue166Test {
 
+    @Ignore // TODO #186
     @Test
     public void test() {
     	// Prepare: define result set
@@ -56,10 +61,17 @@ public class Issue166Test {
         tester.createTransformerAndProcessTemplate(context, myProcessing);
         
         // Verify
-        /*try (TestWorkbook w = tester.getWorkbook()) {
-            w.selectSheet("Tab2");
-            assertEquals(2d, w.getCellValueAsDouble(7, 2), 0.001d); // fails, but opened file looks good.
-            // Looks like this testcase is not automatically verifyable. Issue 166, this testcase and the evaluateFormulas feature is a problem.
-        }*/
+        try (TestWorkbook w = tester.getWorkbook()) {
+            verifyTab(w, "Tab1");
+            verifyTab(w, "Tab2");
+        }
+    }
+
+    private void verifyTab(TestWorkbook w, String tabName) {
+        w.selectSheet(tabName);
+        assertEquals(1, w.getCellValueAsDouble(3, 1), 1e-3);
+        assertEquals(4, w.getCellValueAsDouble(6, 1), 1e-3);
+        assertEquals("AVERAGEA(A2:A6)", w.getFormulaString(7, 2));
+        assertEquals("SUM(A2:A6)", w.getFormulaString(8, 2));
     }
 }

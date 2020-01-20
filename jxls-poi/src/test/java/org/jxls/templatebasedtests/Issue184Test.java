@@ -33,7 +33,7 @@ public class Issue184Test {
         
         // Test
         JxlsTester tester = JxlsTester.xls(getClass());
-        tester.processTemplate(context);
+        tester.processTemplateEF(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -43,6 +43,7 @@ public class Issue184Test {
             assertEquals(6d, w.getCellValueAsDouble(5, 5), 0.01d);
             assertEquals(6d, w.getCellValueAsDouble(5, 1), 0.01d);
             assertEquals(6d, w.getCellValueAsDouble(5, 2), 0.01d);
-        }
+            assertEquals("SUM(C2:C4)", w.getFormulaString(5, 3));
+       }
     }
 }

@@ -69,18 +69,31 @@ public class JxlsTester implements AutoCloseable {
      * @param context context for processing template
      */
     public void processTemplate(Context context) {
+        processTemplate(context, null);
+    }
+
+    /** Evaluate Formulas! */
+    public void processTemplateEF(Context context) {
+        processTemplate(context, Boolean.TRUE);
+    }
+
+    private void processTemplate(Context context, Boolean evaluateFormulas) {
         try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
             try (OutputStream os = new FileOutputStream(out)) {
+                JxlsHelper jxls = JxlsHelper.getInstance();
                 if (useFastFormulaProcessor) {
-                    JxlsHelper.getInstance().setUseFastFormulaProcessor(useFastFormulaProcessor);
+                    jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
                 }
-                JxlsHelper.getInstance().processTemplate(is, os, context);
+                if (evaluateFormulas != null) {
+                    jxls.setEvaluateFormulas(Boolean.TRUE.equals(evaluateFormulas));
+                }
+                jxls.processTemplate(is, os, context);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Call this method if you need to access the transformer instance.
      * @param context context for processing template

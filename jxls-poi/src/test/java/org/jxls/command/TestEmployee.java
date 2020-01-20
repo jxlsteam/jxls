@@ -2,6 +2,7 @@ package org.jxls.command;
 
 import java.math.BigDecimal;
 
+@Deprecated // Use Employee !!
 public class TestEmployee {
     private String department;
     private String name;

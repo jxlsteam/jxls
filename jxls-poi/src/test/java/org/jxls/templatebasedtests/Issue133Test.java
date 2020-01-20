@@ -1,16 +1,15 @@
-package org.jxls.command;
+package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.JxlsTester;
+import org.jxls.TestWorkbook;
+import org.jxls.command.TestEmployee;
 import org.jxls.common.Context;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Group by nested property
@@ -24,19 +23,11 @@ public class Issue133Test {
         context.putVar("employees", createEmployees());
         
         // Test
-/*TODO  JxlsTester tester = JxlsTester.xlsx(getClass());
+        JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.processTemplate(context);
-*/
-        File outputFile = new File("target/Issue133Test_output.xlsx");
-        try (InputStream in = getClass().getResourceAsStream("Issue133Test.xlsx")) {
-            try (FileOutputStream out = new FileOutputStream(outputFile)) {
-                JxlsHelper.getInstance().processTemplate(in, out, context);
-            }
-        }
         
         // Verify
-//TODO  try (TestWorkbook w = tester.getWorkbook()) {
-        try (TestWorkbook w = new TestWorkbook(outputFile)) {
+        try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("GroupByNestedProperty");
             assertEquals("Mayor", w.getCellValueAsString(2, 1)); 
             assertEquals("Finance", w.getCellValueAsString(3, 1)); 
