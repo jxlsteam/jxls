@@ -37,7 +37,6 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
                 // we set the target cell to be the same as the source cell
                 if (targetCellDataList.isEmpty() &&
                         area != null &&
-                        area.getStartCellRef().getSheetName().equals(pos.getSheetName()) &&
                         !area.getAreaRef().contains(pos)) {
                     targetCellDataList.add(pos);
                 }

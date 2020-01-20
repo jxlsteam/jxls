@@ -1,5 +1,6 @@
 package org.jxls.command;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
+import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +26,10 @@ import org.slf4j.LoggerFactory;
  * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
  * <li>'select' holds an expression for filtering collection.</li>
  * <li>'multisheet' is the name of the sheet names container.</li>
+ * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order.</li>
  * <li>'groupBy' is the name for grouping.</li>
  * <li>'groupOrder' defines the grouping order. Case does not matter.
- *     "asc" for ascending, "desc" for descending sort order. Other values or null: no sorting.</li>
+ *     "ASC" for ascending, "DESC" for descending sort order. Other values or null: no sorting.</li>
  * </ul>
  *
  * @author Leonid Vysochyn
@@ -48,6 +51,7 @@ public class EachCommand extends AbstractCommand {
     private String groupBy;
     private String groupOrder;
     private String varIndex;
+    private String orderBy;
 
     public EachCommand() {
     }
@@ -237,6 +241,13 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
+     * @param orderBy property name for ordering the collection
+     */
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    /**
      * @return group order
      */
     public String getGroupOrder() {
@@ -244,7 +255,7 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param groupOrder group ordering: asc = ascending, desc = descending, other value or null: no sorting. Case does not matter.
+     * @param groupOrder group ordering: "ASC" for ascending, "DESC" for descending, other value or null: no sorting. Case does not matter.
      */
     public void setGroupOrder(String groupOrder) {
         this.groupOrder = groupOrder;
@@ -267,6 +278,7 @@ public class EachCommand extends AbstractCommand {
         Iterable<?> itemsCollection = null;
         try {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+            orderCollection(itemsCollection);
         } catch (Exception e) {
             logger.warn("Failed to evaluate collection expression {}", items, e);
             itemsCollection = Collections.emptyList();
@@ -283,6 +295,15 @@ public class EachCommand extends AbstractCommand {
             getTransformer().adjustTableSize(cellRef, size);
         }
         return size;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void orderCollection(Iterable<?> itemsCollection) {
+        if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
+            List<String> orderByProps = Arrays.asList(orderBy.split(","));
+            OrderByComparator<Object> comp = new OrderByComparator<>(orderByProps, util);
+            Collections.sort((List<Object>) itemsCollection, comp);
+        }
     }
 
     private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
