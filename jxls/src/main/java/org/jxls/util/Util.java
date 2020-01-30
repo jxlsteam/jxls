@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -556,8 +557,10 @@ public class Util {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if (collectionObject == null) {
             throw new JxlsException("Expression " + collectionName + " is null");
+        } else if (collectionObject instanceof Object[]) {
+            collectionObject = Arrays.asList((Object[])/*cast is important*/ collectionObject);
         } else if (!(collectionObject instanceof Iterable)) {
-            throw new JxlsException(collectionName + " expression is not a collection");
+            throw new JxlsException(collectionName + " expression is not a collection or an array");
         }
         List<Object> ret = new ArrayList<>();
         for (Object i : (Iterable) collectionObject) {
