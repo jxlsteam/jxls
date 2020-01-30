@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xml.XmlAreaBuilder;
-import org.jxls.command.TestWorkbook;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
