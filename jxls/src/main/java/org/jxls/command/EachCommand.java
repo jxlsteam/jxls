@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>Implements iteration over collection of items</p><ul>
- * <li>'items' is a bean name of the collection in context</li>
+ * <p>Implements iteration over collection or array of items</p><ul>
+ * <li>'items' is a bean name of the collection or array in context</li>
  * <li>'var' is a name of a collection item to put into the context during the iteration</li>
  * <li>'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.</li>
  * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
@@ -58,7 +58,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * @param var       name of the key in the context to contain each collection items during iteration
-     * @param items     name of the collection bean in the context
+     * @param items     name of collection or array in the context
      * @param direction defines processing by rows (DOWN - default) or columns (RIGHT)
      */
     public EachCommand(String var, String items, Direction direction) {
@@ -85,7 +85,7 @@ public class EachCommand extends AbstractCommand {
 
     /**
      * @param var              name of the key in the context to contain each collection items during iteration
-     * @param items            name of the collection bean in the context
+     * @param items            name of collection or array in the context
      * @param area             body area for this command
      * @param cellRefGenerator generates target cell ref for each collection item during iteration
      */
@@ -177,7 +177,7 @@ public class EachCommand extends AbstractCommand {
     /**
      * Gets collection bean name
      *
-     * @return collection bean name in the context
+     * @return collection name of collection or array in the context
      */
     public String getItems() {
         return items;
@@ -186,7 +186,7 @@ public class EachCommand extends AbstractCommand {
     /**
      * Sets collection bean name
      *
-     * @param items collection bean name in the context
+     * @param items name of collection or array in the context
      */
     public void setItems(String items) {
         this.items = items;
@@ -241,10 +241,17 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param orderBy property name for ordering the collection
+     * @param orderBy property name for ordering the list
      */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    /**
+     * @return property name for ordering the list
+     */
+    public String getOrderBy() {
+        return orderBy;
     }
 
     /**
