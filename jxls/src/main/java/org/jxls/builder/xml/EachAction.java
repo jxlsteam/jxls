@@ -1,13 +1,13 @@
 package org.jxls.builder.xml;
 
-import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import org.jxls.area.Area;
 import org.jxls.command.EachCommand;
 import org.jxls.common.AreaRef;
-import org.jxls.command.Command;
 import org.xml.sax.Attributes;
+
+import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.ActionException;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
  * Builds {@link org.jxls.command.EachCommand} from XML
@@ -19,6 +19,9 @@ public class EachAction extends Action {
     public static final String VAR_ATTR = "var";
     public static final String REF_ATTR = "ref";
     public static final String DIRECTION_ATTR = "dir";
+    public static final String GROUP_BY_ATTR = "groupBy";
+    public static final String GROUP_ORDER_ATTR = "groupOrder";
+    public static final String ORDER_BY_ATTR = "orderBy";
 
     @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
@@ -26,6 +29,9 @@ public class EachAction extends Action {
         String var = attributes.getValue(VAR_ATTR);
         String ref = attributes.getValue(REF_ATTR);
         String dir = attributes.getValue(DIRECTION_ATTR);
+        String groupBy = attributes.getValue(GROUP_BY_ATTR); // optional
+        String groupOrder = attributes.getValue(GROUP_ORDER_ATTR); // optional
+        String orderBy = attributes.getValue(ORDER_BY_ATTR); // optional
         EachCommand.Direction direction;
         if (items == null || items.length() == 0) {
             String errMsg = "'items' attribute of 'each' tag is empty";
@@ -47,7 +53,10 @@ public class EachAction extends Action {
                 throw new IllegalArgumentException(errMsg);
             }
         }
-        Command command = new EachCommand(var, items, direction);
+        EachCommand command = new EachCommand(var, items, direction);
+        command.setGroupBy(groupBy);
+        command.setGroupOrder(groupOrder);
+        command.setOrderBy(orderBy);
         Object object = ic.peekObject();
         if (object instanceof Area) {
             Area area = (Area) object;

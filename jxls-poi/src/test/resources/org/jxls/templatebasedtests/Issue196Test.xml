@@ -1,0 +1,11 @@
+<xls>
+    <area ref="Template!A1:D4">
+        <each items="clockinouts" groupBy="employeeName" groupOrder="asc" ref="Template!A1:D3">
+            <area ref="Template!A1:D3">
+                <each items="_group.items" var="clockinout" ref="Template!A2:D2">
+                    <area ref="Template!A2:D2"/>
+                </each>
+            </area>
+        </each>
+    </area>
+</xls>
