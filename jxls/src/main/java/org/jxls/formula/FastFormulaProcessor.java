@@ -21,6 +21,7 @@ import org.jxls.util.Util;
 public class FastFormulaProcessor extends AbstractFormulaProcessor {
 
     // TODO method too long
+    // TODO partially similar code to StandardFormulaProcessor
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
@@ -35,7 +36,7 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
-                if (formulaCellData.isParameterizedFormulaCell()){
+                if (formulaCellData.isParameterizedFormulaCell()) {
                     targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
                 }
                 boolean isFormulaCellRefsEmpty = true;
@@ -104,14 +105,16 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 // if there were no regular or jointed cell references found for this formula use a default value
                 // if set or 0
-                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty && !formulaCellData.isParameterizedFormulaCell()) {
+                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty
+                        && (!formulaCellData.isParameterizedFormulaCell() || formulaCellData.isJointedFormulaCell())) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
-                CellRef ref = new CellRef(
-                        targetFormulaCellRef.getSheetName(),
-                        targetFormulaCellRef.getRow(),
-                        targetFormulaCellRef.getCol());
-                transformer.setFormula(ref, targetFormulaString);
+                transformer.setFormula(
+                        new CellRef(
+                                targetFormulaCellRef.getSheetName(),
+                                targetFormulaCellRef.getRow(),
+                                targetFormulaCellRef.getCol()),
+                        targetFormulaString);
             }
         }
     }

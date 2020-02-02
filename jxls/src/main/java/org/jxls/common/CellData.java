@@ -12,6 +12,7 @@ import org.jxls.area.XlsArea;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
+import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,8 +210,12 @@ public class CellData {
         return formula != null;
     }
 
-    public boolean isParameterizedFormulaCell(){
+    public boolean isParameterizedFormulaCell() {
         return isFormulaCell() && isUserFormula(cellValue.toString());
+    }
+
+    public boolean isJointedFormulaCell() {
+        return isParameterizedFormulaCell() && Util.formulaContainsJointedCellRef(cellValue.toString());
     }
 
     public boolean addTargetPos(CellRef cellRef) {
@@ -246,7 +251,7 @@ public class CellData {
         if (cellType == CellType.STRING && cellValue != null) {
             String strValue = cellValue.toString();
             if (isUserFormula(strValue)) {
-                String formulaStr = strValue.substring(2, strValue.length() - 1);
+                String formulaStr = strValue.substring(USER_FORMULA_PREFIX.length(), strValue.length() - USER_FORMULA_SUFFIX.length());
                 evaluate(formulaStr, context);
                 if (evaluationResult != null) {
                     targetCellType = CellType.FORMULA;
@@ -264,7 +269,7 @@ public class CellData {
     }
 
     private static boolean isUserFormula(String str) {
-        return str.startsWith(CellData.USER_FORMULA_PREFIX) && str.endsWith(CellData.USER_FORMULA_SUFFIX);
+        return str.startsWith(USER_FORMULA_PREFIX) && str.endsWith(USER_FORMULA_SUFFIX);
     }
     
     private void evaluate(String strValue, Context context) {

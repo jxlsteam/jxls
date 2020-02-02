@@ -31,6 +31,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
     // TODO method too long
+    // TODO partially similar code to FastFormulaProcessor
     /**
      * The method transforms all the formula cells according to the command
      * transformations happened during the area processing
@@ -52,7 +53,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
-                if (formulaCellData.isParameterizedFormulaCell()){
+                if (formulaCellData.isParameterizedFormulaCell()) {
                     targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
                 }
                 if (formulaCellData.getArea() == null) {
@@ -83,7 +84,8 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
                     } else {
-                        String from = Util.regexJointedLookBehind + Util.sheetNameRegex(cellRefEntry)
+                        String from = Util.regexJointedLookBehind
+                                + Util.sheetNameRegex(cellRefEntry)
                                 + Util.regexExcludePrefixSymbols
                                 + Pattern.quote(cellRefEntry.getKey().getCellName());
                         String to = Matcher.quoteReplacement(replacementString);
@@ -111,7 +113,8 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                 targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
                 // if there were no regular or jointed cell references found for this formula use a default value
                 // if set or 0
-                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty && !formulaCellData.isParameterizedFormulaCell()) {
+                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty
+                        && (!formulaCellData.isParameterizedFormulaCell() || formulaCellData.isJointedFormulaCell())) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
                 if (!targetFormulaString.isEmpty()) {
@@ -126,8 +129,8 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
         }
     }
 
-    private List<CellRef> findFormulaCellRefReplacements(Transformer transformer, CellRef targetFormulaCellRef, AreaRef formulaSourceAreaRef, AreaRef formulaTargetAreaRef,
-            Map.Entry<CellRef, List<CellRef>> cellReferenceEntry) {
+    private List<CellRef> findFormulaCellRefReplacements(Transformer transformer, CellRef targetFormulaCellRef, AreaRef formulaSourceAreaRef,
+            AreaRef formulaTargetAreaRef, Map.Entry<CellRef, List<CellRef>> cellReferenceEntry) {
         CellRef cellReference = cellReferenceEntry.getKey();
         List<CellRef> cellReferenceTargets = cellReferenceEntry.getValue();
         if (cellReference != null && !formulaSourceAreaRef.contains(cellReference)) {
