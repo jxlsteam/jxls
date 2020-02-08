@@ -556,14 +556,14 @@ public class Util {
     public static Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
         if (collectionObject == null) {
-            throw new JxlsException("Expression " + collectionName + " is null");
+            return Collections.emptyList();
         } else if (collectionObject instanceof Object[]) {
             collectionObject = Arrays.asList((Object[])/*cast is important*/ collectionObject);
         } else if (!(collectionObject instanceof Iterable)) {
             throw new JxlsException(collectionName + " expression is not a collection or an array");
         }
         List<Object> ret = new ArrayList<>();
-        for (Object i : (Iterable) collectionObject) {
+        for (Object i : (Iterable<?>) collectionObject) {
             ret.add(i);
         }
         return ret;

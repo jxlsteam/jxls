@@ -3,6 +3,7 @@ package org.jxls.util;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,9 +21,10 @@ import org.jxls.area.XlsArea;
 import org.jxls.command.EachCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
+import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.expression.Dummy;
-
+import org.jxls.expression.JexlExpressionEvaluator;
 
 public class UtilTest {
 
@@ -86,5 +88,19 @@ public class UtilTest {
         // Verify
         assertEquals("James Bond", name);
         assertEquals("007", number);
+    }
+    
+    /** Return empty collection instead of throwing exception if EachCommand.items resolves to null. */
+    @Test
+    public void issue200() {
+        // Prepare
+        JexlExpressionEvaluator anyEvaluator = new JexlExpressionEvaluator();
+        Context emptyContext = new Context();
+        
+        // Test
+        Iterable<Object> ret = Util.transformToIterableObject(anyEvaluator, "notExisting", emptyContext);
+        
+        // Verify
+        assertFalse("Collection must be empty", ret.iterator().hasNext());
     }
 }

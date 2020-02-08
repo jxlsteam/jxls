@@ -13,6 +13,7 @@ import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
+import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 import org.jxls.util.UtilWrapper;
@@ -64,6 +65,7 @@ public class EachCommandJTest {
         eachCommand.setUtil(new UtilWrapper());
         when(area.getTransformer()).thenReturn(transformer);
         when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
+        when(transformer.getTransformationConfig().getExpressionEvaluator()).thenReturn(new JexlExpressionEvaluator());
         // when
         Size size = eachCommand.applyAt(cellRef, context);
         // then
