@@ -1,70 +1,79 @@
 package org.jxls.templatebasedtests;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
-import org.junit.Rule;
+import org.junit.Assert;
 import org.junit.Test;
-import org.jxls.EnglishTestRule;
-import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
-import org.jxls.transform.Transformer;
-import org.jxls.transformer.TestPTTransformer;
+import org.jxls.entity.Employee;
+import org.jxls.util.JxlsHelper;
+import org.jxls.util.JxlsNationalLanguageSupport;
 
 public class PivotTableTest {
-    @Rule
-    public EnglishTestRule english = new EnglishTestRule();
 
     /**
      * Issue 155: Pivot table does not work with NLS
      */
     @Test
-    public void nls() {
+    public void nls() throws Exception {
         // Prepare
         final Context context = new Context();
-        context.putVar("R", getResources()); // NLS
-        context.putVar("list", getTestData());
-        TransformerChecker useMyTransformer = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                return new TestPTTransformer(transformer, context);
-            }
-        };
+        context.putVar("employees", getTestData());
+        final Properties resourceBundle = new Properties();
+        resourceBundle.put("name", "Name (EN)");
+        resourceBundle.put("salary", "Salary (EN)");
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.createTransformerAndProcessTemplate(context, useMyTransformer);
+        JxlsNationalLanguageSupport nls = new JxlsNationalLanguageSupport() {
+            @Override
+            protected String translate(String name, String fallback) {
+                return resourceBundle.getProperty(name, fallback);
+            }
+        };
+        File temp = nls.process(getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx")); // do preprocessing of template file
+        File out = new File("target/" + getClass().getSimpleName() + "_output.xlsx");
+        try (InputStream is = new FileInputStream(temp)) {
+            try (OutputStream os = new FileOutputStream(out)) {
+                JxlsHelper.getInstance().processTemplate(is, os, context);
+            }
+        }
+        temp.delete();
         
         // Verify
-        // result: broken PivotTable
-        // TODO
+        try (TestWorkbook w = new TestWorkbook(out)) {
+            w.selectSheet("Employees");
+            Assert.assertEquals("Name (EN)", w.getCellValueAsString(1, 1));
+            Assert.assertEquals("BU", w.getCellValueAsString(1, 2));
+            Assert.assertEquals("Salary (EN)", w.getCellValueAsString(1, 3));
+            Assert.assertEquals("Sven", w.getCellValueAsString(2, 1));
+            w.selectSheet("Crosstab");
+            Assert.assertTrue(w.getCellValueAsString(7, 4).contains("Salary (EN)"));
+            // It's not possible to verify the PivotTable values because it's calculated when opening in Excel.
+            // Best verification is to look at the result file using MS Excel.
+        }
     }
 
-    private Map<String, String> getResources() {
-        Map<String, String> r = new HashMap<>();
-        r.put("name", "Name (EN)");
-        r.put("city", "City (EN)");
-        return r;
-    }
-
-    private List<Map<String, String>> getTestData() {
-        List<Map<String, String>> list = new ArrayList<>();
-        add(list, "Leonid", "Danzig");
-        add(list, "Heil", "Berlin");
-        add(list, "Marcus", "Krefeld");
-        add(list, "Merkel", "Berlin");
-        add(list, "Seehofer", "Berlin");
-        add(list, "Waldemar", "Krefeld");
+    private List<Employee> getTestData() {
+        List<Employee> list = new ArrayList<>();
+        add(list, "Sven", "Mayor", 100000);
+        add(list, "Christiane", "Finance", 30000);
+        add(list, "John", "Main", 50000);
+        add(list, "Betty", "Finance", 45000);
+        add(list, "Waldemar", "Main", 60000);
         return list;
     }
-    
-    private void add(List<Map<String, String>> list, String name, String city) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", name);
-        map.put("city", city);
-        list.add(map);
+
+    private void add(List<Employee> list, String name, String department, double salary) {
+        Employee e = new Employee(name, null, salary, 0);
+        e.setBuGroup(department);
+        list.add(e);
     }
 }
