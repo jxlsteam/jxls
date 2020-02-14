@@ -53,7 +53,8 @@ public class GridCommandDemo {
         }
     }
 
-    private List<List<Object>> createGridData(List<Employee> employees) {
+    // also used by Issue90Test
+    public static List<List<Object>> createGridData(List<Employee> employees) {
         List<List<Object>> data = new ArrayList<>();
         for (Employee employee : employees) {
             data.add( convertEmployeeToList(employee));
@@ -61,7 +62,7 @@ public class GridCommandDemo {
         return data;
     }
 
-    private List<Object> convertEmployeeToList(Employee employee) {
+    private static List<Object> convertEmployeeToList(Employee employee) {
         List<Object> list = new ArrayList<>();
         list.add(employee.getName());
         list.add(employee.getBirthDate());

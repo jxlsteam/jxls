@@ -111,42 +111,71 @@ public class Util {
      * @return a range containing all the cell references if such range exists or otherwise the passed cells separated by commas
      */
     public static String createTargetCellRef(List<CellRef> targetCellDataList) {
-        String resultRef = "";
-        if (targetCellDataList == null || targetCellDataList.isEmpty()) {
-            return resultRef;
+        // testcase: UtilCreateTargetCellRefTest. Can be optimized in Java 8.
+        if (targetCellDataList == null) {
+            return "";
         }
-        List<String> cellRefs = new ArrayList<String>();
-        boolean rowRange = true;
-        boolean colRange = true;
-        Iterator<CellRef> iterator = targetCellDataList.iterator();
-        CellRef firstCellRef = iterator.next();
-        cellRefs.add(firstCellRef.getCellName());
-        String sheetName = firstCellRef.getSheetName();
-        int row = firstCellRef.getRow();
-        int col = firstCellRef.getCol();
-        while (iterator.hasNext()) {
-            CellRef cellRef = iterator.next();
-            if ((rowRange || colRange) && !cellRef.getSheetName().equals(sheetName)) {
-                rowRange = false;
-                colRange = false;
-            }
-            if (rowRange && !(cellRef.getRow() - row == 1 && cellRef.getCol() == col)) {
-                rowRange = false;
-            }
-            if (colRange && !(cellRef.getCol() - col == 1 && cellRef.getRow() == row)) {
-                colRange = false;
-            }
-            sheetName = cellRef.getSheetName();
-            row = cellRef.getRow();
-            col = cellRef.getCol();
-            cellRefs.add(cellRef.getCellName());
+        int size = targetCellDataList.size();
+        if (size == 0) {
+            return "";
+        } else if (size == 1) {
+            return targetCellDataList.get(0).getCellName();
         }
-        if ((rowRange || colRange) && cellRefs.size() > 1) {
-            resultRef = cellRefs.get(0) + ":" + cellRefs.get(cellRefs.size() - 1);
-        } else {
-            resultRef = joinStrings(cellRefs, ",");
+        
+        // falsify if same sheet
+        for (int i = 0; i < size - 1; i++) {
+            if (!targetCellDataList.get(i).getSheetName().equals(targetCellDataList.get(i + 1).getSheetName())) {
+                return buildCellRefsString(targetCellDataList);
+            }
         }
-        return resultRef;
+        
+        // falsify if rectangular
+        CellRef upperLeft = targetCellDataList.get(0);
+        CellRef lowerRight = targetCellDataList.get(size - 1);
+        int rowCount = lowerRight.getRow() - upperLeft.getRow() + 1;
+        int colCount = lowerRight.getCol() - upperLeft.getCol() + 1;
+        if (size != colCount * rowCount) {
+            return buildCellRefsString(targetCellDataList);
+        }
+        // Fast exit if horizontal or vertical
+        if (rowCount == 1 || colCount == 1) {
+            return upperLeft.getCellName() + ":" + lowerRight.getCellName();
+        }
+        
+        // Hole in rectangle with same cell count check
+        // Check if upperLeft is most upper cell and most left cell. And check if lowerRight is most lower cell and most right cell.
+        int minRow = upperLeft.getRow();
+        int minCol = upperLeft.getCol();
+        int maxRow = minRow;
+        int maxCol = minCol;
+        for (CellRef cell : targetCellDataList) {
+            if (cell.getCol() < minCol) {
+                minCol = cell.getCol();
+            }
+            if (cell.getCol() > maxCol) {
+                maxCol = cell.getCol();
+            }
+            if (cell.getRow() < minRow) {
+                minRow = cell.getRow();
+            }
+            if (cell.getRow() > maxRow) {
+                maxRow = cell.getRow();
+            }
+        }
+        if (!(maxRow == lowerRight.getRow() && minRow == upperLeft.getRow() && maxCol == lowerRight.getCol() && minCol == upperLeft.getCol())) {
+            return buildCellRefsString(targetCellDataList);
+        }
+
+        // Selection is either vertical, horizontal line or rectangular -> same return structure in each case
+        return upperLeft.getCellName() + ":" + lowerRight.getCellName();
+    }
+
+    private static String buildCellRefsString(List<CellRef> cellRefs) {
+        String reply = "";
+        for (CellRef cellRef : cellRefs) {
+            reply += "," + cellRef.getCellName();
+        }
+        return reply.substring(1);
     }
 
     /**
