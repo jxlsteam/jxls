@@ -41,7 +41,7 @@ class PoiRowDataTest extends Specification{
     def "test createRowData"(){
         when:
             def row1 = wb.getSheetAt(0).getRow(1)
-            def rowData = PoiRowData.createRowData(row1, null);
+            def rowData = PoiRowData.createRowData(Mock(PoiSheetData), row1, null);
         then:
             rowData.getHeight() == row1.getHeight()
             rowData.getNumberOfCells() == 4
@@ -53,6 +53,6 @@ class PoiRowDataTest extends Specification{
         given:
             def row5 = wb.getSheetAt(0).getRow(5)
         expect:
-            PoiRowData.createRowData(row5, null) == null
+            PoiRowData.createRowData(Mock(PoiSheetData), row5, null) == null
     }
 }

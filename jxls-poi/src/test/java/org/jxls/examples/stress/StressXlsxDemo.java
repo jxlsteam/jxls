@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Leonid Vysochyn
  */
+@Ignore
 public class StressXlsxDemo {
     private static final Logger logger = LoggerFactory.getLogger(StressXlsxDemo.class);
     public static final int EMPLOYEE_COUNT = 30000;
