@@ -325,7 +325,7 @@ class PoiTransformerTest extends Specification{
 
     def "test addImage"(){
         given:
-            InputStream imageInputStream = PoiTransformerTest.class.getResourceAsStream("ja.png");
+            InputStream imageInputStream = PoiTransformerTest.class.getResourceAsStream("/org/jxls/templatebasedtests/ja.png");
             byte[] imageBytes = IOUtils.toByteArray(imageInputStream);
         when:
             def transformer = PoiTransformer.createTransformer(wb)
