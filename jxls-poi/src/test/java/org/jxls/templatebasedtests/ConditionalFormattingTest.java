@@ -38,9 +38,10 @@ public class ConditionalFormattingTest {
                 assertEquals(numbers.get(i).doubleValue(), val, EPSILON);
             }
 
-            assertEquals(numbers.size() // for B2 list in template
+            assertEquals(numbers.size() * 2 // for B2 list in template
                     + 2, // for A3:B3 in template (val1, val2)
                     w.getConditionalFormattingSize());
+
         }
     }
 }

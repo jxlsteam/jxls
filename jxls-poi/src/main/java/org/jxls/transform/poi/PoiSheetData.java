@@ -1,6 +1,8 @@
 package org.jxls.transform.poi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -72,6 +74,14 @@ public class PoiSheetData extends SheetData {
                             targetCell.getColumnIndex(), targetCell.getColumnIndex());
                     Sheet targetSheet = targetCell.getSheet();
                     SheetConditionalFormatting targetSheetConditionalFormatting = targetSheet.getSheetConditionalFormatting();
+                    List<ConditionalFormattingRule> sortedRules = conditionalFormatting.getRules();
+                    Collections.sort(sortedRules, new Comparator<ConditionalFormattingRule>() {
+                        @Override
+                        public int compare(ConditionalFormattingRule o1, ConditionalFormattingRule o2) {
+                            return o1.getPriority() - o2.getPriority();
+                        }
+                    });
+
                     for (ConditionalFormattingRule rule : conditionalFormatting.getRules()) {
                         targetSheetConditionalFormatting.addConditionalFormatting(new CellRangeAddress[] { newRange }, rule);
                     }
