@@ -452,7 +452,7 @@ public class XlsArea implements Area {
         int topCommandRow = startCellRef.getRow() + size.getHeight();
         int topCommandCol = startCellRef.getCol() + size.getWidth();
         for (CommandData data : commandDataList) {
-            if (data.getStartCellRef().getRow() <= topCommandRow) {
+            if (data.getStartCellRef().getRow() <= topCommandRow && data.getStartCellRef().getCol() <= topCommandCol) {
                 topCommandRow = data.getStartCellRef().getRow();
                 topCommandCol = data.getStartCellRef().getCol();
             }
