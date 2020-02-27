@@ -53,7 +53,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             for (int i = 0; i < targetFormulaCells.size(); i++) {
                 CellRef targetFormulaCellRef = targetFormulaCells.get(i);
                 String targetFormulaString = formulaCellData.getFormula();
-                if (formulaCellData.isParameterizedFormulaCell()) {
+                if (formulaCellData.isParameterizedFormulaCell() && i < formulaCellData.getEvaluatedFormulas().size()) {
                     targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
                 }
                 if (formulaCellData.getArea() == null) {
