@@ -15,7 +15,6 @@
 	<properties>
 		<spockVersion>1.0-groovy-2.4</spockVersion>
 		<poi.version>4.1.0</poi.version>
-		<jxls.version>${project.version}</jxls.version>
 	</properties>
 
 	<build>
@@ -50,7 +49,7 @@
 		<dependency>
 			<groupId>org.jxls</groupId>
 			<artifactId>jxls</artifactId>
-			<version>${jxls.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
