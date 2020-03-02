@@ -42,6 +42,9 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
+            if (formulaCellData.getArea() == null) {
+                continue;
+            }
             logger.debug("Processing formula cell {}", formulaCellData);
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
             Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
@@ -55,9 +58,6 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                 String targetFormulaString = formulaCellData.getFormula();
                 if (formulaCellData.isParameterizedFormulaCell() && i < formulaCellData.getEvaluatedFormulas().size()) {
                     targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
-                }
-                if (formulaCellData.getArea() == null) {
-                    continue;
                 }
                 AreaRef formulaSourceAreaRef = formulaCellData.getArea().getAreaRef();
                 AreaRef formulaTargetAreaRef = formulaCellData.getTargetParentAreaRef().get(i);
@@ -96,10 +96,10 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                 // iterate through all the jointed cell references used in the formula
                 for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
                     List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
-                    Collections.sort(targetCellRefList);
                     if (targetCellRefList.isEmpty()) {
                         continue;
                     }
+                    Collections.sort(targetCellRefList);
                     isFormulaJointedCellRefsEmpty = false;
                     Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
                             new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
