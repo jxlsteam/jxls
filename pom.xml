@@ -106,7 +106,7 @@
                     <localCheckout>true</localCheckout>
                     <autoVersionSubmodules>false</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
