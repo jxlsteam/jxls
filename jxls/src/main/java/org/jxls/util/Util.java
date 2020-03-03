@@ -107,7 +107,7 @@ public class Util {
     /**
      * Combines a list of cell references into a range
      * E.g. for cell references A1, A2, A3, A4 it returns A1:A4
-     * @param targetCellDataList
+     * @param targetCellDataList -
      * @return a range containing all the cell references if such range exists or otherwise the passed cells separated by commas
      */
     public static String createTargetCellRef(List<CellRef> targetCellDataList) {
@@ -180,8 +180,8 @@ public class Util {
 
     /**
      * Joins strings with a separator
-     * @param strings
-     * @param separator
+     * @param strings -
+     * @param separator -
      * @return a string consisting of all the passed strings joined with the separator
      */
     public static String joinStrings(List<String> strings, String separator) {
@@ -215,7 +215,7 @@ public class Util {
 
     /**
      * Groups a list of cell references in a column into a list of ranges
-     * @param cellRefList
+     * @param cellRefList -
      * @return a list of cell reference groups
      */
     public static List<List<CellRef>> groupByColRange(List<CellRef> cellRefList) {
@@ -261,8 +261,8 @@ public class Util {
 
     /**
      * Groups a list of cell references in a row into a list of ranges
-     * @param cellRefList
-     * @return
+     * @param cellRefList -
+     * @return -
      */
     public static List<List<CellRef>> groupByRowRange(List<CellRef> cellRefList) {
         List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
@@ -322,7 +322,7 @@ public class Util {
 
     /**
      * Evaluates if the passed condition is true
-     * @param evaluator
+     * @param evaluator -
      * @param context Jxls context to use for evaluation
      * @return true if the condition is evaluated to true or false otherwise
      */
@@ -336,10 +336,10 @@ public class Util {
 
     /**
      * Dynamically sets an object property via reflection
-     * @param obj
-     * @param propertyName
-     * @param propertyValue
-     * @param ignoreNonExisting
+     * @param obj -
+     * @param propertyName -
+     * @param propertyValue -
+     * @param ignoreNonExisting -
      */
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
         try {
@@ -357,12 +357,12 @@ public class Util {
 
     /**
      * Dynamically sets an object property via reflection
-     * @param obj
-     * @param propertyName
-     * @param propertyValue
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * @param obj -
+     * @param propertyName -
+     * @param propertyValue -
+     * @throws NoSuchMethodException -
+     * @throws InvocationTargetException -
+     * @throws IllegalAccessException -
      */
     public static void setObjectProperty(Object obj, String propertyName, String propertyValue)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -374,8 +374,8 @@ public class Util {
     /**
      * Gets value of the passed object by the given property name.
      * @param obj Map, DynaBean or Java bean
-     * @param propertyName
-     * @param failSilently
+     * @param propertyName -
+     * @param failSilently -
      * @return value (can be null)
      */
     public static Object getObjectProperty(Object obj, String propertyName, boolean failSilently) {
@@ -396,11 +396,11 @@ public class Util {
     /**
      * Gets value of the passed object by the given property name.
      * @param obj Map, DynaBean or Java bean
-     * @param propertyName
+     * @param propertyName -
      * @return value (can be null)
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * @throws NoSuchMethodException -
+     * @throws InvocationTargetException -
+     * @throws IllegalAccessException -
      */
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (obj instanceof Map) { // Map access
@@ -411,10 +411,10 @@ public class Util {
     }
 
     /**
-     * Similar to {@link this#groupIterable(Iterable, String, String)} method but works for collections
-     * @param collection
-     * @param groupProperty
-     * @param groupOrder
+     * Similar to {@link #groupIterable(Iterable, String, String)} method but works for collections
+     * @param collection -
+     * @param groupProperty -
+     * @param groupOrder -
      * @return a collection of group data objects
      */
     public static Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder) {
@@ -517,9 +517,9 @@ public class Util {
 
     /**
      * Evaluates passed collection name into a {@link Collection} object
-     * @param expressionEvaluator
-     * @param collectionName
-     * @param context
+     * @param expressionEvaluator -
+     * @param collectionName -
+     * @param context -
      * @return an evaluated {@link Collection} instance
      */
     public static Collection<?> transformToCollectionObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
@@ -531,7 +531,7 @@ public class Util {
     }
 
     /**
-     * @param cellRefEntry
+     * @param cellRefEntry -
      * @return the sheet name regular expression string
      */
     public static String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
@@ -540,10 +540,10 @@ public class Util {
 
     /**
      * Creates a list of target formula cell references
-     * @param targetFormulaCellRef
-     * @param targetCells
-     * @param cellRefsToExclude
-     * @return
+     * @param targetFormulaCellRef -
+     * @param targetCells -
+     * @param cellRefsToExclude -
+     * @return -
      */
     public static List<CellRef> createTargetCellRefListByColumn(CellRef targetFormulaCellRef, List<CellRef> targetCells,
             List<CellRef> cellRefsToExclude) {
@@ -561,9 +561,9 @@ public class Util {
 
     /**
      * Calculates a number of occurences of a symbol in the string
-     * @param str
-     * @param ch
-     * @return
+     * @param str -
+     * @param ch -
+     * @return -
      */
     public static int countOccurences(String str, char ch) {
         int count = 0;
@@ -577,9 +577,9 @@ public class Util {
 
     /**
      * Evaluates the passed collection name into an {@link Iterable} object
-     * @param expressionEvaluator
-     * @param collectionName
-     * @param context
+     * @param expressionEvaluator -
+     * @param collectionName -
+     * @param context -
      * @return an iterable object from the {@link Context} under given name
      */
     public static Iterable<Object> transformToIterableObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
@@ -599,7 +599,7 @@ public class Util {
     }
 
     /**
-     * @param name
+     * @param name -
      * @return regular expression to detect the passed cell name
      */
     public static String getStrictCellNameRegex(String name) {
