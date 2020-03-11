@@ -1,6 +1,8 @@
 Jxls
 =====
 
+JXLS has moved from BitBucket to Github.
+
 Overview
 --------
 [Jxls](http://jxls.sf.net/) is a small and simple to use Java library for Excel generation.
