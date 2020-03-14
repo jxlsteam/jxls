@@ -1,14 +1,11 @@
-Jxls
+JXLS
 =====
 
 JXLS has moved from BitBucket to Github.
 
 Overview
 --------
-[Jxls](http://jxls.sf.net/) is a small and simple to use Java library for Excel generation.
+[JXLS](http://jxls.sourceforge.net/) is a small and simple to use Java library for Excel report generation using Excel template files.
 
-Jxls abstracts Excel generation from underlying java-to-excel low-level processing library.
-
-Jxls uses a special markup in Excel templates to define output formatting and data layout.
-
-The module contains source code for [Jxls Core](http://jxls.sf.net/)
+JXLS abstracts Excel generation from underlying Java-to-Excel low-level processing library.
+JXLS uses a special markup in Excel templates to define output formatting and data layout.
