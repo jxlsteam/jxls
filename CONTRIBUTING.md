@@ -8,6 +8,14 @@
 6. Commit and push the feature branch.
 7. The push message gives you a link to execute for creating the pull request.
 
+## Guidelines for creating an issue in JXLS bug tracker
+
+It is very much recommended to provide a working example which demonstrates the issue. Ideally you should raise a PR to jxls repo demonstrating the issue. Providing an example speeds up the identification of the root cause and the resolution of the issue.
+
+If you are unable to provide an example please describe your issue in detail. Provide an excerpt of the code on how you run JXLS transformation and also attach an input Excel template and an output Excel file you get. Also attach an Excel file with the desired output.
+
+Also in the description please mention which JXLS version you used to reproduce the issue and if you use Microsoft Excel (recommended) or another program.
+
 ## Import into Eclipse
 
 1. Clone repository.
