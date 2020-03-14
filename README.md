@@ -1,6 +1,6 @@
 # JXLS
 
-![Java CI](https://github.com/jxlsteam/jxls/workflows/Java%20CI/badge.svg)
+[![Java CI](https://github.com/jxlsteam/jxls/workflows/Java%20CI/badge.svg)](https://github.com/jxlsteam/jxls/actions?query=workflow%3A%22Java+CI%22)
 
 ## News
 
