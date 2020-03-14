@@ -13,6 +13,21 @@ JXLS has moved from BitBucket to Github.
 JXLS abstracts Excel generation from underlying Java-to-Excel low-level processing library.
 JXLS uses a special markup in Excel templates to define output formatting and data layout.
 
+## How to use
+
+**Maven**
+
+    <dependency>
+        <groupId>org.jxls</groupId>
+        <artifactId>jxls-poi</artifactId>
+        <version>2.8.0</version>
+    </dependency>
+
+**Gradle**
+
+    compile 'org.jxls:jxls-poi:2.8.0'
+
+
 ## Contributing
 
 [see Contributing guide](CONTRIBUTING.md)
