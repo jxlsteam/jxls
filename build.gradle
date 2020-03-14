@@ -31,4 +31,10 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 	}
+    
+    test {
+        doFirst {
+            mkdir 'target'
+        }
+    }
 }
