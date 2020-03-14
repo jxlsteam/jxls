@@ -12,3 +12,7 @@ JXLS has moved from BitBucket to Github.
 
 JXLS abstracts Excel generation from underlying Java-to-Excel low-level processing library.
 JXLS uses a special markup in Excel templates to define output formatting and data layout.
+
+## Contributing
+
+[see Contributing guide](CONTRIBUTING.md)
