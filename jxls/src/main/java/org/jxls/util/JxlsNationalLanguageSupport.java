@@ -61,6 +61,12 @@ public abstract class JxlsNationalLanguageSupport {
     /**
      * @param in XLSX input stream that contain R{key} elements
      * @param out XLSX output stream for writing the result that contains translated R{key} elements
+     * @throws IOException -
+     * @throws TransformerConfigurationException -
+     * @throws ParserConfigurationException -
+     * @throws SAXException -
+     * @throws TransformerException -
+     * @throws TransformerFactoryConfigurationError -
      */
     public void process(InputStream in, OutputStream out) throws IOException, TransformerConfigurationException, ParserConfigurationException, SAXException, TransformerException, TransformerFactoryConfigurationError {
         pattern = Pattern.compile(Pattern.quote(start) + "(.*?)" + Pattern.quote(end));

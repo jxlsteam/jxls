@@ -28,14 +28,15 @@ public interface Transformer {
      * Writes Excel workbook to output stream but not close the stream
      * designed to use with ZipOutputStream or other OutputStream
      * for creates several xls files one time.
-     * @throws IOException
+     * 
+     * @throws IOException -
      */
     void writeButNotCloseStream() throws IOException;
 
     /**
      * Writes Excel workbook to output stream and disposes the workbook.
      * 
-     * @throws IOException
+     * @throws IOException -
      */
     void write() throws IOException;
     

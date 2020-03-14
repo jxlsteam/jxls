@@ -160,8 +160,8 @@ public class PoiTransformer extends AbstractTransformer {
     /**
      * Creates transformer for given workbook and streaming parameters. Streaming will be used.
      * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize
-     * @param compressTmpFiles
+     * @param rowAccessWindowSize -
+     * @param compressTmpFiles -
      * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
@@ -171,9 +171,9 @@ public class PoiTransformer extends AbstractTransformer {
     /**
      * Creates transformer for given workbook and streaming parameters. Streaming will be used.
      * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize
-     * @param compressTmpFiles
-     * @param useSharedStringsTable
+     * @param rowAccessWindowSize -
+     * @param compressTmpFiles -
+     * @param useSharedStringsTable -
      * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {

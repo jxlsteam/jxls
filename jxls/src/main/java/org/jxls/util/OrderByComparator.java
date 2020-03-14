@@ -43,7 +43,8 @@ public class OrderByComparator<T> implements Comparator<T> {
      * Constructs an <code>OrderByComparator</code> based on a <code>List</code>
      * of expressions, of the format "property [ASC|DESC]".
      * @param expressions A <code>List</code> of expressions.
-     * @throws ParseException If there is a problem parsing the expressions.
+     * @param util -
+     * @throws JxlsException If there is a problem parsing the expressions.
      */
     public OrderByComparator(List<String> expressions, UtilWrapper util) {
         this.util = util;
@@ -54,7 +55,7 @@ public class OrderByComparator<T> implements Comparator<T> {
      * Sets the internal lists for all properties, order sequences, and null
      * order sequences.
      * @param expressions A <code>List</code> of expressions.
-     * @throws ParseException If there is a problem parsing the expressions.
+     * @throws JxlsException If there is a problem parsing the expressions.
      */
     private void setExpressions(List<String> expressions) {
         if (expressions == null || expressions.size() <= 0) {
