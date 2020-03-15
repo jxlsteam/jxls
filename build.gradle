@@ -1,0 +1,40 @@
+allprojects {
+	version = '2.9.0-SNAPSHOT'
+	group = 'org.jxls'
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'eclipse'
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	compileJava.options.encoding = 'windows-1252'
+	compileTestJava.options.encoding = 'windows-1252'
+	
+	repositories {
+		mavenCentral()
+	}
+	
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+	
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+    
+    test {
+        doFirst {
+            mkdir 'target'
+        }
+    }
+}

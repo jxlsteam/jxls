@@ -10,7 +10,7 @@ import org.jxls.expression.Dummy
 /**
  * @author Leonid Vysochyn
  */
-class UtilTest extends Specification{
+class UtilGTest extends Specification{
     def "test get formula cell refs"(){
         when:
             def cellRefs = Util.getFormulaCellRefs('SUM(A1:A10) + AE100*BC12 + Sheet2!B12 + 5 + U_(A1,A8)')
