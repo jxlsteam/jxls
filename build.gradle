@@ -32,9 +32,33 @@ subprojects {
 		archives javadocJar
 	}
     
-    test {
-        doFirst {
-            mkdir 'target'
-        }
+	test {
+		doFirst {
+			mkdir 'target'
+	}
     }
+}
+
+allprojects {
+  apply plugin: 'jacoco'
+}
+
+task codeCoverageReport(type: JacocoReport) {
+    // Gather execution data from all subprojects
+    // (change this if you e.g. want to calculate unit test/integration test coverage separately)
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    // Add all relevant sourcesets from the subprojects 
+    subprojects.each {
+       sourceSets it.sourceSets.main
+    }
+
+    reports {
+      xml.enabled true
+    }
+}
+
+// always run the tests before generating the report
+codeCoverageReport.dependsOn {
+    subprojects*.test
 }
