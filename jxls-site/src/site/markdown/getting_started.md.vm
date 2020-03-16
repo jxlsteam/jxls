@@ -1,0 +1,139 @@
+Getting Started Guide
+=====================
+
+Let's assume we have a Java collection of employee objects that we want to output into Excel.
+The *Employee* class may look like this
+
+    public class Employee {
+        private String name;
+        private Date birthDate;
+        private BigDecimal payment;
+        private BigDecimal bonus;
+        // ... constructors
+        // ... getters/setters
+    }
+
+To use Jxls to output this object collection into an Excel we need to do the following
+
+1. Add required Jxls libraries to your project
+
+2. Create an Excel template using a special markup
+
+3. Use Jxls API to process the prepared template and fill it with the employee data
+
+Let's look at each of these steps in detail.
+
+Adding Jxls libraries to the project
+------------------------------------
+
+The easiest way to add Jxls libraries to your project is to use Maven and specify the required libraries in your project build configuration file.
+
+Jxls jars are available in the Central Maven repository.
+
+We need to add the following dependency to core Jxls module
+
+    <dependency>
+        <groupId>org.jxls</groupId>
+        <artifactId>jxls</artifactId>
+        <version>${jxlsVersion}</version>
+    </dependency>
+
+Alternatively you can download Jxls distribution from the Sourceforge site and use the jars from the distribution.
+
+Besides the dependency to core Jxls module we need to add a dependency to an implementation of Jxls transformer engine
+which will execute all the underlying Java to Excel manipulations.
+
+As it is explained in Transformers section (see [Main Concepts](reference/main_concepts.html))) Jxls core module does not depend on any specific Java-Excel library and
+works with Excel exclusively through a predefined interface.
+Currently Jxls supplies two implementations of this interface in separate modules based on the well-known [Apache POI](https://poi.apache.org/) and [Java Excel API](http://jexcelapi.sourceforge.net/)
+ libraries.
+
+To use Apache POI API based transformer implementation add the following dependency
+
+    <dependency>
+        <groupId>org.jxls</groupId>
+        <artifactId>jxls-poi</artifactId>
+        <version>${jxlsPoiVersion}</version>
+    </dependency>
+
+To use Java Excel API based transformer implementation add the following dependency
+
+    <dependency>
+        <groupId>org.jxls</groupId>
+        <artifactId>jxls-jexcel</artifactId>
+        <version>${jxlsJexcelVersion}</version>
+    </dependency>
+
+
+Creating Excel template
+------------------------
+
+A template is an excel file which uses a special markup to specify how Jxls should output the data.
+
+Jxls provides some built-in markup processors which can be used to parse an excel template and extract control commands.
+
+A custom markup processor can be created if needed. So one define his own markup for an excel template and parse in a proper way to create Jxls Commands structure.
+
+Let's look at the built-in Jxls markup processors.
+
+By default Jxls supports [Apache JEXL](http://commons.apache.org/proper/commons-jexl/reference/syntax.html) as an expression language that can be used in an excel template to refer to
+java object properties and methods. 
+The object must be available in Jxls context under a certain key.
+To output the employee name in a cell we can put the following text in the cell
+`${employee.name}`. Basically we just surrounded Jexl expression with `${` and `}`.
+We assume that in the context there is an *Employee* object under the `employee` key.
+
+The property notation is configurable so you may decide to use for example ``[[employee.name]]`` as a property notation.
+See [Expression Language](reference/expression_language.html) for more details on how to do it.
+
+The final template for the example to output a list of *Employee* objects can be downloaded [here](xls/object_collection_template.xls) and looks like this
+
+![Template](images/object_collection_template.png)
+
+In the template cells in row 4 we refer to the employee object properties using JEXL expressions as described above.
+
+Cell `A1` contains an excel comment with the following text `jx:area(lastCell="D4")`. It defines the root area of our template to be `A1:D4`.
+
+A comment to `A4` cell defines  [Jxls Each-Command](reference/each_command.html) with the following comment text `jx:each(items="employees" var="employee" lastCell="D4")`.
+The [Each-Command](reference/each_command.html) will iterate the collection of objects under `employees` key in Jxls context and place each individual collection item into the context under `employee` key (defined by `var` attribute).
+The body area of the [Each-Command](reference/each_command.html) is `A4:D4` (defined by the `lastCell` attribute) and it will be cloned and processed with each new Employee object in the context.
+
+This example assumes usage of *XlsCommentAreaBuilder* class to construct Jxls areas from the template.
+By using this class you can define Jxls commands in Excel cell comments.
+If you prefer to define the commands in Java code then the template will be the same except you have to remove the comments from the cells.
+
+Use Jxls API to process the template
+------------------------------------
+
+Here you can see how to use Jxls API to process the excel template
+
+    ...
+        logger.info("Running Object Collection demo");
+        List<Employee> employees = generateSampleEmployeeData();
+        try(InputStream is = ObjectCollectionDemo.class.getResourceAsStream("object_collection_template.xls")) {
+            try (OutputStream os = new FileOutputStream("target/object_collection_output.xls")) {
+                Context context = new Context();
+                context.putVar("employees", employees);
+                JxlsHelper.getInstance().processTemplate(is, os, context);
+            }
+        }
+    ...
+
+
+In this example we are loading the template from the classpath resource *object_collection_template.xls*. And the target excel file will be written to *target/object_collection_output.xls*.
+
+All the main processing is performed in a single line
+
+        JxlsHelper.getInstance().processTemplate(is, os, context);
+
+By default *JxlsHelper* assumes that you want to override the template sheet with the data.
+
+But you may also choose to generate the data at another sheet by using the following method 
+
+    JxlsHelper.getInstance().processTemplateAtCell(is, os, context, "Result!A1");
+
+Here the area will be processed at cell `A1` of `Result` sheet.
+
+The final report can be downloaded [here](xls/object_collection_output.xls) and looks like this
+
+![Output](images/object_collection_output.png)

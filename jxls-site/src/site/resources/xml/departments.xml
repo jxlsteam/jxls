@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+    <worksheet name="Sheet1">
+        <section startRow="0" endRow="6">
+            <mapping cell="B1">department.name</mapping>
+            <mapping cell="A4">department.chief.name</mapping>
+            <mapping cell="B4">department.chief.age</mapping>
+            <mapping cell="D4">department.chief.payment</mapping>
+            <mapping row="3" col="4">department.chief.bonus</mapping>
+        </section>
+        <loop startRow="7" endRow="7" items="department.staff" var="employee" varType="org.jxls.reader.sample.Employee">
+            <section startRow="7" endRow="7">
+                <mapping row="7" col="0">employee.name</mapping>
+                <mapping row="7" col="1">employee.age</mapping>
+                <mapping row="7" col="3">employee.payment</mapping>
+                <mapping row="7" col="4">employee.bonus</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0">
+                    <cellcheck offset="0">Employee Payment Totals:</cellcheck>
+                </rowcheck>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+    <worksheet name="Sheet2">
+        <section startRow="0" endRow="1"/>
+        <loop startRow="2" endRow="2" items="hrDepartment.staff" var="employee" varType="org.jxls.reader.sample.Employee">
+            <section startRow="2" endRow="2">
+                <mapping row="2" col="0">employee.name</mapping>
+                <mapping row="2" col="1">employee.age</mapping>
+                <mapping row="2" col="2">employee.payment</mapping>
+                <mapping row="2" col="3">employee.bonus</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0">
+                    <cellcheck offset="0">Employee Payment Totals:</cellcheck>
+                </rowcheck>
+            </loopbreakcondition>
+        </loop>
+        <section startRow="3" endRow="7">
+            <mapping row="7" col="0">hrDepartment.chief.name</mapping>
+            <mapping row="7" col="1">hrDepartment.chief.age</mapping>
+            <mapping row="7" col="2">hrDepartment.chief.payment</mapping>
+            <mapping row="7" col="3">hrDepartment.chief.bonus</mapping>
+        </section>
+    </worksheet>
+    <worksheet name="Sheet3">
+        <loop startRow="0" endRow="8" items="departments" var="department" varType="org.jxls.reader.sample.Department">
+            <section startRow="0" endRow="6">
+                <mapping row="0" col="1">department.name</mapping>
+                <mapping row="3" col="0">department.chief.name</mapping>
+                <mapping row="3" col="1">department.chief.age</mapping>
+                <mapping row="3" col="2">department.chief.payment</mapping>
+                <mapping row="3" col="3">department.chief.bonus</mapping>
+            </section>
+            <loop startRow="7" endRow="7" items="department.staff" var="employee" varType="org.jxls.reader.sample.Employee">
+                <section startRow="7" endRow="7">
+                    <mapping row="7" col="0">employee.name</mapping>
+                    <mapping row="7" col="1">employee.age</mapping>
+                    <mapping row="7" col="2">employee.payment</mapping>
+                    <mapping row="7" col="3">employee.bonus</mapping>
+                </section>
+                <loopbreakcondition>
+                    <rowcheck offset="0">
+                        <cellcheck offset="0">Employee Payment Totals:</cellcheck>
+                    </rowcheck>
+                </loopbreakcondition>
+            </loop>
+            <section startRow="8" endRow="8"/>
+            <loopbreakcondition>
+                <rowcheck offset="0"/>
+                <rowcheck offset="1"/>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+</workbook>
