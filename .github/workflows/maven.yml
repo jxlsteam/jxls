@@ -18,3 +18,5 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: jxls-site
+      run: cd jxls-site && mvn -B site --file pom.xml
