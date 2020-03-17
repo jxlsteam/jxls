@@ -2,7 +2,7 @@
 
 [![Java CI with Maven](https://github.com/jxlsteam/jxls/workflows/Java%20CI%20with%20Maven/badge.svg)](https://github.com/jxlsteam/jxls/actions?query=workflow%3A%22Java+CI+with+Maven%22)
 
-## News
+## JXLS news
 
 JXLS has moved from BitBucket to Github.
 
