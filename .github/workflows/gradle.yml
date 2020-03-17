@@ -26,3 +26,4 @@ jobs:
       with:
         file: build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
         fail_ci_if_error: true
+
