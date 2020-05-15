@@ -26,6 +26,9 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
+            if (area != null && area.getAreaRef() != null && !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName())) {
+                continue;
+            }
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
             Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
             Map<String, List<CellRef>> jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);
