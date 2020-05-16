@@ -13,7 +13,7 @@ import org.jxls.entity.Employee;
  * 
  * varIndex new in jx:each
  */
-public class Issue173Test {
+public class IssueB173Test {
 
     @Test
     public void test() throws Exception {

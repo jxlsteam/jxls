@@ -11,7 +11,7 @@ import org.jxls.entity.Employee;
 /**
  * Formula substitution does not work when referencing another sheet
  */
-public class Issue153Test {
+public class IssueB153Test {
 
     @Test
     public void test() throws Exception {

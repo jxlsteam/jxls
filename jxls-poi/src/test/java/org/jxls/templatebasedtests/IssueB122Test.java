@@ -14,7 +14,7 @@ import org.jxls.common.Context;
 /**
  * Wrong cell ref replacement
  */
-public class Issue122Test {
+public class IssueB122Test {
 
     @Test
     public void test() throws IOException {

@@ -15,7 +15,7 @@ import org.jxls.examples.GridCommandDemo;
 /**
  * Allow Excel formulas to work with jx:grid
  */
-public class Issue90Test {
+public class IssueB090Test {
 
     @Test
     public void test() throws IOException {

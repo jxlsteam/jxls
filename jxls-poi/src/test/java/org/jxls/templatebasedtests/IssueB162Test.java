@@ -13,7 +13,7 @@ import org.jxls.entity.Employee;
  * 
  * Template is quite similar to ParameterizedFormulasDemo. It contains the LEFT() Excel function in template cell A4.
  */
-public class Issue162Test {
+public class IssueB162Test {
     
     @Test
     public void test() {

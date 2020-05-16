@@ -14,7 +14,7 @@ import org.jxls.common.Context;
 /**
  * Issue with row height and jx:area not in A1
  */
-public class Issue106Test {
+public class IssueB106Test {
 
     @Test
     public void test() throws IOException {

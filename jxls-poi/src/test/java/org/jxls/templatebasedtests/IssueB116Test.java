@@ -13,7 +13,7 @@ import org.jxls.common.Context;
 /**
  * Formula handling issues (formula external to any jx:area)
  */
-public class Issue116Test {
+public class IssueB116Test {
 
     @Test
     public void externalFormulas() throws IOException {

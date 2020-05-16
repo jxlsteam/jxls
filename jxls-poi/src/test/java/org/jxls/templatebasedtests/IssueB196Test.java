@@ -23,7 +23,7 @@ import org.jxls.util.TransformerFactory;
 /**
  * Tests groupBy and groupOrder for XML syntax
  */
-public class Issue196Test {
+public class IssueB196Test {
 
     @Test
     public void test() throws IOException {
@@ -32,10 +32,10 @@ public class Issue196Test {
         clockInOuts.add(new ClockInOut("E00001", "Mayor, Tom", "Boss", "Ruler"));
         
         // Test
-        try (InputStream is = Issue196Test.class.getResourceAsStream("Issue196Test.xlsx")) {
+        try (InputStream is = IssueB196Test.class.getResourceAsStream("Issue196Test.xlsx")) {
             try (OutputStream os = new FileOutputStream("target/Issue196Test_output.xlsx")) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
-                try (InputStream configInputStream = Issue196Test.class.getResourceAsStream("Issue196Test.xml")) {
+                try (InputStream configInputStream = IssueB196Test.class.getResourceAsStream("Issue196Test.xml")) {
                     AreaBuilder areaBuilder = new XmlAreaBuilder(configInputStream, transformer);
                     List<Area> xlsAreaList = areaBuilder.build();
                     Area xlsArea = xlsAreaList.get(0);

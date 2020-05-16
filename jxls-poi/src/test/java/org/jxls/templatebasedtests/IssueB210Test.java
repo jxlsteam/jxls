@@ -11,10 +11,10 @@ import org.jxls.common.Context;
 /**
  * Problem with sums out of empty lists and multiple sheets
  * 
- * @see Issue166Test
- * @see Issue188Test
+ * @see IssueB166Test
+ * @see IssueB188Test
  */
-public class Issue210Test {
+public class IssueB210Test {
     // to run the test with non-empty lists set the flag to true
     // AND make sure the formulas in the template file correspond to your Excel locale
     private static final boolean WITH_DATA = false;

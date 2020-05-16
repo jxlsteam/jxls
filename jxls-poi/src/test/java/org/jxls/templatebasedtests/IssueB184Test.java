@@ -19,7 +19,7 @@ import org.jxls.common.Context;
  * commit 5354beaf6c73bd252f98d272ac1e4dc8f870a13b,
  * issue #160 - add isForwardOnly() method to Transformer and processing static cells differently depending on this flag
  */
-public class Issue184Test {
+public class IssueB184Test {
 
     @Test
     public void test() {

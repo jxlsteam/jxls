@@ -14,7 +14,7 @@ import org.jxls.common.Context;
 /**
  * Problem with formulas referencing cells in another worksheet containing special characters in name
  */
-public class Issue127Test {
+public class IssueB127Test {
 
     @Test
     public void test() throws IOException {

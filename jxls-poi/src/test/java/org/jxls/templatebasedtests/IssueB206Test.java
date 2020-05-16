@@ -10,7 +10,7 @@ import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 
-public class Issue206Test {
+public class IssueB206Test {
     // worked with 2.6.0, failure in 2.8.0-rc1
 
     @Test

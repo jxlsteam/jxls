@@ -12,10 +12,12 @@ import org.jxls.entity.Employee;
 /**
  * Conditional formattings are not copied
  * 
+ * <p>note: Issue B089 means issue 89 from BitBucket. If there's no B prefix it's a Github issue number.</p>
+ * 
  * @see ConditionalFormattingTest
- * @see Issue110Test
+ * @see IssueB110Test
  */
-public class Issue89Test {
+public class IssueB089Test {
 
     @Test
     public void test() throws Exception {

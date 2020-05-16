@@ -14,7 +14,7 @@ import org.jxls.entity.Employee;
 /**
  * Excel templates context variable not found if used beyond column AZ
  */
-public class Issue167Test {
+public class IssueB167Test {
 
     @Test
     public void test() throws IOException {

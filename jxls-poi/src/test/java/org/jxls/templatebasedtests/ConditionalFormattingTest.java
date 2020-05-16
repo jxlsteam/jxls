@@ -11,8 +11,8 @@ import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 
 /**
- * @see Issue89Test
- * @see Issue110Test
+ * @see IssueB089Test
+ * @see IssueB110Test
  */
 public class ConditionalFormattingTest {
     private static final double EPSILON = 0.001;

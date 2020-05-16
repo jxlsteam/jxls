@@ -13,7 +13,7 @@ import org.jxls.common.Context;
 /**
  * Cell format not being correctly shifted when having JXLS command and empty list
  */
-public class Issue103Test {
+public class IssueB103Test {
 
     @Test
     public void test() {
