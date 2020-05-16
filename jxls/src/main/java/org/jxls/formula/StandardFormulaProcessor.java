@@ -42,7 +42,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
-            if (formulaCellData.getArea() == null) {
+            if (formulaCellData.getArea() == null || !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName())) {
                 continue;
             }
             logger.debug("Processing formula cell {}", formulaCellData);

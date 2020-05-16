@@ -1,6 +1,12 @@
 Version History
 ==============
 
+v2.8.1
+-----------
+The release contains a critical bug-fix for a specific case of formulas processing. 
+See [issue#210 SUM with empty lists when more than 1 sheet doesn't work](https://bitbucket.org/leonate/jxls/issues/210/sum-when-more-than-1-sheet-doesnt-work-on) for more detail.
+
+
 v2.8.0
 -----------
 

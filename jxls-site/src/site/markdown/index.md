@@ -1,7 +1,7 @@
 Jxls v2.9.0 is released!
 ========================
 
-The project was moved to Github.
+The project was moved to Github and starting from Jxls 2.9.0 all the development is happening in here.
 
 Java 8 is set to be the minimum version required to use Jxls library.
  
