@@ -32,8 +32,8 @@ public class IssueB196Test {
         clockInOuts.add(new ClockInOut("E00001", "Mayor, Tom", "Boss", "Ruler"));
         
         // Test
-        try (InputStream is = IssueB196Test.class.getResourceAsStream("Issue196Test.xlsx")) {
-            try (OutputStream os = new FileOutputStream("target/Issue196Test_output.xlsx")) {
+        try (InputStream is = IssueB196Test.class.getResourceAsStream("IssueB196Test.xlsx")) {
+            try (OutputStream os = new FileOutputStream("target/IssueB196Test_output.xlsx")) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
                 try (InputStream configInputStream = IssueB196Test.class.getResourceAsStream("Issue196Test.xml")) {
                     AreaBuilder areaBuilder = new XmlAreaBuilder(configInputStream, transformer);
