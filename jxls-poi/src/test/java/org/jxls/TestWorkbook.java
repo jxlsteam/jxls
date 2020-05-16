@@ -22,7 +22,7 @@ public class TestWorkbook implements AutoCloseable {
     
     public TestWorkbook(File file) {
         try {
-            workbook = WorkbookFactory.create(file);
+            workbook = WorkbookFactory.create(file, null, true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
