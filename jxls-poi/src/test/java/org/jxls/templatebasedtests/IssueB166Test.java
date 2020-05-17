@@ -15,7 +15,7 @@ import org.jxls.common.Context;
 /**
  * Wrong average on 2nd sheet
  */
-public class Issue166Test {
+public class IssueB166Test {
 
     @Test
     public void test() {

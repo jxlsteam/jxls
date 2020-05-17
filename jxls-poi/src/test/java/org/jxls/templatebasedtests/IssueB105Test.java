@@ -14,7 +14,7 @@ import org.jxls.common.Context;
  * Issue with 'big double values' (like 1.3E22) being parsed as cell references
  * (like E22)
  */
-public class Issue105Test {
+public class IssueB105Test {
 
     @Test
     public void test() throws IOException {

@@ -23,8 +23,9 @@ import org.jxls.util.TransformerFactory;
 /**
  * Tests groupBy and groupOrder for XML syntax
  */
-public class Issue196Test {
-
+public class IssueB196Test {
+    private static final String NAME = "IssueB196Test";
+    
     @Test
     public void test() throws IOException {
         // Prepare
@@ -32,10 +33,11 @@ public class Issue196Test {
         clockInOuts.add(new ClockInOut("E00001", "Mayor, Tom", "Boss", "Ruler"));
         
         // Test
-        try (InputStream is = Issue196Test.class.getResourceAsStream("Issue196Test.xlsx")) {
-            try (OutputStream os = new FileOutputStream("target/Issue196Test_output.xlsx")) {
+        final String output = "target/" + NAME + "_output.xlsx";
+        try (InputStream is = IssueB196Test.class.getResourceAsStream(NAME + ".xlsx")) {
+            try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
-                try (InputStream configInputStream = Issue196Test.class.getResourceAsStream("Issue196Test.xml")) {
+                try (InputStream configInputStream = IssueB196Test.class.getResourceAsStream(NAME + ".xml")) {
                     AreaBuilder areaBuilder = new XmlAreaBuilder(configInputStream, transformer);
                     List<Area> xlsAreaList = areaBuilder.build();
                     Area xlsArea = xlsAreaList.get(0);
@@ -48,7 +50,7 @@ public class Issue196Test {
         }
 
         // Verify
-        try (TestWorkbook xls = new TestWorkbook(new File("target/Issue196Test_output.xlsx"))) {
+        try (TestWorkbook xls = new TestWorkbook(new File(output))) {
             xls.selectSheet("Template");
             assertEquals("Mayor, Tom", xls.getCellValueAsString(2, 2));
         }

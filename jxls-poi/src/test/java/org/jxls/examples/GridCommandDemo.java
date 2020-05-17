@@ -53,7 +53,7 @@ public class GridCommandDemo {
         }
     }
 
-    // also used by Issue90Test
+    // also used by IssueB090Test
     public static List<List<Object>> createGridData(List<Employee> employees) {
         List<List<Object>> data = new ArrayList<>();
         for (Employee employee : employees) {

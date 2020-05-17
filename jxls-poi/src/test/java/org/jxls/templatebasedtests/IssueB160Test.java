@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.junit.Test;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -27,15 +28,16 @@ import org.jxls.transform.poi.PoiTransformer;
 /**
  * jx:each with direction=RIGHT with SXSSF Transformer rewrites static cells
  */
-public class Issue160Test {
+public class IssueB160Test {
 
-    public static void main(String[] args) throws IOException, ParseException {
+    @Test
+    public void test() throws IOException, ParseException {
         List<Map<String, Object>> lotsOfStuff = createLotsOfStuff();
         Context context = new PoiContext();
         context.putVar("lotsOfStuff", lotsOfStuff);
         context.putVar("columns", new Columns());
-        try(InputStream in = Issue160Test.class.getResourceAsStream("Issue160Test.xlsx")) {
-            try (OutputStream os = new FileOutputStream("target/issue160_output.xlsx")) {
+        try (InputStream in = IssueB160Test.class.getResourceAsStream("IssueB160Test.xlsx")) {
+            try (OutputStream os = new FileOutputStream("target/IssueB160Test_output.xlsx")) {
                 Workbook workbook = WorkbookFactory.create(in);
                 PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 2, false);
                 AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);

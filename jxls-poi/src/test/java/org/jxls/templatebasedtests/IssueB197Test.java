@@ -21,7 +21,7 @@ import org.jxls.common.Context;
  * 
  * @author Christian Raack
  */
-public class Issue197Test {
+public class IssueB197Test {
 
     @Test
     public void test() {

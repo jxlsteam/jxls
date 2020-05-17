@@ -16,7 +16,7 @@ import org.jxls.common.Context;
  * Testcase for issues 159 (insert image) and 178 (text underline issues)
  * A modification of the original example by ZhengJin Fang
  */
-public class Issue159Test {
+public class IssueB159Test {
 
     @Test
     public void test() throws IOException {
@@ -51,7 +51,7 @@ public class Issue159Test {
         
         // issue 159 numbers 1 and 2 >>
         byte[] stampByteArray;
-        try (InputStream stamp = Issue159Test.class.getResourceAsStream("stamp.png")) {
+        try (InputStream stamp = IssueB159Test.class.getResourceAsStream("stamp.png")) {
             stampByteArray = IOUtils.toByteArray(stamp);
         }
         model.put("stampImage", stampByteArray);

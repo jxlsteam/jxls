@@ -12,7 +12,7 @@ import org.jxls.common.Context;
 /**
  * A test case for Issue 188 Referencing other sheet in JXLS-processed cell formula replaces formula with "=0"
  */
-public class Issue188Test {
+public class IssueB188Test {
 
     @Test
     public void testCrossSheetFormulas() throws IOException {

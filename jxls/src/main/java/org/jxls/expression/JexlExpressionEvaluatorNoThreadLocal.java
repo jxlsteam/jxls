@@ -11,7 +11,7 @@ import org.apache.commons.jexl3.MapContext;
 
 /**
  * This is an implementation of {@link ExpressionEvaluator} without using {@link ThreadLocal}.
- * See issue#54 for more detail about the reason for it.
+ * See issue B054 for more detail about the reason for it.
  * 
  * @author Leonid Vysochyn
  */

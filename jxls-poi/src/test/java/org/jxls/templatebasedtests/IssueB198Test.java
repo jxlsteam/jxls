@@ -10,7 +10,7 @@ import org.jxls.common.Context;
 /**
  * Support for arrays in EachCommand
  */
-public class Issue198Test {
+public class IssueB198Test {
 
     @Test
     public void test() throws Exception {

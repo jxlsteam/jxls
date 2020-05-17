@@ -1,7 +1,5 @@
 package org.jxls.templatebasedtests;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -10,30 +8,32 @@ import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
-import org.jxls.examples.GridCommandDemo;
 
 /**
- * Allow Excel formulas to work with jx:grid
+ * Conditional formattings are not copied
+ * 
+ * <p>note: Issue B089 means issue 89 from BitBucket. If there's no B prefix it's a Github issue number.</p>
+ * 
+ * @see ConditionalFormattingTest
+ * @see IssueB110Test
  */
-public class Issue90Test {
+public class IssueB089Test {
 
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         // Prepare
         Context context = new Context();
-        context.putVar("headers", Arrays.asList("Name", "Birthday", "Payment"));
         List<Employee> employees = Employee.generateSampleEmployeeData();
-        List<List<Object>> data = GridCommandDemo.createGridData(employees);
-        context.putVar("data", data);
-
+        context.putVar("employees", employees);
+        
         // Test
-        JxlsTester tester = JxlsTester.xls(getClass());
+        JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet(0);
-            Assert.assertEquals(1, w.getCellValueAsDouble(2, 2), 0.1d);
+            Assert.assertEquals("Conditional formattings have not been copied!", employees.size(), w.getConditionalFormattingSize());
         }
     }
 }

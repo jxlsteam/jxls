@@ -19,7 +19,7 @@ import org.jxls.entity.Employee;
 /**
  * 'jx:each' command not processing Division formula having cell ref outside each
  */
-public class Issue97Test {
+public class IssueB097Test {
 
     @Test
     public void test() throws Exception {

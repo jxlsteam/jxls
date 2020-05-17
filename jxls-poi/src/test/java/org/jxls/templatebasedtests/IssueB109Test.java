@@ -13,7 +13,7 @@ import org.jxls.common.Context;
 /**
  * Issue with circular formula
  */
-public class Issue109Test {
+public class IssueB109Test {
 
     @Test
     public void test() throws IOException {

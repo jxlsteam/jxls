@@ -14,7 +14,7 @@ import org.jxls.entity.Employee;
 /**
  * Group by nested property
  */
-public class Issue133Test {
+public class IssueB133Test {
 
     @Test
     public void groupingWithNestedGroupKey() throws Exception {
