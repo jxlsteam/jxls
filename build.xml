@@ -5,6 +5,11 @@
 	<target name="eclipse">
 		<gradle task="eclipse"/>
 	</target>
+	<target name="dep">
+        <exec executable="cmd" failonerror="true">
+        	<arg line="/c gradlew.bat -b jxls-poi/build.gradle -g C:\jarcache\gradle dep"/>
+        </exec>
+	</target>
 
 	<macrodef name="gradle">
 		<attribute name="task"/>
