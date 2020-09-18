@@ -1,6 +1,6 @@
 dependencies {
 	compile project(':jxls')
-	compile 'org.apache.poi:poi-ooxml:4.1.0'
+	compile 'org.apache.poi:poi-ooxml:4.1.2'
 	compile 'org.slf4j:jcl-over-slf4j:1.7.30'
 
 	testCompile 'junit:junit:4.12'
