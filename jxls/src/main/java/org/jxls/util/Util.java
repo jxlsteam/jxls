@@ -587,15 +587,13 @@ public class Util {
         if (collectionObject == null) {
             return Collections.emptyList();
         } else if (collectionObject instanceof Object[]) {
-            collectionObject = Arrays.asList((Object[])/*cast is important*/ collectionObject);
-        } else if (!(collectionObject instanceof Iterable)) {
-            throw new JxlsException(collectionName + " expression is not a collection or an array");
+            return Arrays.asList((Object[])/*cast is important*/ collectionObject);
+        } else if (collectionObject instanceof Iterable) {
+            @SuppressWarnings("unchecked")
+            Iterable<Object> iterable = (Iterable<Object>) collectionObject;
+            return iterable;
         }
-        List<Object> ret = new ArrayList<>();
-        for (Object i : (Iterable<?>) collectionObject) {
-            ret.add(i);
-        }
-        return ret;
+        throw new JxlsException(collectionName + " expression is not a collection or an array");
     }
 
     /**
