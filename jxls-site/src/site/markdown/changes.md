@@ -1,6 +1,25 @@
 Version History
 ==============
 
+v2.9.0
+-----------
+With this version we migrated from BitBucket to Github.
+
+A list of resolved issues
+
+* #1: Javadoc
+* #2: moved jxls-site into main repo
+* #8: Gradle
+* #13: Code coverage
+* #15: Java 8
+* #19: B prefix for BitBucket issue related testcase classes
+* #25: read-only mode when open Excel files in tests
+* #27: changes from 2.8.1, see BitBucket issue 210
+* #50: POI 4.1.2, commons-beanutils 1.9.4, slf4j
+* #53: CLOB fix
+* #64: don't read iterable ahead of time (jx:each bugfix)
+* #68: workaround for POI bug: unset value after changing a formula (streaming mode)
+
 v2.8.1
 -----------
 The release contains a critical bug-fix for a specific case of formulas processing. 
