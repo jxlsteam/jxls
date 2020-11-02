@@ -1,9 +1,22 @@
 Jxls v2.9.0 is released!
 ========================
 
-The project was moved to Github and starting from Jxls 2.9.0 all the development is happening in here.
+With this version we migrated from BitBucket to Github.
 
-Java 8 is set to be the minimum version required to use Jxls library.
+A list of resolved issues
+
+* [#1: Javadoc](https://github.com/jxlsteam/jxls/issues/1)
+* [#2: moved jxls-site into main repo](https://github.com/jxlsteam/jxls/issues/2)
+* [#8: Gradle](https://github.com/jxlsteam/jxls/issues/8)
+* [#13: Code coverage](https://github.com/jxlsteam/jxls/issues/13)
+* [#15: Java 8](https://github.com/jxlsteam/jxls/issues/15)
+* [#19: B prefix for BitBucket issue related testcase classes](https://github.com/jxlsteam/jxls/issues/19)
+* [#25: read-only mode when open Excel files in tests](https://github.com/jxlsteam/jxls/issues/25)
+* [#27: changes from 2.8.1](https://github.com/jxlsteam/jxls/issues/27), see below and [BitBucket issue 210](https://bitbucket.org/leonate/jxls/issues/210/sum-when-more-than-1-sheet-doesnt-work-on)
+* [#50: POI 4.1.2, commons-beanutils 1.9.4, slf4j](https://github.com/jxlsteam/jxls/issues/50)
+* [#53: CLOB fix](https://github.com/jxlsteam/jxls/issues/53)
+* [#64: don't read iterable ahead of time (jx:each bugfix)](https://github.com/jxlsteam/jxls/issues/64)
+* [#68: workaround for POI bug: unset value after changing a formula (streaming mode)](https://github.com/jxlsteam/jxls/issues/68)
  
 
 ###### The latest component versions
