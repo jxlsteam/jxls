@@ -2,6 +2,7 @@ package org.jxls;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,17 @@ public class TestWorkbook implements AutoCloseable {
     public Double getCellValueAsDouble(int row, int column) {
         return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
     }
-    
+
+    /**
+     * Expects date cell and returns its value as {@link LocalDateTime}.
+     * @param row starts with 1
+     * @param column 1 = A
+     * @return String
+     */
+    public LocalDateTime getCellValueAsLocalDateTime(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getLocalDateTimeCellValue();
+    }
+
     /**
      * @param row starts with 1
      * @return row height in Twips
