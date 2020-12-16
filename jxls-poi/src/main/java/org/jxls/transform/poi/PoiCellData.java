@@ -2,6 +2,7 @@ package org.jxls.transform.poi;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
@@ -198,6 +199,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             case BOOLEAN: return org.apache.poi.ss.usermodel.CellType.BOOLEAN;
             case NUMBER:
             case LOCAL_DATE:
+            case LOCAL_TIME:
             case LOCAL_DATETIME:
             case ZONED_DATETIME:
             case DATE:    return org.apache.poi.ss.usermodel.CellType.NUMERIC;
@@ -221,6 +223,9 @@ public class PoiCellData extends org.jxls.common.CellData {
                 break;
             case LOCAL_DATE:
                 cell.setCellValue((LocalDate) evaluationResult);
+                break;
+            case LOCAL_TIME:
+                cell.setCellValue(((LocalTime) evaluationResult).atDate(LocalDate.now()));
                 break;
             case LOCAL_DATETIME:
                 cell.setCellValue((LocalDateTime) evaluationResult);

@@ -9,6 +9,7 @@ import org.jxls.common.Context;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 
@@ -19,6 +20,7 @@ public class JSR310Test {
     private static final LocalDate SAMPLE_DATE = LocalDate.parse("2003-07-27");
     private static final LocalDateTime SAMPLE_DATETIME = LocalDateTime.parse("2020-02-25T15:07:43");
     private static final ZonedDateTime SAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2005-05-20T13:31:34-03:00[America/Maceio]");
+    private static final LocalTime SAMPLE_TIME = LocalTime.parse("09:45:00");
 
     private static TestWorkbook w;
 
@@ -55,11 +57,17 @@ public class JSR310Test {
         assertEquals(SAMPLE_ZONED_DATETIME.toLocalDateTime(), w.getCellValueAsLocalDateTime(4, 3));
     }
 
+    @Test
+    public void testLocalTime() {
+        assertEquals(SAMPLE_TIME, w.getCellValueAsLocalDateTime(4, 4).toLocalTime());
+    }
+
     @SuppressWarnings("unused")
     public static class Sample {
         public LocalDate localDate = SAMPLE_DATE;
         public LocalDateTime localDateTime = SAMPLE_DATETIME;
         public ZonedDateTime zonedDateTime = SAMPLE_ZONED_DATETIME;
+        public LocalTime localTime = SAMPLE_TIME;
     }
 
 }
