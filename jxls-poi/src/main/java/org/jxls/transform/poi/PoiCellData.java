@@ -1,9 +1,6 @@
 package org.jxls.transform.poi;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Date;
 import java.util.Map;
 
@@ -202,6 +199,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             case LOCAL_TIME:
             case LOCAL_DATETIME:
             case ZONED_DATETIME:
+            case INSTANT:
             case DATE:    return org.apache.poi.ss.usermodel.CellType.NUMERIC;
             case FORMULA: return org.apache.poi.ss.usermodel.CellType.FORMULA;
             case ERROR:   return org.apache.poi.ss.usermodel.CellType.ERROR;
@@ -232,6 +230,9 @@ public class PoiCellData extends org.jxls.common.CellData {
                 break;
             case ZONED_DATETIME:
                 cell.setCellValue(((ZonedDateTime) evaluationResult).toLocalDateTime());
+                break;
+            case INSTANT:
+                cell.setCellValue(((Instant) evaluationResult).atZone(ZoneId.systemDefault()).toLocalDateTime());
                 break;
             case NUMBER:
                 cell.setCellValue(((Number) evaluationResult).doubleValue());
