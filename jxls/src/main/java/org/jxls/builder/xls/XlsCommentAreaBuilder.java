@@ -1,9 +1,13 @@
 package org.jxls.builder.xls;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +94,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
+    public static final String LINE_SEPARATOR = "__LINE_SEPARATOR__";
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some
@@ -219,11 +224,104 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return userAreas;
     }
 
+    private void extractLiterals(CellData cellData, String text, List<String> literalList) {
+		String literal = "";
+		for (int i = 0, n = text.length(); i < n; i++) {
+
+			// if the first 3 chars of literal are 'jx:'
+			if (literal.length() >= 3
+					&& literal.substring(literal.length() - 3, literal.length()).equals(COMMAND_PREFIX)) {
+
+				// save comment parsed before
+				literal = literal.substring(0, literal.length() - 3);
+				makeCommentLines(literal, literalList);
+				String remainingText = text.substring(i - 3, n);
+				String cmd = makeOperators(cellData, remainingText);
+				literal = "";
+				literalList.add(cmd);
+				i = i + cmd.length() - 3;
+
+				// if text no ending
+				if (i != n)
+					literal = String.valueOf(text.charAt(i));
+				else
+					literal = "";
+
+			} else {
+				// else is the next char to new literal
+				literal = literal + String.valueOf(text.charAt(i));
+			}
+		}
+
+		// last comment
+		if (!literal.isEmpty()) {
+			makeCommentLines(literal, literalList);
+		}
+	}
+    
+	private void makeCommentLines(String literal, List<String> literalList) {
+		literalList.addAll(
+				Arrays.stream(literal.split("\n"))
+					.filter(line -> ! line.isEmpty())
+					.collect(toList()));
+	}
+	
+	private String makeOperators(CellData cellData, String text) {
+		// result command
+		String cmd = "";
+		Stack<Character> bracketsStack = new Stack<>();
+		Stack<Character> quotationsStack = new Stack<>();
+
+		for (int i = 0; i < text.length(); i++) {
+			char symbol = text.charAt(i);
+
+			if (symbol == '"' || symbol == '\'')
+				if (!quotationsStack.empty() && quotationsStack.peek() == symbol)
+					quotationsStack.pop();
+				else
+					quotationsStack.push(symbol);
+
+			switch (symbol) {
+			case '(':
+				if (quotationsStack.empty())
+					bracketsStack.push(symbol);
+				break;
+			case ')':
+				if (quotationsStack.empty()) {
+					if (bracketsStack.peek() == '(') {
+						bracketsStack.pop();
+						if (bracketsStack.empty())
+							return cmd + symbol;
+					} else {
+						// no opening, but closing !!
+						String errorMessage = "Got closing ) but no opening of it. Pos: " + text.substring(0, i);
+						logger.error(errorMessage);
+						throw new IllegalStateException(errorMessage);
+					}
+				}
+				break;
+			default:
+				break;
+			}
+
+			cmd = cmd + symbol;
+
+		}
+
+		return cmd;
+	}
+    
     private List<CommandData> buildCommands(CellData cellData, String text) {
-        String[] commentLines = text.split("\\n");
+        List<String> literalList = new ArrayList<String>();
+        extractLiterals(cellData, text, literalList);
+
         List<CommandData> commandDatas = new ArrayList<CommandData>();
-        for (String commentLine : commentLines) {
+        for (String commentLine : literalList) {
             String line = commentLine.trim();
+            line = line
+            		.replace("\r\n", LINE_SEPARATOR)
+            		.replace("\r", LINE_SEPARATOR)
+            		.replace("\n", LINE_SEPARATOR);
             if (isCommandString(line)) {
                 int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
                 if (nameEndIndex < 0) {

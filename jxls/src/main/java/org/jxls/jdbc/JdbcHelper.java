@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.JxlsException;
 
 /**
@@ -33,6 +34,7 @@ public class JdbcHelper {
         if (sql == null) {
             throw new JxlsException("Null SQL statement");
         }
+        sql = sql.replace(XlsCommentAreaBuilder.LINE_SEPARATOR, System.lineSeparator());
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillStatement(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
