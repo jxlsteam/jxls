@@ -4,7 +4,7 @@
 
 ## News
 
-JXLS has moved from BitBucket to Github. Please use the Github issue tracker.
+JXLS has moved from BitBucket to Github. Please use the Github issue tracker for bugs and the Github discussions Q&A for questions.
 
 ## Overview
 
