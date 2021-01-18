@@ -332,7 +332,7 @@ public class EachCommand extends AbstractCommand {
         }
 
         CellRef currentCell = cellRef;
-        Object currentVarObject = context.getVar(varName);
+        Object currentVarObject = context.getRunVar(varName);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);

@@ -29,6 +29,10 @@ public class Context {
         return varMap.get(name);
     }
 
+    public Object getRunVar(String name) {
+        return getVar(name);
+    }
+
     public void putVar(String name, Object value) {
         varMap.put(name, value);
     }
