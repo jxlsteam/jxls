@@ -5,6 +5,9 @@
 	<target name="eclipse">
 		<gradle task="eclipse"/>
 	</target>
+    <target name="test">
+        <gradle task="test"/>
+    </target>
 	<target name="dep">
         <exec executable="cmd" failonerror="true">
         	<arg line="/c gradlew.bat -b jxls-poi/build.gradle -g C:\jarcache\gradle dep"/>
