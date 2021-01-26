@@ -43,7 +43,7 @@ The list of examples looks like this
 
 Asking Questions
 ----------------
-For questions we recommend [StackOverflow](http://stackoverflow.com/questions/tagged/jxls) .
+Please use our [Github Discussions Q&A page](https://github.com/jxlsteam/jxls/discussions/categories/q-a) for questions.
 
 
 Mailing group
