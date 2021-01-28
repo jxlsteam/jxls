@@ -1,13 +1,9 @@
 package org.jxls.builder.xls;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -228,16 +224,16 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     
     private List<CommandData> buildCommands(CellData cellData, String text) {
         List<String> literalList = new ArrayList<String>();
-		LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
-    	literalList = extractor.extract();
+        LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
+        literalList = extractor.extract();
 
         List<CommandData> commandDatas = new ArrayList<CommandData>();
         for (String commentLine : literalList) {
             String line = commentLine.trim();
             line = line
-            		.replace("\r\n", LINE_SEPARATOR)
-            		.replace("\r", LINE_SEPARATOR)
-            		.replace("\n", LINE_SEPARATOR);
+                    .replace("\r\n", LINE_SEPARATOR)
+                    .replace("\r", LINE_SEPARATOR)
+                    .replace("\n", LINE_SEPARATOR);
             if (isCommandString(line)) {
                 int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
                 if (nameEndIndex < 0) {
