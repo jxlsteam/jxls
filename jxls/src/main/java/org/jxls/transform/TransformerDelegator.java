@@ -139,6 +139,16 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
+    public boolean isFullFormulaRecalculationOnOpening() {
+        return transformer.isFullFormulaRecalculationOnOpening();
+    }
+
+    @Override
+    public void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
+        transformer.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
+    }
+
+    @Override
     public boolean isForwardOnly() {
         return transformer.isForwardOnly();
     }

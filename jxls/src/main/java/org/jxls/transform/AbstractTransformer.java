@@ -27,6 +27,7 @@ public abstract class AbstractTransformer implements Transformer {
     protected final Map<String, SheetData> sheetMap = new LinkedHashMap<>();
     private TransformationConfig transformationConfig = new TransformationConfig();
     private boolean evaluateFormulas = false;
+    private boolean fullFormulaRecalculationOnOpening = false;
 
     @Override
     public List<CellRef> getTargetCellRef(CellRef cellRef) {
@@ -152,6 +153,14 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public boolean isEvaluateFormulas() {
         return evaluateFormulas;
+    }
+
+    public boolean isFullFormulaRecalculationOnOpening() {
+        return fullFormulaRecalculationOnOpening;
+    }
+
+    public void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
+        this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
     }
 
     /**

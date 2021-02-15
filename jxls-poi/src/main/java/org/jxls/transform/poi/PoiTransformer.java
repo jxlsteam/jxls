@@ -475,6 +475,9 @@ public class PoiTransformer extends AbstractTransformer {
         if (!isStreaming() && isEvaluateFormulas()) {
             workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
         }
+        if (isFullFormulaRecalculationOnOpening()) {
+            workbook.setForceFormulaRecalculation(true);
+        }
         workbook.write(outputStream);
     }
 
