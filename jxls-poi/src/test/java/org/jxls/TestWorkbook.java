@@ -118,6 +118,10 @@ public class TestWorkbook implements AutoCloseable {
         return ret;
     }
 
+    public Workbook getWorkbook() {
+        return workbook;
+    }
+
     @Override
     public void close() {
         if (workbook != null) {
