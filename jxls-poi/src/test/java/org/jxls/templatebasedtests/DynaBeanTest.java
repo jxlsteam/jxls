@@ -16,12 +16,12 @@ import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 
 /**
- * Issue 182: This test class checks whether grouping works with DynaBeans.
+ * Issue B182: This test class checks whether grouping works with DynaBeans.
  */
 public class DynaBeanTest {
 
     /**
-     * This testcase tests grouping with DynaBean. (Fixed with issue 182)
+     * This testcase tests grouping with DynaBean. (Fixed with issue B182)
      * It also checks whether DynaBeans work without grouping. (Worked before because of JEXL)
      */
     @Test

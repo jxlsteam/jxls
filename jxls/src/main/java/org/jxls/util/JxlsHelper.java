@@ -1,5 +1,13 @@
 package org.jxls.util;
 
+import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
+
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -13,14 +21,6 @@ import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.template.SimpleExporter;
 import org.jxls.transform.Transformer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.List;
-
-import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
 
 /**
  * Helper class to simplify JXLS usage
@@ -42,6 +42,10 @@ public class JxlsHelper {
     public JxlsHelper() {
     }
 
+    /**
+     * Returns new JxlsHelper instance
+     * @return JxlsHelper object
+     */
     public static JxlsHelper getInstance() {
         return new JxlsHelper();
     }
@@ -52,18 +56,40 @@ public class JxlsHelper {
     }
 
     /**
-     * @return true if formulas will be evaluated after the processing or false otherwise
+     * This property is used to recalculate all formulas before saving the workbook.
+     * This property is set to true if you don't open the file with MS Excel and just read it (e.g. with a unit test).
+     * The following documentation is POI specific.
+     * 
+     * @return true: calls <code>workbook.getCreationHelper().createFormulaEvaluator().evaluateAll()</code>
+     * before writing the workbook. Please have a look at the POI documentation for more details.
+     * This does not work for streaming.
+     * Please be aware that POI supports only a subset of Excel formulas.
+     * If an unsupported formula is in the template the evaluation will fail.
+     * <p>false (default): do nothing (hopefully MS Excel will recalculate all formulas while opening the file)</p>
      */
     public boolean isEvaluateFormulas() {
         return evaluateFormulas;
     }
 
     /**
-     * Sets a flag for a transformer to evaluate formulas at the end of the processing
-     * Please be aware that e.g. POI supports only a subset of Excel formulas.
-     * If an unsupported formula is in the template the evaluation will fail
-     * @param evaluateFormulas true if the formulas evaluation should be triggered
-     * @return current JxlsHelper instance
+     * This property is used to recalculate all formulas before saving the workbook.
+     * This property is set to true if you don't open the file with MS Excel and just read it (e.g. with a unit test).
+     * 
+     * <p>Don't do this:<br>
+     * <code>JxlsHelper.getInstance().setEvaluateFormulas(true);<br>
+     * JxlsHelper.getInstance().processTemplate(...);</code>
+     * <br>Call JxlsHelper.getInstance() only once!</p>
+     * 
+     * <p>The following documentation is POI specific.</p>
+     * 
+     * @param evaluateFormulas
+     * true: calls <code>workbook.getCreationHelper().createFormulaEvaluator().evaluateAll()</code>
+     * before writing the workbook. Please have a look at the POI documentation for more details.
+     * This does not work for streaming.
+     * Please be aware that POI supports only a subset of Excel formulas.
+     * If an unsupported formula is in the template the evaluation will fail.
+     * <p>false (default): do nothing (hopefully MS Excel will recalculate all formulas while opening the file)</p>
+     * @return this
      */
     public JxlsHelper setEvaluateFormulas(boolean evaluateFormulas) {
         this.evaluateFormulas = evaluateFormulas;

@@ -1,5 +1,7 @@
 package org.jxls.jdbc;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
@@ -110,7 +112,30 @@ public class JdbcHelper {
             if (null == columnName || 0 == columnName.length()) {
                 columnName = rsmd.getColumnName(i);
             }
+            int columnType = rsmd.getColumnType(i);
+
+            if (java.sql.Types.CLOB == columnType) {
+
+                try {
+                    java.sql.Clob clob = rs.getClob(i);
+                    if (clob == null) {
+                        result.put(columnName, "");
+                        continue;
+                    }
+                    Reader inStream = clob.getCharacterStream();
+                    char[] c = new char[(int) clob.length()];
+                    inStream.read(c);
+                    String data = new String(c);
+                    inStream.close();
+                    result.put(columnName, data);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            } else {
             result.put(columnName, rs.getObject(i));
+            }
         }
         return result;
     }

@@ -10,7 +10,7 @@ import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 
 /**
- * Tests orderBy attribute of jx:each command (Issue 193)
+ * Tests orderBy attribute of jx:each command (Issue B193)
  */
 public class OrderByTest {
 
@@ -18,7 +18,7 @@ public class OrderByTest {
     public void test() throws IOException {
         // Prepare
         Context context = new Context();
-        context.putVar("employees", Issue133Test.createEmployees());
+        context.putVar("employees", IssueB133Test.createEmployees());
         
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());

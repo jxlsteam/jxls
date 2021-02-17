@@ -3,7 +3,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-project</artifactId>
     <packaging>pom</packaging>
-    <version>2.9.0-SNAPSHOT</version>
+    <version>2.9.1-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Small library for Excel generation based on XLS templates</description>
     <url>http://jxls.sf.net</url>
@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <slf4j.version>1.7.26</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
     </properties>
 
     <scm>

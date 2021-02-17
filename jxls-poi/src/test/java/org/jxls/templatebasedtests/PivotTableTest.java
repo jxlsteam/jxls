@@ -20,7 +20,7 @@ import org.jxls.util.JxlsNationalLanguageSupport;
 public class PivotTableTest {
 
     /**
-     * Issue 155: Pivot table does not work with NLS
+     * Issue B155: Pivot table does not work with NLS
      */
     @Test
     public void nls() throws Exception {

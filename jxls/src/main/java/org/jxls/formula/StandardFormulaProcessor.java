@@ -42,7 +42,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     public void processAreaFormulas(Transformer transformer, Area area) {
         Set<CellData> formulaCells = transformer.getFormulaCells();
         for (CellData formulaCellData : formulaCells) {
-            if (formulaCellData.getArea() == null) {
+            if (formulaCellData.getArea() == null || !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName())) {
                 continue;
             }
             logger.debug("Processing formula cell {}", formulaCellData);
@@ -81,7 +81,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                     if (targetFormulaString.startsWith("SUM")
                             && Util.countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM) {
                         // Excel doesn't support more than 255 arguments in functions.
-                        // Thus, we just concatenate all cells with "+" to have the same effect (see issue#59 for more detail)
+                        // Thus, we just concatenate all cells with "+" to have the same effect (see issue B059 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
                     } else {
                         String from = Util.regexJointedLookBehind

@@ -6,7 +6,8 @@ It will be gradually improving.
 
 Examples
 --------
-A good way to learn how to work with Jxls-2 is to checkout and look through package [org.jxls.examples](https://bitbucket.org/leonate/jxls/src/master/jxls-poi/src/test/java/org/jxls/examples/).
+A good way to learn how to work with Jxls-2 is to checkout and see examples in [org.jxls.examples](https://github.com/jxlsteam/jxls/tree/master/jxls-poi/src/test/java/org/jxls/examples).
+
 
 The list of examples looks like this
 
@@ -40,15 +41,17 @@ The list of examples looks like this
 28. *org.jxls.examples.MultiSheetMarkup1Demo*                 - Multiple Sheet example demonstrating Excel markup usage
 
 
+Asking Questions
+----------------
+Please use our [Github Discussions Q&A page](https://github.com/jxlsteam/jxls/discussions/categories/q-a) for questions.
+
+
 Mailing group
 -------------
 The following Google mailing group should be used for discussions about Jxls library
 
 https://groups.google.com/forum/#!forum/jxls
 
-Asking Questions
-----------------
-For questions we recommend [StackOverflow](http://stackoverflow.com/questions/tagged/jxls) .
 
 Jxls 1.x Documentation
 ----------------------

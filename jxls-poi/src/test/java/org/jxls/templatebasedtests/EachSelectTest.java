@@ -18,7 +18,7 @@ import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.Transformer;
 
 /**
- * Issue 157: jx:each select attribute limited expression evaluation context
+ * Issue B157: jx:each select attribute limited expression evaluation context
  */
 public class EachSelectTest {
 

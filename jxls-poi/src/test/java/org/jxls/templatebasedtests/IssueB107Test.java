@@ -13,7 +13,7 @@ import org.jxls.common.Context;
 /**
  * Issue with formatting of parts of text
  */
-public class Issue107Test {
+public class IssueB107Test {
 
     @Test
     public void test() throws IOException {

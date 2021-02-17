@@ -9,9 +9,11 @@ import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 
 /**
- * Formula substitution does not work when referencing another sheet
+ * How can I get an index in jx:each?
+ * 
+ * varIndex new in jx:each
  */
-public class Issue153Test {
+public class IssueB173Test {
 
     @Test
     public void test() throws Exception {
@@ -20,17 +22,16 @@ public class Issue153Test {
         context.putVar("employees", Employee.generateSampleEmployeeData());
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
+        JxlsTester tester = JxlsTester.xls(getClass());
         tester.processTemplate(context);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Template");
-            assertEquals("EE", w.getCellValueAsString(4, 5));
-            assertEquals("OO", w.getCellValueAsString(5, 5));
-            assertEquals("NN", w.getCellValueAsString(6, 5));
-            assertEquals("MM", w.getCellValueAsString(7, 5));
-            assertEquals("JJ", w.getCellValueAsString(8, 5));
+            // check index in column E starts with row E
+            for (int i = 0; i <= 4; i++) {
+                assertEquals(i, w.getCellValueAsDouble(4 + i, 5), 0.1d);
+            }
         }
     }
 }

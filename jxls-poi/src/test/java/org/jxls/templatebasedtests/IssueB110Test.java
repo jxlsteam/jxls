@@ -13,10 +13,10 @@ import org.jxls.common.Context;
 /**
  * Conditional formatting copying issue
  * 
- * @see Issue89Test
+ * @see IssueB089Test
  * @see ConditionalFormattingTest
  */
-public class Issue110Test {
+public class IssueB110Test {
 
     @Test
     public void test() throws IOException {

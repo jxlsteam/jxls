@@ -1,17 +1,14 @@
 Jxls-2 source
 =============
 
-Jxls-2 source code is available from the public repositories at Bitbucket.
+Jxls-2 source code is available on Github at https://github.com/jxlsteam/jxls.
 
-[Jxls core, POI Transformer, examples](https://bitbucket.org/leonate/jxls)
-
-[Jxls Jexcel Transformer](https://bitbucket.org/leonate/jxls-jexcel) (deprecated)
 
 Contributing
 ------------
 
 1. Create an issue.
-2. Fork the BitBucket repository.
+2. Fork the Github repository.
 3. Clone it into your IDE. A JDK 8 must be configured. Don't use a JRE.
 4. Create a feature branch, e.g. issue#111
 5. Write a testcase and modify the code.
@@ -29,7 +26,7 @@ Eclipse
 Codestyle
 ---------
 
-- Java 6 syntax.
+- Java 8 syntax (starting from Jxls 2.9.0)
 - Closing { at end of line.
 - Use spaces instead of tabs.
 - Use @Override annotation.

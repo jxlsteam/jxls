@@ -80,12 +80,31 @@ public interface Transformer {
     void mergeCells(CellRef ref, int rows, int cols);
 
     /**
-     * @return false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     * This property is used to recalculate all formulas before saving the workbook.
+     * This property is set to true if you don't open the file with MS Excel and just read it (e.g. with a unit test).
+     * The following documentation is POI specific.
+     * 
+     * @return true: calls <code>workbook.getCreationHelper().createFormulaEvaluator().evaluateAll()</code>
+     * before writing the workbook. Please have a look at the POI documentation for more details.
+     * This does not work for streaming.
+     * Please be aware that POI supports only a subset of Excel formulas.
+     * If an unsupported formula is in the template the evaluation will fail.
+     * <p>false (default): do nothing (hopefully MS Excel will recalculate all formulas while opening the file)</p>
      */
     boolean isEvaluateFormulas();
 
     /**
-     * @param evaluateFormulas false: formulas will be evaluated by MS Excel when opening the Excel file, true: evaluate formulas before writing
+     * This property is used to recalculate all formulas before saving the workbook.
+     * This property is set to true if you don't open the file with MS Excel and just read it (e.g. with a unit test).
+     * The following documentation is POI specific.
+     * 
+     * @param evaluateFormulas
+     * true: calls <code>workbook.getCreationHelper().createFormulaEvaluator().evaluateAll()</code>
+     * before writing the workbook. Please have a look at the POI documentation for more details.
+     * This does not work for streaming.
+     * Please be aware that POI supports only a subset of Excel formulas.
+     * If an unsupported formula is in the template the evaluation will fail.
+     * <p>false (default): do nothing (hopefully MS Excel will recalculate all formulas while opening the file)</p>
      */
     void setEvaluateFormulas(boolean evaluateFormulas);
 
