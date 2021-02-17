@@ -97,10 +97,20 @@ public class JxlsHelper {
         return this;
     }
 
+    /**
+     * @return false: do nothing, true: activate recalculation when opening
+     */
     public boolean isFullFormulaRecalculationOnOpening() {
         return fullFormulaRecalculationOnOpening;
     }
 
+    /**
+     * If you set this option to true, all formulas will be recalculated when the file is opened in MS Excel.
+     * This changes the Excel file. This only works once. 
+     * @param fullFormulaRecalculationOnOpening false: do nothing (default value),
+     *        true: activate recalculation when opening
+     * @return this
+     */
     public JxlsHelper setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
         this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
         return this;

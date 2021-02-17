@@ -108,9 +108,18 @@ public interface Transformer {
      */
     void setEvaluateFormulas(boolean evaluateFormulas);
 
-     boolean isFullFormulaRecalculationOnOpening();
+    /**
+     * @return false: do nothing, true: activate recalculation when opening
+     */
+    boolean isFullFormulaRecalculationOnOpening();
 
-     void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening);
+     /**
+      * If you set this option to true, all formulas will be recalculated when the file is opened in MS Excel.
+      * This changes the Excel file. This only works once. 
+      * @param fullFormulaRecalculationOnOpening false: do nothing (default value),
+      *        true: activate recalculation when opening
+      */
+    void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening);
 
     /**
      * @return true if the transformer can process cells only in a single pass

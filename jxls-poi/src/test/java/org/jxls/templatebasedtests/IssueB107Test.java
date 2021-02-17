@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
@@ -24,9 +23,8 @@ public class IssueB107Test {
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet(0);
-            RichTextString r = w.getCellValueAsRichString(2, 1);
-            assertEquals("ABC", r.toString()); // in template and output file: "A" is black and "BC" is red
-            assertEquals("Rich text string must consist of 2 parts.", 2, r.numFormattingRuns());
+            assertEquals("ABC", w.getCellValueAsRichString(2, 1)); // in template and output file: "A" is black and "BC" is red
+            assertEquals("Rich text string must consist of 2 parts.", 2, w.getCellValueAsRichStringNumFormattingRuns(2, 1));
         }
     }
 }
