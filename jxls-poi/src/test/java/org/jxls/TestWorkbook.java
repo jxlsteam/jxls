@@ -89,7 +89,7 @@ public class TestWorkbook implements AutoCloseable {
      * Expects date cell and returns its value as {@link LocalDateTime}.
      * @param row starts with 1
      * @param column 1 = A
-     * @return String
+     * @return LocalDateTime
      */
     public LocalDateTime getCellValueAsLocalDateTime(int row, int column) {
         return sheet.getRow(row - 1).getCell(column - 1).getLocalDateTimeCellValue();
