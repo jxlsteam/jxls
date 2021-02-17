@@ -155,10 +155,12 @@ public abstract class AbstractTransformer implements Transformer {
         return evaluateFormulas;
     }
 
+    @Override
     public boolean isFullFormulaRecalculationOnOpening() {
         return fullFormulaRecalculationOnOpening;
     }
 
+    @Override
     public void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
         this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
     }
