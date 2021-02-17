@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -59,10 +58,20 @@ public class TestWorkbook implements AutoCloseable {
      * Expects (possibly formatted) text cell and returns its content.
      * @param row starts with 1
      * @param column 1 = A
-     * @return RichTextString
+     * @return RichTextString.toString()
      */
-    public RichTextString getCellValueAsRichString(int row, int column) {
-        return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue();
+    public String getCellValueAsRichString(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue().toString();
+    }
+    
+    /**
+     * Expects (possibly formatted) text cell and returns its numFormattingRuns value.
+     * @param row starts with 1
+     * @param column 1 = A
+     * @return numFormattingRuns value
+     */
+    public int getCellValueAsRichStringNumFormattingRuns(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue().numFormattingRuns();
     }
 
     /**
@@ -128,9 +137,9 @@ public class TestWorkbook implements AutoCloseable {
         }
         return ret;
     }
-
-    public Workbook getWorkbook() {
-        return workbook;
+    
+    public boolean isForceFormulaRecalculation() {
+        return workbook.getForceFormulaRecalculation();
     }
 
     @Override
