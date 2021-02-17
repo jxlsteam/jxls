@@ -22,6 +22,7 @@ import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.extractors.LiteralsExtractor;
 import org.jxls.transform.Transformer;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
@@ -90,6 +91,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
+    public static final String LINE_SEPARATOR = "__LINE_SEPARATOR__";    
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some
@@ -218,17 +220,24 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         }
         return userAreas;
     }
-
+    
+    
     private List<CommandData> buildCommands(CellData cellData, String text) {
-        String[] commentLines = text.split("\\n");
+        List<String> literalList = new ArrayList<String>();
+        LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
+        literalList = extractor.extract();
+
         List<CommandData> commandDatas = new ArrayList<CommandData>();
-        for (String commentLine : commentLines) {
+        for (String commentLine : literalList) {
             String line = commentLine.trim();
+            line = line
+                    .replace("\r\n", LINE_SEPARATOR)
+                    .replace("\r", LINE_SEPARATOR)
+                    .replace("\n", LINE_SEPARATOR);
             if (isCommandString(line)) {
                 int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
                 if (nameEndIndex < 0) {
                     String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
-                    logger.error(errMsg);
                     throw new IllegalStateException(errMsg);
                 }
                 String commandName = line.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
