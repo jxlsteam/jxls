@@ -8,3 +8,4 @@ target/
 /derby.log
 /.gradle/
 /build/
+/build.xml
