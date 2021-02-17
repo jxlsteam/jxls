@@ -25,9 +25,19 @@ with `setEvaluateFormula(true)`
 If you create a Transformer instance yourself and want to enable formula evaluation you should call `setEvaluateFormulas(true)`
 on the transformer instance itself
 
-        Transformer transformer = PoiTransformer.createTransformer(in, out);
-        transformer.setEvaluateFormulas(true);
-        JxlsHelper.getInstance().processTemplate(context, transformer);
+    Transformer transformer = PoiTransformer.createTransformer(in, out);
+    transformer.setEvaluateFormulas(true);
+    JxlsHelper.getInstance().processTemplate(context, transformer);
+
+If you intend to use more complicated formulas which Apache POI cannot handle,
+you can save a hint in the Workbook which tells Excel to recalculate **all** formulas on reopening.
+This can be done through `setFullFormulaRecalculationOnOpening(true)` of either JxlsHelper or Transformer.
+
+    JxlsHelper.getInstance().setFullFormulaRecalculationOnOpening(true).processTemplate(is, os, context);
+    // OR
+    Transformer transformer = PoiTransformer.createTransformer(in, out);
+    transformer.setFullFormulaRecalculationOnOpening(true);
+    JxlsHelper.getInstance().processTemplate(context, transformer);
 
 
 ## Formulas Template example 

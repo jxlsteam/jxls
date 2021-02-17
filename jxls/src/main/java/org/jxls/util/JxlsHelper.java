@@ -33,6 +33,7 @@ public class JxlsHelper {
     private boolean processFormulas = true;
     private boolean useFastFormulaProcessor = false;
     private boolean evaluateFormulas = false;
+    private boolean fullFormulaRecalculationOnOpening = false;
     private String expressionNotationBegin;
     private String expressionNotationEnd;
     private FormulaProcessor formulaProcessor;
@@ -93,6 +94,15 @@ public class JxlsHelper {
      */
     public JxlsHelper setEvaluateFormulas(boolean evaluateFormulas) {
         this.evaluateFormulas = evaluateFormulas;
+        return this;
+    }
+
+    public boolean isFullFormulaRecalculationOnOpening() {
+        return fullFormulaRecalculationOnOpening;
+    }
+
+    public JxlsHelper setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
+        this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
         return this;
     }
 
@@ -457,6 +467,7 @@ public class JxlsHelper {
                     expressionNotationEnd);
         }
         transformer.setEvaluateFormulas(evaluateFormulas);
+        transformer.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
         return transformer;
     }
 }

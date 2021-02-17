@@ -108,6 +108,10 @@ public interface Transformer {
      */
     void setEvaluateFormulas(boolean evaluateFormulas);
 
+     boolean isFullFormulaRecalculationOnOpening();
+
+     void setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening);
+
     /**
      * @return true if the transformer can process cells only in a single pass
      */
