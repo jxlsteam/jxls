@@ -7,5 +7,5 @@ target/
 .settings/
 /derby.log
 /.gradle/
-/build.xml
 /build/
+/build.xml
