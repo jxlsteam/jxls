@@ -1,5 +1,10 @@
 package org.jxls.common;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -52,7 +57,7 @@ public class CellData {
     private static Logger logger = LoggerFactory.getLogger(CellData.class);
 
     public enum CellType {
-        STRING, NUMBER, BOOLEAN, DATE, FORMULA, BLANK, ERROR
+        STRING, NUMBER, BOOLEAN, DATE, LOCAL_DATE, LOCAL_TIME, LOCAL_DATETIME, ZONED_DATETIME, INSTANT, FORMULA, BLANK, ERROR
     }
 
     public enum FormulaStrategy {
@@ -317,6 +322,16 @@ public class CellData {
             targetCellType = CellType.BOOLEAN;
         } else if (evaluationResult instanceof Date) {
             targetCellType = CellType.DATE;
+        } else if (evaluationResult instanceof LocalDate) {
+            targetCellType = CellType.LOCAL_DATE;
+        } else if (evaluationResult instanceof LocalTime) {
+            targetCellType = CellType.LOCAL_TIME;
+        } else if (evaluationResult instanceof LocalDateTime) {
+            targetCellType = CellType.LOCAL_DATETIME;
+        } else if (evaluationResult instanceof ZonedDateTime) {
+            targetCellType = CellType.ZONED_DATETIME;
+        } else if (evaluationResult instanceof Instant) {
+            targetCellType = CellType.INSTANT;
         }
     }
 
