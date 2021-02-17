@@ -16,6 +16,8 @@ Command Attributes
 
 * `items` is a name of a context variable containing the collection (Iterable<?>) or array to iterate
 
+* `varIndex` is name of variable in Jxls context that holds current iteration index, zero based 
+
 * `area` is a reference to XLS Area used as `each command` body
 
 * `direction` is a value of `Direction` enumeration which may have values `DOWN` or `RIGHT` to indicate how to repeat the command body - by rows or by columns. The default value is `DOWN`.
