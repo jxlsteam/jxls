@@ -10,7 +10,7 @@ import org.jxls.common.Context;
 /**
  * Github issue 17: Image and multi sheet
  */
-public class IssueG17Test {
+public class Issue17Test {
 
     @Test
     public void test() throws Exception {
