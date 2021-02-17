@@ -22,15 +22,18 @@ import org.slf4j.LoggerFactory;
  * <p>Implements iteration over collection or array of items</p><ul>
  * <li>'items' is a bean name of the collection or array in context</li>
  * <li>'var' is a name of a collection item to put into the context during the iteration</li>
+ * <li>'varIndex' is name of variable in context that holds current iteration index, 0 based. Use ${varIndex+1} for 1 based.</li>
  * <li>'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.</li>
- * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
  * <li>'select' holds an expression for filtering collection.</li>
- * <li>'multisheet' is the name of the sheet names container.</li>
- * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order.</li>
  * <li>'groupBy' is the name for grouping.</li>
  * <li>'groupOrder' defines the grouping order. Case does not matter.
  *     "ASC" for ascending, "DESC" for descending sort order. Other values or null: no sorting.</li>
+ * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order.</li>
+ * <li>'multisheet' is the name of the sheet names container.</li>
+ * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
  * </ul>
+ * 
+ * <p>The variables defined in 'var' and 'varIndex' will be saved using the special method Context.getRunVar()</p>
  *
  * @author Leonid Vysochyn
  */
@@ -40,18 +43,18 @@ public class EachCommand extends AbstractCommand {
     static final String GROUP_DATA_KEY = "_group";
 
     private UtilWrapper util = new UtilWrapper();
-    private Area area;
     private String items;
     private String var;
+    private String varIndex;
     public enum Direction {RIGHT, DOWN}
     private Direction direction = Direction.DOWN;
-    private CellRefGenerator cellRefGenerator;
     private String select;
-    private String multisheet;
     private String groupBy;
     private String groupOrder;
-    private String varIndex;
     private String orderBy;
+    private String multisheet;
+    private CellRefGenerator cellRefGenerator;
+    private Area area;
 
     public EachCommand() {
     }
@@ -94,15 +97,9 @@ public class EachCommand extends AbstractCommand {
         this.cellRefGenerator = cellRefGenerator;
     }
 
-    /**
-     * @return variable name to put the current iteration index
-     */
-    public String getVarIndex() {
-        return varIndex;
-    }
-
-    public void setVarIndex(String varIndex) {
-        this.varIndex = varIndex;
+    @Override
+    public String getName() {
+        return COMMAND_NAME;
     }
 
     UtilWrapper getUtil() {
@@ -112,7 +109,54 @@ public class EachCommand extends AbstractCommand {
     void setUtil(UtilWrapper util) {
         this.util = util;
     }
-    
+
+    /**
+     * Gets collection bean name
+     *
+     * @return collection name of collection or array in the context
+     */
+    public String getItems() {
+        return items;
+    }
+
+    /**
+     * Sets collection bean name
+     *
+     * @param items name of collection or array in the context
+     */
+    public void setItems(String items) {
+        this.items = items;
+    }
+
+    /**
+     * Gets current variable name for collection item in the context during iteration
+     *
+     * @return collection item key name in the context
+     */
+    public String getVar() {
+        return var;
+    }
+
+    /**
+     * Sets current variable name for collection item in the context during iteration
+     *
+     * @param var name of the loop var
+     */
+    public void setVar(String var) {
+        this.var = var;
+    }
+
+    /**
+     * @return variable name to put the current iteration index, 0 based
+     */
+    public String getVarIndex() {
+        return varIndex;
+    }
+
+    public void setVarIndex(String varIndex) {
+        this.varIndex = varIndex;
+    }
+
     /**
      * Gets iteration direction
      *
@@ -139,60 +183,6 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * Gets defined cell ref generator
-     *
-     * @return current {@link CellRefGenerator} instance or null
-     */
-    public CellRefGenerator getCellRefGenerator() {
-        return cellRefGenerator;
-    }
-
-    public void setCellRefGenerator(CellRefGenerator cellRefGenerator) {
-        this.cellRefGenerator = cellRefGenerator;
-    }
-
-    @Override
-    public String getName() {
-        return COMMAND_NAME;
-    }
-
-    /**
-     * Gets current variable name for collection item in the context during iteration
-     *
-     * @return collection item key name in the context
-     */
-    public String getVar() {
-        return var;
-    }
-
-    /**
-     * Sets current variable name for collection item in the context during iteration
-     *
-     * @param var name of the loop var
-     */
-    public void setVar(String var) {
-        this.var = var;
-    }
-
-    /**
-     * Gets collection bean name
-     *
-     * @return collection name of collection or array in the context
-     */
-    public String getItems() {
-        return items;
-    }
-
-    /**
-     * Sets collection bean name
-     *
-     * @param items name of collection or array in the context
-     */
-    public void setItems(String items) {
-        this.items = items;
-    }
-
-    /**
      * Gets current 'select' expression for filtering out collection items
      *
      * @return current 'select' expression or null if undefined
@@ -208,6 +198,48 @@ public class EachCommand extends AbstractCommand {
      */
     public void setSelect(String select) {
         this.select = select;
+    }
+
+    /**
+     * @return property name for grouping the collection
+     */
+    public String getGroupBy() {
+        return groupBy;
+    }
+
+    /**
+     * @param groupBy property name for grouping the collection
+     */
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
+    }
+
+    /**
+     * @return group order
+     */
+    public String getGroupOrder() {
+        return groupOrder;
+    }
+
+    /**
+     * @param groupOrder group ordering: "ASC" for ascending, "DESC" for descending, other value or null: no sorting. Case does not matter.
+     */
+    public void setGroupOrder(String groupOrder) {
+        this.groupOrder = groupOrder;
+    }
+
+    /**
+     * @param orderBy property name for ordering the list
+     */
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    /**
+     * @return property name for ordering the list
+     */
+    public String getOrderBy() {
+        return orderBy;
     }
 
     /**
@@ -227,45 +259,16 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @return property name for grouping the collection
+     * Gets defined cell ref generator
+     *
+     * @return current {@link CellRefGenerator} instance or null
      */
-    public String getGroupBy() {
-        return groupBy;
+    public CellRefGenerator getCellRefGenerator() {
+        return cellRefGenerator;
     }
 
-    /**
-     * @param groupBy property name for grouping the collection
-     */
-    public void setGroupBy(String groupBy) {
-        this.groupBy = groupBy;
-    }
-
-    /**
-     * @param orderBy property name for ordering the list
-     */
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-    }
-
-    /**
-     * @return property name for ordering the list
-     */
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    /**
-     * @return group order
-     */
-    public String getGroupOrder() {
-        return groupOrder;
-    }
-
-    /**
-     * @param groupOrder group ordering: "ASC" for ascending, "DESC" for descending, other value or null: no sorting. Case does not matter.
-     */
-    public void setGroupOrder(String groupOrder) {
-        this.groupOrder = groupOrder;
+    public void setCellRefGenerator(CellRefGenerator cellRefGenerator) {
+        this.cellRefGenerator = cellRefGenerator;
     }
 
     @Override
@@ -333,6 +336,7 @@ public class EachCommand extends AbstractCommand {
 
         CellRef currentCell = cellRef;
         Object currentVarObject = context.getRunVar(varName);
+        Object currentVarIndexObject = context.getRunVar(varIndex);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
@@ -364,6 +368,7 @@ public class EachCommand extends AbstractCommand {
             }
             currentIndex++;
         }
+        restoreVarObject(context, varIndex, currentVarIndexObject);
         restoreVarObject(context, varName, currentVarObject);
         return new Size(newWidth, newHeight);
     }

@@ -10,15 +10,13 @@ It is an analogue of Java *for* operator.
 Command Attributes
 ------------------
 
-*Each-Command* has the following attributes
-
-* `var` is a name of the variable in Jxls context to put each new collection item when iterating
+*Each-Command* has the following attributes:
 
 * `items` is a name of a context variable containing the collection (Iterable<?>) or array to iterate
 
-* `varIndex` is name of variable in Jxls context that holds current iteration index, zero based 
+* `var` is a name of the variable in Jxls context to put each new collection item when iterating
 
-* `area` is a reference to XLS Area used as `each command` body
+* `varIndex` is name of variable in Jxls context that holds current iteration index, zero based 
 
 * `direction` is a value of `Direction` enumeration which may have values `DOWN` or `RIGHT` to indicate how to repeat the command body - by rows or by columns. The default value is `DOWN`.
 
@@ -30,13 +28,18 @@ Command Attributes
 
 * `orderBy` contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order
 
+* `multisheet` is a name of a context variable containing a list of sheet names to output the collection
+
 * `cellRefGenerator` is a custom strategy for target cell references creation
 
-* `multisheet` is a name of a context variable containing a list of sheet names to output the collection
+* `area` is a reference to XLS Area used as `each command` body
 
 * `lastCell` is a common attribute for any command pointing to the last cell of the command area
 
 The `var` and `items` attributes are mandatory while others can be skipped.
+
+The values for the loop variables `var` and `varIndex` will be saved using the special method Context.getRunVar().
+This allows you to react separately if the values are not available.
 
 To find more information about using `cellRefGenerator` and `multisheet` attributes check [Multiple sheets section](multi_sheets.html).
 
