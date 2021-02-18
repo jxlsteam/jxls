@@ -8,6 +8,10 @@ import java.util.Stack;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 
+/**
+ * @author Alexander Lust
+ */
+
 public class LiteralsExtractor {
     public static final int COMMAND_PREFIX_LENGTH = 3;
     private String text;
@@ -21,7 +25,7 @@ public class LiteralsExtractor {
     public List<String> extract() {
         String literal = "";
         for (int i = 0, n = text.length(); i < n; i++) {
-            if (literal.length() >= COMMAND_PREFIX_LENGTH && literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX)) {
+            if (literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX)) {
                 // if the first 3 chars of literal are 'jx:'
                 // save comment parsed before
                 literal = literal.substring(0, literal.length() - COMMAND_PREFIX_LENGTH);
