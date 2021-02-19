@@ -53,7 +53,7 @@ public class LiteralsExtractor {
     private void makeCommentLines(String literal, List<String> literalList) {
         literalList.addAll(
                 Arrays.stream(literal.split("\n"))
-                    .filter(line -> !line.isEmpty())
+                    .filter(line -> !line.replace("\r", "").trim().isEmpty())
                     .collect(toList()));
     }
     
