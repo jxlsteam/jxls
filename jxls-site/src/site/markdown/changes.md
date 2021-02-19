@@ -1,6 +1,21 @@
 Version History
 ==============
 
+v2.10.0 RC1
+-----------
+New features:
+
+* [#78 Add support for JSR310 types (aka Java Time API)](https://github.com/jxlsteam/jxls/issues/78), contribution by [wagnerluis1982](https://github.com/wagnerluis1982)
+* [#79 Multi-line and comment support for SQL queries in jx:each](https://github.com/jxlsteam/jxls/issues/79), contribution by [alexlust](https://github.com/alexlust)
+* [#85 Distinguish between unknown key and run var](https://github.com/jxlsteam/jxls/issues/85)
+* [#87 Formula recalculation](https://github.com/jxlsteam/jxls/issues/87), contribution by [Turbocube644](https://github.com/Turbocube644)
+* [#93 Backup/restore varIndex in jx:each](https://github.com/jxlsteam/jxls/issues/93)
+
+other resolved issues:
+
+* [#75 Documented varIndex argument](https://github.com/jxlsteam/jxls/issues/75), contribution by [sapradhan](https://github.com/sapradhan)
+* [#90 Escaping single quotes in query is possible](https://github.com/jxlsteam/jxls/issues/90)
+
 v2.9.0
 -----------
 With this version we migrated from BitBucket to Github.
