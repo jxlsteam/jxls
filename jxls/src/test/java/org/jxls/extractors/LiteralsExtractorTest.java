@@ -1,10 +1,11 @@
 package org.jxls.extractors;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import org.jxls.extractors.LiteralsExtractor;
 
 /**
  * @author Alexander Lust
@@ -40,8 +41,8 @@ public class LiteralsExtractorTest {
     			+ "\r\n"
     			+ "*/\r\n"
     			+ "from RS_USER')\" var=\"user\" lastCell=\"D4\")";
-        LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
-        literalList = extractor.extract();
+        LiteralsExtractor extractor = new LiteralsExtractor();
+        literalList = extractor.extract(text);
         
         assertEquals("Number of literalList is wrong", 2, literalList.size());
         assertEquals("First member of literalList is wrong", "Autor:\r", literalList.get(0));
@@ -53,10 +54,9 @@ public class LiteralsExtractorTest {
      */	
 	@Test(expected = NullPointerException.class)
     public void testNullPointerException() {
-    	List<String> literalList = null;
     	String text = null;
-        LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
-        literalList = extractor.extract();
+        LiteralsExtractor extractor = new LiteralsExtractor();
+        extractor.extract(text);
     }
     
 }
