@@ -22,8 +22,8 @@ import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
-import org.jxls.extractors.LiteralsExtractor;
 import org.jxls.transform.Transformer;
+import org.jxls.util.LiteralsExtractor;
 import org.jxls.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,38 +221,33 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return userAreas;
     }
     
-    
     private List<CommandData> buildCommands(CellData cellData, String text) {
-        List<String> literalList = new ArrayList<String>();
-        LiteralsExtractor extractor = new LiteralsExtractor(text, literalList);
-        literalList = extractor.extract();
-
         List<CommandData> commandDatas = new ArrayList<CommandData>();
-        for (String commentLine : literalList) {
-            String line = commentLine.trim();
-            line = line
+        for (String commentLine : new LiteralsExtractor().extract(text)) {
+            String line = commentLine.trim()
                     .replace("\r\n", LINE_SEPARATOR)
                     .replace("\r", LINE_SEPARATOR)
                     .replace("\n", LINE_SEPARATOR);
-            if (isCommandString(line)) {
-                int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
-                if (nameEndIndex < 0) {
-                    String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
-                    throw new IllegalStateException(errMsg);
+            if (!isCommandString(line)) {
+                continue;
+            }
+            int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
+            if (nameEndIndex < 0) {
+                String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
+                throw new IllegalStateException(errMsg);
+            }
+            String commandName = line.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
+            Map<String, String> attrMap = buildAttrMap(line, nameEndIndex);
+            CommandData commandData = createCommandData(cellData, commandName, attrMap);
+            if (commandData != null) {
+                commandDatas.add(commandData);
+                List<Area> areas = buildAreas(cellData, line);
+                for (Area area : areas) {
+                    commandData.getCommand().addArea(area);
                 }
-                String commandName = line.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
-                Map<String, String> attrMap = buildAttrMap(line, nameEndIndex);
-                CommandData commandData = createCommandData(cellData, commandName, attrMap);
-                if (commandData != null) {
-                    commandDatas.add(commandData);
-                    List<Area> areas = buildAreas(cellData, line);
-                    for (Area area : areas) {
-                        commandData.getCommand().addArea(area);
-                    }
-                    if (areas.isEmpty()) {
-                        Area area = new XlsArea(commandData.getAreaRef(), transformer);
-                        commandData.getCommand().addArea(area);
-                    }
+                if (areas.isEmpty()) {
+                    Area area = new XlsArea(commandData.getAreaRef(), transformer);
+                    commandData.getCommand().addArea(area);
                 }
             }
         }
