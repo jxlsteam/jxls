@@ -33,5 +33,10 @@ Next it converts each row of the [ResultSet](http://docs.oracle.com/javase/7/doc
 where keys of the map are the case insensitive column names and the values are the corresponding column values.
       
 The created *List<Map<String, Object>>* is then processed by [jx:each command](each_command.html) in a regular way.
+
+Single quotation marks in SQL are to be escaped with backslash:
+
+    jx:each(items="jdbc.query('select * from employee where name=\'Elsa\' ')" var="employee" lastCell="C4")
+
       
 See [SqlDemo Sample](../samples/sql_demo.html) to see a working example of SQL usage in the template.      
