@@ -12,7 +12,6 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 /**
  * @author Alexander Lust
  */
-
 public class LiteralsExtractor {
     private static final int COMMAND_PREFIX_LENGTH = XlsCommentAreaBuilder.COMMAND_PREFIX.length();
     
@@ -21,6 +20,7 @@ public class LiteralsExtractor {
         String literal = "";
         for (int i = 0, n = text.length(); i < n; i++) {
             if (literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX)) {
+                
                 // if the first 3 chars of literal are 'jx:'
                 // save comment parsed before
                 literal = literal.substring(0, literal.length() - COMMAND_PREFIX_LENGTH);
@@ -33,9 +33,9 @@ public class LiteralsExtractor {
 
                 if (i != n) {
                     // if text no ending
-                    literal = String.valueOf(text.charAt(i));                    
+                    literal = String.valueOf(text.charAt(i));
                 } else {
-                    literal = "";                    
+                    literal = "";
                 }
             } else {
                 // else is the next char to new literal
@@ -69,14 +69,14 @@ public class LiteralsExtractor {
                 case '"':
                 case '\'':
                     if (!quotationsStack.empty() && quotationsStack.peek() == symbol) {
-                        quotationsStack.pop();                    
+                        quotationsStack.pop();
                     } else {
-                        quotationsStack.push(symbol);                                    
+                        quotationsStack.push(symbol);
                     }
                     break;
                 case '(':
                     if (quotationsStack.empty()) {
-                        bracketsStack.push(symbol);                    
+                        bracketsStack.push(symbol);
                     }
                     break;
                 case ')':
@@ -84,7 +84,7 @@ public class LiteralsExtractor {
                         if (bracketsStack.peek() == '(') {
                             bracketsStack.pop();
                             if (bracketsStack.empty()) {
-                                return cmd + symbol;                            
+                                return cmd + symbol;
                             }
                         } else {
                             // no opening, but closing !!
