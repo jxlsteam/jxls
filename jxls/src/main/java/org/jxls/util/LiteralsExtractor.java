@@ -1,4 +1,4 @@
-package org.jxls.extractors;
+package org.jxls.util;
 
 import static java.util.stream.Collectors.toList;
 
