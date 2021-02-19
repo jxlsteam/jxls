@@ -24,7 +24,7 @@ public class SqlDemo {
             Context context = new Context();
             context.putVar("jdbc", new JdbcHelper(conn));
             
-            JxlsTester tester = JxlsTester.xls(getClass());
+            JxlsTester tester = JxlsTester.xlsx(getClass());
             tester.processTemplate(context);
         }
     }
