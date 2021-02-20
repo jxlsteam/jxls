@@ -1,29 +1,27 @@
-Jxls v2.9.0 is released!
-========================
+Jxls 2.10.0-rc1 is available!
+==========================
 
-With this version we migrated from BitBucket to Github.
+The release candidate build for Jxls 2.10 is available for download.
 
-A list of resolved issues
+New features:
 
-* [#1: Javadoc](https://github.com/jxlsteam/jxls/issues/1)
-* [#2: moved jxls-site into main repo](https://github.com/jxlsteam/jxls/issues/2)
-* [#8: Gradle](https://github.com/jxlsteam/jxls/issues/8)
-* [#13: Code coverage](https://github.com/jxlsteam/jxls/issues/13)
-* [#15: Java 8](https://github.com/jxlsteam/jxls/issues/15)
-* [#19: B prefix for BitBucket issue related testcase classes](https://github.com/jxlsteam/jxls/issues/19)
-* [#25: read-only mode when open Excel files in tests](https://github.com/jxlsteam/jxls/issues/25)
-* [#27: changes from 2.8.1](https://github.com/jxlsteam/jxls/issues/27), see below and [BitBucket issue 210](https://bitbucket.org/leonate/jxls/issues/210/sum-when-more-than-1-sheet-doesnt-work-on)
-* [#50: POI 4.1.2, commons-beanutils 1.9.4, slf4j](https://github.com/jxlsteam/jxls/issues/50)
-* [#53: CLOB fix](https://github.com/jxlsteam/jxls/issues/53)
-* [#64: don't read iterable ahead of time (jx:each bugfix)](https://github.com/jxlsteam/jxls/issues/64)
-* [#68: workaround for POI bug: unset value after changing a formula (streaming mode)](https://github.com/jxlsteam/jxls/issues/68)
+* [#78 Add support for JSR310 types (aka Java Time API)](https://github.com/jxlsteam/jxls/issues/78), contribution by [wagnerluis1982](https://github.com/wagnerluis1982)
+* [#79 Multi-line and comment support for SQL queries in jx:each](https://github.com/jxlsteam/jxls/issues/79), contribution by [alexlust](https://github.com/alexlust)
+* [#85 Distinguish between unknown key and run var](https://github.com/jxlsteam/jxls/issues/85)
+* [#87 Formula recalculation](https://github.com/jxlsteam/jxls/issues/87), contribution by [Turbocube644](https://github.com/Turbocube644)
+* [#93 Backup/restore varIndex in jx:each](https://github.com/jxlsteam/jxls/issues/93)
+
+other resolved issues:
+
+* [#75 Documented varIndex argument](https://github.com/jxlsteam/jxls/issues/75), contribution by [sapradhan](https://github.com/sapradhan)
+* [#90 Escaping single quotes in query is possible](https://github.com/jxlsteam/jxls/issues/90)
  
 
 ###### The latest component versions
 
-* org.jxls:jxls:2.9.0
+* org.jxls:jxls:2.10.0-rc1
 
-* org.jxls:jxls-poi:2.9.0
+* org.jxls:jxls-poi:2.10.0-rc1
 
 Introduction
 ------------
