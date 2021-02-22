@@ -4,7 +4,9 @@
 
 ## News
 
-JXLS has moved from BitBucket to Github. Please use the Github issue tracker for bugs and the Github discussions Q&A for questions.
+New release 2.10.0 RC1 comes with support for JSR310, multi-line SQL, formula recalculation etc. Thank you for the contributions.
+
+JXLS has moved from BitBucket to Github. Please use the Github issue tracker for bugs and the Github [Discussions](https://github.com/jxlsteam/jxls/discussions/categories/q-a) for questions.
 
 ## Overview
 
@@ -20,12 +22,12 @@ JXLS uses a special markup in Excel templates to define output formatting and da
     <dependency>
         <groupId>org.jxls</groupId>
         <artifactId>jxls-poi</artifactId>
-        <version>2.8.1</version>
+        <version>2.10.0-rc1</version>
     </dependency>
 
 **Gradle**
 
-    compile 'org.jxls:jxls-poi:2.8.1'
+    implementation 'org.jxls:jxls-poi:2.10.0-rc1'
 
 
 ## Contributing
