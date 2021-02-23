@@ -4,6 +4,8 @@
 
 ## News
 
+Please do not use RC1. (see #108)
+
 New release 2.10.0 RC1 comes with support for JSR310, multi-line SQL, formula recalculation etc. Thank you for the contributions.
 
 JXLS has moved from BitBucket to Github. Please use the Github issue tracker for bugs and the Github [Discussions](https://github.com/jxlsteam/jxls/discussions/categories/q-a) for questions.
