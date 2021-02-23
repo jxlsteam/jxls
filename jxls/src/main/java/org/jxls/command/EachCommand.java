@@ -335,8 +335,8 @@ public class EachCommand extends AbstractCommand {
         }
 
         CellRef currentCell = cellRef;
-        Object currentVarObject = context.getRunVar(varName);
-        Object currentVarIndexObject = context.getRunVar(varIndex);
+        Object currentVarObject = varName == null ? null : context.getRunVar(varName);
+        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
@@ -353,7 +353,12 @@ public class EachCommand extends AbstractCommand {
             if (currentCell == null) {
                 break;
             }
-            Size size = area.applyAt(currentCell, context);
+            Size size;
+            try {
+                size = area.applyAt(currentCell, context);
+            } catch (NegativeArraySizeException e) {
+                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
+            }
             if (cellRefGenerator != null) {
                 newWidth = Math.max(newWidth, size.getWidth());
                 newHeight = Math.max(newHeight, size.getHeight());
@@ -374,6 +379,9 @@ public class EachCommand extends AbstractCommand {
     }
 
     private void restoreVarObject(Context context, String varName, Object varObject) {
+        if (varName == null) {
+            return;
+        }
         if (varObject != null) {
             context.putVar(varName, varObject);
         } else {
