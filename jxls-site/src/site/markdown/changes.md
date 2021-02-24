@@ -1,7 +1,7 @@
 Version History
 ==============
 
-v2.10.0 RC1
+v2.10.0 RC2
 -----------
 New features:
 
@@ -10,6 +10,7 @@ New features:
 * [#85 Distinguish between unknown key and run var](https://github.com/jxlsteam/jxls/issues/85)
 * [#87 Formula recalculation](https://github.com/jxlsteam/jxls/issues/87), contribution by [Turbocube644](https://github.com/Turbocube644)
 * [#93 Backup/restore varIndex in jx:each](https://github.com/jxlsteam/jxls/issues/93)
+* [#108 bug in 2.10.0 RC1: Don't call getRunVar with null](https://github.com/jxlsteam/jxls/issues/108)
 
 other resolved issues:
 
