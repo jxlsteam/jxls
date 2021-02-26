@@ -10,8 +10,8 @@
     <url>http://jxls.sf.net/</url>
 
     <properties>
-        <jxlsVersion>2.9.0</jxlsVersion>
-        <jxlsPoiVersion>2.9.0</jxlsPoiVersion>
+        <jxlsVersion>2.10.0-rc1</jxlsVersion>
+        <jxlsPoiVersion>2.10.0-rc1</jxlsPoiVersion>
         <jxlsReaderVersion>2.0.6</jxlsReaderVersion>
         <copyrightClass>pull-right</copyrightClass>
     </properties>
