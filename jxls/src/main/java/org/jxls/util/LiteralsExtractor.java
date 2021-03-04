@@ -18,8 +18,7 @@ public class LiteralsExtractor {
     public List<String> extract(final String text) {
         List<String> literalList = new ArrayList<>();
         String literal = "";
-        for (int i = 0, n = text.length(); i < n; i++) {
-        	        	
+        for (int i = 0, n = text.length(); i < n; i++) {        	        	
         	String[] lineElems = literal.split("\\n");
         	String[] jxLineElem = lineElems[lineElems.length- 1].split("jx:");        	
 			
