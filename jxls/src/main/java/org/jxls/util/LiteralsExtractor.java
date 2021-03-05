@@ -19,9 +19,17 @@ public class LiteralsExtractor {
         List<String> literalList = new ArrayList<>();
         String literal = "";
         for (int i = 0, n = text.length(); i < n; i++) {
-            if (literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX)) {
-                
+            String[] lineElems = literal.split("\\n");
+            String[] jxLineElem;
+            if (lineElems.length == 0) {
+                jxLineElem = new String[] {};
+            } else {
+                jxLineElem = lineElems[lineElems.length - 1].split("jx:");
+            }
+
+            if (literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX) && !(jxLineElem.length > 0 && jxLineElem[0].contains("//"))) {
                 // if the first 3 chars of literal are 'jx:'
+                // is this line commented?
                 // save comment parsed before
                 literal = literal.substring(0, literal.length() - COMMAND_PREFIX_LENGTH);
                 makeCommentLines(literal, literalList);
