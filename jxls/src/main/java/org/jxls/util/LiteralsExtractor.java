@@ -20,7 +20,12 @@ public class LiteralsExtractor {
         String literal = "";
         for (int i = 0, n = text.length(); i < n; i++) {
             String[] lineElems = literal.split("\\n");
-            String[] jxLineElem = lineElems[lineElems.length- 1].split("jx:");
+            String[] jxLineElem;
+            if (lineElems.length == 0) {
+                jxLineElem = new String[] {};
+            } else {
+                jxLineElem = lineElems[lineElems.length - 1].split("jx:");
+            }
 
             if (literal.endsWith(XlsCommentAreaBuilder.COMMAND_PREFIX) && !(jxLineElem.length > 0 && jxLineElem[0].contains("//"))) {
                 // if the first 3 chars of literal are 'jx:'
