@@ -1,6 +1,7 @@
 package org.jxls.builder.xls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,11 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
-    public static final String LINE_SEPARATOR = "__LINE_SEPARATOR__";    
+    public static final String LINE_SEPARATOR = "__LINE_SEPARATOR__";
+    /**
+     * Feature toggle for the multi-line SQL feature (#79). By default turned off for 2.10.0 (incubating). By default turned on starting with version 2.11.0.
+     */
+    public static boolean MULTI_LINE_SQL_FEATURE = false;
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some
@@ -223,11 +228,19 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     
     private List<CommandData> buildCommands(CellData cellData, String text) {
         List<CommandData> commandDatas = new ArrayList<CommandData>();
-        for (String commentLine : new LiteralsExtractor().extract(text)) {
-            String line = commentLine.trim()
-                    .replace("\r\n", LINE_SEPARATOR)
-                    .replace("\r", LINE_SEPARATOR)
-                    .replace("\n", LINE_SEPARATOR);
+        List<String> commentLines;
+        if (MULTI_LINE_SQL_FEATURE) {
+            commentLines = new LiteralsExtractor().extract(text);
+        } else {
+            commentLines = Arrays.asList(text.split("\\n"));
+        }
+        for (String commentLine : commentLines) {
+            String line = commentLine.trim();
+            if (MULTI_LINE_SQL_FEATURE) {
+                line = line.replace("\r\n", LINE_SEPARATOR)
+                        .replace("\r", LINE_SEPARATOR)
+                        .replace("\n", LINE_SEPARATOR);
+            }
             if (!isCommandString(line)) {
                 continue;
             }
