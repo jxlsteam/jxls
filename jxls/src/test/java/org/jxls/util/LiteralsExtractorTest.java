@@ -115,4 +115,19 @@ public class LiteralsExtractorTest {
         assertEquals("Second member of literalList is wrong", expectedText, literalList.get(1));
         assertEquals("Third member of literalList is wrong", "//jx:if(condition=\"user.XYZ != 4\" lastCell=\"D4\")", literalList.get(2));
     }
+
+    @Test
+    public void testCommentIf_withWhitspace() {
+        String expectedText = "jx:each(items=\"jdbc.query('select * from RS_USER')\" var=\"user\" lastCell=\"D4\")";
+        String text = "author:\r\n"
+                + "jx:each(items=\"jdbc.query('select * from RS_USER')\" var=\"user\" lastCell=\"D4\")\r\n\n"
+                + " \t // \t jx:if( condition=\"user.XYZ != 4\", lastCell=\"D4\" ) \t ";
+
+        List<String> literalList = new LiteralsExtractor().extract(text);
+        
+        assertEquals("Number of literalList is wrong", 3, literalList.size());
+        assertEquals("First member of literalList is wrong", "author:\r", literalList.get(0));
+        assertEquals("Second member of literalList is wrong", expectedText, literalList.get(1));
+        assertEquals("Third member of literalList is wrong", " \t // \t jx:if( condition=\"user.XYZ != 4\", lastCell=\"D4\" ) \t ", literalList.get(2));
+    }
 }
