@@ -1,7 +1,5 @@
-Jxls 2.10.0-rc3 is available!
+Jxls 2.10.0 is available!
 ============================
-
-The release candidate 3 build for Jxls 2.10 is available for download.
 
 New features and fixed bugs
 
@@ -13,7 +11,6 @@ New features and fixed bugs
 * [#108 bug in 2.10.0 RC1: Don't call getRunVar with null](https://github.com/jxlsteam/jxls/issues/108)
 * [#111 bug in 2.10.0 RC2:  LiteralsExtractor buggy](https://github.com/jxlsteam/jxls/issues/111)
 
-
 other resolved issues:
 
 * [#75 Documented varIndex argument](https://github.com/jxlsteam/jxls/issues/75), contribution by [sapradhan](https://github.com/sapradhan)
@@ -22,9 +19,9 @@ other resolved issues:
 
 ###### The latest component versions
 
-* org.jxls:jxls:2.10.0-rc3
+* org.jxls:jxls:2.10.0
 
-* org.jxls:jxls-poi:2.10.0-rc3
+* org.jxls:jxls-poi:2.10.0
 
 Introduction
 ------------
