@@ -1,8 +1,8 @@
 Version History
 ==============
 
-v2.10.0 RC3
------------
+v2.10.0
+--------
 New features and fixed bugs
 
 * [#78 Add support for JSR310 types (aka Java Time API)](https://github.com/jxlsteam/jxls/issues/78), contribution by [wagnerluis1982](https://github.com/wagnerluis1982)

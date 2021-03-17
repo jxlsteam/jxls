@@ -5,13 +5,13 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-site</artifactId>
     <packaging>jar</packaging>
-    <version>2.10.0-rc3</version>
+    <version>2.10.0</version>
     <name>JXLS</name>
     <url>http://jxls.sf.net/</url>
 
     <properties>
-        <jxlsVersion>2.10.0-rc2</jxlsVersion>
-        <jxlsPoiVersion>2.10.0-rc2</jxlsPoiVersion>
+        <jxlsVersion>2.10.0</jxlsVersion>
+        <jxlsPoiVersion>2.10.0</jxlsPoiVersion>
         <jxlsReaderVersion>2.0.6</jxlsReaderVersion>
         <copyrightClass>pull-right</copyrightClass>
     </properties>
