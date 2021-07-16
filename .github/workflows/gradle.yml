@@ -20,10 +20,10 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Code Coverage
-      run: ./gradlew codeCoverageReport 
-    - uses: codecov/codecov-action@v1
-      with:
-        file: build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
-        fail_ci_if_error: true
+#    - name: Code Coverage
+#      run: ./gradlew codeCoverageReport 
+#    - uses: codecov/codecov-action@v1
+#      with:
+#        file: build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
+#        fail_ci_if_error: true
 
