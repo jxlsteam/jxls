@@ -19,6 +19,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.XMLConstants;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -82,10 +83,19 @@ public abstract class JxlsNationalLanguageSupport {
     protected void processZipEntry(ZipEntry zipEntry, InputStream in, ZipOutputStream zipout) throws IOException, ParserConfigurationException, SAXException, TransformerException {
         zipout.putNextEntry(new ZipEntry(zipEntry.getName()));
         if (zipEntry.getName().toLowerCase().endsWith(".xml")) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             Document dom = builder.parse(getNoCloseInputStream(in));
             processElement(dom.getDocumentElement());
-            javax.xml.transform.TransformerFactory.newInstance().newTransformer().transform(new DOMSource(dom), new StreamResult(zipout));
+            javax.xml.transform.TransformerFactory transformerFactory = javax.xml.transform.TransformerFactory.newInstance();
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            transformerFactory.newTransformer().transform(new DOMSource(dom), new StreamResult(zipout));
         } else {
             transfer(in, zipout);
         }
