@@ -1,27 +1,17 @@
-Jxls 2.10.0 is available!
+Jxls 2.11.0 is available!
 ============================
 
-New features and fixed bugs
+The release contains an upgrade of Jexl library and a fix for XXE vulnerability
 
-* [#78 Add support for JSR310 types (aka Java Time API)](https://github.com/jxlsteam/jxls/issues/78), contribution by [wagnerluis1982](https://github.com/wagnerluis1982)
-* [#79 Multi-line and comment support for SQL queries in jx:each](https://github.com/jxlsteam/jxls/issues/79), contribution by [alexlust](https://github.com/alexlust)
-* [#85 Distinguish between unknown key and run var](https://github.com/jxlsteam/jxls/issues/85)
-* [#87 Formula recalculation](https://github.com/jxlsteam/jxls/issues/87), contribution by [Turbocube644](https://github.com/Turbocube644)
-* [#93 Backup/restore varIndex in jx:each](https://github.com/jxlsteam/jxls/issues/93)
-* [#108 bug in 2.10.0 RC1: Don't call getRunVar with null](https://github.com/jxlsteam/jxls/issues/108)
-* [#111 bug in 2.10.0 RC2:  LiteralsExtractor buggy](https://github.com/jxlsteam/jxls/issues/111)
-
-other resolved issues:
-
-* [#75 Documented varIndex argument](https://github.com/jxlsteam/jxls/issues/75), contribution by [sapradhan](https://github.com/sapradhan)
-* [#90 Escaping single quotes in query is possible](https://github.com/jxlsteam/jxls/issues/90)
+* [#131 JEXL 3.2](https://github.com/jxlsteam/jxls/issues/131)
+* [#143 Vulnerability alert](https://github.com/jxlsteam/jxls/issues/143)
  
 
 ###### The latest component versions
 
-* org.jxls:jxls:2.10.0
+* org.jxls:jxls:2.11.0
 
-* org.jxls:jxls-poi:2.10.0
+* org.jxls:jxls-poi:2.11.0
 
 Introduction
 ------------

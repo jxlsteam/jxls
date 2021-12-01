@@ -1,6 +1,14 @@
 Version History
 ==============
 
+v2.11.0
+--------
+The release contains an upgrade of JEXL library and a fix for XXE vulnerability
+
+* [#131 JEXL 3.2](https://github.com/jxlsteam/jxls/issues/131)
+* [#143 Vulnerability alert](https://github.com/jxlsteam/jxls/issues/143)
+
+
 v2.10.0
 --------
 New features and fixed bugs
