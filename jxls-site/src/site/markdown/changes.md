@@ -1,6 +1,10 @@
 Version History
 ==============
 
+v2.12.0
+--------
+* [#147 Row height bugfix], contribution by [jools-uk](https://github.com/jools-uk)
+
 v2.10.0
 --------
 New features and fixed bugs
