@@ -438,7 +438,7 @@ public class XlsArea implements Area {
             if (!cellRange.containsCommandsInRow(relativeSrcRow)) {
                 int relativeTargetRow = cellRange.findTargetRow(relativeSrcRow);
                 int targetRow = areaStartCellRef.getRow() + relativeTargetRow;
-                int srcRow = areaStartCellRef.getRow() + relativeSrcRow;
+                int srcRow = startCellRef.getRow() + relativeSrcRow;
                 try {
                     transformer.updateRowHeight(startCellRef.getSheetName(), srcRow, areaStartCellRef.getSheetName(), targetRow);
                 } catch (Exception e) {

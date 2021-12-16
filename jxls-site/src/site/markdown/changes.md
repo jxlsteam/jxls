@@ -1,6 +1,11 @@
 Version History
 ==============
 
+v2.12.0
+--------
+* [#147 Row height bugfix], contribution by [jools-uk](https://github.com/jools-uk)
+
+
 v2.11.0
 --------
 The release contains an upgrade of JEXL library and a fix for XXE vulnerability
