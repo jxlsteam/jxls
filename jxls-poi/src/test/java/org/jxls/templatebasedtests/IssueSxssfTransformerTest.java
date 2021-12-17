@@ -1,9 +1,21 @@
 package org.jxls.templatebasedtests;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.junit.Assert;
 import org.junit.Test;
+import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
@@ -11,21 +23,19 @@ import org.jxls.common.Context;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
 
-import java.io.*;
-import java.util.*;
-
 /**
- * Test for {https://github.com/jxlsteam/jxls/issues/153}
- * Issue in Excel Output while using SXSSF Transformer with JXLS (>=2.7.0)
+ * Test for issue 153
+ * 
+ * Issue in Excel Output while using SXSSF Transformer with JXLS >= 2.7.0
+ * cause: commit 5354beaf
  */
 public class IssueSxssfTransformerTest {
-    private static final String NAME = "IssueSxssfTransformerTest";
 
     @Test
     public void test() throws IOException {
         // Test
-        final String output = "target/" + NAME + "_output.xlsx";
-        try (InputStream is = IssueSxssfTransformerTest.class.getResourceAsStream(NAME + ".xlsx")) {
+        final String output = "target/" + getClass().getSimpleName() + "_output.xlsx";
+        try (InputStream is = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx")) {
             try (OutputStream os = new FileOutputStream(output)) {
                 final Workbook workbook = WorkbookFactory.create(is);
                 final int activeSheetIndex = workbook.getActiveSheetIndex();
@@ -40,10 +50,15 @@ public class IssueSxssfTransformerTest {
                 workbook2.write(os);
             }
         }
+        
+        // Verify
+        try (TestWorkbook w = new TestWorkbook(new File(output))) {
+            w.selectSheet(1);
+            Assert.assertEquals("Manager:", w.getCellValueAsString(3, 1)); // A3
+        }
     }
 
     private void processArea(Area area) {
-        //Prepare Context
         Context context = prepareContext();
         final CellRef ref = new CellRef("Result", 0, 0);
         area.applyAt(ref, context);

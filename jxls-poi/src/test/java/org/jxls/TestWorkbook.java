@@ -51,6 +51,9 @@ public class TestWorkbook implements AutoCloseable {
      * @return String
      */
     public String getCellValueAsString(int row, int column) {
+        if (sheet.getRow(row - 1).getCell(column - 1) == null) {
+            return null;
+        }
         return sheet.getRow(row - 1).getCell(column - 1).getStringCellValue();
     }
 
