@@ -1,6 +1,7 @@
 package org.jxls;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,6 +147,23 @@ public class JxlsTester implements AutoCloseable {
      */
     public static InputStream openInputStream(Class<?> testclass, boolean xlsx) throws IOException {
         return testclass.getResourceAsStream(testclass.getSimpleName() + (xlsx ? ".xlsx" : ".xls"));
+    }
+
+    /**
+     * Special method just for getting the input stream
+     * @return new opened InputStream
+     */
+    public InputStream openInputStream() {
+        return testclass.getResourceAsStream(excelTemplateFilename);
+    }
+
+    /**
+     * Special method just for getting the output stream
+     * @return new opened OutputStream
+     * @throws FileNotFoundException if file not found
+     */
+    public OutputStream openOutputStream() throws FileNotFoundException {
+        return new FileOutputStream(out);
     }
 
     public JxlsTester dontEvaluateFormulas() {
