@@ -163,6 +163,7 @@ public class XlsArea implements Area {
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
         AreaRef commandsArea = transformTopStaticArea(cellRef, context);
+        int lastProcessedRow = -1;
         for (int i = 0; i < commandDataList.size(); i++) {
             cellRange.resetChangeMatrix();
             CommandData commandData = commandDataList.get(i);
@@ -173,6 +174,10 @@ public class XlsArea implements Area {
             Size commandInitialSize = commandData.getSize();
             int startCol = commandStartCellRef.getCol() - startCellRef.getCol();
             int startRow = commandStartCellRef.getRow() - startCellRef.getRow();
+            if (startRow > lastProcessedRow){
+                transformStaticCells(cellRef, context, startRow, 0, startRow, startCol - 1);
+                lastProcessedRow = startRow;
+            }
             CellRef newCell = new CellRef(cellRef.getSheetName(), startRow + cellRef.getRow(), startCol + cellRef.getCol());
             Size commandNewSize = commandData.getCommand().applyAt(newCell, context);
             int widthChange = commandNewSize.getWidth() - commandInitialSize.getWidth();
@@ -252,7 +257,7 @@ public class XlsArea implements Area {
             relativeStartRow = commandsArea.getLastCellRef().getRow() + 1;
             relativeStartCol = 0;
         }
-        transformStaticCells(cellRef, context, relativeStartRow, relativeStartCol);
+        transformStaticCells(cellRef, context, relativeStartRow, relativeStartCol, size.getHeight() - 1, size.getWidth() - 1);
     }
 
     // TODO similar code to findCommandsForVerticalShift() ?
@@ -400,12 +405,7 @@ public class XlsArea implements Area {
                 transformStaticCell(cellRef, context, row, col);
             }
         }
-        // update static cells before the command cell for the first top left command
-        for (int col = 0; col < topLeftCommandCell.getCol(); col++) {
-            if (cellRange.contains(topLeftCommandCell.getRow(), col)) {
-                transformStaticCell(cellRef, context, topLeftCommandCell.getRow(), col);
-            }
-        }
+
         if (parentCommand == null) {
             updateRowHeights(cellRef, 0, topStaticAreaLastRow);
         }
@@ -499,14 +499,14 @@ public class XlsArea implements Area {
         cellsCleared = true;
     }
 
-    private void transformStaticCells(CellRef cellRef, Context context, int relativeStartRow, int relativeStartCol) {
+    private void transformStaticCells(CellRef cellRef, Context context,
+                                      int relativeStartRow, int relativeStartCol,
+                                      int relativeEndRow, int relativeEndCol) {
         String sheetName = startCellRef.getSheetName();
         int offsetRow = startCellRef.getRow();
         int startCol = startCellRef.getCol();
-        int width = size.getWidth();
-        int height = size.getHeight();
-        for (int col = 0; col < width; col++) {
-            for (int row = relativeStartRow; row < height; row++) {
+        for (int col = 0; col <= relativeEndCol; col++) {
+            for (int row = relativeStartRow; row <= relativeEndRow; row++) {
                 if (row == relativeStartRow && col < relativeStartCol) continue;
                 if (!cellRange.isExcluded(row, col)) {
                     CellRef relativeCell = cellRange.getCell(row, col);
@@ -525,7 +525,7 @@ public class XlsArea implements Area {
             }
         }
         if (parentCommand == null) {
-            updateRowHeights(cellRef, relativeStartRow, height - 1);
+            updateRowHeights(cellRef, relativeStartRow, relativeEndRow);
         }
     }
 
