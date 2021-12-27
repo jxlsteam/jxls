@@ -175,7 +175,7 @@ public class CellRange {
     }
 
     public boolean isExcluded(int row, int col) {
-        return cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
+        return !contains(row, col) || cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
     public boolean contains(int row, int col){
@@ -184,7 +184,7 @@ public class CellRange {
 
     public boolean containsCommandsInRow(int row) {
         for (int col = 0; col < width; col++) {
-            if (cells[row][col] == null || cells[row][col] == CellRef.NONE) {
+            if ( isExcluded(row, col) ){
                 return true;
             }
         }
