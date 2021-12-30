@@ -3,6 +3,7 @@ Version History
 
 v2.12.0
 --------
+* [#164 Update commons-compress](https://github.com/jxlsteam/jxls/issues/164)
 * [#147 Row height bugfix](https://github.com/jxlsteam/jxls/issues/147), contribution by [jools-uk](https://github.com/jools-uk)
 * [#153 Issue in Excel Output while using SXSSF Transformer](https://github.com/jxlsteam/jxls/issues/153)
 
