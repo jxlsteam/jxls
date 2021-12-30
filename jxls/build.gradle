@@ -1,8 +1,8 @@
 dependencies {
     def logbackVersion = '1.2.10'
     
-	implementation 'org.apache.commons:commons-jexl3:3.2'
-	implementation 'commons-beanutils:commons-beanutils:1.9.4'
+	api 'org.apache.commons:commons-jexl3:3.2'
+	api 'commons-beanutils:commons-beanutils:1.9.4'
 	implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
 	implementation "ch.qos.logback:logback-core:$logbackVersion"
 

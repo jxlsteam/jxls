@@ -1,7 +1,7 @@
 allprojects {
     apply plugin: 'jacoco'
     
-        version = '2.10.1-SNAPSHOT'
+    version = '2.12.0-SNAPSHOT'
     group = 'org.jxls'
     
     repositories {
@@ -10,7 +10,7 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'groovy'
     apply plugin: 'eclipse'
     
