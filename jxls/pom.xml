@@ -13,7 +13,7 @@
 	<properties>
 		<spockVersion>1.0-groovy-2.4</spockVersion>
 		<jexl.version>3.2</jexl.version>
-		<logback.version>1.2.9</logback.version>
+		<logback.version>1.2.10</logback.version>
 	</properties>
 
 	<build>
