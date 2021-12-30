@@ -337,7 +337,7 @@ public class CellRefUtil {
 
         StringBuilder sb = new StringBuilder(indexOfSheetNameDelimiter);
 
-        for(int i = 1; i < lastQuotePos; i++) { // Note boundaries - skip outer quotes
+        for (int i = 1; i < lastQuotePos; i++) { // Note boundaries - skip outer quotes
             char ch = reference.charAt(i);
             if (ch != SPECIAL_NAME_DELIMITER) {
                 sb.append(ch);

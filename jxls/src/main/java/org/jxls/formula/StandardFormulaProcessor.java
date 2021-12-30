@@ -140,16 +140,16 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             // In that case we assume we should just take only the target cell ref which belongs to the same area
             // as this ref entry
             CellData cellRefData = transformer.getCellData(cellReference);
-            if (cellRefData != null && !cellRefData.getTargetParentAreaRef().isEmpty()){
+            if (cellRefData != null && !cellRefData.getTargetParentAreaRef().isEmpty()) {
                 // non-empty means that there was an outer replication of this cell onto new areas
                 // we need to find an area which contains both the current formula cell
                 // and the cell reference we are searching replacements for
                 // since we assume the intention is to use only the target cell reference from the same parent area
                 List<CellRef> targetReferences = new ArrayList<>();
-                for (AreaRef targetAreaRef : cellRefData.getTargetParentAreaRef()){
-                    if (targetAreaRef.contains(targetFormulaCellRef)){
-                        for (CellRef targetRef : cellReferenceTargets){
-                            if (targetAreaRef.contains(targetRef)){
+                for (AreaRef targetAreaRef : cellRefData.getTargetParentAreaRef()) {
+                    if (targetAreaRef.contains(targetFormulaCellRef)) {
+                        for (CellRef targetRef : cellReferenceTargets) {
+                            if (targetAreaRef.contains(targetRef)) {
                                 targetReferences.add(targetRef);
                             }
                         }

@@ -75,14 +75,16 @@ public class UserCommandDemo {
 
         public Size applyAt(CellRef cellRef, Context context) {
             Size resultSize = area.applyAt(cellRef, context);
-            if( resultSize.equals(Size.ZERO_SIZE)) return resultSize;
+            if (resultSize.equals(Size.ZERO_SIZE)) {
+                return resultSize;
+            }
             PoiTransformer transformer = (PoiTransformer) area.getTransformer();
             Workbook workbook = transformer.getWorkbook();
             Sheet sheet = workbook.getSheet(cellRef.getSheetName());
             int startRow = cellRef.getRow();
             int endRow = cellRef.getRow() + resultSize.getHeight() - 1;
             sheet.groupRow(startRow, endRow);
-            if( collapseIf != null && collapseIf.trim().length() > 0){
+            if (collapseIf != null && collapseIf.trim().length() > 0) {
                 boolean collapseFlag = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), collapseIf, context);
                 sheet.setRowGroupCollapsed(startRow, collapseFlag);
             }
