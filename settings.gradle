@@ -1,2 +1,12 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        // Vulnerabilities
+        classpath 'org.owasp:dependency-check-gradle:6.5.0.1'
+    }
+}
+
 include 'jxls'
 include 'jxls-poi'

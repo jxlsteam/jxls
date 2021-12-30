@@ -1,6 +1,7 @@
 dependencies {
 	implementation project(':jxls')
 	implementation 'org.apache.poi:poi-ooxml:4.1.2'
+    implementation 'org.apache.commons:commons-compress:1.21'
 	implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
 
 	testImplementation 'junit:junit:4.12'
