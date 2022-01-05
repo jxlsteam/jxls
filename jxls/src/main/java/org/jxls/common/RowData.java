@@ -36,7 +36,7 @@ public class RowData implements Iterable<CellData> {
         }
     }
 
-    protected void addCellData(CellData cellData){
+    protected void addCellData(CellData cellData) {
         cellDataList.add(cellData);
     }
 

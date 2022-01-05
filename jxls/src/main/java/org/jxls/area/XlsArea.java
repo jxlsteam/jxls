@@ -174,7 +174,7 @@ public class XlsArea implements Area {
             Size commandInitialSize = commandData.getSize();
             int startCol = commandStartCellRef.getCol() - startCellRef.getCol();
             int startRow = commandStartCellRef.getRow() - startCellRef.getRow();
-            if (startRow > lastProcessedRow){
+            if (startRow > lastProcessedRow) {
                 transformStaticCells(cellRef, context, startRow, 0, startRow, startCol - 1);
                 lastProcessedRow = startRow;
             }
@@ -363,7 +363,7 @@ public class XlsArea implements Area {
             int relativeEndRow = relativeRow + commandData.getSize().getHeight() - 1;
             int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
             int relativeEndCol = relativeStartCol + commandData.getSize().getWidth() - 1;
-            if( relativeRow >= startRow && relativeEndRow <= endRow
+            if (relativeRow >= startRow && relativeEndRow <= endRow
                     && ((relativeStartCol < startCol && relativeEndCol >= startCol) || (relativeEndCol > endCol && relativeStartCol <= endCol))) {
                 return false;
             }

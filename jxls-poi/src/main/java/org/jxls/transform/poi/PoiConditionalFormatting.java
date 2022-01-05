@@ -13,7 +13,7 @@ public class PoiConditionalFormatting {
     private final List<CellRangeAddress> ranges;
 
     PoiConditionalFormatting(ConditionalFormatting conditionalFormatting) {
-        for(int i = 0; i < conditionalFormatting.getNumberOfRules(); i++){
+        for (int i = 0; i < conditionalFormatting.getNumberOfRules(); i++) {
             rules.add(conditionalFormatting.getRule(i));
         }
         ranges = Arrays.asList(conditionalFormatting.getFormattingRanges());

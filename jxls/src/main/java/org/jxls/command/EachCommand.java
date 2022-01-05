@@ -340,7 +340,7 @@ public class EachCommand extends AbstractCommand {
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
-            if (varIndex != null ){
+            if (varIndex != null) {
                 context.putVar(varIndex, currentIndex);
             }
             if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {

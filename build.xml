@@ -3,16 +3,20 @@
 	<!-- This helps SoltauFintel to call the Gradle build with Eclipse to get JXLS work in Eclipse. -->
 
 	<target name="eclipse">
-		<gradle task="eclipse"/>
+		<gradle task="cleanEclipse eclipse"/>
 	</target>
     <target name="test">
         <gradle task="test"/>
     </target>
 	<target name="dep">
-        <exec executable="cmd" failonerror="true">
-        	<arg line="/c gradlew.bat -b jxls-poi/build.gradle -g C:\jarcache\gradle dep"/>
-        </exec>
+        <gradle task="-b jxls-poi/build.gradle dep"/>
 	</target>
+    <target name="vulnerabilities check for jxls">
+        <gradle task=":jxls:dependencyCheckAnalyze"/>
+    </target>
+    <target name="vulnerabilities check for jxls-poi">
+        <gradle task=":jxls-poi:dependencyCheckAnalyze"/>
+    </target>
 
 	<macrodef name="gradle">
 		<attribute name="task"/>

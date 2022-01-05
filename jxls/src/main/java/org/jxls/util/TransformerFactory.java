@@ -78,10 +78,10 @@ public class TransformerFactory {
     /**
      * @return the transformer class to be loaded by this factory
      */
-    public static String getTransformerClassName(){
+    public static String getTransformerClassName() {
         String transformerClassName = System.getProperty(TRANSFORMER_SYSTEM_PROPERTY, POI_CLASS_NAME);
         // for backwards compatibility we also allow a short name for a poi transformer
-        if (transformerClassName.equalsIgnoreCase(POI_TRANSFORMER)){
+        if (transformerClassName.equalsIgnoreCase(POI_TRANSFORMER)) {
             transformerClassName = POI_CLASS_NAME;
         }
         return transformerClassName;

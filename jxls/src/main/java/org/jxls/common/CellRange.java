@@ -178,13 +178,13 @@ public class CellRange {
         return !contains(row, col) || cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
-    public boolean contains(int row, int col){
+    public boolean contains(int row, int col) {
         return row >= 0 && row < cells.length && col >= 0 && cells[0].length > col;
     }
 
     public boolean containsCommandsInRow(int row) {
         for (int col = 0; col < width; col++) {
-            if ( isExcluded(row, col) ){
+            if (isExcluded(row, col)) {
                 return true;
             }
         }

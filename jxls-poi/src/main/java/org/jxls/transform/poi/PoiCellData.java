@@ -51,7 +51,7 @@ public class PoiCellData extends org.jxls.common.CellData {
         this.cell = cell;
     }
 
-    public static PoiCellData createCellData(PoiRowData poiRowData, CellRef cellRef, Cell cell){
+    public static PoiCellData createCellData(PoiRowData poiRowData, CellRef cellRef, Cell cell) {
         PoiCellData cellData = new PoiCellData(cellRef, cell);
         cellData.poiRowData = poiRowData;
         cellData.readCell(cell);
@@ -59,7 +59,7 @@ public class PoiCellData extends org.jxls.common.CellData {
         return cellData;
     }
 
-    public void readCell(Cell cell){
+    public void readCell(Cell cell) {
         readCellGeneralInfo(cell);
         readCellContents(cell);
         readCellStyle(cell);
