@@ -24,7 +24,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
             return new HashMap<String, JexlEngine>();
         }
     };
-    private static ThreadLocal<Map<String, JexlExpression>> expressionMapThreadLocal = new ThreadLocal<Map<String, JexlExpression>>() {
+    private static final ThreadLocal<Map<String, JexlExpression>> expressionMapThreadLocal = new ThreadLocal<Map<String, JexlExpression>>() {
         @Override
         protected Map<String, JexlExpression> initialValue() {
             return new HashMap<>();
@@ -109,5 +109,12 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     @Override
     public String getExpression() {
         return jexlExpression == null ? null : jexlExpression.getSourceText();
+    }
+
+    /**
+     * Clear expression cache for current thread
+     */
+    public void clear() {
+        expressionMapThreadLocal.get().clear();
     }
 }

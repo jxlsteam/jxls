@@ -85,4 +85,11 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     public String getExpression() {
         return jexlExpression == null ? null : jexlExpression.getSourceText();
     }
+    
+    /**
+     * Clear expression cache
+     */
+    public void clear() {
+        expressionMap.clear();
+    }
 }
