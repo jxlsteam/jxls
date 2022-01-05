@@ -33,6 +33,16 @@ public class Issue166Test {
         createExcelReportUsingCustomFunctions_threadLocal();
     }
 
+    /**
+     * testcase 3: with thread local and without "namespace" custom functions. (syntax: cf:mach)
+     * We use custom functions here as POJO object in the context. (syntax: cf.mach)
+     */
+    @Test
+    public void createReportTwice_3() {
+        createExcelReport3();
+        createExcelReport3();
+    }
+
     private void createExcelReportUsingCustomFunctions_noThreadLocal() {
         // Prepare
         Context context = createContext();
@@ -62,6 +72,19 @@ public class Issue166Test {
         // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.createTransformerAndProcessTemplate(context, installCustomFunctions_threadLocal(context));
+        
+        // Verify
+        verify(tester);
+    }
+
+    private void createExcelReport3() {
+        // Prepare
+        Context context = createContext();
+        context.putVar("cf", new JXLS2CustomFunctions(context));
+
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "3");
+        tester.processTemplate(context);
         
         // Verify
         verify(tester);
