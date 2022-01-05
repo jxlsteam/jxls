@@ -61,4 +61,13 @@ public class ExpressionEvaluator4JSR223Impl implements ExpressionEvaluator {
 	public String getExpression() {
 		return expression;
 	}
+
+	/**
+	 * Clear cache for current thread
+	 */
+	public void clear() {
+	    BindingCacheHolder holder = threadLocalCache.get();
+	    holder.binding = null;
+	    holder.context = null;
+	}
 }

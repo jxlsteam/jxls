@@ -46,32 +46,24 @@ public class Issue166Test {
     private void createExcelReportUsingCustomFunctions_noThreadLocal() {
         // Prepare
         Context context = createContext();
-
-        // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.createTransformerAndProcessTemplate(context, installCustomFunctions_noThreadLocal(context));
+
+        // Test
+        evaluator.clear();
         
         // Verify
         verify(tester);
-
-        /* dirty workaround
-        try {
-            java.lang.reflect.Field field = evaluator.getClass().getDeclaredField("expressionMap");
-            field.setAccessible(true);
-            Map<?,?> expressionMap = (Map<?,?>) field.get(evaluator);
-            expressionMap.clear();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }*/
     }
 
     private void createExcelReportUsingCustomFunctions_threadLocal() {
         // Prepare
         Context context = createContext();
-
-        // Test
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.createTransformerAndProcessTemplate(context, installCustomFunctions_threadLocal(context));
+
+        // Test
+        new JexlExpressionEvaluator().clear(); // clear cache for current thread
         
         // Verify
         verify(tester);
