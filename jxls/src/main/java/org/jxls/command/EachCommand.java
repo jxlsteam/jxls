@@ -15,8 +15,6 @@ import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>Implements iteration over collection or array of items</p><ul>
@@ -39,7 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 public class EachCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "each";
-    private static Logger logger = LoggerFactory.getLogger(EachCommand.class);
     static final String GROUP_DATA_KEY = "_group";
 
     private UtilWrapper util = new UtilWrapper();
@@ -290,7 +287,7 @@ public class EachCommand extends AbstractCommand {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
             orderCollection(itemsCollection);
         } catch (Exception e) {
-            logger.warn("Failed to evaluate collection expression {}", items, e);
+            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
             itemsCollection = Collections.emptyList();
         }
         Size size;

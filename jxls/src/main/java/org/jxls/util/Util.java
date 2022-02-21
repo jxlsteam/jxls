@@ -345,11 +345,10 @@ public class Util {
         try {
             setObjectProperty(obj, propertyName, propertyValue);
         } catch (Exception e) {
-            String msg = "failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
+            String msg = "Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
             if (ignoreNonExisting) {
                 logger.info(msg, e);
             } else {
-                logger.warn(msg);
                 throw new IllegalArgumentException(e);
             }
         }
@@ -382,12 +381,11 @@ public class Util {
         try {
             return getObjectProperty(obj, propertyName);
         } catch (Exception e) {
-            String msg = "failed to get property '" + propertyName + "' of object " + obj;
+            String msg = "Failed to get property '" + propertyName + "' of object " + obj;
             if (failSilently) {
                 logger.info(msg, e);
                 return null;
             } else {
-                logger.warn(msg);
                 throw new IllegalArgumentException(e);
             }
         }

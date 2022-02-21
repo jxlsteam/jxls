@@ -12,8 +12,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.util.UtilWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The command implements a grid with dynamic columns and rows
@@ -24,7 +22,6 @@ public class GridCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "grid";
     public static final String HEADER_VAR = "header";
     public static final String DATA_VAR = "cell";
-    private static Logger logger = LoggerFactory.getLogger(GridCommand.class);
 
     /** Name of a context variable containing a collection of headers */
     private String headers;
@@ -103,16 +100,13 @@ public class GridCommand extends AbstractCommand {
      */
     public void setFormatCells(String formatCells) {
         this.formatCells = formatCells;
-        if (formatCells != null) {
-            List<String> cellStyleList = Arrays.asList(formatCells.split(","));
-            try {
-                for (String cellStyleString : cellStyleList) {
-                    String[] styleCell = cellStyleString.split(":");
-                    cellStyleMap.put(styleCell[0].trim(), styleCell[1].trim());
-                }
-            } catch (Exception e) {
-                logger.error("Failed to parse formatCells attribute");
-            }
+        if (formatCells == null) {
+            return;
+        }
+        List<String> cellStyleList = Arrays.asList(formatCells.split(","));
+        for (String cellStyleString : cellStyleList) {
+            String[] styleCell = cellStyleString.split(":");
+            cellStyleMap.put(styleCell[0].trim(), styleCell[1].trim());
         }
     }
 
@@ -212,7 +206,6 @@ public class GridCommand extends AbstractCommand {
                         height = Math.max(height, size.getHeight());
                     } catch (Exception e) {
                         String message = "Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName();
-                        logger.error(message, e);
                         throw new IllegalStateException(message, e);
                     }
                 }

@@ -426,7 +426,7 @@ public class XlsArea implements Area {
                 boolean updateRowHeight = parentCommand != null;
                 transformer.transform(srcCell, targetCell, context, updateRowHeight);
             } catch (Exception e) {
-                logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
+                transformer.getExceptionHandler().handleTransformException(e, srcCell.toString(), targetCell.toString());
             }
             fireAfterTransformCell(srcCell, targetCell, context);
         }
@@ -442,7 +442,7 @@ public class XlsArea implements Area {
                 try {
                     transformer.updateRowHeight(startCellRef.getSheetName(), srcRow, areaStartCellRef.getSheetName(), targetRow);
                 } catch (Exception e) {
-                    logger.error("Failed to update row height for src row={} and target row={}", relativeSrcRow, targetRow, e);
+                    transformer.getExceptionHandler().handleUpdateRowHeightsException(e, relativeSrcRow, targetRow);
                 }
             }
         }
@@ -518,7 +518,7 @@ public class XlsArea implements Area {
                         boolean updateRowHeight = parentCommand != null;
                         transformer.transform(srcCell, targetCell, context, updateRowHeight);
                     } catch (Exception e) {
-                        logger.error("Failed to transform " + srcCell + " into " + targetCell, e);
+                        transformer.getExceptionHandler().handleTransformException(e, srcCell.toString(), targetCell.toString());
                     }
                     fireAfterTransformCell(srcCell, targetCell, context);
                 }

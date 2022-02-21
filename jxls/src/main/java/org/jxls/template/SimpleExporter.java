@@ -47,9 +47,7 @@ public class SimpleExporter {
             try {
                 registerGridTemplate(is);
             } catch (IOException e) {
-                String message = "Failed to read default template file " + GRID_TEMPLATE_XLS;
-                logger.error(message);
-                throw new JxlsException(message, e);
+                throw new JxlsException("Failed to read default template file " + GRID_TEMPLATE_XLS, e);
             }
     	}    	
     	InputStream is = new ByteArrayInputStream(templateBytes);
@@ -66,9 +64,7 @@ public class SimpleExporter {
         try {
             transformer.write();
         } catch (IOException e) {
-            final String msg = "Failed to write to output stream";
-            logger.error(msg, e);
-            throw new JxlsException(msg, e);
+            throw new JxlsException("Failed to write to output stream", e);
         }
     }
 }

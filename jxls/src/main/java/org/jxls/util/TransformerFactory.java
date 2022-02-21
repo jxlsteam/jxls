@@ -42,20 +42,16 @@ public class TransformerFactory {
             Method initMethod = transformer.getMethod(INIT_METHOD, InputStream.class, OutputStream.class);
             return (Transformer) initMethod.invoke(null, inputStream, outputStream);
         } catch (NoSuchMethodException e) {
-            logger.error("The specified public method " + INIT_METHOD + " does not exist in " + transformer.getName());
-            return null;
+            throw new JxlsException("The specified public method " + INIT_METHOD + " does not exist in " + transformer.getName());
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof CannotOpenWorkbookException) {
                 throw (CannotOpenWorkbookException) e.getCause();
             }
-            logger.error("Method " + INIT_METHOD + " of " + transformer.getName() + " class thrown an Exception", e);
-            return null;
+            throw new JxlsException("Method " + INIT_METHOD + " of " + transformer.getName() + " class thrown an exception:\n" + e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            logger.error("Method " + INIT_METHOD + " of " + transformer.getName() + " is inaccessible", e);
-            return null;
+            throw new JxlsException("Method " + INIT_METHOD + " of " + transformer.getName() + " is inaccessible", e);
         } catch (RuntimeException e) {
-            logger.error("Failed to execute method " + INIT_METHOD + " of " + transformer.getName(), e);
-            return null;
+            throw new JxlsException("Failed to execute method " + INIT_METHOD + " of " + transformer.getName() + "\n" + e.getMessage(), e);
         }
     }
 

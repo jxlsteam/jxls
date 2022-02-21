@@ -21,6 +21,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
 import org.jxls.util.Util;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 import org.slf4j.Logger;
@@ -70,8 +71,7 @@ public class PoiCellData extends org.jxls.common.CellData {
         try {
             comment = cell.getCellComment();
         } catch (Exception e) {
-            logger.error("Failed to read cell comment at " + new CellReference(cell).formatAsString(), e);
-            return;
+            throw new JxlsException("Failed to read cell comment at " + new CellReference(cell).formatAsString(), e);
         }
         if (comment != null) {
             commentAuthor = comment.getAuthor();

@@ -1,5 +1,7 @@
 package org.jxls.jdbc;
 
+import static java.sql.Types.CLOB;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
@@ -41,7 +43,7 @@ public class JdbcHelper {
                 result = handle(rs);
             }
         } catch (Exception e) {
-            throw new JxlsException("Failed to execute sql", e);
+            throw new JxlsException("Failed to execute SQL\n" + e.getMessage(), e);
         }
         return result;
     }
@@ -109,17 +111,14 @@ public class JdbcHelper {
         Map<String, Object> result = new CaseInsensitiveHashMap();
         ResultSetMetaData rsmd = rs.getMetaData();
         int cols = rsmd.getColumnCount();
-        for (int i = 1; i <= cols; i++) {
-            String columnName = rsmd.getColumnLabel(i);
-            if (null == columnName || 0 == columnName.length()) {
-                columnName = rsmd.getColumnName(i);
+        for (int col = 1; col <= cols; col++) {
+            String columnName = rsmd.getColumnLabel(col);
+            if (columnName == null || columnName.isEmpty()) {
+                columnName = rsmd.getColumnName(col);
             }
-            int columnType = rsmd.getColumnType(i);
-
-            if (java.sql.Types.CLOB == columnType) {
-
+            if (rsmd.getColumnType(col) == CLOB) {
                 try {
-                    java.sql.Clob clob = rs.getClob(i);
+                    java.sql.Clob clob = rs.getClob(col);
                     if (clob == null) {
                         result.put(columnName, "");
                         continue;
@@ -131,12 +130,10 @@ public class JdbcHelper {
                     inStream.close();
                     result.put(columnName, data);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new JxlsException("Error reading CLOB field " + columnName, e);
                 }
-
             } else {
-            result.put(columnName, rs.getObject(i));
+                result.put(columnName, rs.getObject(col));
             }
         }
         return result;
