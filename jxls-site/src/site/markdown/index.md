@@ -1,24 +1,25 @@
 Jxls 2.12.0 is released!
 ============================
 
+* [#164 Update commons-compress](https://github.com/jxlsteam/jxls/issues/164)
 * [#147 Row height bugfix](https://github.com/jxlsteam/jxls/issues/147), contribution by [jools-uk](https://github.com/jools-uk)
 * [#153 Issue in Excel Output while using SXSSF Transformer](https://github.com/jxlsteam/jxls/issues/153)
+* [#73 Exceptions not propagated in EachCommand](https://github.com/jxlsteam/jxls/issues/73)
 
+With change #73 it's possible to throw exceptions instead of logging them as ERROR:
 
-Jxls 2.11.0 is available!
-============================
+```
+transformer.setExceptionHandler(new PoiExceptionThrower());
+// also turn on strict non-silent mode
+transformer.getTransformationConfig().setExpressionEvaluator(new JexlExpressionEvaluator(false, true));
+```
 
-The release contains an upgrade of Jexl library and a fix for XXE vulnerability
-
-* [#131 JEXL 3.2](https://github.com/jxlsteam/jxls/issues/131)
-* [#143 Vulnerability alert](https://github.com/jxlsteam/jxls/issues/143)
- 
 
 ###### The latest component versions
 
-* org.jxls:jxls:2.11.0
+* org.jxls:jxls:2.12.0
 
-* org.jxls:jxls-poi:2.11.0
+* org.jxls:jxls-poi:2.12.0
 
 Introduction
 ------------
