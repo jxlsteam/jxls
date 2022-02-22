@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
 import org.jxls.expression.JexlExpressionEvaluator;
 
 /**
@@ -66,7 +67,7 @@ public class GroupSum<T> {
             try {
                 return PropertyUtils.getProperty(i, fieldName);
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new JxlsException(e);
             }
         }
     }

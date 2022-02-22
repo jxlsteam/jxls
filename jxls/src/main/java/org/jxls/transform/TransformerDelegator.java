@@ -10,6 +10,7 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.ImageType;
 import org.jxls.common.Size;
+import org.jxls.common.ExceptionHandler;
 
 /**
  * Decorator pattern for Transformer, in particular write() can be extended overriding beforeWrite()
@@ -156,5 +157,15 @@ public class TransformerDelegator implements Transformer {
     @Override
     public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
         transformer.addImage(areaRef, imageBytes, imageType, scaleX, scaleY);
+    }
+    
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        return transformer.getExceptionHandler();
+    }
+
+    @Override
+    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+        transformer.setExceptionHandler(exceptionHandler);
     }
 }

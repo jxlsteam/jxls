@@ -33,7 +33,9 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ExceptionHandler;
 import org.jxls.common.ImageType;
+import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
@@ -59,7 +61,8 @@ public class PoiTransformer extends AbstractTransformer {
     private InputStream inputStream;
     private Integer lastCommentedColumn = MAX_COLUMN_TO_READ_COMMENT;
     private final boolean isSXSSF;
-
+    private ExceptionHandler exceptionHandler = new PoiExceptionLogger();
+    
     /**
      * The cell style is lost after the merge, the following operation restores the merged cell
      * to the style of the first cell before the merge.
@@ -260,8 +263,21 @@ public class PoiTransformer extends AbstractTransformer {
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
-            logger.error("Failed to write a cell with {} and context keys {}", cellData, context.toMap().keySet(), e);
+            getExceptionHandler().handleCellException(e, cellData.toString(), context.toMap().keySet().toString());
         }
+    }
+
+    @Override
+    public ExceptionHandler getExceptionHandler() {
+        return exceptionHandler;
+    }
+    
+    @Override
+    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+        if (exceptionHandler == null) {
+            throw new IllegalArgumentException();
+        }
+        this.exceptionHandler = exceptionHandler;
     }
 
     @Override
@@ -349,7 +365,7 @@ public class PoiTransformer extends AbstractTransformer {
             poiCell.setCellFormula(formulaString);
             clearCellValue(poiCell);
         } catch (Exception e) {
-            logger.error("Failed to set formula = " + formulaString + " into cell = " + cellRef.getCellName(), e);
+            getExceptionHandler().handleFormulaException(e, cellRef.getCellName(), formulaString);
         }
     }
     

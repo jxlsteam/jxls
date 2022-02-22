@@ -7,9 +7,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.apache.poi:ooxml-schemas:1.4'
     testImplementation 'org.mockito:mockito-core:3.2.4'
-    testImplementation 'uk.org.lidalia:slf4j-test:1.2.0'
     testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
     testImplementation 'cglib:cglib-nodep:3.3.0'
     testImplementation 'commons-io:commons-io:2.6'
     testImplementation 'org.apache.derby:derby:10.12.1.1'
+}
+
+eclipse.classpath.file {
+    whenMerged { classpath ->
+        classpath.entries.each { entry ->
+            if (entry.kind == 'src' && entry.path == '/jxls-jxls') {
+                entry.path = '/jxls'
+            }
+        }
+    }
 }
