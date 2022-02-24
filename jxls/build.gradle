@@ -1,11 +1,17 @@
 dependencies {
+    def slf4jVersion = '1.7.30'
     def logbackVersion = '1.2.10'
-    
-    api 'org.apache.commons:commons-jexl3:3.2'
-    api 'commons-beanutils:commons-beanutils:1.9.4'
-    implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
-    implementation "ch.qos.logback:logback-core:$logbackVersion"
-    
+
+    api('org.apache.commons:commons-jexl3:3.2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    api('commons-beanutils:commons-beanutils:1.9.4') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    implementation 'ch.qos.logback:logback-core:$logbackVersion'
+    implementation 'org.slf4j:slf4j-api:$slf4jVersion'
+    runtimeOnly 'org.slf4j:jcl-over-slf4j:$slf4jVersion'
+
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.2.4'
     testImplementation "ch.qos.logback:logback-classic:$logbackVersion"
