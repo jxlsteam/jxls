@@ -11,41 +11,11 @@
 	<description>Small library for Excel generation based on XLS templates</description>
 
 	<properties>
-		<spockVersion>1.0-groovy-2.4</spockVersion>
 		<jexl.version>3.2</jexl.version>
 		<logback.version>1.2.10</logback.version>
 	</properties>
 
-	<build>
-			<plugins>
-				<plugin>
-					<!-- The gmavenplus plugin is used to compile Groovy code. To learn 
-						more about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
-					<groupId>org.codehaus.gmavenplus</groupId>
-					<artifactId>gmavenplus-plugin</artifactId>
-					<version>1.6.2</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>compileTests</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-	</build>
-
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl3</artifactId>
@@ -70,6 +40,16 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
@@ -78,7 +58,6 @@
 		<dependency>
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-core</artifactId>
-			<version>${spockVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
