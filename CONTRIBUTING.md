@@ -26,6 +26,7 @@ Also in the description please mention which JXLS version you used to reproduce 
 ## Codestyle
 
 - Java 8 syntax.
+- No wildcards in `import` lines.
 - Closing { at end of line.
 - Use spaces instead of tabs.
 - Use @Override annotation.
