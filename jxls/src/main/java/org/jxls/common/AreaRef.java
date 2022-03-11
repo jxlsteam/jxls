@@ -85,18 +85,15 @@ public class AreaRef {
     }
     
     public boolean contains(CellRef cellRef) {
-        String sheetName = getSheetName();
-        String otherSheetName = cellRef.getSheetName();
-        if ((sheetName == null && otherSheetName == null)
-                || (sheetName != null && sheetName.equalsIgnoreCase(otherSheetName))) {
-
-            return     cellRef.getRow() >= startRow
-                    && cellRef.getCol() >= startCol
-                    && cellRef.getRow() <= endRow
-                    && cellRef.getCol() <= endCol;
-        } else {
-            return false;
+        int row = cellRef.getRow();
+        if (row >= startRow && row <= endRow && cellRef.getCol() >= startCol && cellRef.getCol() <= endCol) {
+            String sheetName = getSheetName();
+            if (sheetName == null) {
+                return cellRef.getSheetName() == null;
+            }
+            return sheetName.equalsIgnoreCase(cellRef.getSheetName());
         }
+        return false;
     }
 
     public boolean contains(int row, int col) {
