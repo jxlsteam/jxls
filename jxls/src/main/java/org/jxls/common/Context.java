@@ -53,7 +53,7 @@ public class Context {
     /**
      * Special config class to use in Area processing
      */
-    public class Config {
+    public static class Config {
         private boolean ignoreSourceCellStyle = false;
         private Map<String, String> cellStyleMap = new HashMap<>();
         private boolean isFormulaProcessingRequired = true;
