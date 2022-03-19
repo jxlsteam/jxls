@@ -14,15 +14,15 @@ public class CommandData {
     private CellRef sourceStartCellRef;
     private Size sourceSize;
     private CellRef startCellRef;
-    private Size size;
+    private Size commandSize;
     private Command command;
 
     public CommandData(AreaRef areaRef, Command command) {
         startCellRef = areaRef.getFirstCellRef();
-        size = areaRef.getSize();
+        commandSize = areaRef.getSize();
         this.command = command;
         sourceStartCellRef = startCellRef;
-        sourceSize = size;
+        sourceSize = commandSize;
     }
 
     public CommandData(String areaRef, Command command) {
@@ -31,20 +31,20 @@ public class CommandData {
 
     public CommandData(CellRef startCellRef, Size size, Command command) {
         this.startCellRef = startCellRef;
-        this.size = size;
+        this.commandSize = size;
         this.command = command;
     }
 
     public AreaRef getAreaRef() {
-        return new AreaRef(startCellRef, size);
+        return new AreaRef(startCellRef, commandSize);
     }
 
     public CellRef getStartCellRef() {
         return startCellRef;
     }
 
-    public Size getSize() {
-        return size;
+    public Size getCommandSize() {
+        return commandSize;
     }
 
     public Command getCommand() {
@@ -73,12 +73,12 @@ public class CommandData {
 
     void reset() {
         startCellRef = sourceStartCellRef;
-        size = sourceSize;
+        commandSize = sourceSize;
         command.reset();
     }
 
     void resetStartCellAndSize() {
         startCellRef = sourceStartCellRef;
-        size = sourceSize;
+        commandSize = sourceSize;
     }
 }

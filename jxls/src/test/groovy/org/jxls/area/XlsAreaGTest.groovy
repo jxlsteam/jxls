@@ -58,7 +58,7 @@ class XlsAreaGTest extends Specification{
             xlsArea.getCommandDataList().size() == 1
             CommandData commandData = xlsArea.getCommandDataList().get(0)
             commandData.getStartCellRef() == new CellRef("sheet1!A2")
-            commandData.getSize() == new Size(2,1)
+            commandData.getCommandSize() == new Size(2,1)
             commandData.getCommand() == command
     }
 
@@ -72,7 +72,7 @@ class XlsAreaGTest extends Specification{
         xlsArea.getCommandDataList().size() == 1
         CommandData commandData = xlsArea.getCommandDataList().get(0)
         commandData.getStartCellRef() == new CellRef("sheet1!A2")
-        commandData.getSize() == new Size(2,2)
+        commandData.getCommandSize() == new Size(2,2)
         commandData.getCommand() == command
     }
 
@@ -86,7 +86,7 @@ class XlsAreaGTest extends Specification{
         xlsArea.getCommandDataList().size() == 1
         CommandData commandData = xlsArea.getCommandDataList().get(0)
         commandData.getStartCellRef() == new CellRef("sheet1!A2")
-        commandData.getSize() == new Size(2,2)
+        commandData.getCommandSize() == new Size(2,2)
         commandData.getCommand() == command
     }
     

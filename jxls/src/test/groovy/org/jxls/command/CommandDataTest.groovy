@@ -17,7 +17,7 @@ class CommandDataTest extends Specification{
             def commandData = new CommandData(new AreaRef(new CellRef("sheet1!A1"), new CellRef("sheet1!C4")), command)
         then:
             commandData.getStartCellRef() == new CellRef("sheet1!A1")
-            commandData.getSize() == new Size(3, 4)
+            commandData.getCommandSize() == new Size(3, 4)
             commandData.getCommand() == command
     }
 
@@ -27,7 +27,7 @@ class CommandDataTest extends Specification{
             def commandData = new CommandData("sheet1!A1:C4", command)
         then:
             commandData.getStartCellRef() == new CellRef("sheet1!A1")
-            commandData.getSize() == new Size(3, 4)
+            commandData.getCommandSize() == new Size(3, 4)
             commandData.getCommand() == command
     }
     
@@ -37,7 +37,7 @@ class CommandDataTest extends Specification{
             def commandData = new CommandData(new CellRef("sheet1", 0, 0), new Size(3,4), command)
         then:
             commandData.getStartCellRef() == new CellRef("sheet1!A1")
-            commandData.getSize() == new Size(3,4)
+            commandData.getCommandSize() == new Size(3,4)
     }
 
 }

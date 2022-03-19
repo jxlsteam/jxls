@@ -30,7 +30,7 @@ class XmlAreaBuilderTest extends Specification{
             def commandDataList1 = xlsArea.getCommandDataList()
             commandDataList1.size() == 1
             commandDataList1.get(0).startCellRef == new CellRef("Template!A2")
-            commandDataList1.get(0).size == new Size(6,11)
+            commandDataList1.get(0).commandSize == new Size(6,11)
             def command1 = commandDataList1.get(0).getCommand()
             command1.getName() == "each"
             command1 instanceof EachCommand
@@ -44,7 +44,7 @@ class XmlAreaBuilderTest extends Specification{
             def commandDataList2 = eachArea.getCommandDataList()
             commandDataList2.size() == 1
             commandDataList2.get(0).startCellRef == new CellRef("Template!A9")
-            commandDataList2.get(0).size == new Size(6,1)
+            commandDataList2.get(0).commandSize == new Size(6,1)
             def command2 = commandDataList2.get(0).getCommand()
             command2.getName() == "each"
             command2 instanceof  EachCommand
@@ -58,7 +58,7 @@ class XmlAreaBuilderTest extends Specification{
             def commandDataList3 = eachArea2.getCommandDataList()
             commandDataList3.size() == 1
             commandDataList3.get(0).startCellRef == new CellRef("Template!A9")
-            commandDataList3.get(0).getSize() == new Size(6,1)
+            commandDataList3.get(0).getCommandSize() == new Size(6,1)
             def command3 = commandDataList3.get(0).getCommand()
             command3.getName() == "if"
             command3 instanceof IfCommand
