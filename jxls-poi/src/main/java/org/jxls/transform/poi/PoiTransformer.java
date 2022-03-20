@@ -62,7 +62,7 @@ public class PoiTransformer extends AbstractTransformer {
     private Integer lastCommentedColumn = MAX_COLUMN_TO_READ_COMMENT;
     private final boolean isSXSSF;
     private ExceptionHandler exceptionHandler = new PoiExceptionLogger();
-    
+
     /**
      * The cell style is lost after the merge, the following operation restores the merged cell
      * to the style of the first cell before the merge.
@@ -71,6 +71,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * No streaming
+     *
      * @param workbook
      */
     private PoiTransformer(Workbook workbook) {
@@ -78,7 +79,7 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     /**
-     * @param workbook source workbook to transform
+     * @param workbook  source workbook to transform
      * @param streaming false: without streaming, true: with streaming (with default parameter values)
      */
     public PoiTransformer(Workbook workbook, boolean streaming) {
@@ -86,10 +87,10 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     /**
-     * @param workbook source workbook to transform
-     * @param streaming flag to set if SXSSF stream support is enabled
-     * @param rowAccessWindowSize only used if streaming is true
-     * @param compressTmpFiles only used if streaming is true
+     * @param workbook              source workbook to transform
+     * @param streaming             flag to set if SXSSF stream support is enabled
+     * @param rowAccessWindowSize   only used if streaming is true
+     * @param compressTmpFiles      only used if streaming is true
      * @param useSharedStringsTable only used if streaming is true
      */
     public PoiTransformer(Workbook workbook, boolean streaming, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
@@ -104,17 +105,18 @@ public class PoiTransformer extends AbstractTransformer {
             }
         }
     }
-    
+
     protected boolean isStreaming() {
         return isSXSSF;
     }
-    
+
     public void setInputStream(InputStream is) {
         inputStream = is;
     }
 
     /**
      * Creates transformer from an input stream template and output stream
+     *
      * @param is input stream to read the Excel template file. Format can be XLSX (recommended) or XLS.
      * @param os output stream to write the Excel file. Must be the same format.
      * @return {@link PoiTransformer} instance
@@ -128,6 +130,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * Creates transformer instance for given input stream
+     *
      * @param is input stream for the Excel template file. Format can be XLSX (recommended) or XLS.
      * @return transformer instance reading the template from the passed input stream
      * @throws CannotOpenWorkbookException if an error occurs during opening the Excel workbook
@@ -144,6 +147,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * Creates transformer instance from a {@link Workbook} instance
+     *
      * @param workbook Excel template
      * @return transformer instance with the given workbook as template
      */
@@ -153,6 +157,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * Creates transformer for given workbook. Streaming will be used.
+     *
      * @param workbook Excel template. Format must be XLSX.
      * @return transformer instance with the given workbook as template
      */
@@ -162,9 +167,10 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
+     *
+     * @param workbook            Excel template. Format must be XLSX.
      * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
+     * @param compressTmpFiles    -
      * @return transformer instance with the given workbook as template
      */
     public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
@@ -173,9 +179,10 @@ public class PoiTransformer extends AbstractTransformer {
 
     /**
      * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
+     *
+     * @param workbook              Excel template. Format must be XLSX.
+     * @param rowAccessWindowSize   -
+     * @param compressTmpFiles      -
      * @param useSharedStringsTable -
      * @return transformer instance with the given workbook as template
      */
@@ -232,7 +239,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
         transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
     }
-    
+
     protected CellData isTransformable(CellRef srcCellRef, CellRef targetCellRef) {
         CellData cellData = getCellData(srcCellRef);
         if (cellData != null) {
@@ -245,7 +252,7 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     protected void transformCell(CellRef srcCellRef, CellRef targetCellRef, Context context,
-            boolean updateRowHeightFlag, CellData cellData, Sheet destSheet, Row destRow) {
+                                 boolean updateRowHeightFlag, CellData cellData, Sheet destSheet, Row destRow) {
         SheetData sheetData = sheetMap.get(srcCellRef.getSheetName());
         if (!isIgnoreColumnProps()) {
             destSheet.setColumnWidth(targetCellRef.getCol(), sheetData.getColumnWidth(srcCellRef.getCol()));
@@ -271,7 +278,7 @@ public class PoiTransformer extends AbstractTransformer {
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
     }
-    
+
     @Override
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
         if (exceptionHandler == null) {
@@ -309,7 +316,7 @@ public class PoiTransformer extends AbstractTransformer {
                     newRanges.add(range);
                 }
             }
-            conditionalFormatting.setFormattingRanges(newRanges.toArray(new CellRangeAddress[] {}));
+            conditionalFormatting.setFormattingRanges(newRanges.toArray(new CellRangeAddress[]{}));
         }
     }
 
@@ -368,7 +375,7 @@ public class PoiTransformer extends AbstractTransformer {
             getExceptionHandler().handleFormulaException(e, cellRef.getCellName(), formulaString);
         }
     }
-    
+
     // protected so any user can change this piece of code
     protected void clearCellValue(org.apache.poi.ss.usermodel.Cell poiCell) {
         if (poiCell instanceof XSSFCell) {
@@ -514,6 +521,11 @@ public class PoiTransformer extends AbstractTransformer {
         if (imageType == null) {
             throw new IllegalArgumentException("Image type is undefined");
         }
+        poiType = getPoiType(imageType, poiType);
+        return poiType;
+    }
+
+    private int getPoiType(ImageType imageType, int poiType) {
         switch (imageType) {
             case PNG:
                 poiType = Workbook.PICTURE_TYPE_PNG;
@@ -603,7 +615,7 @@ public class PoiTransformer extends AbstractTransformer {
         short srcHeight = rowData != null ? (short) rowData.getHeight() : sheet.getDefaultRowHeight();
         targetRow.setHeight(srcHeight);
     }
-    
+
     /**
      * @return xls = null, xlsx = XSSFWorkbook, xlsx with streaming = the inner XSSFWorkbook instance
      */
@@ -616,7 +628,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
         return null;
     }
-    
+
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
         XSSFWorkbook xwb = getXSSFWorkbook();

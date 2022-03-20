@@ -66,19 +66,5 @@ public class WritableHyperlink implements WritableCellValue {
         return cell;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }

@@ -186,7 +186,7 @@ public class XlsArea implements Area {
             int endRow = startRow + commandInitialSize.getHeight() - 1;
             if (heightChange != 0) {
                 cellRange.shiftCellsWithColBlock(startCol, endCol, endRow, heightChange, true);
-                Set<CommandData> commandsToShift = findCommandsForVerticalShift(commandDataList.subList(i+1, commandDataList.size()),
+                Set<CommandData> commandsToShift = findCommandsForVerticalShift(commandDataList.subList(i + 1, commandDataList.size()),
                         startCol, endCol, endRow, heightChange);
                 for (CommandData commandDataToShift : commandsToShift) {
                     CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
@@ -265,7 +265,8 @@ public class XlsArea implements Area {
         Set<CommandData> result = new LinkedHashSet<>(commandList.size());
         for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
             CommandData commandData = commandList.get(i);
-            if (result.contains(commandData)) continue; // Should be safe with default equals & hashcode (as references are not changing)
+            if (result.contains(commandData))
+                continue; // Should be safe with default equals & hashcode (as references are not changing)
 
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
             int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
@@ -322,7 +323,8 @@ public class XlsArea implements Area {
         int commandListSize = commandList.size();
         for (int i = 0; i < commandListSize; i++) {
             CommandData commandData = commandList.get(i);
-            if (result.contains(commandData)) continue; // Should be safe with default equals & hashcode (as references are not changing)
+            if (result.contains(commandData))
+                continue; // Should be safe with default equals & hashcode (as references are not changing)
 
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
             int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
