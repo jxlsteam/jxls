@@ -72,9 +72,9 @@ public abstract class AbstractTransformer implements Transformer {
         return rowData.getCellData(cellRef.getCol());
     }
 
-    public boolean isIgnoreColumnProps() {
-        return ignoreColumnProps;
-    }
+//    public boolean isIgnoreColumnProps() {
+//        return ignoreColumnProps;
+//    }
 
     public void setIgnoreColumnProps(boolean ignoreColumnProps) {
         this.ignoreColumnProps = ignoreColumnProps;

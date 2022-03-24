@@ -14,7 +14,8 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
  */
 public class LiteralsExtractor {
     private static final int COMMAND_PREFIX_LENGTH = XlsCommentAreaBuilder.COMMAND_PREFIX.length();
-    
+    private final SymbolManager symbolManager = new SymbolManager();
+
     public List<String> extract(final String text) {
         List<String> literalList = new ArrayList<>();
         String literal = "";
@@ -76,35 +77,31 @@ public class LiteralsExtractor {
             switch (symbol) {
                 case '"':
                 case '\'':
-                    if (!quotationsStack.empty() && quotationsStack.peek() == symbol) {
-                        quotationsStack.pop();
-                    } else {
-                        quotationsStack.push(symbol);
-                    }
+                    symbolManager.extracted(quotationsStack, symbol);
                     break;
                 case '(':
-                    if (quotationsStack.empty()) {
-                        bracketsStack.push(symbol);
-                    }
+                    symbolManager.extracted(bracketsStack, quotationsStack, symbol);
                     break;
                 case ')':
-                    if (quotationsStack.empty()) {
-                        if (bracketsStack.peek() == '(') {
-                            bracketsStack.pop();
-                            if (bracketsStack.empty()) {
-                                return cmd + symbol;
-                            }
-                        } else {
-                            // no opening, but closing !!
-                            String errorMessage = "Got closing ) but no opening of it. Pos: " + text.substring(0, i);
-                            throw new IllegalArgumentException(errorMessage);
-                        }
-                    }
+                    String cmd1 = symbolManager.getString(text, cmd, bracketsStack, quotationsStack, i, symbol);
+                    if (cmd1 != null) return cmd1;
                     break;
             }
 
             cmd += symbol;
         }
         return cmd;
+    }
+
+    private String getString(String text, String cmd, Stack<Character> bracketsStack, Stack<Character> quotationsStack, int i, char symbol) {
+        return symbolManager.getString(text, cmd, bracketsStack, quotationsStack, i, symbol);
+    }
+
+    private void extracted(Stack<Character> bracketsStack, Stack<Character> quotationsStack, char symbol) {
+        symbolManager.extracted(bracketsStack, quotationsStack, symbol);
+    }
+
+    private void extracted(Stack<Character> quotationsStack, char symbol) {
+        symbolManager.extracted(quotationsStack, symbol);
     }
 }

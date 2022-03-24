@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 public class PoiTransformer extends AbstractTransformer {
     private static final int MAX_COLUMN_TO_READ_COMMENT = 50;
     public static final String POI_CONTEXT_KEY = "util";
+    private boolean ignoreColumnProps = false;
 
     private static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
 
@@ -84,6 +85,10 @@ public class PoiTransformer extends AbstractTransformer {
      */
     public PoiTransformer(Workbook workbook, boolean streaming) {
         this(workbook, streaming, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, false, false);
+    }
+
+    public boolean isIgnoreColumnProps() {
+        return ignoreColumnProps;
     }
 
     /**

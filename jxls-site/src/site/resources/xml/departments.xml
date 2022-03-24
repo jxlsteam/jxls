@@ -8,9 +8,9 @@
             <mapping cell="D4">department.chief.payment</mapping>
             <mapping row="3" col="4">department.chief.bonus</mapping>
         </section>
-        <loop startRow="7" endRow="7" items="department.staff" var="employee" varType="org.jxls.reader.sample.Employee">
+        <loop startRow="7" endRow="7" items="department.staff" var="" varType="org.jxls.reader.sample.">
             <section startRow="7" endRow="7">
-                <mapping row="7" col="0">employee.name</mapping>
+                <mapping row="7" col="0">.name</mapping>
                 <mapping row="7" col="1">employee.age</mapping>
                 <mapping row="7" col="3">employee.payment</mapping>
                 <mapping row="7" col="4">employee.bonus</mapping>

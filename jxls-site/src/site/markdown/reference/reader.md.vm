@@ -29,23 +29,23 @@ Construction of XLSReader using XML config file
 To use Jxls-Reader to parse excel files and populate your Java objects with read data you have to construct *XLSReader* object first. 
 The easiest way to do this is to use a special XML configuration file. 
 
-Let's use [departmentdata.xls](../xls/departmentdata.xls) Excel file with some department data to demonstrate this method
+Let's use [data.xls](../xls/data.xls) Excel file with some  data to demonstrate this method
 
 The mapping between spreadsheet cells and Java objects is configured in XML file. 
 Mapping file structure is rather straightforward. 
-Let's take a look at xml mapping file for *Sheet1* of our [departmentdata.xls](../xls/departmentdata.xls) sample file
+Let's take a look at xml mapping file for *Sheet1* of our [data.xls](../xls/data.xls) sample file
 
         <?xml version="1.0" encoding="ISO-8859-1"?>
         <workbook>
             <worksheet name="Sheet1">
                 <section startRow="0" endRow="6">
-                    <mapping cell="B1">department.name</mapping>
-                    <mapping cell="A4">department.chief.name</mapping>
-                    <mapping cell="B4">department.chief.age</mapping>
-                    <mapping cell="D4">department.chief.payment</mapping>
-                    <mapping row="3" col="4">department.chief.bonus</mapping>
+                    <mapping cell="B1">.name</mapping>
+                    <mapping cell="A4">.chief.name</mapping>
+                    <mapping cell="B4">.chief.age</mapping>
+                    <mapping cell="D4">.chief.payment</mapping>
+                    <mapping row="3" col="4">.chief.bonus</mapping>
                 </section>
-                <loop startRow="7" endRow="7" items="department.staff" var="employee" varType="org.jxls.reader.sample.Employee">
+                <loop startRow="7" endRow="7" items=".staff" var="employee" varType="org.jxls.reader.sample.Employee">
                     <section startRow="7" endRow="7">
                         <mapping row="7" col="0">employee.name</mapping>
                         <mapping row="7" col="1">employee.age</mapping>
@@ -74,9 +74,9 @@ It means that even if you are not going to read for example the first rows of th
 The unnecessary rows will be skipped and all other sections will be read as required.
 Mapping of XLS cells onto Java bean properties is defined using `mapping` tag which looks like following
 
-        <mapping cell="B1">department.name</mapping>
+        <mapping cell="B1">.name</mapping>
                 
-You also can use cell attribute to specify mapped cell and the body of the tag for a full property name to populate from this cell. By full property name we mean bean name concatenated with property name like department.name or department.chief.payment . 
+You also can use cell attribute to specify mapped cell and the body of the tag for a full property name to populate from this cell. By full property name we mean bean name concatenated with property name like .name or .chief.payment .
 Another option to specify mapped cell is to use cell row and column numbers (zero-based)
 
         <mapping row="3" col="4">department.chief.bonus</mapping>
