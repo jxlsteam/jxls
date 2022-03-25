@@ -63,13 +63,13 @@ public class CommandData {
         this.sourceStartCellRef = sourceStartCellRef;
     }
 
-    public Size getSourceSize() {
-        return sourceSize;
-    }
-
-    public void setSourceSize(Size sourceSize) {
-        this.sourceSize = sourceSize;
-    }
+//    public Size getSourceSize() {
+//        return sourceSize;
+//    }
+//
+//    public void setSourceSize(Size sourceSize) {
+//        this.sourceSize = sourceSize;
+//    }
 
     void reset() {
         startCellRef = sourceStartCellRef;

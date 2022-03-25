@@ -146,7 +146,8 @@ public class XlsArea implements Area {
         cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
         for (CommandData commandData : commandDataList) {
             CellRef startCellRef = commandData.getSourceStartCellRef();
-            Size size = commandData.getSourceSize();
+            SourceSizeEvent sourceSizeEve = new SourceSizeEvent();
+            Size size = sourceSizeEve.getSourceSize();
             if (commandData.getCommand().getLockRange()) {
                 excludeCells(startCellRef, size);
             }
@@ -201,7 +202,8 @@ public class XlsArea implements Area {
                                     commandDataStartCellRef.getCol()));
                     if (heightChange < 0) {
                         CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
-                        Size initialSize = commandDataToShift.getSourceSize();
+                        SourceSizeEvent sourceSizeEve = new SourceSizeEvent();
+                        Size initialSize = sourceSizeEve.getSourceSize();
                         int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
                         int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
                         int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
@@ -229,7 +231,8 @@ public class XlsArea implements Area {
                                     commandDataStartCellRef.getCol() + widthChange));
                     if (widthChange < 0) {
                         CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
-                        Size initialSize = commandDataToShift.getSourceSize();
+                        SourceSizeEvent sourceSizeEve = new SourceSizeEvent();
+                        Size initialSize = sourceSizeEve.getSourceSize();
                         int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
                         int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
                         int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();

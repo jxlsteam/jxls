@@ -8,25 +8,35 @@ import org.jxls.common.JxlsException;
 /**
  * This is a class to convert Excel cell names to (sheet, row, col) representations and vice versa.
  * The current code is taken from Apache POI CellReference class ( http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html ).
- * 
+ *
  * @author Leonid Vysochyn
  */
 public class CellRefUtil {
     private static final char DELIMITER = '\'';
-    /** Matches a single cell ref with no absolute ('$') markers */
+    /**
+     * Matches a single cell ref with no absolute ('$') markers
+     */
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("([A-Za-z]+)([0-9]+)");
-    /** The character (!) that separates sheet names from cell references */
+    /**
+     * The character (!) that separates sheet names from cell references
+     */
     public static final char SHEET_NAME_DELIMITER = '!';
-    /** The character (:) that separates the two cell references in a multi-cell area reference */
+    /**
+     * The character (:) that separates the two cell references in a multi-cell area reference
+     */
     private static final char CELL_DELIMITER = ':';
-    /** The character ($) that signifies a row or column value is absolute instead of relative */
+    /**
+     * The character ($) that signifies a row or column value is absolute instead of relative
+     */
     public static final char ABSOLUTE_REFERENCE_MARKER = '$';
-    /** The character (') used to quote sheet names when they contain special characters */
+    /**
+     * The character (') used to quote sheet names when they contain special characters
+     */
     private static final char SPECIAL_NAME_DELIMITER = '\'';
 
     /**
      * Takes in a 0-based base-10 column and returns a ALPHA-26 representation. e.g. column #3 -&gt; D
-     * 
+     *
      * @param col -
      * @return -
      */
@@ -94,21 +104,21 @@ public class CellRefUtil {
     /**
      * Note - this method assumes the specified rawSheetName has only letters and digits.  It
      * cannot be used to match absolute or range references (using the dollar or colon char).
-     * 
+     *
      * <p>Some notable cases:
-     *    <blockquote><table border="0" cellpadding="1" cellspacing="0"
-     *                 summary="Notable cases.">
-     *      <tr><th>Input&nbsp;</th><th>Result&nbsp;</th><th>Comments</th></tr>
-     *      <tr><td>"A1"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
-     *      <tr><td>"a111"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
-     *      <tr><td>"AA"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
-     *      <tr><td>"aa1"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
-     *      <tr><td>"A1A"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
-     *      <tr><td>"A1A1"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
-     *      <tr><td>"A$1:$C$20"&nbsp;&nbsp;</td><td>false</td><td>Not a plain cell reference</td></tr>
-     *      <tr><td>"SALES20080101"&nbsp;&nbsp;</td><td>true</td>
-     *      		<td>Still needs delimiting even though well out of range</td></tr>
-     *    </table></blockquote></p>
+     * <blockquote><table border="0" cellpadding="1" cellspacing="0"
+     * summary="Notable cases.">
+     * <tr><th>Input&nbsp;</th><th>Result&nbsp;</th><th>Comments</th></tr>
+     * <tr><td>"A1"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
+     * <tr><td>"a111"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
+     * <tr><td>"AA"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
+     * <tr><td>"aa1"&nbsp;&nbsp;</td><td>true</td><td>&nbsp;</td></tr>
+     * <tr><td>"A1A"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
+     * <tr><td>"A1A1"&nbsp;&nbsp;</td><td>false</td><td>&nbsp;</td></tr>
+     * <tr><td>"A$1:$C$20"&nbsp;&nbsp;</td><td>false</td><td>Not a plain cell reference</td></tr>
+     * <tr><td>"SALES20080101"&nbsp;&nbsp;</td><td>true</td>
+     * <td>Still needs delimiting even though well out of range</td></tr>
+     * </table></blockquote></p>
      *
      * @return <code>true</code> if there is any possible ambiguity that the specified rawSheetName
      * could be interpreted as a valid cell name.
@@ -128,7 +138,7 @@ public class CellRefUtil {
     /**
      * Used to decide whether sheet names like 'AB123' need delimiting due to the fact that they
      * look like cell references.
-     * 
+     *
      * <p>This code is currently being used for translating formulas represented with <code>Ptg</code>
      * tokens into human readable text form.  In formula expressions, a sheet name always has a
      * trailing '!' so there is little chance for ambiguity.  It doesn't matter too much what this
@@ -143,7 +153,7 @@ public class CellRefUtil {
      *
      * <p>At the time of writing, POI's formula parser tolerates cell-like sheet names in formulas
      * with or without delimiters.  The same goes for Excel(2007), both manual and automated entry.</p>
-     * 
+     *
      * <p>For better or worse this implementation attempts to replicate Excel's formula renderer.
      * Excel uses range checking on the apparent 'row' and 'column' components.  Note however that
      * the maximum sheet size varies across versions.</p>
@@ -157,37 +167,37 @@ public class CellRefUtil {
      * interpreted as a cell reference.  Names of that form can be also used for sheets and/or
      * named ranges, and in those circumstances, the question of whether the potential cell
      * reference is valid (in range) becomes important.
-     * 
+     *
      * <p>Note - that the maximum sheet size varies across Excel versions:</p>
-     * 
+     *
      * <blockquote><table border="0" cellpadding="1" cellspacing="0"
-     *                 summary="Notable cases.">
-     *   <tr><th>Version&nbsp;&nbsp;</th><th>File Format&nbsp;&nbsp;</th>
-     *   	<th>Last Column&nbsp;&nbsp;</th><th>Last Row</th></tr>
-     *   <tr><td>97-2003</td><td>BIFF8</td><td>"IV" (2^8)</td><td>65536 (2^14)</td></tr>
-     *   <tr><td>2007</td><td>BIFF12</td><td>"XFD" (2^14)</td><td>1048576 (2^20)</td></tr>
+     * summary="Notable cases.">
+     * <tr><th>Version&nbsp;&nbsp;</th><th>File Format&nbsp;&nbsp;</th>
+     * <th>Last Column&nbsp;&nbsp;</th><th>Last Row</th></tr>
+     * <tr><td>97-2003</td><td>BIFF8</td><td>"IV" (2^8)</td><td>65536 (2^14)</td></tr>
+     * <tr><td>2007</td><td>BIFF12</td><td>"XFD" (2^14)</td><td>1048576 (2^20)</td></tr>
      * </table></blockquote>
      * POI currently targets BIFF8 (Excel 97-2003), so the following behaviour can be observed for
      * this method:
      * <blockquote><table border="0" cellpadding="1" cellspacing="0"
-     *                 summary="Notable cases.">
-     *   <tr><th>Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-     *       <th>Result&nbsp;</th></tr>
-     *   <tr><td>"A", "1"</td><td>true</td></tr>
-     *   <tr><td>"a", "111"</td><td>true</td></tr>
-     *   <tr><td>"A", "65536"</td><td>true</td></tr>
-     *   <tr><td>"A", "65537"</td><td>false</td></tr>
-     *   <tr><td>"iv", "1"</td><td>true</td></tr>
-     *   <tr><td>"IW", "1"</td><td>false</td></tr>
-     *   <tr><td>"AAA", "1"</td><td>false</td></tr>
-     *   <tr><td>"a", "111"</td><td>true</td></tr>
-     *   <tr><td>"Sheet", "1"</td><td>false</td></tr>
+     * summary="Notable cases.">
+     * <tr><th>Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+     * <th>Result&nbsp;</th></tr>
+     * <tr><td>"A", "1"</td><td>true</td></tr>
+     * <tr><td>"a", "111"</td><td>true</td></tr>
+     * <tr><td>"A", "65536"</td><td>true</td></tr>
+     * <tr><td>"A", "65537"</td><td>false</td></tr>
+     * <tr><td>"iv", "1"</td><td>true</td></tr>
+     * <tr><td>"IW", "1"</td><td>false</td></tr>
+     * <tr><td>"AAA", "1"</td><td>false</td></tr>
+     * <tr><td>"a", "111"</td><td>true</td></tr>
+     * <tr><td>"Sheet", "1"</td><td>false</td></tr>
      * </table></blockquote>
      *
-     * @param colStr a string of only letter characters
-     * @param rowStr a string of only digit characters
+     * @param colStr          a string of only letter characters
+     * @param rowStr          a string of only digit characters
      * @param lastColumnIndex -
-     * @param lastRowIndex -
+     * @param lastRowIndex    -
      * @return <code>true</code> if the row and col parameters are within range of a BIFF8 spreadsheet.
      */
     public static boolean cellReferenceIsWithinRange(String colStr, String rowStr, int lastColumnIndex, int lastRowIndex) {
@@ -223,7 +233,7 @@ public class CellRefUtil {
 
 
     static boolean nameLooksLikeBooleanLiteral(String rawSheetName) {
-        switch(rawSheetName.charAt(0)) {
+        switch (rawSheetName.charAt(0)) {
             case 'T':
             case 't':
                 return "TRUE".equalsIgnoreCase(rawSheetName);
@@ -244,7 +254,7 @@ public class CellRefUtil {
         if (Character.isLetterOrDigit(ch)) {
             return false;
         }
-        switch(ch) {
+        switch (ch) {
             case '.': // dot is OK
             case '_': // underscore is OK
                 return false;
@@ -264,7 +274,7 @@ public class CellRefUtil {
      * 'Z' -&gt; 25
      * 'AA' -&gt; 26
      * 'IV' -&gt; 255</pre>
-     * 
+     *
      * @param ref -
      * @return zero based column index
      */
@@ -307,9 +317,9 @@ public class CellRefUtil {
                 break;
             }
         }
-        return new String[] {
+        return new String[]{
                 sheetName,
-                reference.substring(start,loc),
+                reference.substring(start, loc),
                 reference.substring(loc),
         };
     }
@@ -323,7 +333,7 @@ public class CellRefUtil {
         if (!isQuoted) {
             return reference.substring(0, indexOfSheetNameDelimiter);
         }
-        int lastQuotePos = indexOfSheetNameDelimiter-1;
+        int lastQuotePos = indexOfSheetNameDelimiter - 1;
         if (reference.charAt(lastQuotePos) != SPECIAL_NAME_DELIMITER) {
             throw new JxlsException("Mismatched quotes: (" + reference + ")");
         }
@@ -343,7 +353,7 @@ public class CellRefUtil {
                 sb.append(ch);
                 continue;
             }
-            if (i < lastQuotePos && reference.charAt(i+1) == SPECIAL_NAME_DELIMITER) {
+            if (i < lastQuotePos && reference.charAt(i + 1) == SPECIAL_NAME_DELIMITER) {
                 // two consecutive quotes is the escape sequence for a single one
                 i++; // skip this and keep parsing the special name
                 sb.append(ch);
@@ -389,7 +399,7 @@ public class CellRefUtil {
                 // reference ends with the delimited name.
                 // Assume names like: "Sheet1!'A1'" are never legal.
                 throw new IllegalArgumentException("Area reference '" + reference
-                        + "' ends with special name delimiter '"  + SPECIAL_NAME_DELIMITER + "'");
+                        + "' ends with special name delimiter '" + SPECIAL_NAME_DELIMITER + "'");
             }
             if (reference.charAt(i + 1) == SPECIAL_NAME_DELIMITER) {
                 // two consecutive quotes is the escape sequence for a single one
@@ -400,11 +410,11 @@ public class CellRefUtil {
             }
         }
         if (delimiterPos < 0) {
-            return new String[] { reference };
+            return new String[]{reference};
         }
 
         String partA = reference.substring(0, delimiterPos);
-        String partB = reference.substring(delimiterPos+1);
+        String partB = reference.substring(delimiterPos + 1);
         if (partB.indexOf(SHEET_NAME_DELIMITER) >= 0) {
             throw new JxlsException("Unexpected " + SHEET_NAME_DELIMITER
                     + " in second cell reference of '" + reference + "'");
@@ -412,12 +422,12 @@ public class CellRefUtil {
 
         int plingPos = partA.lastIndexOf(SHEET_NAME_DELIMITER);
         if (plingPos < 0) {
-            return new String[] { partA, partB, };
+            return new String[]{partA, partB,};
         }
 
         String sheetName = partA.substring(0, plingPos + 1); // +1 to include delimiter
 
-        return new String[] { partA, sheetName + partB, };
+        return new String[]{partA, sheetName + partB,};
     }
 
     public static boolean isPlainColumn(String refPart) {
