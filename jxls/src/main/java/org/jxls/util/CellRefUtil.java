@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 import org.jxls.common.JxlsException;
 
+import static org.jxls.util.SmallF.isaBooleanF;
+import static org.jxls.util.SmallT.isaBooleanT;
+
+
 /**
  * This is a class to convert Excel cell names to (sheet, row, col) representations and vice versa.
  * The current code is taken from Apache POI CellReference class ( http://poi.apache.org/apidocs/org/apache/poi/ss/util/CellReference.html ).
@@ -236,13 +240,14 @@ public class CellRefUtil {
         switch (rawSheetName.charAt(0)) {
             case 'T':
             case 't':
-                return "TRUE".equalsIgnoreCase(rawSheetName);
+                return isaBooleanT(rawSheetName);
             case 'F':
             case 'f':
-                return "FALSE".equalsIgnoreCase(rawSheetName);
+                return isaBooleanF(rawSheetName);
         }
         return false;
     }
+
 
     /**
      * @return <code>true</code> if the presence of the specified character in a sheet name would
