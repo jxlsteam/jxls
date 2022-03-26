@@ -50,11 +50,23 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-jexl3</artifactId>
 			<version>${jexl.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -87,6 +99,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 
 </project>
