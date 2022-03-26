@@ -3,10 +3,10 @@ dependencies {
     def slf4jVersion = '1.7.30'
 
     implementation project(':jxls')
-    implementation 'org.apache.poi:poi:$poiVersion'
-    implementation 'org.apache.poi:poi-ooxml:$poiVersion'
-    implementation 'org.slf4j:slf4j-api:$slf4jVersion'
-    runtimeOnly 'org.slf4j:jcl-over-slf4j:$slf4jVersion'
+    implementation "org.apache.poi:poi:$poiVersion"
+    implementation "org.apache.poi:poi-ooxml:$poiVersion"
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    runtimeOnly "org.slf4j:jcl-over-slf4j:$slf4jVersion"
     runtimeOnly 'org.apache.commons:commons-compress:1.21'
 
     testImplementation 'junit:junit:4.12'
