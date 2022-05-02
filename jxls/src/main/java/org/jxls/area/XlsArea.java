@@ -372,7 +372,7 @@ public class XlsArea implements Area {
     }
 
     private CellShiftStrategy detectCellShiftStrategy(String shiftMode) {
-        if (shiftMode != null && Command.ADJACENT_SHIFT_MODE.equalsIgnoreCase(shiftMode)) {
+        if (Command.ADJACENT_SHIFT_MODE.equalsIgnoreCase(shiftMode)) {
             return adjacentCellShiftStrategy;
         } else {
             return innerCellShiftStrategy;
@@ -508,7 +508,7 @@ public class XlsArea implements Area {
         for (int col = 0; col <= relativeEndCol; col++) {
             for (int row = relativeStartRow; row <= relativeEndRow; row++) {
                 if (row == relativeStartRow && col < relativeStartCol) continue;
-                if (!cellRange.isExcluded(row, col)) {
+                if (!cellRange.isExcluded(row, col) && !cellRange.isTransformed(row, col)) {
                     CellRef relativeCell = cellRange.getCell(row, col);
                     CellRef srcCell = new CellRef(sheetName, offsetRow + row, startCol + col);
                     CellRef targetCell = new CellRef(cellRef.getSheetName(), relativeCell.getRow() + cellRef.getRow(), relativeCell.getCol() + cellRef.getCol());
@@ -517,6 +517,7 @@ public class XlsArea implements Area {
                         updateCellDataArea(srcCell, targetCell, context);
                         boolean updateRowHeight = parentCommand != null;
                         transformer.transform(srcCell, targetCell, context, updateRowHeight);
+                        cellRange.markAsTransformed(row, col);
                     } catch (Exception e) {
                         transformer.getExceptionHandler().handleTransformException(e, srcCell.toString(), targetCell.toString());
                     }

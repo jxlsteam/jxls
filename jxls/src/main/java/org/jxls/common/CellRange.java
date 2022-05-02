@@ -178,6 +178,14 @@ public class CellRange {
         return !contains(row, col) || cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
+    public void markAsTransformed(int row, int col) {
+        cells[row][col] = CellRef.TRANSFORMED;
+    }
+
+    public boolean isTransformed(int row, int col) {
+        return CellRef.TRANSFORMED.equals(cells[row][col]);
+    }
+
     public boolean contains(int row, int col) {
         return row >= 0 && row < cells.length && col >= 0 && cells[0].length > col;
     }

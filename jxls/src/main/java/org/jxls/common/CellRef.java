@@ -9,6 +9,7 @@ import org.jxls.util.CellRefUtil;
  */
 public class CellRef implements Comparable<CellRef>{
     static final CellRef NONE = new CellRef("NONE", -1, -1);
+    static final CellRef TRANSFORMED = new CellRef("NONE_T", -1, -1);
 
     private int col;
     private int row;
