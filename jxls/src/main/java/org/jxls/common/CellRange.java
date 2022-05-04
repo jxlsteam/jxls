@@ -9,11 +9,13 @@ import org.jxls.common.cellshift.InnerCellShiftStrategy;
  * @author Leonid Vysochyn
  */
 public class CellRange {
+    enum CellStatus { DEFAULT, CHANGED, TRANSFORMED}
+
     private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
     private int width;
     private int height;
     private CellRef[][] cells;
-    private boolean[][] changeMatrix;
+    private CellStatus[][] statusMatrix;
     private int[] rowWidths;
     private int[] colHeights;
     private CellRef startCellRef;
@@ -24,13 +26,13 @@ public class CellRange {
         this.width = width;
         this.height = height;
         cells = new CellRef[height][];
-        changeMatrix = new boolean[height][];
+        statusMatrix = new CellStatus[height][];
         colHeights = new int[width];
         rowWidths = new int[height];
         for (int row = 0; row < height; row++) {
             rowWidths[row] = width;
             cells[row] = new CellRef[width];
-            changeMatrix[row] = new boolean[width];
+            statusMatrix[row] = new CellStatus[width];
             for (int col = 0; col < width; col++) {
                 cells[row][col] = new CellRef(sheetName, row, col);
             }
@@ -78,7 +80,7 @@ public class CellRange {
                 boolean requiresShifting = cellShiftStrategy.requiresColShifting(cells[i][j], startRow, endRow, col);
                 if (requiresShifting && isHorizontalShiftAllowed(col, colShift, i, j)) {
                     cells[i][j].setCol(cells[i][j].getCol() + colShift);
-                    changeMatrix[i][j] = true;
+                    statusMatrix[i][j] = CellStatus.CHANGED;
                 }
             }
         }
@@ -91,7 +93,7 @@ public class CellRange {
     }
 
     private boolean isHorizontalShiftAllowed(int col, int widthChange, int cellRow, int cellCol) {
-        if (changeMatrix[cellRow][cellCol]) {
+        if (statusMatrix[cellRow][cellCol] == CellStatus.CHANGED) {
             return false;
         }
         if (widthChange >= 0) {
@@ -115,7 +117,7 @@ public class CellRange {
                 boolean requiresShifting = cellShiftStrategy.requiresRowShifting(cells[i][j], startCol, endCol, row);
                 if (requiresShifting && isVerticalShiftAllowed(row, rowShift, i, j)) {
                     cells[i][j].setRow(cells[i][j].getRow() + rowShift);
-                    changeMatrix[i][j] = true;
+                    statusMatrix[i][j] = CellStatus.CHANGED;
                 }
             }
         }
@@ -128,7 +130,7 @@ public class CellRange {
     }
 
     private boolean isVerticalShiftAllowed(int row, int heightChange, int cellRow, int cellCol) {
-        if (changeMatrix[cellRow][cellCol]) {
+        if (statusMatrix[cellRow][cellCol] == CellStatus.CHANGED) {
             return false;
         }
         if (heightChange >= 0) {
@@ -178,6 +180,14 @@ public class CellRange {
         return !contains(row, col) || cells[row][col] == null || CellRef.NONE.equals(cells[row][col]);
     }
 
+    public void markAsTransformed(int row, int col) {
+        statusMatrix[row][col] = CellStatus.TRANSFORMED;
+    }
+
+    public boolean isTransformed(int row, int col) {
+        return statusMatrix[row][col] == CellStatus.TRANSFORMED;
+    }
+
     public boolean contains(int row, int col) {
         return row >= 0 && row < cells.length && col >= 0 && cells[0].length > col;
     }
@@ -196,13 +206,13 @@ public class CellRange {
     }
 
     public boolean hasChanged(int row, int col) {
-        return changeMatrix[row][col];
+        return statusMatrix[row][col] == CellStatus.CHANGED;
     }
 
     public void resetChangeMatrix() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                changeMatrix[i][j] = false;
+                statusMatrix[i][j] = CellStatus.DEFAULT;
             }
         }
     }

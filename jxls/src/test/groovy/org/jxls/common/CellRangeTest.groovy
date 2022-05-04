@@ -14,7 +14,7 @@ class CellRangeTest extends Specification{
             int endRow = 5;
             int col = 5;
             int shift = 3;
-            cellRange.changeMatrix[5][6] = true;
+            cellRange.statusMatrix[5][6] = CellRange.CellStatus.CHANGED;
         when:
             cellRange.shiftCellsWithRowBlock(startRow, endRow, col, shift, true)
         then:
@@ -48,7 +48,7 @@ class CellRangeTest extends Specification{
             int endCol = 5;
             int row = 5;
             int shift = -3;
-            cellRange.changeMatrix[7][4] = true;
+            cellRange.statusMatrix[7][4] = CellRange.CellStatus.CHANGED;
         when:
             cellRange.shiftCellsWithColBlock(startCol, endCol, row, shift, true)
         then:
