@@ -212,7 +212,9 @@ public class CellRange {
     public void resetChangeMatrix() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                statusMatrix[i][j] = CellStatus.DEFAULT;
+                if (statusMatrix[i][j] != CellStatus.TRANSFORMED) {
+                    statusMatrix[i][j] = CellStatus.DEFAULT;
+                }
             }
         }
     }
