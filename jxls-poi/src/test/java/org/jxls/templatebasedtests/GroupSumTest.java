@@ -10,12 +10,14 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.JxlsTester;
+import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
+import org.jxls.transform.Transformer;
 
 /**
  * Group sum test
@@ -45,6 +47,7 @@ public class GroupSumTest {
         map.put("buGroup", department);
         map.put("name", name);
         map.put("payment", Double.valueOf(salary));
+        map.put("city", city);
         return map;
     }
 
@@ -78,7 +81,38 @@ public class GroupSumTest {
             w.selectSheet("Group sums");
             assertEquals("1st group sum is wrong! (Main department) E5\n", Double.valueOf(170000d), w.getCellValueAsDouble(5, 5));
             assertEquals("2nd group sum is wrong! (Finance department) E10\n", Double.valueOf(130000d), w.getCellValueAsDouble(10, 5));
-            assertEquals("Total sum (calculated by fx:sum) in cell E12 is wrong!\n", Double.valueOf(300000d), w.getCellValueAsDouble(12, 5));
+            assertEquals("Total sum (calculated by G.sum) in cell E12 is wrong!\n", Double.valueOf(300000d), w.getCellValueAsDouble(12, 5));
+        }
+    }
+    
+    @Test
+    public void filterCondition() {
+        // Prepare
+        List<Map<String, Object>> maps = new ArrayList<>();
+        maps.add(createEmployee("01 Main department", "Sven", "Mayor", "Geldern", 140000));
+        maps.add(createEmployee("01 Main department", "Dagmar", "Assistent", "Geldern", 32000));
+        maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
+        maps.add(createEmployee("01 Main department", "Draci the dragon", "Mascot", "Wetten", -1));
+        Context context = new Context();
+        context.putVar("details", maps);
+        GroupSum<Double> groupSum = new GroupSum<Double>(context, new DoubleSummarizerBuilder());
+        context.putVar("G", groupSum);
+        
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "filterCondition");
+        tester.createTransformerAndProcessTemplate(context, new TransformerChecker() {
+            @Override
+            public Transformer checkTransformer(Transformer transformer) {
+                groupSum.setTransformationConfig(transformer.getTransformationConfig());
+                return transformer;
+            }
+        });
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Group sums");
+            assertEquals("wrong Geldern sum (E8)\n", Double.valueOf(140000 + 32000), w.getCellValueAsDouble(8, 5));
+            assertEquals("wrong outside Geldern sum (E9)\n", Double.valueOf(30000), w.getCellValueAsDouble(9, 5));
         }
     }
 }
