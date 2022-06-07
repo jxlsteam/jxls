@@ -14,10 +14,17 @@ allowing to create a streaming or non-streaming transformer instance from POI wo
 Additionally it allows to ignore the source cells row height and/or column width during the cells transformation.
 It is achieved with `setIgnoreRowProps(boolean)` and `setIgnoreColumnProps(boolean)` methods.
 
+Exception handling
+------------------
 
+Use this for using the new exception handling:
 
+```
+transformer.setExceptionHandler(new PoiExceptionThrower());
+// also turn on strict non-silent mode
+transformer.getTransformationConfig().setExpressionEvaluator(new JexlExpressionEvaluator(false, true));
+```
 
-
-
-   
-
+Instead of just logging errors, they are thrown as exceptions.
+This will help you find errors in the templates. Logged errors are easily overlooked or even lost.
+You can also implement your own ExceptionHandler.
