@@ -24,10 +24,10 @@ import org.jxls.util.UtilWrapper;
  * <li>'varIndex' is name of variable in context that holds current iteration index, 0 based. Use ${varIndex+1} for 1 based.</li>
  * <li>'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.</li>
  * <li>'select' holds an expression for filtering collection.</li>
- * <li>'groupBy' is the name for grouping.</li>
+ * <li>'groupBy' is the name for grouping (prepend var+".").</li>
  * <li>'groupOrder' defines the grouping order. Case does not matter.
  *     "ASC" for ascending, "DESC" for descending sort order. Other values or null: no sorting.</li>
- * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order.</li>
+ * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order. Prepend var+'.' before each name.</li>
  * <li>'multisheet' is the name of the sheet names container.</li>
  * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
  * </ul>
@@ -206,7 +206,8 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param groupBy property name for grouping the collection
+     * @param groupBy property name for grouping the collection.
+     * You should write the run var name + "." before the property name.
      */
     public void setGroupBy(String groupBy) {
         this.groupBy = groupBy;
@@ -227,14 +228,16 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param orderBy property name for ordering the list
+     * @param orderBy property names for ordering the list.
+     * You should write the run var name + "." before each property name.
+     * You can write " ASC" or " DESC" after each property name for ascending/descending sorting order. ASC is the default.
      */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
     }
 
     /**
-     * @return property name for ordering the list
+     * @return property names for ordering the list
      */
     public String getOrderBy() {
         return orderBy;
@@ -295,7 +298,7 @@ public class EachCommand extends AbstractCommand {
         if (groupBy == null || groupBy.length() == 0) {
             size = processCollection(context, itemsCollection, cellRef, var);
         } else {
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, removeVarPrefix(groupBy), groupOrder);
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar);
         }
