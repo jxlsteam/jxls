@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -23,10 +24,10 @@ import org.jxls.util.UtilWrapper;
  * <li>'varIndex' is name of variable in context that holds current iteration index, 0 based. Use ${varIndex+1} for 1 based.</li>
  * <li>'direction' defines expansion by rows (DOWN) or by columns (RIGHT). Default is DOWN.</li>
  * <li>'select' holds an expression for filtering collection.</li>
- * <li>'groupBy' is the name for grouping.</li>
+ * <li>'groupBy' is the name for grouping (prepend var+".").</li>
  * <li>'groupOrder' defines the grouping order. Case does not matter.
  *     "ASC" for ascending, "DESC" for descending sort order. Other values or null: no sorting.</li>
- * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order.</li>
+ * <li>'orderBy' contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order. Prepend var+'.' before each name.</li>
  * <li>'multisheet' is the name of the sheet names container.</li>
  * <li>'cellRefGenerator' defines custom strategy for target cell references.</li>
  * </ul>
@@ -205,7 +206,8 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param groupBy property name for grouping the collection
+     * @param groupBy property name for grouping the collection.
+     * You should write the run var name + "." before the property name.
      */
     public void setGroupBy(String groupBy) {
         this.groupBy = groupBy;
@@ -226,14 +228,16 @@ public class EachCommand extends AbstractCommand {
     }
 
     /**
-     * @param orderBy property name for ordering the list
+     * @param orderBy property names for ordering the list.
+     * You should write the run var name + "." before each property name.
+     * You can write " ASC" or " DESC" after each property name for ascending/descending sorting order. ASC is the default.
      */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
     }
 
     /**
-     * @return property name for ordering the list
+     * @return property names for ordering the list
      */
     public String getOrderBy() {
         return orderBy;
@@ -307,7 +311,8 @@ public class EachCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     private void orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
-            List<String> orderByProps = Arrays.asList(orderBy.split(","));
+            List<String> orderByProps = Arrays.asList(orderBy.split(","))
+                    .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
             OrderByComparator<Object> comp = new OrderByComparator<>(orderByProps, util);
             Collections.sort((List<Object>) itemsCollection, comp);
         }
@@ -399,5 +404,16 @@ public class EachCommand extends AbstractCommand {
             throw new JxlsException("Failed to get sheet names from " + multisheet, e);
         }
         throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
+    }
+    
+    private String removeVarPrefix(String pVariable) {
+        int o = pVariable.indexOf(".");
+        if (o >= 0) {
+            String pre = pVariable.substring(0, o).trim();
+            if (pre.equals(var)) {
+                return pVariable.substring(o + 1).trim();
+            }
+        }
+        return pVariable;
     }
 }

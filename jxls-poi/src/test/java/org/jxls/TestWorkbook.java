@@ -51,10 +51,11 @@ public class TestWorkbook implements AutoCloseable {
      * @return String
      */
     public String getCellValueAsString(int row, int column) {
-        if (sheet.getRow(row - 1).getCell(column - 1) == null) {
+        try {
+            return sheet.getRow(row - 1).getCell(column - 1).getStringCellValue();
+        } catch (NullPointerException e) {
             return null;
         }
-        return sheet.getRow(row - 1).getCell(column - 1).getStringCellValue();
     }
 
     /**
@@ -64,7 +65,11 @@ public class TestWorkbook implements AutoCloseable {
      * @return RichTextString.toString()
      */
     public String getCellValueAsRichString(int row, int column) {
-        return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue().toString();
+        try {
+            return sheet.getRow(row - 1).getCell(column - 1).getRichStringCellValue().toString();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
     
     /**
@@ -84,7 +89,11 @@ public class TestWorkbook implements AutoCloseable {
      * @return String
      */
     public String getFormulaString(int row, int column) {
-        return sheet.getRow(row - 1).getCell(column - 1).getCellFormula();
+        try {
+            return sheet.getRow(row - 1).getCell(column - 1).getCellFormula();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**
@@ -94,7 +103,11 @@ public class TestWorkbook implements AutoCloseable {
      * @return Double
      */
     public Double getCellValueAsDouble(int row, int column) {
-        return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
+        try {
+            return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**
@@ -104,7 +117,11 @@ public class TestWorkbook implements AutoCloseable {
      * @return LocalDateTime
      */
     public LocalDateTime getCellValueAsLocalDateTime(int row, int column) {
-        return sheet.getRow(row - 1).getCell(column - 1).getLocalDateTimeCellValue();
+        try {
+            return sheet.getRow(row - 1).getCell(column - 1).getLocalDateTimeCellValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**
