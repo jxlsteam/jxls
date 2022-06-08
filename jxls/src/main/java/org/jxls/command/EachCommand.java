@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -294,7 +295,7 @@ public class EachCommand extends AbstractCommand {
         if (groupBy == null || groupBy.length() == 0) {
             size = processCollection(context, itemsCollection, cellRef, var);
         } else {
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, removeVarPrefix(groupBy), groupOrder);
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar);
         }
@@ -307,7 +308,8 @@ public class EachCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     private void orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
-            List<String> orderByProps = Arrays.asList(orderBy.split(","));
+            List<String> orderByProps = Arrays.asList(orderBy.split(","))
+                    .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
             OrderByComparator<Object> comp = new OrderByComparator<>(orderByProps, util);
             Collections.sort((List<Object>) itemsCollection, comp);
         }
@@ -399,5 +401,16 @@ public class EachCommand extends AbstractCommand {
             throw new JxlsException("Failed to get sheet names from " + multisheet, e);
         }
         throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
+    }
+    
+    private String removeVarPrefix(String pVariable) {
+        int o = pVariable.indexOf(".");
+        if (o >= 0) {
+            String pre = pVariable.substring(0, o).trim();
+            if (pre.equals(var)) {
+                return pVariable.substring(o + 1).trim();
+            }
+        }
+        return pVariable;
     }
 }
