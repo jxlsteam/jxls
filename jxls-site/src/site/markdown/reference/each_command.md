@@ -22,11 +22,11 @@ Command Attributes
 
 * `select` is an expression selector to filter out collection items during the iteration
 
-* `groupBy` is a property to do the grouping
+* `groupBy` is a property to do the grouping (prepend the var name + ".")
 
 * `groupOrder` indicates ordering for groups ('desc' or 'asc')
 
-* `orderBy` contains the names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order
+* `orderBy` contains the property names separated with comma and each with an optional postfix " ASC" (default) or " DESC" for the sort order. You should prepend the var name + "." before each property name.
 
 * `multisheet` is a name of a context variable containing a list of sheet names to output the collection
 
@@ -95,15 +95,16 @@ With Java API you do this like
 Grouping the data
 ------------------
 *Each-Command* supports grouping via its `groupBy` property. The `groupOrder` property sets the ordering and can be `desc` or `asc`.
-If you write `groupBy` without `groupOrder` no sorting will be done.
+If you write `groupBy` without `groupOrder` no sorting will be done. Normally one defines `groupBy` and `groupOrder`.
 
 In the excel markup it can look like this
 
-    jx:each(items="employees" var="myGroup" groupBy="name" groupOrder="asc" lastCell="D6")
+    jx:each(items="employees" var="myGroup" groupBy="myGroup.name" groupOrder="asc" lastCell="D6")
     
 In this example each group can be referred using _myGroup_ variable which will be accessible in the context.
+For consistent use you should write the var name + "." before the groupBy property name.
     
-The current group item can be referred using  `myGroup.item`. So to refer to employee name use
+The current group item can be referred using `myGroup.item`. So to refer to employee name use
 
     ${myGroup.item.name}
     
