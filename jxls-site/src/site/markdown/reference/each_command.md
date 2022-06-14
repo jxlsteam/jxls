@@ -91,13 +91,17 @@ With Java API you do this like
     //... creating EachCommand to iterate departments
     // setting its direction to RIGHT
     departmentEachCommand.setDirection(EachCommand.Direction.RIGHT);
-    
+
+Excel markup:
+
+    jx:each(items="salaries" var="s" direction="RIGHT" lastCell="F2")
+
 Grouping the data
 ------------------
 *Each-Command* supports grouping via its `groupBy` property. The `groupOrder` property sets the ordering and can be `desc` or `asc`.
 If you write `groupBy` without `groupOrder` no sorting will be done. Normally one defines `groupBy` and `groupOrder`.
 
-In the excel markup it can look like this
+In the Excel markup it can look like this
 
     jx:each(items="employees" var="myGroup" groupBy="myGroup.name" groupOrder="asc" lastCell="D6")
     
