@@ -17,12 +17,12 @@ JXLS uses a special markup in Excel templates to define output formatting and da
     <dependency>
         <groupId>org.jxls</groupId>
         <artifactId>jxls-poi</artifactId>
-        <version>2.11.0</version>
+        <version>2.12.0</version>
     </dependency>
 
 **Gradle**
 
-    implementation 'org.jxls:jxls-poi:2.11.0'
+    implementation 'org.jxls:jxls-poi:2.12.0'
 
 **Getting started**
 
