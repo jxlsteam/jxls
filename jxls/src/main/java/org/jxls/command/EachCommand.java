@@ -10,10 +10,7 @@ import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.GroupData;
-import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.util.JxlsHelper;
 import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
 
@@ -39,6 +36,8 @@ import org.jxls.util.UtilWrapper;
 public class EachCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "each";
     static final String GROUP_DATA_KEY = "_group";
+    /** Old behavior will be removed in a future release. */
+    public static boolean oldSelectBehavior = false;
 
     private UtilWrapper util = new UtilWrapper();
     private String items;
@@ -295,11 +294,16 @@ public class EachCommand extends AbstractCommand {
             itemsCollection = Collections.emptyList();
         }
         Size size;
-        if (groupBy == null || groupBy.length() == 0) {
+        if (groupBy == null || groupBy.isEmpty()) {
             size = processCollection(context, itemsCollection, cellRef, var);
         } else {
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
             String groupVar = var != null ? var : GROUP_DATA_KEY;
+            if (select != null && !select.isEmpty() && !oldSelectBehavior) {
+                CollectionFilter cf = new CollectionFilter(context, util, varIndex, null, select, null/*!!*/, null, null, null);
+                cf.processCollection(itemsCollection, null, groupVar);
+                itemsCollection = cf.getFilteredCollection();
+            }
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
             size = processCollection(context, groupedData, cellRef, groupVar);
         }
         if (direction == Direction.DOWN) {
@@ -319,91 +323,11 @@ public class EachCommand extends AbstractCommand {
     }
 
     private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
-        int index = 0;
-        int newWidth = 0;
-        int newHeight = 0;
-
-        CellRefGenerator cellRefGenerator = this.cellRefGenerator;
-        if (cellRefGenerator == null && multisheet != null) {
-            List<String> sheetNameList = extractSheetNameList(context);
-            cellRefGenerator = sheetNameList == null
-                    ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator())
-                    : new SheetNameGenerator(sheetNameList, cellRef);
-        }
-        
-        ExpressionEvaluator selectEvaluator = null;
-        if (select != null) {
-            selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
-        }
-
-        CellRef currentCell = cellRef;
-        Object currentVarObject = varName == null ? null : context.getRunVar(varName);
-        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
-        int currentIndex = 0;
-        for (Object obj : itemsCollection) {
-            context.putVar(varName, obj);
-            if (varIndex != null) {
-                context.putVar(varIndex, currentIndex);
-            }
-            if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
-                context.removeVar(varName);
-                continue;
-            }
-            if (cellRefGenerator != null) {
-                currentCell = cellRefGenerator.generateCellRef(index++, context);
-            }
-            if (currentCell == null) {
-                break;
-            }
-            Size size;
-            try {
-                size = area.applyAt(currentCell, context);
-            } catch (NegativeArraySizeException e) {
-                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
-            }
-            if (cellRefGenerator != null) {
-                newWidth = Math.max(newWidth, size.getWidth());
-                newHeight = Math.max(newHeight, size.getHeight());
-            } else if (direction == Direction.DOWN) {
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
-                newWidth = Math.max(newWidth, size.getWidth());
-                newHeight += size.getHeight();
-            } else { // RIGHT
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
-                newWidth += size.getWidth();
-                newHeight = Math.max(newHeight, size.getHeight());
-            }
-            currentIndex++;
-        }
-        restoreVarObject(context, varIndex, currentVarIndexObject);
-        restoreVarObject(context, varName, currentVarObject);
-        return new Size(newWidth, newHeight);
-    }
-
-    private void restoreVarObject(Context context, String varName, Object varObject) {
-        if (varName == null) {
-            return;
-        }
-        if (varObject != null) {
-            context.putVar(varName, varObject);
-        } else {
-            context.removeVar(varName);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> extractSheetNameList(Context context) {
-        try {
-            Object sheetnames = context.getVar(multisheet);
-            if (sheetnames == null) {
-                return null;
-            } else if (sheetnames instanceof List) {
-                return (List<String>) sheetnames;
-            }
-        } catch (Exception e) {
-            throw new JxlsException("Failed to get sheet names from " + multisheet, e);
-        }
-        throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
+        CollectionProcessor cp = new CollectionProcessor(context, util, varIndex, direction,
+                groupBy == null || groupBy.isEmpty() || oldSelectBehavior ? select : null,
+                groupBy, multisheet, cellRefGenerator, area);
+        cp.initMultiSheet(cellRef, () -> getTransformationConfig());
+        return cp.processCollection(itemsCollection, cellRef, varName);
     }
     
     private String removeVarPrefix(String pVariable) {
