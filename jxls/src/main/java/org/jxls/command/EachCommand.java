@@ -1,7 +1,6 @@
 package org.jxls.command;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.GroupData;
 import org.jxls.common.Size;
 import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
@@ -52,6 +50,7 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private CellRefGenerator cellRefGenerator;
     private Area area;
+    private String useVarName;
 
     public EachCommand() {
     }
@@ -285,35 +284,43 @@ public class EachCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
-        Iterable<?> itemsCollection = null;
-        try {
-            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
-            orderCollection(itemsCollection);
-        } catch (Exception e) {
-            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
-            itemsCollection = Collections.emptyList();
-        }
-        Size size;
-        if (groupBy == null || groupBy.isEmpty()) {
-            size = processCollection(context, itemsCollection, cellRef, var);
-        } else {
-            String groupVar = var != null ? var : GROUP_DATA_KEY;
-            if (select != null && !select.isEmpty() && !oldSelectBehavior) {
-                CollectionFilter cf = new CollectionFilter(context, util, varIndex, null, select, null/*!!*/, null, null, null);
-                cf.processCollection(itemsCollection, null, groupVar);
-                itemsCollection = cf.getFilteredCollection();
-            }
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
-            size = processCollection(context, groupedData, cellRef, groupVar);
-        }
+        Iterable<?> itemsCollection = prepareCollection(cellRef, context);
+        Size size = processCollection(cellRef, context, itemsCollection);
         if (direction == Direction.DOWN) {
             getTransformer().adjustTableSize(cellRef, size);
         }
         return size;
     }
     
+    protected Iterable<?> prepareCollection(CellRef cellRef, Context context) {
+        Iterable<?> itemsCollection = null;
+        try {
+            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+        } catch (Exception e) {
+            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
+            itemsCollection = Collections.emptyList();
+        }
+        useVarName = var;
+        boolean hasGroupBy = groupBy != null && !groupBy.isEmpty();
+        if (hasGroupBy) {
+            if (useVarName == null) {
+                useVarName = GROUP_DATA_KEY;
+            }
+            if (select != null && !select.isEmpty() && !oldSelectBehavior) {
+                CollectionFilter cf = new CollectionFilter(context, util, varIndex, null, select, null/*!!*/, null, null, null);
+                cf.processCollection(itemsCollection, null, useVarName);
+                itemsCollection = cf.getFilteredCollection();
+            }
+        }
+        orderCollection(itemsCollection);
+        if (hasGroupBy) {
+            itemsCollection = util.groupIterable(itemsCollection, groupBy, groupOrder);
+        }
+        return itemsCollection;
+    }
+    
     @SuppressWarnings("unchecked")
-    private void orderCollection(Iterable<?> itemsCollection) {
+    protected void orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
                     .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
@@ -321,16 +328,8 @@ public class EachCommand extends AbstractCommand {
             Collections.sort((List<Object>) itemsCollection, comp);
         }
     }
-
-    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
-        CollectionProcessor cp = new CollectionProcessor(context, util, varIndex, direction,
-                groupBy == null || groupBy.isEmpty() || oldSelectBehavior ? select : null,
-                groupBy, multisheet, cellRefGenerator, area);
-        cp.initMultiSheet(cellRef, () -> getTransformationConfig());
-        return cp.processCollection(itemsCollection, cellRef, varName);
-    }
     
-    private String removeVarPrefix(String pVariable) {
+    protected String removeVarPrefix(String pVariable) {
         int o = pVariable.indexOf(".");
         if (o >= 0) {
             String pre = pVariable.substring(0, o).trim();
@@ -339,5 +338,13 @@ public class EachCommand extends AbstractCommand {
             }
         }
         return pVariable;
+    }
+
+    protected Size processCollection(CellRef cellRef, Context context, Iterable<?> itemsCollection) {
+        CollectionProcessor cp = new CollectionProcessor(context, util, varIndex, direction,
+                groupBy == null || groupBy.isEmpty() || oldSelectBehavior ? select : null,
+                groupBy, multisheet, cellRefGenerator, area);
+        cp.initMultiSheet(cellRef, () -> getTransformationConfig());
+        return cp.processCollection(itemsCollection, cellRef, useVarName);
     }
 }
