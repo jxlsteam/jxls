@@ -3,6 +3,7 @@ Version History
 
 v2.13.0
 -------
+* [#178 Java 17](https://github.com/jxlsteam/jxls/issues/178)
 * [#209 Use of groupBy and select](https://github.com/jxlsteam/jxls/issues/209)
   <br/>Possible breaking change: If jx:each groupBy _and_ select are specified the filtering will now be done before the
   grouping. We think the old processing order makes no sense and is used by nobody. If you need the old processing order give us an
