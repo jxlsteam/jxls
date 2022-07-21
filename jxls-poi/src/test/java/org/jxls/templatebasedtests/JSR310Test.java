@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
@@ -68,8 +69,8 @@ public class JSR310Test {
     @Test
     public void testInstant() {
         assertEquals(
-                SAMPLE_INSTANT.atZone(ZoneId.systemDefault()),
-                w.getCellValueAsLocalDateTime(4, 5).atZone(ZoneId.systemDefault())
+                SAMPLE_INSTANT.atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.MILLIS),
+                w.getCellValueAsLocalDateTime(4, 5).atZone(ZoneId.systemDefault()).truncatedTo(ChronoUnit.MILLIS)
         );
     }
 
