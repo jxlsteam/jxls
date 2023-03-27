@@ -117,7 +117,7 @@ Example that uses JxlsHelper:
 
 Parameterized formula allows you to use context variables in the formula.
 
-To set a parameterized formula you have to enclose it into `$[` and `]` symbols and each formula variable must be enclosed in `$\{` and `}` symbols.
+To set a parameterized formula you have to enclose it into `$[` and `]` symbols and each formula variable must be enclosed in `${` and `}` symbols.
 For example `$[SUM(E4) * ${bonus}]` . Here we use 'bonus' context variable in the formula.
 During the `processFormulas()` Jxls will substitute all the variables with values from the context.
 
