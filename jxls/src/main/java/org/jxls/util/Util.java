@@ -608,7 +608,7 @@ public class Util {
      * @param areaList list of area
      * @return string array
      */
-    static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
+    public static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
         List<String> templateSheetsName = new ArrayList<>();
         for (Area xlsArea : areaList) {
             for (Command command : xlsArea.findCommandByName("each")) {
