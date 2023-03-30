@@ -104,4 +104,16 @@ public class UtilTest {
         // Verify
         assertFalse("Collection must be empty", ret.iterator().hasNext());
     }
+    
+    @Test
+    public void test_getFormulaCellRefs_tableSyntax() {
+        // Test
+        String table = "_tabu";
+        String columnHeader = " 1 column b";
+        List<String> formulaCellRefs = Util.getFormulaCellRefs(table + "[" + columnHeader + "]");
+        
+        // Verify
+        assertEquals(1, formulaCellRefs.size());
+        assertEquals("_tabu[ 1 column b]", formulaCellRefs.get(0));
+    }
 }
