@@ -113,7 +113,7 @@ public class AreaListenerDemo {
             CellStyle cellStyle = cell.getCellStyle();
             CellStyle newCellStyle = workbook.createCellStyle();
             newCellStyle.setDataFormat(cellStyle.getDataFormat());
-            newCellStyle.setFont(workbook.getFontAt(cellStyle.getFontIndexAsInt()));
+            newCellStyle.setFont(workbook.getFontAt(cellStyle.getFontIndex()));
             newCellStyle.setFillBackgroundColor(cellStyle.getFillBackgroundColor());
             newCellStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
             // newCellStyle.setFillForegroundColor( cellStyle.getFillForegroundColor());

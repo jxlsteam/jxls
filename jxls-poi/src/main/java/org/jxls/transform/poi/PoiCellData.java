@@ -181,9 +181,10 @@ public class PoiCellData extends org.jxls.common.CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-        if (targetCellType != CellType.FORMULA) {
-            cell.setCellType(getPoiCellType(targetCellType));
-        }
+        // Removed as cell.setCellType is deprecated & cell.setCellValue will set the proper cellType
+        // if (targetCellType != CellType.FORMULA) {
+        //     cell.setCellType(getPoiCellType(targetCellType));
+        // }
         if (hyperlink != null) {
             cell.setHyperlink(hyperlink);
         }
@@ -249,7 +250,8 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
             case BLANK:
-                cell.setCellType(org.apache.poi.ss.usermodel.CellType.BLANK);
+                // Modiifed as setCellType is deprecated
+                cell.setBlank();
                 break;
         }
     }
@@ -278,7 +280,8 @@ public class PoiCellData extends org.jxls.common.CellData {
             try {
                 String formulaString = evaluationResult.toString();
                 logger.error("Failed to set cell formula " + formulaString + " for cell " + this.toString(), e);
-                cell.setCellType(org.apache.poi.ss.usermodel.CellType.STRING);
+                // Not required as setCellValue will set the cellType to STRING
+                // cell.setCellType(org.apache.poi.ss.usermodel.CellType.STRING);
                 cell.setCellValue(formulaString);
             } catch (Exception ex) {
                 logger.warn("Failed to convert formula to string for cell " + this.toString());

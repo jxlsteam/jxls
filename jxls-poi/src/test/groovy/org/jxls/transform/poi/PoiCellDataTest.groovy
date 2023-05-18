@@ -233,7 +233,7 @@ class PoiCellDataTest extends Specification{
             hyperlink != null
             hyperlink.address == "http://google.com/"
             wb.getSheetAt(1).getRow(1).getCell(2).getStringCellValue() == "Google"
-            hyperlink.typeEnum == HyperlinkType.URL
+            hyperlink.getType() == HyperlinkType.URL
     }
 
 }

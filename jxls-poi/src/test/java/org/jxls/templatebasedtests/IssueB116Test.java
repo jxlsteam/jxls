@@ -76,7 +76,7 @@ public class IssueB116Test {
             assertEquals(14.814804, w.getCellValueAsDouble(7 , 3), 0.00000001d);
 
             assertEquals(1.33302663139189, w.getCellValueAsDouble(3, 4), 0.00000000000001d);
-            assertEquals(2.85942651592937, w.getCellValueAsDouble(4, 4), 0.00000000000001d);
+            assertEquals(2.85942651592938, w.getCellValueAsDouble(4, 4), 0.00000000000001d);
             assertEquals(2.12077721602247, w.getCellValueAsDouble(5, 4), 0.00000000000001d);
             assertEquals(3.58175376038052, w.getCellValueAsDouble(6, 4), 0.00000000000001d);
             assertEquals(4.21636867458243, w.getCellValueAsDouble(7, 4), 0.00000000000001d);

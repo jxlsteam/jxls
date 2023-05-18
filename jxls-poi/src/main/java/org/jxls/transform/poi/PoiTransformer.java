@@ -259,7 +259,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
         try {
             // conditional formatting
-            destCell.setCellType(CellType.BLANK);
+            destCell.setBlank();  // Modiifed as setCellType is deprecated
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
@@ -399,7 +399,7 @@ public class PoiTransformer extends AbstractTransformer {
             }
             return;
         }
-        cell.setCellType(CellType.BLANK);
+        cell.setBlank();   // Modiifed as setCellType is deprecated
         cell.setCellStyle(workbook.getCellStyleAt(0));
         if (cell.getCellComment() != null) {
             cell.removeCellComment();
