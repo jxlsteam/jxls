@@ -317,7 +317,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             return null;
         }
         try {
-            // Used alternative to call default constructor as class.newInstance() is depricated
+            // Used alternative to call default constructor as class.newInstance() is deprecated
             Command command = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if (!attr.getKey().equals(LAST_CELL_ATTR_NAME)) {
