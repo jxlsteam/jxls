@@ -181,36 +181,11 @@ public class PoiCellData extends org.jxls.common.CellData {
     }
 
     private void updateCellGeneralInfo(Cell cell) {
-        // Removed as cell.setCellType is deprecated & cell.setCellValue will set the proper cellType
-        // if (targetCellType != CellType.FORMULA) {
-        //     cell.setCellType(getPoiCellType(targetCellType));
-        // }
         if (hyperlink != null) {
             cell.setHyperlink(hyperlink);
         }
         if (comment != null && !PoiUtil.isJxComment(getCellComment())) {
             PoiUtil.setCellComment(cell, getCellComment(), commentAuthor, null);
-        }
-    }
-
-    static org.apache.poi.ss.usermodel.CellType getPoiCellType(CellType cellType) {
-        if (cellType == null) {
-            return org.apache.poi.ss.usermodel.CellType.BLANK;
-        }
-        switch (cellType) {
-            case STRING:  return org.apache.poi.ss.usermodel.CellType.STRING;
-            case BOOLEAN: return org.apache.poi.ss.usermodel.CellType.BOOLEAN;
-            case NUMBER:
-            case LOCAL_DATE:
-            case LOCAL_TIME:
-            case LOCAL_DATETIME:
-            case ZONED_DATETIME:
-            case INSTANT:
-            case DATE:    return org.apache.poi.ss.usermodel.CellType.NUMERIC;
-            case FORMULA: return org.apache.poi.ss.usermodel.CellType.FORMULA;
-            case ERROR:   return org.apache.poi.ss.usermodel.CellType.ERROR;
-            case BLANK:   return org.apache.poi.ss.usermodel.CellType.BLANK;
-            default:      return org.apache.poi.ss.usermodel.CellType.BLANK;
         }
     }
 
