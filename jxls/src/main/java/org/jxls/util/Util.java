@@ -42,7 +42,7 @@ public class Util {
     private static Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
-    public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
+    public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+|[a-zA-Z_]+[a-zA-Z0-9_]*\\[.+\\])";
     public static final String regexAreaRef = regexCellRef + ":" + regexSimpleCellRef;
     public static final Pattern regexAreaRefPattern = Pattern.compile(regexAreaRef);
     public static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
@@ -608,7 +608,7 @@ public class Util {
      * @param areaList list of area
      * @return string array
      */
-    static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
+    public static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
         List<String> templateSheetsName = new ArrayList<>();
         for (Area xlsArea : areaList) {
             for (Command command : xlsArea.findCommandByName("each")) {

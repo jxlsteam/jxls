@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -71,14 +73,19 @@ public abstract class JxlsNationalLanguageSupport {
      * @throws TransformerFactoryConfigurationError -
      */
     public void process(InputStream in, OutputStream out) throws IOException, TransformerConfigurationException, ParserConfigurationException, SAXException, TransformerException, TransformerFactoryConfigurationError {
-        pattern = Pattern.compile(Pattern.quote(start) + "(.*?)" + Pattern.quote(end));
+        init();
         try (ZipInputStream zipin = new ZipInputStream(in); ZipOutputStream zipout = new ZipOutputStream(out)) {
             ZipEntry zipEntry;
             while ((zipEntry = zipin.getNextEntry()) != null) {
                 processZipEntry(zipEntry, zipin, zipout);
             }
         }
-        pattern = null;
+    }
+    
+    protected void init() {
+        if (pattern == null) {
+            pattern = Pattern.compile(Pattern.quote(start) + "(.*?)" + Pattern.quote(end));
+        }
     }
 
     protected void processZipEntry(ZipEntry zipEntry, InputStream in, ZipOutputStream zipout) throws IOException, ParserConfigurationException, SAXException, TransformerException {
@@ -166,6 +173,20 @@ public abstract class JxlsNationalLanguageSupport {
 
     protected abstract String translate(String name, String fallback);
 
+    public void translateSet(Set<String> sheetNames) {
+        init();
+        Iterator<String> iter = sheetNames.iterator();
+        while (iter.hasNext()) {
+            String oldName = iter.next();
+            
+            String newName = translateAll(oldName);
+            if (!newName.equals(oldName)) {
+                iter.remove();
+                sheetNames.add(newName);
+            }
+        }
+    }
+    
     protected void transfer(InputStream in, OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         int len;
@@ -180,6 +201,7 @@ public abstract class JxlsNationalLanguageSupport {
 
     public void setStart(String start) {
         this.start = start;
+        pattern = null;
     }
 
     public String getEnd() {
@@ -188,6 +210,7 @@ public abstract class JxlsNationalLanguageSupport {
 
     public void setEnd(String end) {
         this.end = end;
+        pattern = null;
     }
 
     public String getDefaultValueDelimiter() {
