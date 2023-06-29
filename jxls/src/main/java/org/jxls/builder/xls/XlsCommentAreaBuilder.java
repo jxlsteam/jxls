@@ -317,7 +317,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             return null;
         }
         try {
-            Command command = clazz.newInstance();
+            Command command = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if (!attr.getKey().equals(LAST_CELL_ATTR_NAME)) {
                     Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);

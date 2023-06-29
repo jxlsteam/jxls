@@ -3,7 +3,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-project</artifactId>
     <packaging>pom</packaging>
-    <version>2.12.1-SNAPSHOT</version>
+    <version>2.13.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Small library for Excel generation based on XLS templates</description>
     <url>http://jxls.sf.net</url>
@@ -72,12 +72,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
                 <version>3.3.0</version>
@@ -123,6 +117,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
 
