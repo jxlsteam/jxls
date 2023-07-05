@@ -19,6 +19,7 @@ public class Issue93Test {
     public void test() {
         // Prepare
         Context context = new Context() {
+            @Override
             public Object getVar(String name) {
                 if (name.substring(0, 1) == "m") { // Do an operation that could result in a NPE.
                     System.out.println("getVar: var starts with 'm'");
