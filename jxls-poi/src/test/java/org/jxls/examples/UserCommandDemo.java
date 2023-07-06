@@ -69,10 +69,12 @@ public class UserCommandDemo {
         private Area area;
         private String collapseIf;
 
+        @Override
         public String getName() {
             return "groupRow";
         }
 
+        @Override
         public Size applyAt(CellRef cellRef, Context context) {
             Size resultSize = area.applyAt(cellRef, context);
             if (resultSize.equals(Size.ZERO_SIZE)) {

@@ -63,15 +63,19 @@ public class Highlight1Demo {
             this.transformer = transformer;
         }
 
+        @Override
         public void beforeApplyAtCell(CellRef cellRef, Context context) {
         }
 
+        @Override
         public void afterApplyAtCell(CellRef cellRef, Context context) {
         }
 
+        @Override
         public void beforeTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
         }
 
+        @Override
         public void afterTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
             logger.info("Source: " + srcCell.getCellName() + ", Target: " + targetCell.getCellName());
             if (paymentCell.equals(srcCell)) { // we are at employee payment cell
