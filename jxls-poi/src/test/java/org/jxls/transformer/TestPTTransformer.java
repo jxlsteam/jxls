@@ -21,6 +21,7 @@ public class TestPTTransformer extends TransformerDelegator {
         this.context = context;
     }
 
+    @Override
     protected void beforeWrite() {
         Workbook workbook = ((PoiTransformer) transformer).getWorkbook();
         for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {

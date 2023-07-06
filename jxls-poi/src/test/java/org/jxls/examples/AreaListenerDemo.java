@@ -87,15 +87,19 @@ public class AreaListenerDemo {
             transformer = (PoiTransformer) area.getTransformer();
         }
 
+        @Override
         public void beforeApplyAtCell(CellRef cellRef, Context context) {
         }
 
+        @Override
         public void afterApplyAtCell(CellRef cellRef, Context context) {
         }
 
+        @Override
         public void beforeTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
         }
 
+        @Override
         public void afterTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
             if (bonusCell1.equals(srcCell) || bonusCell2.equals(srcCell)) { // we are at employee bonus cell
                 Employee employee = (Employee) context.getVar("employee");
