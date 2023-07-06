@@ -10,7 +10,6 @@ v2.13.0
   information in [#209](https://github.com/jxlsteam/jxls/issues/209) and set `EachCommand.oldSelectBehavior` to true.
 * [#235 POI 5.2.3](https://github.com/jxlsteam/jxls/issues/235) *- Thanks to Sivakumar-finoli*
 * [#237 made getSheetsNameOfMultiSheetTemplate() public](https://github.com/jxlsteam/jxls/issues/237)
-* [#240 Table syntax support for Util.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 * [#244 JxlsNationalLanguageSupport problems](https://github.com/jxlsteam/jxls/issues/244)
 
 v2.12.0
