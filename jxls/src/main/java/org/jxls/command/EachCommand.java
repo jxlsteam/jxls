@@ -302,7 +302,7 @@ public class EachCommand extends AbstractCommand {
             size = processCollection(context, itemsCollection, cellRef, var, select);
         } else {
             String selectExpression = select;
-            if (selectExpression != null && !selectExpression.isBlank() // filtering needed?
+            if (selectExpression != null && !selectExpression.isEmpty() // filtering needed?
                     && !EachCommand.oldSelectBehavior) { // new behavior
                 itemsCollection = filter(context, itemsCollection, selectExpression);
                 selectExpression = null;

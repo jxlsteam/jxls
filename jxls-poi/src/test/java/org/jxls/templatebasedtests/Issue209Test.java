@@ -76,7 +76,7 @@ public class Issue209Test {
                     String a = w.getCellValueAsString(row, 1);
                     Assert.assertFalse("Other city than 'Geldern' must not be in Excel file because the"
                             + " select expression allows only 'Geldern'!\n'" + a + "' is in row " + row + ".",
-                            a != null && !a.isBlank() && !"Department A".equals(a));
+                            a != null && !a.isEmpty() && !"Department A".equals(a));
                 }
             }
         } finally {
