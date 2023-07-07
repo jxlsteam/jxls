@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
-import org.jxls.command.EachCommand;
 import org.jxls.common.Context;
 
 /**
@@ -52,35 +51,30 @@ public class Issue209Test {
      */
     @Test
     public void testOldBehavior() {
-        EachCommand.oldSelectBehavior = true;
-        try {
-            // Prepare
-            List<Map<String, String>> employees = new ArrayList<>();
-            employees.add(createEmployee("Department A", "Claudia", "Amsterdam"));
-            employees.add(createEmployee("Department A", "Dagmar", "Geldern"));
-            employees.add(createEmployee("Department A", "Sven", "Geldern"));
-            employees.add(createEmployee("Department B", "Doris", "Wetten"));
-            employees.add(createEmployee("Department B", "Melanie", "Geldern"));
-            employees.add(createEmployee("Department C", "Stefan", "Bruegge"));
-            Context context = new Context();
-            context.putVar("employees", employees);
-            
-            // Test
-            JxlsTester tester = JxlsTester.xlsx(getClass(), "old");
-            tester.processTemplate(context);
-            
-            // Verify
-            try (TestWorkbook w = tester.getWorkbook()) {
-                w.selectSheet(0);
-                for (int row = 3; row < 15; row++) {
-                    String a = w.getCellValueAsString(row, 1);
-                    Assert.assertFalse("Other city than 'Geldern' must not be in Excel file because the"
-                            + " select expression allows only 'Geldern'!\n'" + a + "' is in row " + row + ".",
-                            a != null && !a.isEmpty() && !"Department A".equals(a));
-                }
+        // Prepare
+        List<Map<String, String>> employees = new ArrayList<>();
+        employees.add(createEmployee("Department A", "Claudia", "Amsterdam"));
+        employees.add(createEmployee("Department A", "Dagmar", "Geldern"));
+        employees.add(createEmployee("Department A", "Sven", "Geldern"));
+        employees.add(createEmployee("Department B", "Doris", "Wetten"));
+        employees.add(createEmployee("Department B", "Melanie", "Geldern"));
+        employees.add(createEmployee("Department C", "Stefan", "Bruegge"));
+        Context context = new Context();
+        context.putVar("employees", employees);
+        
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "old");
+        tester.processTemplate(context);
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            for (int row = 3; row < 15; row++) {
+                String a = w.getCellValueAsString(row, 1);
+                Assert.assertFalse("Other city than 'Geldern' must not be in Excel file because the"
+                        + " select expression allows only 'Geldern'!\n'" + a + "' is in row " + row + ".",
+                        a != null && !a.isEmpty() && !"Department A".equals(a));
             }
-        } finally {
-            EachCommand.oldSelectBehavior = false;
         }
     }
 

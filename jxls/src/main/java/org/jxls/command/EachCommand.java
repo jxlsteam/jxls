@@ -40,8 +40,6 @@ import org.jxls.util.UtilWrapper;
 public class EachCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "each";
     static final String GROUP_DATA_KEY = "_group";
-    /** Old behavior will be removed in a future release. */
-    public static boolean oldSelectBehavior = false;
 
     private UtilWrapper util = new UtilWrapper();
     private String items;
@@ -56,6 +54,8 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private CellRefGenerator cellRefGenerator;
     private Area area;
+    /** Old behavior will be removed in a future release. */
+    private boolean oldSelectBehavior = false;
 
     public EachCommand() {
     }
@@ -275,6 +275,14 @@ public class EachCommand extends AbstractCommand {
         this.cellRefGenerator = cellRefGenerator;
     }
 
+    public boolean isOldSelectBehavior() {
+        return oldSelectBehavior;
+    }
+
+    public void setOldSelectBehavior(boolean oldSelectBehavior) {
+        this.oldSelectBehavior = oldSelectBehavior;
+    }
+
     @Override
     public Command addArea(Area area) {
         if (area == null) {
@@ -303,7 +311,7 @@ public class EachCommand extends AbstractCommand {
         } else {
             String selectExpression = select;
             if (selectExpression != null && !selectExpression.isEmpty() // filtering needed?
-                    && !EachCommand.oldSelectBehavior) { // new behavior
+                    && !oldSelectBehavior) { // new behavior
                 itemsCollection = filter(context, itemsCollection, selectExpression);
                 selectExpression = null;
             }
@@ -330,68 +338,44 @@ public class EachCommand extends AbstractCommand {
         List<Object> filteredList = new ArrayList<>();
         ExpressionEvaluator selectEvaluator = JxlsHelper.getInstance()
                 .createExpressionEvaluator(selectExpression);
-        traverse(context, (Iterable<Object>) itemsCollection, var, selectEvaluator, obj -> filteredList.add(obj));
+        Object currentVarObject = var == null ? null : context.getRunVar(var);
+        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
+        int currentIndex = 0;
+        for (Object obj : itemsCollection) {
+            context.putVar(var, obj);
+            if (varIndex != null) {
+                context.putVar(varIndex, currentIndex);
+            }
+            if (util.isConditionTrue(selectEvaluator, context)) {
+                filteredList.add(obj);
+            }
+            currentIndex++;
+        }
+        restoreVarObject(context, varIndex, currentVarIndexObject);
+        restoreVarObject(context, var, currentVarObject);
         return filteredList;
     }
 
     private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName,
             String selectExpression) {
-        CellRefGenerator cellRefGenerator;
-        if (this.cellRefGenerator == null && multisheet != null) {
+        int index = 0;
+        int newWidth = 0;
+        int newHeight = 0;
+
+        CellRefGenerator cellRefGenerator = this.cellRefGenerator;
+        if (cellRefGenerator == null && multisheet != null) {
             List<String> sheetNameList = extractSheetNameList(context);
             cellRefGenerator = sheetNameList == null
                     ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator())
                     : new SheetNameGenerator(sheetNameList, cellRef);
-        } else {
-            cellRefGenerator = null;
         }
+        
         ExpressionEvaluator selectEvaluator = null;
         if (selectExpression != null) {
             selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(selectExpression);
         }
-        TraversalContext t = new TraversalContext();
-        t.currentCell = cellRef;
-        traverse(context, (Iterable<Object>) itemsCollection, varName, selectEvaluator, obj -> {
-            if (cellRefGenerator != null) {
-                t.currentCell = cellRefGenerator.generateCellRef(t.index++, context);
-            }
-            if (t.currentCell == null) {
-                return false;
-            }
-            Size size;
-            try {
-                size = area.applyAt(t.currentCell, context);
-            } catch (NegativeArraySizeException e) {
-                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
-            }
-            if (cellRefGenerator != null) {
-                t.newWidth = Math.max(t.newWidth, size.getWidth());
-                t.newHeight = Math.max(t.newHeight, size.getHeight());
-            } else if (direction == Direction.DOWN) {
-                t.currentCell = new CellRef(t.currentCell.getSheetName(),
-                        t.currentCell.getRow() + size.getHeight(), t.currentCell.getCol());
-                t.newWidth = Math.max(t.newWidth, size.getWidth());
-                t.newHeight += size.getHeight();
-            } else { // RIGHT
-                t.currentCell = new CellRef(t.currentCell.getSheetName(),
-                        t.currentCell.getRow(), t.currentCell.getCol() + size.getWidth());
-                t.newWidth += size.getWidth();
-                t.newHeight = Math.max(t.newHeight, size.getHeight());
-            }
-            return true;
-        });
-        return new Size(t.newWidth, t.newHeight);
-    }
-    
-    private static class TraversalContext {
-        int index = 0;
-        int newWidth = 0;
-        int newHeight = 0;
-        CellRef currentCell;
-    }
 
-    private void traverse(Context context, Iterable<Object> itemsCollection, String varName,
-            ExpressionEvaluator selectEvaluator, ItemProcessor itemProcessor) {
+        CellRef currentCell = cellRef;
         Object currentVarObject = varName == null ? null : context.getRunVar(varName);
         Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
         int currentIndex = 0;
@@ -403,18 +387,35 @@ public class EachCommand extends AbstractCommand {
             if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
                 continue;
             }
-            if (!itemProcessor.processItem(obj)) {
+            if (cellRefGenerator != null) {
+                currentCell = cellRefGenerator.generateCellRef(index++, context);
+            }
+            if (currentCell == null) {
                 break;
+            }
+            Size size;
+            try {
+                size = area.applyAt(currentCell, context);
+            } catch (NegativeArraySizeException e) {
+                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
+            }
+            if (cellRefGenerator != null) {
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight = Math.max(newHeight, size.getHeight());
+            } else if (direction == Direction.DOWN) {
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight += size.getHeight();
+            } else { // RIGHT
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                newWidth += size.getWidth();
+                newHeight = Math.max(newHeight, size.getHeight());
             }
             currentIndex++;
         }
         restoreVarObject(context, varIndex, currentVarIndexObject);
         restoreVarObject(context, varName, currentVarObject);
-    }
-    
-    public interface ItemProcessor {
-
-        boolean processItem(Object obj);
+        return new Size(newWidth, newHeight);
     }
 
     private void restoreVarObject(Context context, String varName, Object varObject) {
