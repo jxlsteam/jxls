@@ -105,7 +105,7 @@ public class UtilTest {
         assertFalse("Collection must be empty", ret.iterator().hasNext());
     }
     
-    @Test
+// #240 not part of v2.13.0    @Test
     public void test_getFormulaCellRefs_tableSyntax() {
         // Test
         String table = "_tabu";
@@ -115,5 +115,18 @@ public class UtilTest {
         // Verify
         assertEquals(1, formulaCellRefs.size());
         assertEquals("_tabu[ 1 column b]", formulaCellRefs.get(0));
+    }
+
+// #240 not part of v2.13.0    @Test
+    public void test_getFormulaCellRefs_tableSyntax2() {
+        // Test
+        String formula = "FUNC(one[AB CD],two[123], -1, three[c])";
+        List<String> formulaCellRefs = Util.getFormulaCellRefs(formula);
+        
+        // Verify
+        assertEquals(3, formulaCellRefs.size());
+        assertEquals("one[AB CD]", formulaCellRefs.get(0));
+        assertEquals("two[123]", formulaCellRefs.get(1));
+        assertEquals("three[c]", formulaCellRefs.get(2));
     }
 }

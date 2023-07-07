@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
@@ -259,7 +258,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
         try {
             // conditional formatting
-            destCell.setBlank();  // Modiifed as setCellType is deprecated
+            destCell.setBlank();  // Modified as setCellType is deprecated
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
@@ -399,7 +398,7 @@ public class PoiTransformer extends AbstractTransformer {
             }
             return;
         }
-        cell.setBlank();   // Modiifed as setCellType is deprecated
+        cell.setBlank();   // Modified as setCellType is deprecated
         cell.setCellStyle(workbook.getCellStyleAt(0));
         if (cell.getCellComment() != null) {
             cell.removeCellComment();

@@ -225,8 +225,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
             case BLANK:
-                // Modiifed as setCellType is deprecated
-                cell.setBlank();
+                cell.setBlank(); // Modified as setCellType is deprecated
                 break;
         }
     }
