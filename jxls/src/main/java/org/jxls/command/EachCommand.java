@@ -1,6 +1,7 @@
 package org.jxls.command;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +9,11 @@ import java.util.stream.Collectors;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.GroupData;
+import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
+import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.util.JxlsHelper;
 import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
 
@@ -50,7 +55,6 @@ public class EachCommand extends AbstractCommand {
     private String multisheet;
     private CellRefGenerator cellRefGenerator;
     private Area area;
-    private String useVarName;
 
     public EachCommand() {
     }
@@ -284,43 +288,30 @@ public class EachCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
-        Iterable<?> itemsCollection = prepareCollection(cellRef, context);
-        Size size = processCollection(cellRef, context, itemsCollection);
+        Iterable<?> itemsCollection = null;
+        try {
+            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+            orderCollection(itemsCollection);
+        } catch (Exception e) {
+            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
+            itemsCollection = Collections.emptyList();
+        }
+        Size size;
+        if (groupBy == null || groupBy.length() == 0) {
+            size = processCollection(context, itemsCollection, cellRef, var);
+        } else {
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
+            String groupVar = var != null ? var : GROUP_DATA_KEY;
+            size = processCollection(context, groupedData, cellRef, groupVar);
+        }
         if (direction == Direction.DOWN) {
             getTransformer().adjustTableSize(cellRef, size);
         }
         return size;
     }
     
-    protected Iterable<?> prepareCollection(CellRef cellRef, Context context) {
-        Iterable<?> itemsCollection = null;
-        try {
-            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
-        } catch (Exception e) {
-            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
-            itemsCollection = Collections.emptyList();
-        }
-        useVarName = var;
-        boolean hasGroupBy = groupBy != null && !groupBy.isEmpty();
-        if (hasGroupBy) {
-            if (useVarName == null) {
-                useVarName = GROUP_DATA_KEY;
-            }
-            if (select != null && !select.isEmpty() && !oldSelectBehavior) {
-                CollectionFilter cf = new CollectionFilter(context, util, varIndex, null, select, null/*!!*/, null, null, null);
-                cf.processCollection(itemsCollection, null, useVarName);
-                itemsCollection = cf.getFilteredCollection();
-            }
-        }
-        orderCollection(itemsCollection);
-        if (hasGroupBy) {
-            itemsCollection = util.groupIterable(itemsCollection, groupBy, groupOrder);
-        }
-        return itemsCollection;
-    }
-    
     @SuppressWarnings("unchecked")
-    protected void orderCollection(Iterable<?> itemsCollection) {
+    private void orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
                     .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
@@ -328,8 +319,95 @@ public class EachCommand extends AbstractCommand {
             Collections.sort((List<Object>) itemsCollection, comp);
         }
     }
+
+    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName) {
+        int index = 0;
+        int newWidth = 0;
+        int newHeight = 0;
+
+        CellRefGenerator cellRefGenerator = this.cellRefGenerator;
+        if (cellRefGenerator == null && multisheet != null) {
+            List<String> sheetNameList = extractSheetNameList(context);
+            cellRefGenerator = sheetNameList == null
+                    ? new DynamicSheetNameGenerator(multisheet, cellRef, getTransformationConfig().getExpressionEvaluator())
+                    : new SheetNameGenerator(sheetNameList, cellRef);
+        }
+        
+        ExpressionEvaluator selectEvaluator = null;
+        if (select != null) {
+            selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(select);
+        }
+
+        CellRef currentCell = cellRef;
+        Object currentVarObject = varName == null ? null : context.getRunVar(varName);
+        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
+        int currentIndex = 0;
+        for (Object obj : itemsCollection) {
+            context.putVar(varName, obj);
+            if (varIndex != null) {
+                context.putVar(varIndex, currentIndex);
+            }
+            if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
+                continue;
+            }
+            if (cellRefGenerator != null) {
+                currentCell = cellRefGenerator.generateCellRef(index++, context);
+            }
+            if (currentCell == null) {
+                break;
+            }
+            Size size;
+            try {
+                size = area.applyAt(currentCell, context);
+            } catch (NegativeArraySizeException e) {
+                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
+            }
+            if (cellRefGenerator != null) {
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight = Math.max(newHeight, size.getHeight());
+            } else if (direction == Direction.DOWN) {
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                newWidth = Math.max(newWidth, size.getWidth());
+                newHeight += size.getHeight();
+            } else { // RIGHT
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                newWidth += size.getWidth();
+                newHeight = Math.max(newHeight, size.getHeight());
+            }
+            currentIndex++;
+        }
+        restoreVarObject(context, varIndex, currentVarIndexObject);
+        restoreVarObject(context, varName, currentVarObject);
+        return new Size(newWidth, newHeight);
+    }
+
+    private void restoreVarObject(Context context, String varName, Object varObject) {
+        if (varName == null) {
+            return;
+        }
+        if (varObject != null) {
+            context.putVar(varName, varObject);
+        } else {
+            context.removeVar(varName);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> extractSheetNameList(Context context) {
+        try {
+            Object sheetnames = context.getVar(multisheet);
+            if (sheetnames == null) {
+                return null;
+            } else if (sheetnames instanceof List) {
+                return (List<String>) sheetnames;
+            }
+        } catch (Exception e) {
+            throw new JxlsException("Failed to get sheet names from " + multisheet, e);
+        }
+        throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
+    }
     
-    protected String removeVarPrefix(String pVariable) {
+    private String removeVarPrefix(String pVariable) {
         int o = pVariable.indexOf(".");
         if (o >= 0) {
             String pre = pVariable.substring(0, o).trim();
@@ -338,13 +416,5 @@ public class EachCommand extends AbstractCommand {
             }
         }
         return pVariable;
-    }
-
-    protected Size processCollection(CellRef cellRef, Context context, Iterable<?> itemsCollection) {
-        CollectionProcessor cp = new CollectionProcessor(context, util, varIndex, direction,
-                groupBy == null || groupBy.isEmpty() || oldSelectBehavior ? select : null,
-                groupBy, multisheet, cellRefGenerator, area);
-        cp.initMultiSheet(cellRef, () -> getTransformationConfig());
-        return cp.processCollection(itemsCollection, cellRef, useVarName);
     }
 }
