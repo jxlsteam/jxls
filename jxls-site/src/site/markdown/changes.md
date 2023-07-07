@@ -10,8 +10,7 @@ v2.13.0
   **".item" must then be removed from the select expression.**
   We think the old processing order makes no sense and is used by nobody.
   If you really need the old processing order give us an information in
-  [#209](https://github.com/jxlsteam/jxls/issues/209)
-  and set the static variable `EachCommand.oldSelectBehavior` to true.
+  [#209](https://github.com/jxlsteam/jxls/issues/209) and set jx:each parameter oldSelectBehavior="true".
 * [#235 POI 5.2.3](https://github.com/jxlsteam/jxls/issues/235) *- Thanks to Sivakumar-finoli*
 * [#237 made getSheetsNameOfMultiSheetTemplate() public](https://github.com/jxlsteam/jxls/issues/237)
 * [#240 Table syntax support for Util.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
