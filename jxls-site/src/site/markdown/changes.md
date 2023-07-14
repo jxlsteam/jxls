@@ -11,7 +11,10 @@ v2.13.0
   We think the old processing order makes no sense and is used by nobody.
   If you really need the old processing order give us an information in
   [#209](https://github.com/jxlsteam/jxls/issues/209) and set jx:each parameter oldSelectBehavior="true".
-* [#235 POI 5.2.3](https://github.com/jxlsteam/jxls/issues/235) *- Thanks to Sivakumar-finoli*
+* [#235 POI 5.2.2](https://github.com/jxlsteam/jxls/issues/235) *- Thanks to Sivakumar-finoli*
+  <br/>We advise against using POI 5.2.3. POI 5.2.2 can be used. An Apache POI bug ticket [66687](https://bz.apache.org/bugzilla/show_bug.cgi?id=66687) has been created. Bug came from [65562](https://bz.apache.org/bugzilla/show_bug.cgi?id=65562).
+  <br/>We've also created [66679](https://bz.apache.org/bugzilla/show_bug.cgi?id=66679) because of potential
+  problems with cell type General.
 * [#237 made getSheetsNameOfMultiSheetTemplate() public](https://github.com/jxlsteam/jxls/issues/237)
 * [#244 JxlsNationalLanguageSupport problems](https://github.com/jxlsteam/jxls/issues/244)
 
