@@ -30,4 +30,9 @@ public class GroupData {
     public void setItems(Collection<Object> items) {
         this.items = items;
     }
+    
+    @Override
+    public String toString() {
+        return "GroupData: " + (item == null ? "null" : item.toString());
+    }
 }

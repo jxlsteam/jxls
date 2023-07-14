@@ -5,9 +5,12 @@ v2.13.0
 -------
 * [#178 Java 17](https://github.com/jxlsteam/jxls/issues/178) *- Thanks to mosidev*
 * [#209 Use of groupBy and select](https://github.com/jxlsteam/jxls/issues/209)
-  <br/>Possible breaking change: If jx:each groupBy _and_ select are specified the filtering will now be done before the
-  grouping. We think the old processing order makes no sense and is used by nobody. If you need the old processing order give us an
-  information in [#209](https://github.com/jxlsteam/jxls/issues/209) and set `EachCommand.oldSelectBehavior` to true.
+  <br/>**Breaking change:** If jx:each groupBy  _and_  select are specified
+  the filtering will now be done  _before_  the grouping.
+  **".item" must then be removed from the select expression.**
+  We think the old processing order makes no sense and is used by nobody.
+  If you really need the old processing order give us an information in
+  [#209](https://github.com/jxlsteam/jxls/issues/209) and set jx:each parameter oldSelectBehavior="true".
 * [#235 POI 5.2.3](https://github.com/jxlsteam/jxls/issues/235) *- Thanks to Sivakumar-finoli*
 * [#237 made getSheetsNameOfMultiSheetTemplate() public](https://github.com/jxlsteam/jxls/issues/237)
 * [#244 JxlsNationalLanguageSupport problems](https://github.com/jxlsteam/jxls/issues/244)
