@@ -18,7 +18,7 @@ import org.jxls.common.Context;
 public class Issue209Test {
 
     @Test
-    public void test() {
+    public void testNewBehavior() {
         // Prepare
         List<Map<String, String>> employees = new ArrayList<>();
         employees.add(createEmployee("Department A", "Claudia", "Amsterdam")); // First must not be Geldern!
@@ -45,7 +45,39 @@ public class Issue209Test {
             Assert.assertEquals("Geldern", w.getCellValueAsString(8, 3));
         }
     }
-    
+
+    /**
+     * With old behavior it makes only sense to filter on the group field.
+     */
+    @Test
+    public void testOldBehavior() {
+        // Prepare
+        List<Map<String, String>> employees = new ArrayList<>();
+        employees.add(createEmployee("Department A", "Claudia", "Amsterdam"));
+        employees.add(createEmployee("Department A", "Dagmar", "Geldern"));
+        employees.add(createEmployee("Department A", "Sven", "Geldern"));
+        employees.add(createEmployee("Department B", "Doris", "Wetten"));
+        employees.add(createEmployee("Department B", "Melanie", "Geldern"));
+        employees.add(createEmployee("Department C", "Stefan", "Bruegge"));
+        Context context = new Context();
+        context.putVar("employees", employees);
+        
+        // Test
+        JxlsTester tester = JxlsTester.xlsx(getClass(), "old");
+        tester.processTemplate(context);
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            for (int row = 3; row < 15; row++) {
+                String a = w.getCellValueAsString(row, 1);
+                Assert.assertFalse("Other city than 'Geldern' must not be in Excel file because the"
+                        + " select expression allows only 'Geldern'!\n'" + a + "' is in row " + row + ".",
+                        a != null && !a.isEmpty() && !"Department A".equals(a));
+            }
+        }
+    }
+
     private Map<String, String> createEmployee(String department, String name, String city) {
         Map<String, String> map = new HashMap<>();
         map.put("department", department);
