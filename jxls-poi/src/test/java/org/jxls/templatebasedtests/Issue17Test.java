@@ -11,6 +11,7 @@ import org.jxls.common.Context;
  * Github issue 17: Image and multi sheet
  */
 public class Issue17Test {
+    // ValueWithCellAccessTest uses code of this class.
 
     @Test
     public void test() throws Exception {
@@ -27,7 +28,7 @@ public class Issue17Test {
         // Each sheet with an image?
     }
 
-    private List<Item> getItems() {
+    static List<Item> getItems() {
         List<Item> items = new ArrayList<>();
         Item item = new Item();
         item.setId("registered_user");
