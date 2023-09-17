@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -50,7 +51,6 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class PoiTransformer extends AbstractTransformer {
-    private static final int MAX_COLUMN_TO_READ_COMMENT = 50;
     public static final String POI_CONTEXT_KEY = "util";
 
     private static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
@@ -58,7 +58,6 @@ public class PoiTransformer extends AbstractTransformer {
     private Workbook workbook;
     private OutputStream outputStream;
     private InputStream inputStream;
-    private Integer lastCommentedColumn = MAX_COLUMN_TO_READ_COMMENT;
     private final boolean isSXSSF;
     private ExceptionHandler exceptionHandler = new PoiExceptionLogger();
     
@@ -195,14 +194,6 @@ public class PoiTransformer extends AbstractTransformer {
 
     public Workbook getWorkbook() {
         return workbook;
-    }
-
-    public Integer getLastCommentedColumn() {
-        return lastCommentedColumn;
-    }
-
-    public void setLastCommentedColumn(Integer lastCommentedColumn) {
-        this.lastCommentedColumn = lastCommentedColumn;
     }
 
     private void readCellData() {
@@ -538,13 +529,14 @@ public class PoiTransformer extends AbstractTransformer {
 
     private List<CellData> readCommentsFromSheet(Sheet sheet, int rowNum) {
         List<CellData> commentDataCells = new ArrayList<CellData>();
-        for (int i = 0; i <= lastCommentedColumn; i++) {
-            CellAddress cellAddress = new CellAddress(rowNum, i);
-            Comment comment = sheet.getCellComment(cellAddress);
-            if (comment != null && comment.getString() != null) {
-                CellData cellData = new CellData(new CellRef(sheet.getSheetName(), rowNum, i));
-                cellData.setCellComment(comment.getString().getString());
-                commentDataCells.add(cellData);
+        for (Entry<CellAddress, ? extends Comment> e : sheet.getCellComments().entrySet()) {
+            if (e.getKey().getRow() == rowNum) {
+                Comment comment = e.getValue();
+                if (comment.getString() != null) {
+                    CellData cellData = new CellData(new CellRef(sheet.getSheetName(), e.getKey().getRow(), e.getKey().getColumn()));
+                    cellData.setCellComment(comment.getString().getString());
+                    commentDataCells.add(cellData);
+                }
             }
         }
         return commentDataCells;
