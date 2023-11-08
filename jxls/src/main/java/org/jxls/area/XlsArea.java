@@ -242,8 +242,10 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
-        AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
-        updateCellDataFinalAreaForFormulaCells(newAreaRef);
+        if (context.getConfig().isFormulaProcessingRequired()) {
+            AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
+            updateCellDataFinalAreaForFormulaCells(newAreaRef);
+        }
         for (CommandData commandData : commandDataList) {
             commandData.resetStartCellAndSize();
         }
