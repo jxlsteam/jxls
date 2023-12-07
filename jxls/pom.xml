@@ -12,7 +12,7 @@
 
 	<properties>
 		<jexl.version>3.2</jexl.version>
-		<logback.version>1.2.10</logback.version>
+		<logback.version>1.2.13</logback.version>
 	</properties>
 
 	<dependencies>
