@@ -94,32 +94,6 @@ public class SxssfDemo {
         }
     }
 
-    // TODO Leonid: What about this unused method?
-    private void demoDisableFormulaCellRefProcessing() throws IOException, InvalidFormatException {
-        logger.info("Running Stress Sxssf demo 1");
-        logger.info("Generating " + EMPLOYEE_COUNT * 10 + " employees..");
-        List<Employee> employees = Employee.generate(EMPLOYEE_COUNT * 10);
-        logger.info("Created " + employees.size() + " employees");
-        try (InputStream is = SxssfDemo.class.getResourceAsStream("stress1.xlsx")) {
-            assert is != null;
-            Workbook workbook = WorkbookFactory.create(is);
-            PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 10, true);
-            AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-            List<Area> xlsAreaList = areaBuilder.build();
-            Area xlsArea = xlsAreaList.get(0);
-            Context context = new PoiContext();
-            context.getConfig().setIsFormulaProcessingRequired(false);
-            context.putVar("employees", employees);
-            long startTime = System.nanoTime();
-            xlsArea.applyAt(new CellRef("NewSheet!A1"), context);
-            long endTime = System.nanoTime();
-            logger.info("Stress Sxssf demo 1 time (s): " + (endTime - startTime) / 1e9);
-            try (OutputStream os = new FileOutputStream("target/sxssf_stress1_output.xlsx")) {
-                transformer.getWorkbook().write(os);
-            }
-        }
-    }
-
     private void executeStress2() throws IOException, InvalidFormatException {
         logger.info("Running Stress Sxssf demo 2");
         logger.info("Generating " + DEPARTMENT_COUNT + " departments with " + DEP_EMPLOYEE_COUNT + " employees in each");
