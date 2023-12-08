@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.junit.Test;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
@@ -50,7 +51,8 @@ public class JexlCustomFunctionDemo {
                 JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer.getTransformationConfig().getExpressionEvaluator();
                 Map<String, Object> functionMap = new HashMap<>();
                 functionMap.put("demo", new MyCustomFunctions());
-                JexlEngine customJexlEngine = new JexlBuilder().namespaces(functionMap).create();
+                JexlEngine customJexlEngine = new JexlBuilder().namespaces(functionMap)
+                        .permissions(JexlPermissions.parse(MyCustomFunctions.class.getName())).create();
                 evaluator.setJexlEngine(customJexlEngine);
                 xlsArea.applyAt(new CellRef("Sheet1!A1"), context);
                 transformer.write();

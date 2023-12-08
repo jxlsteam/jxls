@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.JxlsTester;
@@ -19,6 +20,7 @@ import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 public class Issue166Test {
+    private static final JexlPermissions PERMISSIONS = JexlPermissions.parse(JXLS2CustomFunctions.class.getName());
     private JexlExpressionEvaluatorNoThreadLocal evaluator;
     
     @Test
@@ -103,7 +105,7 @@ public class Issue166Test {
                 config.setExpressionEvaluator(evaluator);
                 Map<String, Object> funcs = new HashMap<>();
                 funcs.put("cf", new JXLS2CustomFunctions(context));
-                JexlEngine engine = new JexlBuilder().namespaces(funcs).create();
+                JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();
                 evaluator.setJexlEngine(engine);
                 return transformer;
             }
@@ -120,7 +122,7 @@ public class Issue166Test {
                 config.setExpressionEvaluator(evaluator_threadLocal);
                 Map<String, Object> funcs = new HashMap<>();
                 funcs.put("cf", new JXLS2CustomFunctions(context));
-                JexlEngine engine = new JexlBuilder().namespaces(funcs).create();
+                JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();
                 evaluator_threadLocal.setJexlEngine(engine);
                 return transformer;
             }

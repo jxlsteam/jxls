@@ -8,6 +8,7 @@ import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 /**
  * This is an implementation of {@link ExpressionEvaluator} without using {@link ThreadLocal}.
@@ -26,7 +27,11 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict) {
-        this.jexl = new JexlBuilder().silent(silent).strict(strict).create();
+        this(silent, strict, JexlPermissions.UNRESTRICTED);
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JexlPermissions jexlPermissions) {
+        this.jexl = new JexlBuilder().silent(silent).strict(strict).permissions(jexlPermissions).create();
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(String expression) {

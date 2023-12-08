@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.JxlsTester.TransformerChecker;
@@ -38,7 +39,7 @@ public class EachSelectTest {
                 Map<String, Object> funcs = new HashMap<>();
                 funcs.put("ns", new NSCustomFunctions());
                 JexlExpressionEvaluator evaluator = (JexlExpressionEvaluator) transformer.getTransformationConfig().getExpressionEvaluator();
-                JexlEngine customJexlEngine = new JexlBuilder().namespaces(funcs).create();
+                JexlEngine customJexlEngine = new JexlBuilder().namespaces(funcs).permissions(JexlPermissions.parse(NSCustomFunctions.class.getName())).create();
                 evaluator.setJexlEngine(customJexlEngine);
             }
         };

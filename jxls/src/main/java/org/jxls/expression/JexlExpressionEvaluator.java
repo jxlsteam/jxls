@@ -110,7 +110,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     }
 
     private String key() {
-        return silent + "-" + strict;
+        return silent + "-" + strict + "-" + jexlPermissions.hashCode();
     }
 
     @Override
