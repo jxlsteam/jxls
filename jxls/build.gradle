@@ -1,7 +1,7 @@
 dependencies {
     def slf4jVersion = '1.7.30'
 
-    api('org.apache.commons:commons-jexl3:3.2') {
+    api('org.apache.commons:commons-jexl3:3.3') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     api('commons-beanutils:commons-beanutils:1.9.4') {

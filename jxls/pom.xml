@@ -11,7 +11,7 @@
 	<description>Small library for Excel generation based on XLS templates</description>
 
 	<properties>
-		<jexl.version>3.2</jexl.version>
+		<jexl.version>3.3</jexl.version>
 	</properties>
 
 	<dependencies>
