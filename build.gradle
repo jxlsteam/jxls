@@ -16,8 +16,11 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
     
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
     compileJava.options.encoding = 'windows-1252'
     compileTestJava.options.encoding = 'windows-1252'
     

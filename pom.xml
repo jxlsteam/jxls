@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
         <slf4j.version>2.0.9</slf4j.version>
         <surefire.version>3.2.2</surefire.version>
     </properties>
@@ -115,8 +115,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
