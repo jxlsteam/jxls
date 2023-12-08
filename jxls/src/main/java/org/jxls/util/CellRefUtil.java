@@ -160,8 +160,7 @@ public class CellRefUtil {
      * 
      * <p>Note - that the maximum sheet size varies across Excel versions:</p>
      * 
-     * <blockquote><table border="0" cellpadding="1" cellspacing="0"
-     *                 summary="Notable cases.">
+     * <blockquote><table><caption>Notable cases</caption>
      *   <tr><th>Version&nbsp;&nbsp;</th><th>File Format&nbsp;&nbsp;</th>
      *   	<th>Last Column&nbsp;&nbsp;</th><th>Last Row</th></tr>
      *   <tr><td>97-2003</td><td>BIFF8</td><td>"IV" (2^8)</td><td>65536 (2^14)</td></tr>
@@ -169,8 +168,7 @@ public class CellRefUtil {
      * </table></blockquote>
      * POI currently targets BIFF8 (Excel 97-2003), so the following behaviour can be observed for
      * this method:
-     * <blockquote><table border="0" cellpadding="1" cellspacing="0"
-     *                 summary="Notable cases.">
+     * <blockquote><table><caption>Notable cases</caption>
      *   <tr><th>Input&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
      *       <th>Result&nbsp;</th></tr>
      *   <tr><td>"A", "1"</td><td>true</td></tr>

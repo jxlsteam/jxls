@@ -1,6 +1,14 @@
 Version History
 ==============
 
+v2.14.0
+-------
+* This is the last Java 8 release.
+* [#251 lastCommentedColumn not necessary anymore](https://github.com/jxlsteam/jxls/issues/251)<br/>**Breaking change:** You just have to remove calls to setLastCommentedColumn() and everything works.
+* [#271 fix: memory leak in streaming Excel processing](https://github.com/jxlsteam/jxls/issues/271) *- Thanks to giuseppemilicia*
+* [#281 logback 1.2.13](https://github.com/jxlsteam/jxls/issues/281) *- Thanks to vgaur*
+
+
 v2.13.0
 -------
 * [#178 Java 17](https://github.com/jxlsteam/jxls/issues/178) *- Thanks to mosidev*
