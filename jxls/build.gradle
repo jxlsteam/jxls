@@ -1,6 +1,6 @@
 dependencies {
     def slf4jVersion = '1.7.30'
-    def logbackVersion = '1.2.10'
+    def logbackVersion = '1.2.13'
 
     api('org.apache.commons:commons-jexl3:3.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
