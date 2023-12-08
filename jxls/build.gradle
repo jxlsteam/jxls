@@ -1,6 +1,5 @@
 dependencies {
     def slf4jVersion = '1.7.30'
-    def logbackVersion = '1.2.13'
 
     api('org.apache.commons:commons-jexl3:3.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
@@ -13,7 +12,6 @@ dependencies {
 
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
     testImplementation 'org.mockito:mockito-core:4.3.1'
-    testImplementation "ch.qos.logback:logback-classic:$logbackVersion"
     testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
     testImplementation 'cglib:cglib-nodep:3.3.0'
 }
