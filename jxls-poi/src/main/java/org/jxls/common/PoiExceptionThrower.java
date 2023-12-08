@@ -1,8 +1,5 @@
 package org.jxls.common;
 
-import org.jxls.common.JxlsException;
-import org.jxls.common.ExceptionHandler;
-
 public class PoiExceptionThrower implements ExceptionHandler {
 
     @Override
