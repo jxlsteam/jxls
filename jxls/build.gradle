@@ -8,7 +8,6 @@ dependencies {
     api('commons-beanutils:commons-beanutils:1.9.4') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    implementation "ch.qos.logback:logback-core:$logbackVersion"
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     runtimeOnly "org.slf4j:jcl-over-slf4j:$slf4jVersion"
 
