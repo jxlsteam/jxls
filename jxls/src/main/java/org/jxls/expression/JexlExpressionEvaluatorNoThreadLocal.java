@@ -27,7 +27,11 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict) {
-        this(silent, strict, JexlPermissions.UNRESTRICTED);
+        this(silent, strict, JxlsJexlPermissions.UNRESTRICTED);
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JxlsJexlPermissions permissions) {
+        this(silent, strict, permissions.getJexlPermissions());
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JexlPermissions jexlPermissions) {

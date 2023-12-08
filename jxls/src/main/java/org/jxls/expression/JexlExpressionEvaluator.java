@@ -8,7 +8,6 @@ import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
-import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 /**
  * JEXL based implementation of {@link ExpressionEvaluator} interface
@@ -17,7 +16,7 @@ import org.apache.commons.jexl3.introspection.JexlPermissions;
 public class JexlExpressionEvaluator implements ExpressionEvaluator {
     private final boolean silent;
     private final boolean strict;
-    private final JexlPermissions jexlPermissions;
+    private final JxlsJexlPermissions permissions;
     private JexlExpression jexlExpression;
     private JexlContext jexlContext;
     private static ThreadLocal<Map<String, JexlEngine>> jexlThreadLocal = new ThreadLocal<Map<String, JexlEngine>>() {
@@ -38,13 +37,13 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     }
 
     public JexlExpressionEvaluator(final boolean silent, final boolean strict) {
-        this(silent, strict, JexlPermissions.UNRESTRICTED);
+        this(silent, strict, JxlsJexlPermissions.UNRESTRICTED);
     }
     
-    public JexlExpressionEvaluator(final boolean silent, final boolean strict, final JexlPermissions jexlPermissions) {
+    public JexlExpressionEvaluator(final boolean silent, final boolean strict, final JxlsJexlPermissions permissions) {
         this.silent = silent;
         this.strict = strict;
-        this.jexlPermissions = jexlPermissions;
+        this.permissions = permissions;
     }
 
     public JexlExpressionEvaluator(String expression) {
@@ -103,14 +102,14 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
         Map<String, JexlEngine> map = jexlThreadLocal.get();
         JexlEngine ret = map.get(key);
         if (ret == null) {
-            ret = new JexlBuilder().silent(silent).strict(strict).permissions(jexlPermissions).create();
+            ret = new JexlBuilder().silent(silent).strict(strict).permissions(permissions.getJexlPermissions()).create();
             map.put(key, ret);
         }
         return ret;
     }
 
     private String key() {
-        return silent + "-" + strict + "-" + jexlPermissions.hashCode();
+        return silent + "-" + strict + "-" + permissions.hashCode();
     }
 
     @Override
