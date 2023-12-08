@@ -1,5 +1,5 @@
 dependencies {
-    def slf4jVersion = '1.7.30'
+    def slf4jVersion = '2.0.9'
 
     api('org.apache.commons:commons-jexl3:3.3') {
         exclude group: 'commons-logging', module: 'commons-logging'
@@ -10,8 +10,8 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     runtimeOnly "org.slf4j:jcl-over-slf4j:$slf4jVersion"
 
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
-    testImplementation 'org.mockito:mockito-core:4.3.1'
-    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.1'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'
     testImplementation 'cglib:cglib-nodep:3.3.0'
 }

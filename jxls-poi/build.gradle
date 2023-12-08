@@ -1,15 +1,15 @@
 dependencies {
     implementation project(':jxls')
     
-    implementation 'org.apache.poi:poi-ooxml:5.2.2'
-    implementation 'org.apache.commons:commons-compress:1.22'
-    implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'org.slf4j:jcl-over-slf4j:2.0.9'
+    implementation 'org.apache.commons:commons-compress:1.25.0'
     
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
-    testImplementation 'org.mockito:mockito-core:4.3.1'
-    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.1'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'
     testImplementation 'cglib:cglib-nodep:3.3.0'
-    testImplementation 'commons-io:commons-io:2.11.0'
+    testImplementation 'commons-io:commons-io:2.15.1'
     testImplementation 'org.apache.derby:derby:10.12.1.1'
 }
 
