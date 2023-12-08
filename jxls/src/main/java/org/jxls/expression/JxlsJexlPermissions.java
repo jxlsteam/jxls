@@ -29,7 +29,7 @@ public class JxlsJexlPermissions {
     
     @Override
     public boolean equals(Object o) {
-        return o instanceof JxlsJexlPermissions && ((JxlsJexlPermissions) o).id == id;
+        return o instanceof JxlsJexlPermissions p && p.id == id;
     }
     
     JexlPermissions getJexlPermissions() {

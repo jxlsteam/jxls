@@ -22,8 +22,8 @@ public class SheetNameGenerator implements CellRefGenerator {
     public CellRef generateCellRef(int index, Context context) {
         String sheetName = index >= 0 && index < sheetNames.size() ? sheetNames.get(index) : null;
         Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
-        if (builder instanceof SafeSheetNameBuilder) {
-            sheetName = ((SafeSheetNameBuilder) builder).createSafeSheetName(sheetName, index);
+        if (builder instanceof SafeSheetNameBuilder b) {
+            sheetName = b.createSafeSheetName(sheetName, index);
         }
         if (sheetName == null) {
             return null;

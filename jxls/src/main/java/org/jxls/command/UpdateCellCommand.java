@@ -70,8 +70,8 @@ public class UpdateCellCommand extends AbstractCommand {
             return null;
         }
         Object updaterInstance = context.getVar(updater);
-        if (updaterInstance instanceof CellDataUpdater) {
-            return (CellDataUpdater) updaterInstance;
+        if (updaterInstance instanceof CellDataUpdater u) {
+            return u;
         } else {
             logger.warn("CellDataUpdater is null or does not implement CellDataUpdater! Attribute 'updater': {}", updater);
             return null;

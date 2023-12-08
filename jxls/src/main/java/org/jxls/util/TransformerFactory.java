@@ -44,8 +44,8 @@ public class TransformerFactory {
         } catch (NoSuchMethodException e) {
             throw new JxlsException("The specified public method " + INIT_METHOD + " does not exist in " + transformer.getName());
         } catch (InvocationTargetException e) {
-            if (e.getCause() instanceof CannotOpenWorkbookException) {
-                throw (CannotOpenWorkbookException) e.getCause();
+            if (e.getCause() instanceof CannotOpenWorkbookException ex) {
+                throw ex;
             }
             throw new JxlsException("Method " + INIT_METHOD + " of " + transformer.getName() + " class thrown an exception:\n" + e.getMessage(), e);
         } catch (IllegalAccessException e) {

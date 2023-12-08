@@ -128,8 +128,8 @@ public abstract class JxlsNationalLanguageSupport {
         NamedNodeMap attributes = root.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Node item = attributes.item(i);
-            if (item instanceof Attr) {
-                String val = ((Attr) item).getValue();
+            if (item instanceof Attr attr) {
+                String val = attr.getValue();
                 String newValue = translateAll(val);
                 if (!val.equals(newValue)) {
                     ((Attr) item).setValue(newValue);
@@ -141,14 +141,14 @@ public abstract class JxlsNationalLanguageSupport {
         NodeList children = root.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node item = children.item(i);
-            if (item instanceof Text) {
-                String val = ((Text) item).getTextContent();
+            if (item instanceof Text text) {
+                String val = text.getTextContent();
                 String newValue = translateAll(val);
                 if (!val.equals(newValue)) {
                     item.setTextContent(newValue);
                 }
-            } else if (item instanceof Element) {
-                processElement((Element) item); // recursive
+            } else if (item instanceof Element elem) {
+                processElement(elem); // recursive
             }
         }
     }

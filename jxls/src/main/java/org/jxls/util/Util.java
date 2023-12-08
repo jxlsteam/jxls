@@ -401,8 +401,8 @@ public class Util {
      * @throws IllegalAccessException -
      */
     public static Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        if (obj instanceof Map) { // Map access
-            return ((Map<?, ?>) obj).get(propertyName);
+        if (obj instanceof Map<?,?> map) { // Map access
+            return map.get(propertyName);
         } else { // DynaBean or Java bean access
             return PropertyUtils.getProperty(obj, propertyName);
         }
@@ -522,10 +522,10 @@ public class Util {
      */
     public static Collection<?> transformToCollectionObject(ExpressionEvaluator expressionEvaluator, String collectionName, Context context) {
         Object collectionObject = expressionEvaluator.evaluate(collectionName, context.toMap());
-        if (!(collectionObject instanceof Collection)) {
-            throw new JxlsException(collectionName + " expression is not a collection");
-        }
-        return (Collection<?>) collectionObject;
+        if (collectionObject instanceof Collection<?> c) {
+            return c;
+        }            
+        throw new JxlsException(collectionName + " expression is not a collection");
     }
 
     /**

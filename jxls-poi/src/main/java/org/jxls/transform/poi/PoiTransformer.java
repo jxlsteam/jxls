@@ -95,8 +95,8 @@ public class PoiTransformer extends AbstractTransformer {
         isSXSSF = streaming;
         readCellData();
         if (isSXSSF) {
-            if (this.workbook instanceof XSSFWorkbook) {
-                this.workbook = new SXSSFWorkbook((XSSFWorkbook) this.workbook, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
+            if (this.workbook instanceof XSSFWorkbook xwb) {
+                this.workbook = new SXSSFWorkbook(xwb, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
             } else {
                 throw new IllegalArgumentException("Failed to create POI Transformer using SXSSF API as the input workbook is not XSSFWorkbook");
             }

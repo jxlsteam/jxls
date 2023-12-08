@@ -326,11 +326,11 @@ public class EachCommand extends AbstractCommand {
     }
     
     private void orderCollection(Iterable<?> itemsCollection) {
-        if (itemsCollection instanceof List && orderBy != null && !orderBy.trim().isEmpty()) {
+        if (itemsCollection instanceof List<?> itemsList && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
                     .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
             OrderByComparator<Object> comp = new OrderByComparator<>(orderByProps, util);
-            Collections.sort((List<Object>) itemsCollection, comp);
+            itemsList.sort(comp);
         }
     }
 
