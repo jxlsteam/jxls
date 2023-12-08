@@ -15,7 +15,6 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
-import org.jxls.examples.UserCommandDemo.GroupRowCommand;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
 import org.slf4j.Logger;
