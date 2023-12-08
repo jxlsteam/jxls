@@ -13,7 +13,7 @@ import org.jxls.transform.TransformationConfig;
 import org.jxls.util.Util;
 
 /**
- * <h1>Group sum</h1>
+ * Group sum
  * <p>The sum function for calculation a group sum takes two arguments: the collection as JEXL expression (or its name as a String)
  * and the name (as String) of the attribute. The attribute can be a object property or a Map entry. The value type T can be of any
  * type and is implemented by a generic SummarizerBuilder.</p>

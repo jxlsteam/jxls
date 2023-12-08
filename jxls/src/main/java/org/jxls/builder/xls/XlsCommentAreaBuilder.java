@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <h1>Builds {@link org.jxls.area.XlsArea} from Excel comments in the Excel template</h1>
+ * Builds {@link org.jxls.area.XlsArea} from Excel comments in the Excel template
  * 
  * <h2>Command syntax</h2>
  * <p>A command is specified in a cell comment like the following</p>
