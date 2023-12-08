@@ -14,10 +14,10 @@ import java.util.Map;
  *
  * <p>The keys are stored as they are given [BUG #DBUTILS-34], so we maintain
  * an internal mapping from lowercase keys to the real keys in order to
- * achieve the case insensitive lookup.
+ * achieve the case insensitive lookup.</p>
  *
- * <p>Note: This implementation does not allow <tt>null</tt>
- * for key, whereas {@link LinkedHashMap} does, because of the code:
+ * <p>Note: This implementation does not allow null
+ * for key, whereas {@link LinkedHashMap} does, because of the code:</p>
  * <pre>
  * key.toString().toLowerCase()
  * </pre>
