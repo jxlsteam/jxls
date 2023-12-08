@@ -46,7 +46,7 @@ To find more information about using `cellRefGenerator` and `multisheet` attribu
 Command building
 ----------------
 
-As with any Jxls command you can use Java API or Excel markup or XML configuration to define the *Each-command*
+As with any Jxls command you can use Java API or Excel markup to define the *Each-command*
 
 # Java API usage
 
@@ -67,17 +67,6 @@ To create *Each Command* with Excel markup you should use a special syntax in th
 
 So we use `jx:each` with the command attributes in parentheses separated with a space. `lastCell` attribute defines the last cell of the command XlsArea body.
 
-# XML markup usage
-
-To create *Each Command* with XML configuration you use the following markup
-
-    <each items="employees" var="employee" ref="Template!A4:D4">
-        <area ref="Template!A4:D4"/>
-    </each>
-
-
-Here `ref` attribute defines the area to be associated with the *Each-Command*. And the inner area defines the body of the *Each-Command*.
-Usually they are the same.
 
 Repeat direction
 ----------------

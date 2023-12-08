@@ -21,7 +21,7 @@ Jxls uses the following *Command* interface to represent the command.
 
 Every command has a `name` and `Area` list.
 
-The `name` defines the command name which is used to refer to the command in Excel or XML markup.
+The `name` defines the command name which is used to refer to the command in Excel.
 
 The `Area` list is a list of command parameters of  `Area` type.
 

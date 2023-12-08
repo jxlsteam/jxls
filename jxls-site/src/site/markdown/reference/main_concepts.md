@@ -23,7 +23,6 @@ Each *XlsArea* may have a set of *Commands* associated with it which will be exe
 *XlsArea* can be defined using the following ways
 
 * By using a special markup syntax in an Excel template. Jxls provides one default mark-up with its *XlsCommentAreaBuilder*. Custom mark-ups may be defined if needed.
-* By using XML configuration. Jxls provides *XmlAreaBuilder* class as a default implementation of XML mark-up.
 * By using Jxls Java API
 
 You can find more details and usage examples in [here](xls_area.html)

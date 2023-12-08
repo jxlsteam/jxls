@@ -56,7 +56,6 @@ Features
 * Merged cells support
 * Area listeners to adjust excel generation
 * Excel comments mark-up for command definition
-* XML mark-up for command definition
 * Custom Command definition
 * Streaming for fast output and less memory consumption
 * Streaming for selected sheets (SelectSheetsForStreamingPoiTransformer)
