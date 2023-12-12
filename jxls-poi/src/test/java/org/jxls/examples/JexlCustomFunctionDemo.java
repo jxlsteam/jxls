@@ -42,8 +42,8 @@ public class JexlCustomFunctionDemo {
         try (InputStream is = JexlCustomFunctionDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new Context();
                 context.putVar("x", 5);

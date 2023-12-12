@@ -36,9 +36,9 @@ public class UserCommandExcelMarkupDemo {
         try (InputStream is = UserCommandExcelMarkupDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
                 XlsCommentAreaBuilder.addCommandMapping("groupRow", GroupRowCommand.class);
-                List<Area> xlsAreaList = areaBuilder.build();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new Context();
                 context.putVar("employees", employees);

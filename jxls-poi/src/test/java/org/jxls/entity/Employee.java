@@ -132,4 +132,13 @@ public class Employee {
         departmentObject.setKey(key);
         return this;
     }
+    
+    public String getSalaryGroup() {
+        return payment.doubleValue() > 2000d ? "high" : "normal";
+    }
+    
+    @Override
+    public String toString() {
+        return name + ", " + payment + ", " + getSalaryGroup();
+    }
 }

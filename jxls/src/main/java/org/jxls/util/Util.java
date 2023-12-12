@@ -490,6 +490,7 @@ public class Util {
 
     private static Object getGroupKey(Object bean, String propertyName) {
         Object ret = getObjectProperty(bean, propertyName, true);
+System.out.println(bean + " -- " + propertyName+ " --> " + ret);        
         return ret == null ? "null" : ret;
     }
 

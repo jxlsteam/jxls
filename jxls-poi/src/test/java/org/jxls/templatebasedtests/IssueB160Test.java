@@ -40,8 +40,8 @@ public class IssueB160Test {
             try (OutputStream os = new FileOutputStream("target/IssueB160Test_output.xlsx")) {
                 Workbook workbook = WorkbookFactory.create(in);
                 PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 2, false);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
                 SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();

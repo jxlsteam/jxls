@@ -40,7 +40,7 @@ public class IssueSxssfTransformerTest {
                 final Workbook workbook = WorkbookFactory.create(is);
                 final int activeSheetIndex = workbook.getActiveSheetIndex();
                 PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 1000, true);
-                final List<Area> excelAreas = new XlsCommentAreaBuilder(transformer).build();
+                final List<Area> excelAreas = new XlsCommentAreaBuilder().build(transformer, true);
                 for (final Area excelArea : excelAreas) {
                     processArea(excelArea);
                 }

@@ -39,6 +39,7 @@ public class JxlsHelper {
     private FormulaProcessor formulaProcessor;
     private SimpleExporter simpleExporter = new SimpleExporter();
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+    private boolean clearTemplateCells = true;
 
     public JxlsHelper() {
     }
@@ -131,6 +132,10 @@ public class JxlsHelper {
     public JxlsHelper setAreaBuilder(AreaBuilder areaBuilder) {
         this.areaBuilder = areaBuilder;
         return this;
+    }
+
+    public void setClearTemplateCells(boolean clearTemplateCells) {
+        this.clearTemplateCells = clearTemplateCells;
     }
 
     /**
@@ -262,8 +267,7 @@ public class JxlsHelper {
      * @throws IOException -
      */
     public void processTemplate(Context context, Transformer transformer) throws IOException {
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
         for (Area xlsArea : xlsAreaList) {
             xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
         }
@@ -343,8 +347,7 @@ public class JxlsHelper {
     public JxlsHelper processTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context,
             String targetCell) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
         if (xlsAreaList.isEmpty()) {
             throw new IllegalStateException("No XlsArea were detected for this processing");
         }
@@ -380,8 +383,7 @@ public class JxlsHelper {
      */
     public JxlsHelper processGridTemplate(InputStream templateStream, OutputStream targetStream, Context context, String objectProps) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
         for (Area xlsArea : xlsAreaList) {
             GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
             gridCommand.setProps(objectProps);
@@ -409,8 +411,7 @@ public class JxlsHelper {
     public void processGridTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context,
             String objectProps, String targetCell) throws IOException {
         Transformer transformer = createTransformer(templateStream, targetStream);
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
         Area firstArea = xlsAreaList.get(0);
         CellRef targetCellRef = new CellRef(targetCell);
         GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();

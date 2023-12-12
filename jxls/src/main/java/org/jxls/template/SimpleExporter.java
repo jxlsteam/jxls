@@ -52,8 +52,8 @@ public class SimpleExporter {
     	}    	
     	InputStream is = new ByteArrayInputStream(templateBytes);
         Transformer transformer = TransformerFactory.createTransformer(is, outputStream);
-        AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, true);
         Area xlsArea = xlsAreaList.get(0);
         Context context = new Context();
         context.putVar("headers", headers);

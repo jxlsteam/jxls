@@ -16,9 +16,20 @@ import org.jxls.common.Context;
  */
 public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
     private Set<String> dataSheetsToUseStreaming = null;
-
+    private boolean allSheets = false;
+    
     public SelectSheetsForStreamingPoiTransformer(Workbook workbook) {
         super(workbook, true);
+    }
+
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, boolean allSheets) {
+        super(workbook, true);
+        this.allSheets = allSheets;
+    }
+
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, Set<String> sheetNames) {
+        super(workbook, true);
+        this.dataSheetsToUseStreaming = sheetNames;
     }
 
     public void setDataSheetsToUseStreaming(Set<String> sheetNames) {
@@ -36,8 +47,8 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
             destSheet = getWorkbook().createSheet(targetCellRef.getSheetName());
             PoiUtil.copySheetProperties(getWorkbook().getSheet(srcCellRef.getSheetName()), destSheet);
         }
-        boolean useStreamingForThisSheet = dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(targetCellRef.getSheetName());
-        if (!useStreamingForThisSheet && isStreaming()) { // 
+        boolean useStreamingForThisSheet = allSheets || (dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(targetCellRef.getSheetName()));
+        if (!useStreamingForThisSheet && isStreaming()) {
             // use "fat" data sheet for transformation
             destSheet = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
         }

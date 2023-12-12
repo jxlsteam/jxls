@@ -2,6 +2,7 @@ package org.jxls.transform;
 
 import java.util.regex.Pattern;
 
+import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.util.JxlsHelper;
 
@@ -10,8 +11,8 @@ import org.jxls.util.JxlsHelper;
  */
 public class TransformationConfig {
     private static final String EXPRESSION_PART = "(.+?)";
-    private static final String DEFAULT_EXPRESSION_BEGIN = "${";
-    private static final String DEFAULT_EXPRESSION_END = "}";
+    private static final String DEFAULT_EXPRESSION_BEGIN = JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_BEGIN;
+    private static final String DEFAULT_EXPRESSION_END = JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_END;
     private static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
 
     private ExpressionEvaluator expressionEvaluator =  JxlsHelper.getInstance().createExpressionEvaluator(null);

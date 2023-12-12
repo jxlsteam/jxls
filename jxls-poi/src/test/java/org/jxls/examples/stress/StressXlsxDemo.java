@@ -48,8 +48,8 @@ public class StressXlsxDemo {
         try (InputStream is = StressXlsxDemo.class.getResourceAsStream("stress1.xlsx")) {
             try (OutputStream os = new FileOutputStream("target/stress1_output.xlsx")) {
                 Transformer transformer = PoiTransformer.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new PoiContext();
                 context.putVar("employees", employees);
@@ -72,8 +72,8 @@ public class StressXlsxDemo {
         try (InputStream is = StressXlsxDemo.class.getResourceAsStream("stress2.xlsx")) {
             try (OutputStream os = new FileOutputStream("target/stress2_output.xlsx")) {
                 Transformer transformer = PoiTransformer.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new PoiContext();
                 context.putVar("departments", departments);

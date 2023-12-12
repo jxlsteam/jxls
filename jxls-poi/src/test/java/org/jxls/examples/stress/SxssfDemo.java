@@ -49,8 +49,8 @@ public class SxssfDemo {
             try (OutputStream os = new FileOutputStream("target/simple_sxssf_output.xlsx")) {
                 Workbook workbook = WorkbookFactory.create(is);
                 PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 5, false);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new Context();
                 context.putVar("cellRefUpdater", new CellRefUpdater());
@@ -74,8 +74,8 @@ public class SxssfDemo {
             assert is != null;
             Workbook workbook = WorkbookFactory.create(is);
             PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook);
-            AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-            List<Area> xlsAreaList = areaBuilder.build();
+            AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+            List<Area> xlsAreaList = areaBuilder.build(transformer, true);
             Area xlsArea = xlsAreaList.get(0);
             Context context = new PoiContext();
             context.putVar("cellRefUpdater", new CellRefUpdater());
@@ -104,8 +104,8 @@ public class SxssfDemo {
             // setting rowAccessWindowSize to 600 to be able to process static cells in a
             // single iteration
             PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 600, true);
-            AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);
-            List<Area> xlsAreaList = areaBuilder.build();
+            AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+            List<Area> xlsAreaList = areaBuilder.build(transformer, true);
             Area xlsArea = xlsAreaList.get(0);
             Context context = new PoiContext();
             context.getConfig().setIsFormulaProcessingRequired(false);

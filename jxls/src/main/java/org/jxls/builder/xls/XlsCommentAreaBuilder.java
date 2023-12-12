@@ -133,31 +133,6 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put(MergeCellsCommand.COMMAND_NAME, MergeCellsCommand.class);
     }
 
-    private Transformer transformer;
-    private boolean clearTemplateCells = true;
-
-    public XlsCommentAreaBuilder() {
-    }
-
-    public XlsCommentAreaBuilder(Transformer transformer) {
-        this.transformer = transformer;
-    }
-
-    public XlsCommentAreaBuilder(Transformer transformer, boolean clearTemplateCells) {
-        this(transformer);
-        this.clearTemplateCells = clearTemplateCells;
-    }
-
-    @Override
-    public Transformer getTransformer() {
-        return transformer;
-    }
-
-    @Override
-    public void setTransformer(Transformer transformer) {
-        this.transformer = transformer;
-    }
-
     public static void addCommandMapping(String commandName, Class<? extends Command> clazz) {
         commandMap.put(commandName, clazz);
     }
@@ -166,17 +141,19 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
      * Builds a list of {@link org.jxls.area.XlsArea} objects defined by top level AreaCommand markup ("jx:area")
      * containing a tree of all nested commands
      * 
+     * @param transformer -
+     * @param clearTemplateCells default is true
      * @return Area list
      */
     @Override
-    public List<Area> build() {
+    public List<Area> build(Transformer transformer, boolean clearTemplateCells) {
         List<Area> userAreas = new ArrayList<Area>();
         List<CellData> commentedCells = transformer.getCommentedCells();
         List<CommandData> allCommands = new ArrayList<CommandData>();
         List<Area> allAreas = new ArrayList<Area>();
         for (CellData cellData : commentedCells) {
             String comment = cellData.getCellComment();
-            List<CommandData> commandDatas = buildCommands(cellData, comment);
+            List<CommandData> commandDatas = buildCommands(transformer, cellData, comment);
             for (CommandData commandData : commandDatas) {
                 if (commandData.getCommand() instanceof AreaCommand) {
                     XlsArea userArea = new XlsArea(commandData.getAreaRef(), transformer);
@@ -226,7 +203,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return userAreas;
     }
     
-    private List<CommandData> buildCommands(CellData cellData, String text) {
+    private List<CommandData> buildCommands(Transformer transformer, CellData cellData, String text) {
         List<CommandData> commandDatas = new ArrayList<CommandData>();
         List<String> commentLines;
         if (MULTI_LINE_SQL_FEATURE) {
@@ -254,7 +231,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             CommandData commandData = createCommandData(cellData, commandName, attrMap);
             if (commandData != null) {
                 commandDatas.add(commandData);
-                List<Area> areas = buildAreas(cellData, line);
+                List<Area> areas = buildAreas(transformer, cellData, line);
                 for (Area area : areas) {
                     commandData.getCommand().addArea(area);
                 }
@@ -271,7 +248,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return str.startsWith(COMMAND_PREFIX) && !str.startsWith(CellData.JX_PARAMS_PREFIX);
     }
 
-    private List<Area> buildAreas(CellData cellData, String commandLine) {
+    private List<Area> buildAreas(Transformer transformer, CellData cellData, String commandLine) {
         List<Area> areas = new ArrayList<Area>();
         Matcher areasAttrMatcher = AREAS_ATTR_REGEX_PATTERN.matcher(commandLine);
         if (areasAttrMatcher.find()) {

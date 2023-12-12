@@ -59,8 +59,7 @@ public class Issue147MultiResizingXlsAreasTest {
     }
 
     private void processTemplate(Context context, Transformer transformer) throws IOException {
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
+        List<Area> xlsAreaList = areaBuilder.build(transformer, true);
         Size delta = Size.ZERO_SIZE;
         for (Area xlsArea : xlsAreaList) {
             CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),

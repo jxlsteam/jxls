@@ -40,8 +40,8 @@ public class Highlight1Demo {
         try (InputStream is = Highlight1Demo.class.getResourceAsStream("highlight_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/highlight_output.xls")) {
                 PoiTransformer transformer = PoiTransformer.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer, false);
-                List<Area> xlsAreaList = areaBuilder.build();
+                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                List<Area> xlsAreaList = areaBuilder.build(transformer, false);
                 Area mainArea = xlsAreaList.get(0);
                 Area loopArea = xlsAreaList.get(0).getCommandDataList().get(0).getCommand().getAreaList().get(0);
                 loopArea.addAreaListener(new HighlightCellAreaListener(transformer));

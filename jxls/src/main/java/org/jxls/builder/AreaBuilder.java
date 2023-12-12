@@ -1,18 +1,14 @@
 package org.jxls.builder;
 
+import java.util.List;
+
 import org.jxls.area.Area;
 import org.jxls.transform.Transformer;
 
-import java.util.List;
-
 /**
- * Interface to build an {@link Area}
+ * Interface for building the areas
  */
 public interface AreaBuilder {
 
-    List<Area> build();
-
-    void setTransformer(Transformer transformer);
-
-    Transformer getTransformer();
+    List<Area> build(Transformer transformer, boolean clearTemplateCells);
 }
