@@ -316,9 +316,6 @@ public class EachCommand extends AbstractCommand {
                 selectExpression = null;
             }
             Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
-            for (GroupData k : groupedData) {
-                System.out.println(k.getItem() + ", " + k.getItems().size());
-            }
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar, selectExpression);
         }

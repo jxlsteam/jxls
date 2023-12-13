@@ -46,7 +46,7 @@ public class GroupByTest {
         }
     }
 
-//    @Test
+    @Test
     public void desc() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "desc");
@@ -65,23 +65,20 @@ public class GroupByTest {
         }
     }
 
-//    @Test
+    @Test
     public void select() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "select");
         tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance());
         
         // Verify
-//        try (TestWorkbook w = tester.getWorkbook()) {
-//            w.selectSheet(0);
-//            assertEquals("normal", w.getCellValueAsString(2, 1)); // A2
-//            assertTrue(w.getCellValueAsDouble(3, 3) <= 2000); // C3
-//            assertTrue(w.getCellValueAsDouble(4, 3) <= 2000);
-//            assertEquals("high", w.getCellValueAsString(5, 1)); // A5
-//            assertTrue(w.getCellValueAsDouble(6, 3) > 2000);
-//            assertTrue(w.getCellValueAsDouble(7, 3) > 2000);
-//            assertTrue(w.getCellValueAsDouble(8, 3) > 2000);
-//        }
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            assertEquals("high", w.getCellValueAsString(2, 1)); // A2
+            assertTrue(w.getCellValueAsDouble(3, 3) > 2000 && w.getCellValueAsDouble(3, 3) < 2500); // C3
+            assertEquals("normal", w.getCellValueAsString(4, 1)); // A4
+            assertTrue(w.getCellValueAsDouble(5, 3) <= 2000); // C5
+        }
     }
 
     private Map<String, Object> data() {
