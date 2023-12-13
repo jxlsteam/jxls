@@ -2,7 +2,7 @@ allprojects {
     apply plugin: 'jacoco'
     apply plugin: 'org.owasp.dependencycheck'
     
-    version = '2.14.0-RC1'
+    version = '2.14.0-RC5-SNAPSHOT'
     group = 'org.jxls'
     
     repositories {
