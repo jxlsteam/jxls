@@ -9,12 +9,14 @@ import java.net.URL;
 import java.util.Map;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.util.CannotOpenWorkbookException;
 
 /**
  * You must call withTransformerFactory() and withTemplate().
@@ -47,6 +49,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
      * @return all options and the template
      */
     public JxlsTemplateFiller build() {
+    	if (transformerFactory == null) {
+    		throw new JxlsException("Please call withTransformerFactory()");
+    	} else if (template == null) {
+    		throw new JxlsException("Please call withTemplate()");
+    	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
                 recalculateFormulasBeforeSaving, recalculateFormulasOnOpening, formulaProcessor,
                 hideTemplateSheet, deleteTemplateSheet, areaBuilder, clearTemplateCells, transformerFactory, streaming, template);
@@ -54,16 +61,24 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     
     /**
      * @param data -
-     * @return Excel file
+     * @param output -
      * @throws IOException 
      */
-    public JxlsOutput build(Map<String, Object> data) {
-        return build().fill(data);
+    public void buildAndFill(Map<String, Object> data, JxlsOutput output) {
+        build().fill(data, output);
     }
-    
+
+    /**
+     * @param data -
+     * @param outputFile -
+     */
+	public void buildAndFill(Map<String, Object> data, File outputFile) {
+		buildAndFill(data, new JxlsOutputFile(outputFile));
+	}
+
     public SELF withExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         if (expressionEvaluatorFactory == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("expressionEvaluatorFactory must not be null");
         }
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         return (SELF) this;
@@ -90,7 +105,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withFormulaProcessor(FormulaProcessor formulaProcessor) {
-        this.formulaProcessor = formulaProcessor;
+        this.formulaProcessor = formulaProcessor; // can be null
         return (SELF) this;
     }
     
@@ -113,6 +128,9 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withAreaBuilder(AreaBuilder areaBuilder) {
+    	if (areaBuilder == null) {
+    		throw new IllegalArgumentException("areaBuilder must not be null");
+    	}
         this.areaBuilder = areaBuilder;
         return (SELF) this;
     }
@@ -127,6 +145,9 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
     
     public SELF withTransformerFactory(JxlsTransformerFactory transformerFactory) {
+    	if (transformerFactory == null) {
+    		throw new IllegalArgumentException("transformerFactory must not be null");
+    	}
         this.transformerFactory = transformerFactory;
         return (SELF) this;
     }
@@ -136,16 +157,22 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withStreaming(JxlsStreaming streaming) {
-        this.streaming = streaming;
+        this.streaming = streaming == null ? JxlsStreaming.STREAMING_OFF : streaming;
         return (SELF) this;
     }
 
     public SELF withTemplate(InputStream template) {
+    	if (template == null) {
+    		throw new CannotOpenWorkbookException();
+    	}
         this.template = template;
         return (SELF) this;
     }
 
     public SELF withTemplate(URL template) {
+    	if (template == null) {
+    		throw new IllegalArgumentException("template must not be null");
+    	}
         try {
             return withTemplate(template.openStream());
         } catch (IOException e) {
@@ -154,6 +181,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withTemplate(File template) {
+    	if (template == null) {
+    		throw new IllegalArgumentException("template must not be null");
+    	} else if (!template.isFile()) {
+    		throw new JxlsException("Template file does not exist: " + template.getAbsolutePath());
+    	}
         try {
             return withTemplate(new FileInputStream(template));
         } catch (FileNotFoundException e) {
@@ -162,6 +194,9 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withTemplate(String templateFileName) {
+    	if (templateFileName == null || templateFileName.isBlank()) {
+    		throw new IllegalArgumentException("Please specify templateFileName");
+    	}
         return withTemplate(new File(templateFileName));
     }
 }

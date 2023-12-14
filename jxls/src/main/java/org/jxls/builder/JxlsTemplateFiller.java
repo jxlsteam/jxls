@@ -16,6 +16,7 @@ import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.Transformer;
+import org.jxls.util.CannotOpenWorkbookException;
 
 public class JxlsTemplateFiller {
     protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
@@ -55,14 +56,15 @@ public class JxlsTemplateFiller {
         this.template = template;
     }
 
-    public JxlsOutput fill(Map<String, Object> data) {
-        try (OutputStream outputStream = createOutputStream()) {
+    public void fill(Map<String, Object> data, JxlsOutput output) {
+        try (OutputStream outputStream = output.getOutputStream()) {
             createTransformer(outputStream);
             configureTransformer();
             processTemplate(data);
             preWrite();
             write();
-            return new JxlsOutput(outputStream);
+        } catch (CannotOpenWorkbookException up) {
+        	throw up;
         } catch (IOException e) {
             throw new JxlsTemplateFillException(e);
         } finally {
@@ -81,7 +83,7 @@ public class JxlsTemplateFiller {
 
     protected void configureTransformer() {
         transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
-        transformer.getTransformationConfig().setExpressionEvaluator(expressionEvaluatorFactory.createExpressionEvaluator(null));
+        transformer.getTransformationConfig().setExpressionEvaluatorFactory(expressionEvaluatorFactory);
     }
 
     protected void processTemplate(Map<String, Object> data) {
@@ -99,6 +101,8 @@ public class JxlsTemplateFiller {
     }
 
     protected void preWrite() {
+        transformer.setEvaluateFormulas(recalculateFormulasBeforeSaving);
+        transformer.setFullFormulaRecalculationOnOpening(recalculateFormulasOnOpening);
         if (hideTemplateSheet) {
             List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(areas);
             for (String sheetName : sheetNameTemplate) {

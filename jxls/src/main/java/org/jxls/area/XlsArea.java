@@ -603,4 +603,9 @@ public class XlsArea implements Area {
         }
         transformer.resetTargetCellRefs();
     }
+    
+    @Override
+    public String toString() {
+		return startCellRef + " " + size + " " + (parentCommand == null ? "" : parentCommand.getClass().getSimpleName());
+    }
 }

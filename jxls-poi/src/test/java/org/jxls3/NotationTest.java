@@ -46,4 +46,21 @@ public class NotationTest {
             assertNull(w.getCellValueAsString(7, 1)); // A7
         }
     }
+
+    @Test
+    public void testExpressionNotationsNull() {
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+
+        // Test
+        Jxls3Tester tester = new Jxls3Tester(EachTest.class, "EachTest.xlsx");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withExpressionNotation(null, null));
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            assertEquals("Elsa", w.getCellValueAsString(2, 1)); // A2 
+        }
+    }
 }

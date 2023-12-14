@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
 
 public class Jxls3Tester {
@@ -19,7 +20,7 @@ public class Jxls3Tester {
         return new Jxls3Tester(testclass, testclass.getSimpleName() + "_" + method + ".xlsx");
     }
 
-    private Jxls3Tester(Class<?> testclass, String excelTemplateFilename) {
+    public Jxls3Tester(Class<?> testclass, String excelTemplateFilename) {
         this.testclass = testclass;
         this.excelTemplateFilename = excelTemplateFilename;
         int o = excelTemplateFilename.lastIndexOf(".");
@@ -30,7 +31,8 @@ public class Jxls3Tester {
     
     public void test(Map<String, Object> data, JxlsTemplateFillerBuilder<?> builder) {
         InputStream template = testclass.getResourceAsStream(excelTemplateFilename);
-        builder.withTemplate(template).build(data).write(out);
+        Assert.assertNotNull("Template not found: " + excelTemplateFilename, template);
+        builder.withTemplate(template).buildAndFill(data, out);
     }
     
     public TestWorkbook getWorkbook() {

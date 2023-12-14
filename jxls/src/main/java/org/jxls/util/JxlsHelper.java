@@ -315,6 +315,7 @@ public class JxlsHelper {
      *
      * @param expression expression to evaluate
      * @return {@link ExpressionEvaluator} instance for evaluation the passed expression
+     * @deprecated Will be removed. Use TransformationConfig.getExpressionEvaluator(expression) instead.
      */
     public ExpressionEvaluator createExpressionEvaluator(final String expression) {
         return ExpressionEvaluatorFactoryHolder.INSTANCE.createExpressionEvaluator(expression);

@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.util.JxlsHelper;
 
 /**
@@ -15,7 +16,8 @@ public class TransformationConfig {
     private static final String DEFAULT_EXPRESSION_END = JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_END;
     private static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
 
-    private ExpressionEvaluator expressionEvaluator =  JxlsHelper.getInstance().createExpressionEvaluator(null);
+    private ExpressionEvaluatorFactory expressionEvaluatorFactory;
+    private ExpressionEvaluator expressionEvaluator;
     private String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
     private String expressionNotationEnd = DEFAULT_EXPRESSION_END;
     private Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
@@ -27,12 +29,26 @@ public class TransformationConfig {
         expressionNotationPattern = Pattern.compile(regexExpression);
     }
 
-    public ExpressionEvaluator getExpressionEvaluator() {
-        return expressionEvaluator;
+    public void setExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
+        this.expressionEvaluatorFactory = expressionEvaluatorFactory;
+        expressionEvaluator = null;
     }
 
-    public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
-        this.expressionEvaluator = expressionEvaluator;
+    public ExpressionEvaluator getExpressionEvaluator() {
+		if (expressionEvaluator == null) {
+			if (expressionEvaluatorFactory == null) {
+				expressionEvaluatorFactory = JxlsHelper.getInstance().getExpressionEvaluatorFactory();
+			}
+			expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator(null);
+		}
+		return expressionEvaluator;
+    }
+
+    public ExpressionEvaluator getExpressionEvaluator(String expression) {
+		if (expressionEvaluatorFactory == null) {
+			expressionEvaluatorFactory = JxlsHelper.getInstance().getExpressionEvaluatorFactory();
+		}
+		return expressionEvaluatorFactory.createExpressionEvaluator(expression);
     }
 
     public String getExpressionNotationBegin() {

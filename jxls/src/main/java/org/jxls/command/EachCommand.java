@@ -14,7 +14,6 @@ import org.jxls.common.GroupData;
 import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.util.JxlsHelper;
 import org.jxls.util.OrderByComparator;
 import org.jxls.util.UtilWrapper;
 
@@ -336,8 +335,7 @@ public class EachCommand extends AbstractCommand {
 
     private Iterable<?> filter(Context context, Iterable<?> itemsCollection, String selectExpression) {
         List<Object> filteredList = new ArrayList<>();
-        ExpressionEvaluator selectEvaluator = JxlsHelper.getInstance()
-                .createExpressionEvaluator(selectExpression);
+        ExpressionEvaluator selectEvaluator = getTransformationConfig().getExpressionEvaluator(selectExpression);
         Object currentVarObject = var == null ? null : context.getRunVar(var);
         Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
         int currentIndex = 0;
@@ -372,7 +370,7 @@ public class EachCommand extends AbstractCommand {
         
         ExpressionEvaluator selectEvaluator = null;
         if (selectExpression != null) {
-            selectEvaluator = JxlsHelper.getInstance().createExpressionEvaluator(selectExpression);
+            selectEvaluator = getTransformationConfig().getExpressionEvaluator(selectExpression);
         }
 
         CellRef currentCell = cellRef;

@@ -19,52 +19,77 @@ import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
-// TODO work in progress
+/**
+ * For the Jxls main part, expressions are used by cells, jx:if, jx:each/select and jx:each/groupBy.
+ * These tests check whether all expressions are received by the ExpressionEvaluator.
+ * This also checks if the configured ExpressionEvaluatorFactory has been set.
+ */
 public class ExpressionEvaluatorFactoryTest {
 
     @Test
-    public void standard() throws IOException {
-        check(STREAMING_OFF);
+    public void ifAndSelect_standard() throws IOException {
+        ifAndSelect(STREAMING_OFF);
     }
 
-//TODO    @Test
-    public void streaming() throws IOException {
-        check(AUTO_DETECT);
+    @Test
+    public void ifAndSelect_streaming() throws IOException {
+        ifAndSelect(AUTO_DETECT);
     }
     
-    private void check(JxlsStreaming streaming) {
-        // Prepare
-        Map<String,Object> data = new HashMap<>();
-        data.put("employees", Employee.generateSampleEmployeeData());
-
+    private void ifAndSelect(JxlsStreaming streaming) {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming).withExpressionEvaluatorFactory(new MyEvaluatorFactory());
-        tester.test(data, builder);
-        // TODO Test mit select
+		JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming)
+				.withExpressionEvaluatorFactory(new MyEvaluatorFactory(
+						"employees", "e.payment<2500"/*select*/, "e.payment<2000"/*jx:if*/, "e.name", "e.birthDate", "e.payment"));
+        tester.test(data(), builder);
         
         // Verify
-        Assert.assertEquals(21, ((MyEvaluatorFactory) builder.getExpressionEvaluatorFactory()).used);
+        Assert.assertEquals(18, ((MyEvaluatorFactory) builder.getExpressionEvaluatorFactory()).used);
+    }
+
+	private Map<String, Object> data() {
+		Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+		return data;
+	}
+
+    @Test
+    public void groupBy_standard() throws IOException {
+    	groupBy(STREAMING_OFF);
+    }
+
+    @Test
+    public void groupBy_streaming() throws IOException {
+    	groupBy(AUTO_DETECT);
     }
     
-    // TODO Test mit select + group by
-    
+    private void groupBy(JxlsStreaming streaming) {
+        // Test
+        Jxls3Tester tester = new Jxls3Tester(GroupByTest.class, "GroupByTest_asc.xlsx"); // reuse template from other testcase
+        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming)
+        		.withExpressionEvaluatorFactory(new MyEvaluatorFactory(
+        				"employees", "g.item.salaryGroup", "g.items", "e.name", "e.payment"));
+        tester.test(data(), builder);
+        
+        // Verify
+        Assert.assertEquals(15, ((MyEvaluatorFactory) builder.getExpressionEvaluatorFactory()).used);
+    }
+
     static class MyEvaluatorFactory implements ExpressionEvaluatorFactory {
         private final ExpressionEvaluatorFactory parent = new ExpressionEvaluatorFactoryJexlImpl();
         private final Set<String> allowedExpressions = new HashSet<>();
         int used = 0;
         
-        MyEvaluatorFactory() {
-            allowedExpressions.add("employees");
-            allowedExpressions.add("e.payment<2000");
-            allowedExpressions.add("e.name");
-            allowedExpressions.add("e.birthDate");
-            allowedExpressions.add("e.payment");
+        MyEvaluatorFactory(String ...pAllowedExpressions) {
+        	for (String i : pAllowedExpressions) {
+        		allowedExpressions.add(i);
+        	}
         }
 
         @Override
-        public ExpressionEvaluator createExpressionEvaluator(String expression) {
-            ExpressionEvaluator parentEE = parent.createExpressionEvaluator(expression);
+        public ExpressionEvaluator createExpressionEvaluator(String topExpression) {
+            ExpressionEvaluator parentEE = parent.createExpressionEvaluator(topExpression);
             return new ExpressionEvaluator() {
                 @Override
                 public Object evaluate(String expression, Map<String, Object> context) {
@@ -77,13 +102,17 @@ public class ExpressionEvaluatorFactoryTest {
                 }
                 
                 @Override
-                public String getExpression() {
-                    Assert.fail("unexpected call");
-                    return null;
+                public Object evaluate(Map<String, Object> context) {
+                    if (allowedExpressions.contains(topExpression) ) {
+                        used++;
+                    } else {
+                        Assert.fail("Unexpected expression: " + topExpression);
+                    }
+                    return parentEE.evaluate(context);
                 }
                 
                 @Override
-                public Object evaluate(Map<String, Object> context) {
+                public String getExpression() {
                     Assert.fail("unexpected call");
                     return null;
                 }

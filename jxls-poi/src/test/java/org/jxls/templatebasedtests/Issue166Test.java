@@ -102,7 +102,7 @@ public class Issue166Test {
             public Transformer checkTransformer(Transformer transformer) {
                 TransformationConfig config = transformer.getTransformationConfig();
                 evaluator = new JexlExpressionEvaluatorNoThreadLocal();
-                config.setExpressionEvaluator(evaluator);
+                config.setExpressionEvaluatorFactory(x -> evaluator);
                 Map<String, Object> funcs = new HashMap<>();
                 funcs.put("cf", new JXLS2CustomFunctions(context));
                 JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();
@@ -119,7 +119,7 @@ public class Issue166Test {
             public Transformer checkTransformer(Transformer transformer) {
                 TransformationConfig config = transformer.getTransformationConfig();
                 JexlExpressionEvaluator evaluator_threadLocal = new JexlExpressionEvaluator();
-                config.setExpressionEvaluator(evaluator_threadLocal);
+                config.setExpressionEvaluatorFactory(x -> evaluator_threadLocal);
                 Map<String, Object> funcs = new HashMap<>();
                 funcs.put("cf", new JXLS2CustomFunctions(context));
                 JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();

@@ -23,12 +23,13 @@ public class GroupByTest {
         asc(STREAMING_OFF);
     }
 
-//    @Test
+    @Test
     public void asc_streaming() throws IOException {
         asc(AUTO_DETECT);
     }
     
     private void asc(JxlsStreaming streaming) {
+    	// Template also used by ExpressionEvaluatorFactoryTest.groupBy()
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "asc");
         tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming));

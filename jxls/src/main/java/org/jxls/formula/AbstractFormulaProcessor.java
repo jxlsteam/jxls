@@ -69,10 +69,4 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
         }
         return jointedCellRefMap;
     }
-
-    @Deprecated // TODO MW to Leonid: What's our plan when to kick this method?
-    @Override
-    public void processAreaFormulas(Transformer transformer) {
-        processAreaFormulas(transformer, null);
-    }
 }

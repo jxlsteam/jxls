@@ -1,9 +1,9 @@
 package org.jxls.transform.poi;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.jxls.builder.JxlsOutput;
 import org.jxls.builder.JxlsStreaming;
 
 public class JxlsPoi {
@@ -11,11 +11,10 @@ public class JxlsPoi {
     private JxlsPoi() {
     }
     
-    public static JxlsOutput fill(InputStream template, JxlsStreaming streaming, Map<String, Object> data) {
-        return JxlsPoiTemplateFillerBuilder.newInstance()
+    public static void fill(InputStream template, JxlsStreaming streaming, Map<String, Object> data, File outputFile) {
+        JxlsPoiTemplateFillerBuilder.newInstance()
                 .withStreaming(streaming)
                 .withTemplate(template)
-                .build()
-                .fill(data);
+                .buildAndFill(data, outputFile);
     }
 }

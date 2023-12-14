@@ -7,7 +7,9 @@ import static org.jxls.builder.JxlsStreaming.STREAMING_OFF;
 import static org.jxls.builder.JxlsStreaming.STREAMING_ON;
 import static org.jxls.builder.JxlsStreaming.streamingWithGivenSheets;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +17,10 @@ import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsTemplateFillException;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
+import org.jxls.util.CannotOpenWorkbookException;
 
 public class EachTest {
 
@@ -58,4 +62,20 @@ public class EachTest {
             assertNull(w.getCellValueAsString(7, 1)); // A7
         }
     }
+    
+	@Test(expected = CannotOpenWorkbookException.class)
+	public void testTemplateNotFound() {
+        JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(getClass().getResourceAsStream("nonsense"));
+	}
+
+	@Test(expected = JxlsTemplateFillException.class)
+	public void testOutputCannotBeWritten() {
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+
+        // Test
+        InputStream template = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx");
+        JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template).buildAndFill(data, new File(":/"/*error*/));
+	}
 }

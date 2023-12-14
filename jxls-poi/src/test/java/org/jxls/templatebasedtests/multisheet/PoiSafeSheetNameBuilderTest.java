@@ -81,7 +81,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
             @Override
             public Transformer checkTransformer(Transformer transformer) {
                 // strict non-silent mode for getting all errors
-                transformer.getTransformationConfig().setExpressionEvaluator(new JexlExpressionEvaluator(false, true));
+                transformer.getTransformationConfig().setExpressionEvaluatorFactory(x -> new JexlExpressionEvaluator(false, true));
                 
                 // throw exceptions instead of just logging them
                 transformer.setExceptionHandler(new PoiExceptionThrower());
