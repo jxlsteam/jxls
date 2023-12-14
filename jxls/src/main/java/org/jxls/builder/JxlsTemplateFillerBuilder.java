@@ -176,31 +176,23 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
 
-    public SELF withTemplate(URL template) {
+    public SELF withTemplate(URL template) throws IOException {
     	if (template == null) {
     		throw new IllegalArgumentException("template must not be null");
     	}
-        try {
-            return withTemplate(template.openStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return withTemplate(template.openStream());
     }
 
-    public SELF withTemplate(File template) {
+    public SELF withTemplate(File template) throws FileNotFoundException {
     	if (template == null) {
     		throw new IllegalArgumentException("template must not be null");
     	} else if (!template.isFile()) {
     		throw new JxlsException("Template file does not exist: " + template.getAbsolutePath());
     	}
-        try {
-            return withTemplate(new FileInputStream(template));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return withTemplate(new FileInputStream(template));
     }
 
-    public SELF withTemplate(String templateFileName) {
+    public SELF withTemplate(String templateFileName) throws FileNotFoundException {
     	if (templateFileName == null || templateFileName.isBlank()) {
     		throw new IllegalArgumentException("Please specify templateFileName");
     	}

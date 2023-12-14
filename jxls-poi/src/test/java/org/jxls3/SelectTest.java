@@ -3,7 +3,6 @@ package org.jxls3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.jxls.builder.JxlsStreaming.AUTO_DETECT;
-import static org.jxls.builder.JxlsStreaming.STREAMING_OFF;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class SelectTest {
 
     @Test
     public void standard() throws IOException {
-        check(STREAMING_OFF);
+        check(null);
     }
 
     @Test

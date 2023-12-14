@@ -54,4 +54,6 @@ public interface Area {
     Command getParentCommand();
     
     void setParentCommand(Command command);
+    
+    void clearCells();
 }

@@ -196,9 +196,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
         }
         if (clearTemplateCells) {
-            for (Area area : userAreas) {
-                ((XlsArea) area).clearCells();
-            }
+        	userAreas.forEach(area -> area.clearCells());
         }
         return userAreas;
     }

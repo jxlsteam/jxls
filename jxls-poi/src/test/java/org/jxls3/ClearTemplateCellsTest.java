@@ -14,15 +14,15 @@ public class ClearTemplateCellsTest {
 
 	@Test
 	public void unusedExpressionsStay() {
-		check(false, "${e.name}");
+		check(false, "${e.name}", "XX");
 	}
 
 	@Test
 	public void unusedExpressionsAreCleared() {
-		check(true, "");
+		check(true, "", "");
 	}
 
-	private void check(boolean clearTemplateCells, String expectation) {
+	private void check(boolean clearTemplateCells, String expectationCol1, String expectationCol4) {
 		// Prepare
 		Map<String,Object> data = new HashMap<>();
 		data.put("employees", new ArrayList<>());
@@ -34,7 +34,8 @@ public class ClearTemplateCellsTest {
 		// Verify
 		try (TestWorkbook w = tester.getWorkbook()) {
 			w.selectSheet(0);
-			Assert.assertEquals(expectation, w.getCellValueAsString(2, 1));
+			Assert.assertEquals(expectationCol1, w.getCellValueAsString(2, 1));
+			Assert.assertEquals(expectationCol4, w.getCellValueAsString(2, 4));
 		}
 	}
 }

@@ -487,6 +487,7 @@ public class XlsArea implements Area {
         }
     }
 
+    @Override
     public void clearCells() {
         if (cellsCleared) return;
         String sheetName = startCellRef.getSheetName();

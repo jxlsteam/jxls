@@ -40,14 +40,14 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
         this(silent, strict, JxlsJexlPermissions.UNRESTRICTED);
     }
     
-    public JexlExpressionEvaluator(final boolean silent, final boolean strict, final JxlsJexlPermissions permissions) {
+    public JexlExpressionEvaluator(boolean silent, boolean strict, JxlsJexlPermissions permissions) {
         this.silent = silent;
         this.strict = strict;
         this.permissions = permissions;
     }
 
-    public JexlExpressionEvaluator(boolean silent, boolean strict, String expression) {
-        this(silent, strict);
+    public JexlExpressionEvaluator(boolean silent, boolean strict, JxlsJexlPermissions permissions, String expression) {
+        this(silent, strict, permissions);
         jexlExpression = getJexlEngine().createExpression(expression);
     }
 
@@ -125,7 +125,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     /**
      * Clear expression cache for current thread
      */
-    public void clear() {
+    public static void clear() {
         expressionMapThreadLocal.get().clear();
     }
 }
