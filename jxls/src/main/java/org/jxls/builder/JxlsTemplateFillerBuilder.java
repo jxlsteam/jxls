@@ -35,8 +35,8 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected boolean recalculateFormulasBeforeSaving = true;
     /** old name: fullFormulaRecalculationOnOpening */
     protected boolean recalculateFormulasOnOpening = false;
-    protected boolean hideTemplateSheet = false;
-    protected boolean deleteTemplateSheet = false;
+    /** old names: deleteTemplateSheet, hideTemplateSheet */
+    protected KeepTemplateSheet keepTemplateSheet = KeepTemplateSheet.DELETE;
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
     protected boolean clearTemplateCells = true;
     private JxlsTransformerFactory transformerFactory;
@@ -58,7 +58,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
         		exceptionHandler, formulaProcessor, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                hideTemplateSheet, deleteTemplateSheet, areaBuilder, clearTemplateCells, transformerFactory, streaming, template);
+                keepTemplateSheet, areaBuilder, clearTemplateCells, transformerFactory, streaming, template);
     }
     
     /**
@@ -124,16 +124,16 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
 
-    public SELF withHideTemplateSheet(boolean hideTemplateSheet) {
-        this.hideTemplateSheet = hideTemplateSheet;
-        return (SELF) this;
-    }
-    
-    public SELF withDeleteTemplateSheet(boolean deleteTemplateSheet) {
-        this.deleteTemplateSheet = deleteTemplateSheet;
+    public SELF withKeepTemplateSheet(KeepTemplateSheet keepTemplateSheet) {
+        this.keepTemplateSheet = keepTemplateSheet;
         return (SELF) this;
     }
 
+    public SELF withHideTemplateSheet() {
+        keepTemplateSheet = KeepTemplateSheet.HIDE;
+        return (SELF) this;
+    }
+    
     public SELF withAreaBuilder(AreaBuilder areaBuilder) {
     	if (areaBuilder == null) {
     		throw new IllegalArgumentException("areaBuilder must not be null");

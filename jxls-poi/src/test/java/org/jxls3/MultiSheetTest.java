@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
+import org.jxls.builder.KeepTemplateSheet;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
@@ -22,7 +23,7 @@ public class MultiSheetTest {
 	public void multisheet() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance());
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withKeepTemplateSheet(KeepTemplateSheet.KEEP));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -46,7 +47,7 @@ public class MultiSheetTest {
 	public void deleteTemplateSheet() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withDeleteTemplateSheet(true));
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance());
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -67,7 +68,7 @@ public class MultiSheetTest {
 	public void hideTemplateSheet() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withHideTemplateSheet(true));
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withHideTemplateSheet());
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -79,25 +80,6 @@ public class MultiSheetTest {
 				Assert.fail("Sheet 'template' has not been hidden!");
 			} catch (IllegalArgumentException expected) {
 				assertTrue(expected.getMessage().contains("visible"));
-			}
-        }
-    }
-
-	@Test
-	public void hideAndDeleteTemplateSheet() { // Makes no sense, but we test it.
-        // Test
-        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withHideTemplateSheet(true).withDeleteTemplateSheet(true));
-        
-        // Verify
-        try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
-            try {
-            	// check if sheet "template" has been deleted
-				w.selectSheet("template");
-				Assert.fail("Sheet 'template' has not been deleted!");
-			} catch (IllegalArgumentException expected) {
 			}
         }
     }

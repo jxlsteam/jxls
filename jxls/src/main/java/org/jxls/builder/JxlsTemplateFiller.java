@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
@@ -25,8 +26,7 @@ public class JxlsTemplateFiller {
     protected final FormulaProcessor formulaProcessor;
     protected final boolean recalculateFormulasBeforeSaving;
     protected final boolean recalculateFormulasOnOpening;
-    protected final boolean hideTemplateSheet;
-    protected final boolean deleteTemplateSheet;
+    protected final KeepTemplateSheet keepTemplateSheet;
     protected final AreaBuilder areaBuilder;
     protected final boolean clearTemplateCells;
     protected final JxlsTransformerFactory transformerFactory;
@@ -38,7 +38,7 @@ public class JxlsTemplateFiller {
     protected JxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
             String expressionNotationBegin, String expressionNotationEnd, ExceptionHandler exceptionHandler, //
             FormulaProcessor formulaProcessor, boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
-            boolean hideTemplateSheet, boolean deleteTemplateSheet, //
+            KeepTemplateSheet keepTemplateSheet, //
             AreaBuilder areaBuilder, boolean clearTemplateCells, JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, //
             InputStream template) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
@@ -48,8 +48,7 @@ public class JxlsTemplateFiller {
         this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
         this.recalculateFormulasOnOpening = recalculateFormulasOnOpening;
         this.formulaProcessor = formulaProcessor;
-        this.hideTemplateSheet = hideTemplateSheet;
-        this.deleteTemplateSheet = deleteTemplateSheet;
+        this.keepTemplateSheet = keepTemplateSheet;
         this.areaBuilder = areaBuilder;
         this.clearTemplateCells = clearTemplateCells;
         this.transformerFactory = transformerFactory;
@@ -101,17 +100,18 @@ public class JxlsTemplateFiller {
     protected void preWrite() {
         transformer.setEvaluateFormulas(recalculateFormulasBeforeSaving);
         transformer.setFullFormulaRecalculationOnOpening(recalculateFormulasOnOpening);
-        if (deleteTemplateSheet) {
-            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(areas);
-            for (String sheetName : sheetNameTemplate) {
-                transformer.deleteSheet(sheetName);
-            }
-        } else if (hideTemplateSheet) {
-            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(areas);
-            for (String sheetName : sheetNameTemplate) {
-                transformer.setHidden(sheetName, true);
-            }
-        }
+		Consumer<String> action;
+		switch (keepTemplateSheet) {
+		case DELETE:
+			action = sheetName -> transformer.deleteSheet(sheetName);
+			break;
+		case HIDE:
+			action = sheetName -> transformer.setHidden(sheetName, true);
+			break;
+		default:
+			return;
+		}
+		getSheetsNameOfMultiSheetTemplate(areas).stream().forEach(action);
     }
 
     protected void write() throws IOException {
