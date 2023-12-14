@@ -539,6 +539,7 @@ public class PoiTransformer extends AbstractTransformer {
                 }
             }
         }
+        commentDataCells.sort((a, b) -> a.getCol() - b.getCol());
         return commentDataCells;
     }
 
