@@ -57,14 +57,14 @@ public class PreWriteTest {
 	private void verify0(Jxls3Tester tester) {
 		try (TestWorkbook w = tester.getWorkbook()) {
 	        w.selectSheet(0);
-	        Assert.assertEquals(0d, w.getCellValueAsDouble(3, 2), 0.005d);
+	        Assert.assertEquals(Double.valueOf(0d), w.getCellValueAsDouble(3, 2), 0.005d);
 	    }
 	}
 
 	private void verify115_9(Jxls3Tester tester) {
 		try (TestWorkbook w = tester.getWorkbook()) {
 	        w.selectSheet(0);
-	        Assert.assertEquals(115.9, w.getCellValueAsDouble(3, 2), 0.005d);
+	        Assert.assertEquals(Double.valueOf(115.9), w.getCellValueAsDouble(3, 2), 0.005d);
 	    }
 	}
 }

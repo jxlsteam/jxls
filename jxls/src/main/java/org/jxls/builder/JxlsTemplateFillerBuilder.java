@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.common.ExceptionHandler;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
@@ -27,12 +28,13 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public static final String DEFAULT_EXPRESSION_END = "}";
     protected String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
     protected String expressionNotationEnd = DEFAULT_EXPRESSION_END;
+    protected ExceptionHandler exceptionHandler;
+    /** null: no formula processing */
+    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
     /** old name: evaluateFormulas */
     protected boolean recalculateFormulasBeforeSaving = true;
     /** old name: fullFormulaRecalculationOnOpening */
     protected boolean recalculateFormulasOnOpening = false;
-    /** null: no formula processing */
-    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
     protected boolean hideTemplateSheet = false;
     protected boolean deleteTemplateSheet = false;
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
@@ -55,7 +57,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     		throw new JxlsException("Please call withTemplate()");
     	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
-                recalculateFormulasBeforeSaving, recalculateFormulasOnOpening, formulaProcessor,
+        		exceptionHandler, formulaProcessor, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
                 hideTemplateSheet, deleteTemplateSheet, areaBuilder, clearTemplateCells, transformerFactory, streaming, template);
     }
     
@@ -89,12 +91,30 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
 
     public SELF withExpressionNotation(String begin, String end) {
-        expressionNotationBegin = begin == null ? DEFAULT_EXPRESSION_BEGIN : begin;
-        expressionNotationEnd = end == null ? DEFAULT_EXPRESSION_END : end;
-        return (SELF) this;
+	    expressionNotationBegin = begin == null ? DEFAULT_EXPRESSION_BEGIN : begin;
+	    expressionNotationEnd = end == null ? DEFAULT_EXPRESSION_END : end;
+	    return (SELF) this;
+	}
+
+    public SELF withExceptionHandler(ExceptionHandler exceptionHandler) {
+    	this.exceptionHandler = exceptionHandler;
+    	return (SELF) this;
     }
 
-    public SELF withRecalculateFormulasBeforeSaving(boolean recalculateFormulasBeforeSaving) {
+	public SELF withFormulaProcessor(FormulaProcessor formulaProcessor) {
+	    this.formulaProcessor = formulaProcessor; // can be null
+	    return (SELF) this;
+	}
+
+	public FormulaProcessor getFormulaProcessor() {
+	    return formulaProcessor;
+	}
+
+	public SELF withFastFormulaProcessor() {
+	    return withFormulaProcessor(new FastFormulaProcessor());
+	}
+
+	public SELF withRecalculateFormulasBeforeSaving(boolean recalculateFormulasBeforeSaving) {
         this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
         return (SELF) this;
     }
@@ -102,19 +122,6 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public SELF withRecalculateFormulasOnOpening(boolean recalculateFormulasOnOpening) {
         this.recalculateFormulasOnOpening = recalculateFormulasOnOpening;
         return (SELF) this;
-    }
-
-    public SELF withFormulaProcessor(FormulaProcessor formulaProcessor) {
-        this.formulaProcessor = formulaProcessor; // can be null
-        return (SELF) this;
-    }
-    
-    public FormulaProcessor getFormulaProcessor() {
-        return formulaProcessor;
-    }
-
-    public SELF withFastFormulaProcessor() {
-        return withFormulaProcessor(new FastFormulaProcessor());
     }
 
     public SELF withHideTemplateSheet(boolean hideTemplateSheet) {

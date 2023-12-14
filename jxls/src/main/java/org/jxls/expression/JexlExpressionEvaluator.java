@@ -46,6 +46,11 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
         this.permissions = permissions;
     }
 
+    public JexlExpressionEvaluator(boolean silent, boolean strict, String expression) {
+        this(silent, strict);
+        jexlExpression = getJexlEngine().createExpression(expression);
+    }
+
     public JexlExpressionEvaluator(String expression) {
         this();
         jexlExpression = getJexlEngine().createExpression(expression);
