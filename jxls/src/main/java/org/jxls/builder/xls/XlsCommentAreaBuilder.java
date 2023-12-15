@@ -17,8 +17,6 @@ import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.command.GridCommand;
 import org.jxls.command.IfCommand;
-import org.jxls.command.ImageCommand;
-import org.jxls.command.MergeCellsCommand;
 import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
@@ -127,10 +125,8 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put(EachCommand.COMMAND_NAME, EachCommand.class);
         commandMap.put(IfCommand.COMMAND_NAME, IfCommand.class);
         commandMap.put(AreaCommand.COMMAND_NAME, AreaCommand.class);
-        commandMap.put(ImageCommand.COMMAND_NAME, ImageCommand.class);
         commandMap.put(GridCommand.COMMAND_NAME, GridCommand.class);
         commandMap.put(UpdateCellCommand.COMMAND_NAME, UpdateCellCommand.class);
-        commandMap.put(MergeCellsCommand.COMMAND_NAME, MergeCellsCommand.class);
     }
 
     public static void addCommandMapping(String commandName, Class<? extends Command> clazz) {
