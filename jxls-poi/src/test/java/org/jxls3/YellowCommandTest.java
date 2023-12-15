@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
@@ -59,8 +61,12 @@ public class YellowCommandTest {
 		public Size applyAt(CellRef cellRef, Context context) {
 	        Boolean conditionResult = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), condition, context);
 	        if (conditionResult.booleanValue()) {
-	        	System.out.println("make cell yellow: " + cellRef);
-	        	((PoiTransformer) getTransformer()).editCell(cellRef, cell -> cell.setCellValue("yellow"));
+	    		Row row = ((PoiTransformer) getTransformer()).getWorkbook().getSheet(cellRef.getSheetName()).getRow(cellRef.getRow());
+	    		Cell cell = row.getCell(cellRef.getCol());
+	    		if (cell == null) {
+	    			cell = row.createCell(cellRef.getCol());
+	    		}
+	    		cell.setCellValue("yellow");
 	        }
 			return new Size(1, 1);
 		}
