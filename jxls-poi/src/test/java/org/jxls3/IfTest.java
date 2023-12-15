@@ -7,14 +7,24 @@ import static org.jxls.builder.JxlsStreaming.STREAMING_OFF;
 import static org.jxls.builder.JxlsStreaming.STREAMING_ON;
 import static org.jxls.builder.JxlsStreaming.streamingWithGivenSheets;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
+import org.jxls.area.Area;
+import org.jxls.area.XlsArea;
+import org.jxls.builder.JxlsOutputFile;
 import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsTemplateFiller;
+import org.jxls.command.EachCommand;
+import org.jxls.command.IfCommand;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
@@ -41,13 +51,9 @@ public class IfTest {
     }
     
     private void check(JxlsStreaming streaming) {
-        // Prepare
-        Map<String,Object> data = new HashMap<>();
-        data.put("employees", Employee.generateSampleEmployeeData());
-
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming));
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(streaming));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -58,4 +64,38 @@ public class IfTest {
             assertNull(w.getCellValueAsString(7, 1)); // A7
         }
     }
+    
+    @Test
+    public void noComments() {
+        // Test
+        InputStream template = getClass().getResourceAsStream("IfTest_noComments.xlsx");
+        File out = new File("target/IfTest_noComments_output.xlsx");
+        out.getParentFile().mkdirs();
+        JxlsTemplateFiller builder = JxlsPoiTemplateFillerBuilder.newInstance().withAreaBuilder((transformer, ctc) -> {
+        	List<Area> areas = new ArrayList<>();	
+        	XlsArea area = new XlsArea("Employees!A1:C2", transformer);
+        	areas.add(area);
+        	XlsArea eachArea = new XlsArea("Employees!A2:C2", transformer);
+        	area.addCommand("A2:C2", new EachCommand("e", "employees", eachArea));
+        	eachArea.addCommand("A2:C2", new IfCommand("e.payment<2000", new XlsArea("Employees!A2:C2", transformer), new XlsArea("Employees!A3:C3", transformer)));
+        	return areas;
+        }).withTemplate(template).build();
+		builder.fill(data(), new JxlsOutputFile(out));
+
+        // Verify
+        try (TestWorkbook w = new TestWorkbook(out)) {
+            w.selectSheet("Employees");
+            assertEquals("Elsa", w.getCellValueAsString(2, 1)); 
+            assertEquals("Oleg", w.getCellValueAsString(3, 1)); 
+            assertEquals("Neil", w.getCellValueAsString(4, 1)); 
+            assertEquals("Maria", w.getCellValueAsString(5, 1)); 
+            assertEquals("John", w.getCellValueAsString(6, 1)); 
+        }
+    }
+
+	private Map<String, Object> data() {
+		Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+		return data;
+	}
 }
