@@ -14,12 +14,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jxls.area.XlsArea;
+import org.jxls.builder.xls.JxlsCommentException;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 import org.jxls.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents an Excel cell data holder and cell value evaluator
@@ -54,7 +53,6 @@ public class CellData {
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     private static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
     private static final String DEFAULT_VALUE = "defaultValue";
-    private static Logger logger = LoggerFactory.getLogger(CellData.class);
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, LOCAL_DATE, LOCAL_TIME, LOCAL_DATETIME, ZONED_DATETIME, INSTANT, FORMULA, BLANK, ERROR
@@ -346,10 +344,8 @@ public class CellData {
     protected void processJxlsParams(String cellComment) {
         int nameEndIndex = cellComment.indexOf(ATTR_PREFIX, JX_PARAMS_PREFIX.length());
         if (nameEndIndex < 0) {
-            String errMsg = "Failed to parse jxls params [" + cellComment + "] at " + cellRef.getCellName()
-                    + ". Expected '" + ATTR_PREFIX + "' symbol.";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
+            throw new JxlsCommentException("Failed to parse jxls params '" + cellComment + "' at " + cellRef.getCellName()
+                    + ". Expected '" + ATTR_PREFIX + "' symbol.");
         }
         attrMap = buildAttrMap(cellComment, nameEndIndex);
         if (attrMap.containsKey(FORMULA_STRATEGY_PARAM)) {
@@ -363,10 +359,8 @@ public class CellData {
     private Map<String, String> buildAttrMap(String paramsLine, int nameEndIndex) {
         int paramsEndIndex = paramsLine.lastIndexOf(ATTR_SUFFIX);
         if (paramsEndIndex < 0) {
-            String errMsg = "Failed to parse params line [" + paramsLine + "] at " + cellRef.getCellName()
-                    + ". Expected '" + ATTR_SUFFIX + "' symbol.";
-            logger.error(errMsg);
-            throw new IllegalArgumentException(errMsg);
+            throw new JxlsCommentException("Failed to parse params line '" + paramsLine + "' at " + cellRef.getCellName()
+                    + ". Expected '" + ATTR_SUFFIX + "' symbol.");
         }
         String attrString = paramsLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
         return parseCommandAttributes(attrString);

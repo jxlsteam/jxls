@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * Use: For every Excel file put a new class instance with name SafeSheetNameBuilder.CONTEXT_VAR_NAME into the Context.
  */
 public class PoiSafeSheetNameBuilder implements SafeSheetNameBuilder {
-    private static Logger logger = LoggerFactory.getLogger(PoiSafeSheetNameBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoiSafeSheetNameBuilder.class);
     private final Set<String> usedSheetNames = new HashSet<>();
     
     @Override

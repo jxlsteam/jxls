@@ -14,8 +14,8 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactory;
+import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -26,8 +26,7 @@ import org.jxls.transform.Transformer;
  * Helper class to simplify JXLS usage
  */
 public class JxlsHelper {
-    private static final ServiceFactory SERVICE_FACTORY = ServiceFactory.DEFAULT.createService(ServiceFactory.class, ServiceFactory.DEFAULT);
-    private static final JxlsConfigProvider CONFIG_PROVIDER = loadService(JxlsConfigProvider.class);
+    private static final ExpressionEvaluatorFactory INSTANCE = new ExpressionEvaluatorFactoryJexlImpl();
     private boolean hideTemplateSheet = false;
     private boolean deleteTemplateSheet = true;
     private boolean processFormulas = true;
@@ -50,11 +49,6 @@ public class JxlsHelper {
      */
     public static JxlsHelper getInstance() {
         return new JxlsHelper();
-    }
-
-    private static <T> T loadService(Class<T> interfaceClass) {
-        final T ret = SERVICE_FACTORY.createService(interfaceClass, null);
-        return ret;
     }
 
     /**
@@ -115,14 +109,6 @@ public class JxlsHelper {
     public JxlsHelper setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
         this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
         return this;
-    }
-
-    private static final class ExpressionEvaluatorFactoryHolder {
-        private static final ExpressionEvaluatorFactory INSTANCE;
-
-        static {
-            INSTANCE = loadService(ExpressionEvaluatorFactory.class);
-        }
     }
 
     public AreaBuilder getAreaBuilder() {
@@ -293,32 +279,10 @@ public class JxlsHelper {
     }
 
     /**
-     * Returns the configuration property value
-     *
-     * @param key property key
-     * @param defaultValue default value to use if undefined
-     * @return property value or the passed default value if the property not found
-     */
-    public static String getProperty(final String key, final String defaultValue) {
-        return CONFIG_PROVIDER.getProperty(key, defaultValue);
-    }
-
-    /**
      * @return current {@link ExpressionEvaluatorFactory} implementation
      */
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
-        return ExpressionEvaluatorFactoryHolder.INSTANCE;
-    }
-
-    /**
-     * Creates {@link ExpressionEvaluator} instance for evaluation of the given expression
-     *
-     * @param expression expression to evaluate
-     * @return {@link ExpressionEvaluator} instance for evaluation the passed expression
-     * @deprecated Will be removed. Use TransformationConfig.getExpressionEvaluator(expression) instead.
-     */
-    public ExpressionEvaluator createExpressionEvaluator(final String expression) {
-        return ExpressionEvaluatorFactoryHolder.INSTANCE.createExpressionEvaluator(expression);
+        return INSTANCE;
     }
 
     private Area setFormulaProcessor(Area xlsArea) {

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class XlsArea implements Area {
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
-    private static Logger logger = LoggerFactory.getLogger(XlsArea.class);
+    private static final Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
     private List<CommandData> commandDataList = new ArrayList<CommandData>();
     private Transformer transformer;

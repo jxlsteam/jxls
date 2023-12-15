@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * because it is much faster although may not provide the correct results for more complex cases.</p>
  */
 public class StandardFormulaProcessor extends AbstractFormulaProcessor {
-    private static Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
     // TODO method too long

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class Util {
-    private static Logger logger = LoggerFactory.getLogger(Util.class);
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
     public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
@@ -349,7 +349,7 @@ public class Util {
             if (ignoreNonExisting) {
                 logger.info(msg, e);
             } else {
-                throw new IllegalArgumentException(e);
+                throw new JxlsPropertyException(msg, true, e);
             }
         }
     }
@@ -386,7 +386,7 @@ public class Util {
                 logger.info(msg, e);
                 return null;
             } else {
-                throw new IllegalArgumentException(e);
+                throw new JxlsPropertyException(msg, false, e);
             }
         }
     }

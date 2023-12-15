@@ -19,7 +19,7 @@ public class TransformerFactory {
     public static final String INIT_METHOD = "createTransformer";
     public static final String TRANSFORMER_SYSTEM_PROPERTY = "jxlstransformer";
     public static final String POI_TRANSFORMER = "poi";
-    private static Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
 
     /**
      * Creates a transformer initialized for reading a template from an {@link InputStream} and writing output to {@link OutputStream}
@@ -34,10 +34,9 @@ public class TransformerFactory {
     public static Transformer createTransformer(InputStream inputStream, OutputStream outputStream) {
         Class<?> transformer = getTransformerClass();
         if (transformer == null) {
-            logger.error("Cannot load any Transformer class. Please make sure you have necessary libraries in CLASSPATH.");
-            return null;
+            throw new JxlsException("Can not load Transformer class. Please make sure you have necessary libraries in CLASSPATH.");
         }
-        logger.debug("Transformer class is " + transformer.getName());
+        logger.debug("Transformer class is {}", transformer.getName());
         try {
             Method initMethod = transformer.getMethod(INIT_METHOD, InputStream.class, OutputStream.class);
             return (Transformer) initMethod.invoke(null, inputStream, outputStream);
@@ -52,22 +51,6 @@ public class TransformerFactory {
             throw new JxlsException("Method " + INIT_METHOD + " of " + transformer.getName() + " is inaccessible", e);
         } catch (RuntimeException e) {
             throw new JxlsException("Failed to execute method " + INIT_METHOD + " of " + transformer.getName() + "\n" + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * @deprecated Use {@link #getTransformerClassName()} method instead
-     * @return a name for the {@link Transformer} which is loaded by this factory
-     */
-    public static String getTransformerName() {
-        Class<?> transformerClass = getTransformerClass();
-        if (transformerClass == null) {
-            return null;
-        }
-        if (POI_CLASS_NAME.equalsIgnoreCase(transformerClass.getName())) {
-            return POI_TRANSFORMER;
-        }else{
-            return transformerClass.getName();
         }
     }
 
@@ -90,11 +73,10 @@ public class TransformerFactory {
 
     private static Class<?> loadTransformerByClass(String transformerClassName) {
         try {
-            logger.info("Loading transformer by class {}", transformerClassName);
+            logger.debug("Loading transformer by class {}", transformerClassName);
             return Class.forName(transformerClassName);
         } catch (Exception e) {
-            logger.error("Failed to load transformer class", e);
-            throw new JxlsException("Failed to load transformer class " + transformerClassName, e);
+            throw new JxlsException("Failed to load Transformer class: " + transformerClassName, e);
         }
     }
 

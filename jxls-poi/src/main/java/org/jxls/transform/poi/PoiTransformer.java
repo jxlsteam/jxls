@@ -45,8 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PoiTransformer extends AbstractTransformer {
     public static final String POI_CONTEXT_KEY = "util";
-
-    private static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
 
     private Workbook workbook;
     private OutputStream outputStream;
@@ -214,7 +213,7 @@ public class PoiTransformer extends AbstractTransformer {
         CellData cellData = getCellData(srcCellRef);
         if (cellData != null) {
             if (targetCellRef == null || targetCellRef.getSheetName() == null) {
-                logger.info("Target cellRef is null or has empty sheet name, cellRef=" + targetCellRef);
+                logger.info("targetCellRef is null or has empty sheet name, cellRef={}", targetCellRef);
                 return null; // do not transform
             }
         }
@@ -236,7 +235,7 @@ public class PoiTransformer extends AbstractTransformer {
         }
         try {
             // conditional formatting
-            destCell.setBlank();  // Modified as setCellType is deprecated
+            destCell.setBlank();
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
@@ -376,7 +375,7 @@ public class PoiTransformer extends AbstractTransformer {
             }
             return;
         }
-        cell.setBlank();   // Modified as setCellType is deprecated
+        cell.setBlank();
         cell.setCellStyle(workbook.getCellStyleAt(0));
         if (cell.getCellComment() != null) {
             cell.removeCellComment();
@@ -489,7 +488,7 @@ public class PoiTransformer extends AbstractTransformer {
             workbook.removeSheetAt(sheetIndex);
             return true;
         } else {
-            logger.warn("Failed to find '{}' worksheet in a sheet map. Skipping the deletion.", sheetName);
+            logger.warn("Failed to find sheet '{}' in sheet map. Skipping the deletion.", sheetName);
             return false;
         }
     }

@@ -24,8 +24,6 @@ import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.LiteralsExtractor;
 import org.jxls.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Builds {@link org.jxls.area.XlsArea} from Excel comments in the Excel template
@@ -85,16 +83,12 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class XlsCommentAreaBuilder implements AreaBuilder {
-    private static Logger logger = LoggerFactory.getLogger(XlsCommentAreaBuilder.class);
-
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
     public static final String LINE_SEPARATOR = "__LINE_SEPARATOR__";
-    /**
-     * Feature toggle for the multi-line SQL feature (#79). By default turned off for 2.10.0 (incubating). By default turned on starting with version 2.11.0.
-     */
-    public static boolean MULTI_LINE_SQL_FEATURE = false;
+    /** Feature toggle for the multi-line SQL feature (#79) */
+    public static boolean MULTI_LINE_SQL_FEATURE = true;
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some
@@ -117,7 +111,6 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
-    
     private static Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
 
@@ -281,9 +274,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private Map<String, String> buildAttrMap(String commandLine, int nameEndIndex) {
         int paramsEndIndex = commandLine.lastIndexOf(ATTR_SUFFIX);
         if (paramsEndIndex < 0) {
-            String errMsg = "Failed to parse command line [" + commandLine + "]. Expected '" + ATTR_SUFFIX + "' symbol.";
-            logger.error(errMsg);
-            throw new IllegalArgumentException(errMsg);
+            throw new JxlsCommentException("Failed to parse command line '" + commandLine + "'. Expected '" + ATTR_SUFFIX + "' symbol.");
         }
         String attrString = commandLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
         return parseCommandAttributes(attrString);
@@ -292,8 +283,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
         Class<? extends Command> clazz = commandMap.get(commandName);
         if (clazz == null) {
-            logger.warn("Failed to find Command class mapped to command name '" + commandName + "'");
-            return null;
+            throw new JxlsCommentException("Failed to find Command class mapped to command name '" + commandName + "'");
         }
         try {
             Command command = clazz.getDeclaredConstructor().newInstance();
@@ -304,19 +294,18 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
             String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);
             if (lastCellRef == null) {
-                logger.warn("Failed to find last cell ref attribute '" + LAST_CELL_ATTR_NAME + "' for command '"
+                throw new JxlsCommentException("Failed to find attribute '" + LAST_CELL_ATTR_NAME + "' for command '"
                         + commandName + "' in cell " + cellData.getCellRef());
-                return null;
             }
             CellRef lastCell = new CellRef(lastCellRef);
             if (lastCell.getSheetName() == null || lastCell.getSheetName().trim().length() == 0) {
                 lastCell.setSheetName(cellData.getSheetName());
             }
             return new CommandData(new AreaRef(cellData.getCellRef(), lastCell), command);
-        } catch (Exception e) {
-            logger.warn("Failed to instantiate command class '" + clazz.getName() + "' mapped to command name '" + commandName + "'", e);
-            return null;
-        }
+        } catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
+            throw new JxlsCommentException("Failed to instantiate command class '" + clazz.getName()
+            	+ "' mapped to command name '" + commandName + "'", e);
+		}
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {

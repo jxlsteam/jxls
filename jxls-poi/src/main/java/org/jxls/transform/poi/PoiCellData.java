@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class PoiCellData extends org.jxls.common.CellData {
-    private static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoiCellData.class);
 
     private PoiRowData poiRowData;
     private RichTextString richTextString;
@@ -225,7 +225,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cell.setCellErrorValue((Byte) evaluationResult);
                 break;
             case BLANK:
-                cell.setBlank(); // Modified as setCellType is deprecated
+                cell.setBlank();
                 break;
         }
     }

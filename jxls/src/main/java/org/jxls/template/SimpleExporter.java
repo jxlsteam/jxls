@@ -16,15 +16,12 @@ import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for grid export
  */
 public class SimpleExporter {
     public static final String GRID_TEMPLATE_XLS = "grid_template.xls";
-    static Logger logger = LoggerFactory.getLogger(SimpleExporter.class);
 
     private byte[] templateBytes;
 
