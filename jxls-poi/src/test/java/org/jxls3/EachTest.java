@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -78,4 +79,54 @@ public class EachTest {
         InputStream template = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx");
         JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template).buildAndFill(data, new File(":/"/*error*/));
 	}
+
+	/** orderBy="e.name, e.payment DESC" */
+	@Test
+    public void orderBy() throws IOException {
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        List<Employee> employees = Employee.generateSampleEmployeeData().subList(0, 4);
+        employees.get(0).setName("i");
+        employees.get(1).setName("Z");
+        employees.get(2).setName("A");
+        employees.get(3).setName("Z");
+		data.put("employees", employees);
+
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "orderBy");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            assertEquals("A", w.getCellValueAsString(2, 1)); 
+            assertEquals("Z", w.getCellValueAsString(3, 1)); 
+            assertEquals("Z", w.getCellValueAsString(4, 1)); 
+            assertEquals(1700d, w.getCellValueAsDouble(4, 3), 0.005d); 
+            assertEquals("i", w.getCellValueAsString(5, 1)); 
+        }
+    }
+
+	@Test
+    public void orderByIgnoreCase() throws IOException {
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        List<Employee> employees = Employee.generateSampleEmployeeData().subList(0, 3);
+        employees.get(0).setName("i");
+        employees.get(1).setName("Z");
+        employees.get(2).setName("A");
+		data.put("employees", employees);
+
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "orderByIgnoreCase");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            assertEquals("A", w.getCellValueAsString(2, 1)); 
+            assertEquals("i", w.getCellValueAsString(3, 1)); 
+            assertEquals("Z", w.getCellValueAsString(4, 1)); 
+        }
+    }
 }
