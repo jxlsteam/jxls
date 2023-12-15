@@ -39,7 +39,12 @@ public class TransformerDelegator implements Transformer {
         transformer.transform(srcCellRef, targetCellRef, context, updateRowHeight);
     }
 
-    protected void beforeWrite() {
+    @Override
+	public void writeButNotCloseStream() throws IOException {
+	    transformer.writeButNotCloseStream();
+	}
+
+	protected void beforeWrite() {
     }
     
     @Override
@@ -114,11 +119,6 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void writeButNotCloseStream() throws IOException {
-        transformer.writeButNotCloseStream();
-    }
-
-    @Override
     public boolean isEvaluateFormulas() {
         return transformer.isEvaluateFormulas();
     }
@@ -152,4 +152,14 @@ public class TransformerDelegator implements Transformer {
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
         transformer.setExceptionHandler(exceptionHandler);
     }
+
+	@Override
+	public void setIgnoreColumnProps(boolean ignoreColumnProps) {
+		transformer.setIgnoreColumnProps(ignoreColumnProps);
+	}
+
+	@Override
+	public void setIgnoreRowProps(boolean ignoreRowProps) {
+		transformer.setIgnoreRowProps(ignoreRowProps);
+	}
 }

@@ -139,6 +139,10 @@ public class TestWorkbook implements AutoCloseable {
     public short getRowHeight(int row) {
         return sheet.getRow(row - 1).getHeight();
     }
+    
+    public int getColumnWidth(int column) {
+    	return sheet.getColumnWidth(column - 1);
+    }
 
     public int getConditionalFormattingSize() {
         int conditionalFormattingCount = 0;

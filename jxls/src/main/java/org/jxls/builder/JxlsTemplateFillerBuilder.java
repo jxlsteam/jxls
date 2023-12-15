@@ -33,6 +33,8 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected ExceptionHandler exceptionHandler;
     /** null: no formula processing */
     private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
+    protected boolean ignoreColumnProps = false;
+    protected boolean ignoreRowProps = false;
     /** old name: evaluateFormulas */
     protected boolean recalculateFormulasBeforeSaving = true;
     /** old name: fullFormulaRecalculationOnOpening */
@@ -60,7 +62,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     		throw new JxlsException("Please call withTemplate()");
     	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
-        		exceptionHandler, formulaProcessor, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+        		exceptionHandler, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
                 keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
     }
     
@@ -115,6 +117,16 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 
 	public SELF withFastFormulaProcessor() {
 	    return withFormulaProcessor(new FastFormulaProcessor());
+	}
+	
+	public SELF withIgnoreColumnProps(boolean ignoreColumnProps) {
+		this.ignoreColumnProps = ignoreColumnProps;
+		return (SELF) this;
+	}
+	
+	public SELF withIgnoreRowProps(boolean ignoreRowProps) {
+		this.ignoreRowProps = ignoreRowProps;
+		return (SELF) this;
 	}
 
 	public SELF withRecalculateFormulasBeforeSaving(boolean recalculateFormulasBeforeSaving) {

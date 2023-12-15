@@ -129,4 +129,8 @@ public interface Transformer {
      * @param exceptionHandler not null
      */
     void setExceptionHandler(ExceptionHandler exceptionHandler);
+    
+    void setIgnoreColumnProps(boolean ignoreColumnProps);
+    
+    void setIgnoreRowProps(boolean ignoreRowProps);
 }

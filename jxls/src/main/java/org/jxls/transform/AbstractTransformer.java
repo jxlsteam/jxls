@@ -74,6 +74,7 @@ public abstract class AbstractTransformer implements Transformer {
         return ignoreColumnProps;
     }
 
+    @Override
     public void setIgnoreColumnProps(boolean ignoreColumnProps) {
         this.ignoreColumnProps = ignoreColumnProps;
     }
@@ -82,6 +83,7 @@ public abstract class AbstractTransformer implements Transformer {
         return ignoreRowProps;
     }
 
+    @Override
     public void setIgnoreRowProps(boolean ignoreRowProps) {
         this.ignoreRowProps = ignoreRowProps;
     }

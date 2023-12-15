@@ -27,6 +27,8 @@ public class JxlsTemplateFiller {
     protected final String expressionNotationEnd;
     protected final ExceptionHandler exceptionHandler;
     protected final FormulaProcessor formulaProcessor;
+    protected final boolean ignoreColumnProps;
+    protected final boolean ignoreRowProps;
     protected final boolean recalculateFormulasBeforeSaving;
     protected final boolean recalculateFormulasOnOpening;
     protected final KeepTemplateSheet keepTemplateSheet;
@@ -42,7 +44,8 @@ public class JxlsTemplateFiller {
 
     protected JxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
             String expressionNotationBegin, String expressionNotationEnd, ExceptionHandler exceptionHandler, //
-            FormulaProcessor formulaProcessor, boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
+            FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
+            boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
             KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder, Map<String, Class<? extends Command>> commands,
             boolean clearTemplateCells, JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, //
             InputStream template) {
@@ -53,6 +56,8 @@ public class JxlsTemplateFiller {
         this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
         this.recalculateFormulasOnOpening = recalculateFormulasOnOpening;
         this.formulaProcessor = formulaProcessor;
+        this.ignoreColumnProps = ignoreColumProps;
+        this.ignoreRowProps = ignoreRowProps;
         this.keepTemplateSheet = keepTemplateSheet;
         this.areaBuilder = areaBuilder;
         this.commands = commands;
@@ -102,6 +107,8 @@ public class JxlsTemplateFiller {
     }
 
     protected void configureTransformer() {
+    	transformer.setIgnoreColumnProps(ignoreColumnProps);
+    	transformer.setIgnoreRowProps(ignoreRowProps);
 		if (exceptionHandler != null) {
 			transformer.setExceptionHandler(exceptionHandler);
 		}
