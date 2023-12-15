@@ -82,7 +82,7 @@ public class JxlsTemplateFiller {
 	private void installCommands() {
 		commands.forEach((k, v) -> {
 			rem.put(k, XlsCommentAreaBuilder.getCommandClass(k));
-			XlsCommentAreaBuilder.addCommandMapping(k, v);
+			XlsCommentAreaBuilder.addCommandMapping(k, v); // for the future we don't want it static
 		});
 	}
 

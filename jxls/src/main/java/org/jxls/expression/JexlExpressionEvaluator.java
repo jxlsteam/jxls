@@ -127,5 +127,6 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
      */
     public static void clear() {
         expressionMapThreadLocal.get().clear();
+        jexlThreadLocal.get().clear();
     }
 }

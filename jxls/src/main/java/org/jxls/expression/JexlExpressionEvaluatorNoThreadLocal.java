@@ -38,6 +38,11 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
         this.jexl = new JexlBuilder().silent(silent).strict(strict).permissions(jexlPermissions).create();
     }
 
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JxlsJexlPermissions permissions, String expression) {
+        this(silent, strict, permissions.getJexlPermissions());
+        jexlExpression = jexl.createExpression(expression);
+    }
+
     public JexlExpressionEvaluatorNoThreadLocal(String expression) {
         this();
         jexlExpression = jexl.createExpression(expression);
@@ -98,7 +103,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     /**
      * Clear expression cache
      */
-    public void clear() {
+    public static void clear() {
         expressionMap.clear();
     }
 }

@@ -159,8 +159,8 @@ class EachCommandTest extends Specification{
             eachCommand.applyAt(new CellRef("sheet1!A1"), context)
         then:
             3 * eachArea.applyAt(_, context ) >> new Size(1,2)
-            2 * eachArea.getTransformer() >> transformer
-            1 * transformer.getTransformationConfig() >> transformationConfig
+            3 * eachArea.getTransformer() >> transformer
+            2 * transformer.getTransformationConfig() >> transformationConfig
             1 * transformer.adjustTableSize(new CellRef("sheet1!A1"), new Size(1,6))
             0 * _._
     }

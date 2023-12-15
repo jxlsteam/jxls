@@ -41,8 +41,8 @@ class XlsCommentAreaBuilderTest extends Specification {
             def cellData7 = new CellData(new CellRef("sheet3!B2"))
             cellData7.setCellComment('jx:grid(headers="hsData" data="mainData")')
         when:
-            def areaBuilder = new XlsCommentAreaBuilder(transformer)
-            List<Area> areas = areaBuilder.build()
+            def areaBuilder = new XlsCommentAreaBuilder()
+            List<Area> areas = areaBuilder.build(transformer, true)
         then:
             transformer.getCommentedCells() >> [cellData0, cellData1, cellData2, cellData3, cellData4, cellData5, cellData6, cellData7]
             areas.size() == 2
@@ -111,8 +111,8 @@ class XlsCommentAreaBuilderTest extends Specification {
         def cellData1 = new CellData(new CellRef("sheet1!B3"))
         cellData1.setCellComment("jx:grid(headers='headers', data='data', lastCell='B4', areas=[B3:B3, B4:B4])")
         when:
-        def areaBuilder = new XlsCommentAreaBuilder(transformer)
-        List<Area> areas = areaBuilder.build()
+        def areaBuilder = new XlsCommentAreaBuilder()
+        List<Area> areas = areaBuilder.build(transformer, true)
         then:
         transformer.getCommentedCells() >> [cellData0, cellData1]
 

@@ -12,11 +12,15 @@ import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.common.JxlsException;
 import org.jxls.entity.Employee;
+import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.expression.JxlsJexlPermissions;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
+/**
+ * ExceptionHandler tests for ExpressionEvaluatorFactoryJexlImpl
+ */
 public class ExceptionHandlerTest {
 
 	@Before
@@ -29,7 +33,7 @@ public class ExceptionHandlerTest {
 	public void strictModeWithException() {
 		Jxls3Tester tester = Jxls3Tester.xlsx(EachTest.class);
 		JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower()
-				.withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(true));
+				.withExpressionEvaluatorFactory(getExpressionEvaluatorFactory(true));
 		try {
 			tester.test(new HashMap<>()/*error: we don't set employees*/, builder);
 			Assert.fail("JxlsException expected");
@@ -42,7 +46,7 @@ public class ExceptionHandlerTest {
 	public void silentModeWithoutException() {
 		Jxls3Tester tester = Jxls3Tester.xlsx(EachTest.class);
 		JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower()
-				.withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(false));
+				.withExpressionEvaluatorFactory(getExpressionEvaluatorFactory(false));
 		tester.test(new HashMap<>()/*error: we don't set employees*/, builder);
 	}
 
@@ -55,7 +59,7 @@ public class ExceptionHandlerTest {
         // Test
 		Jxls3Tester tester = Jxls3Tester.xlsx(EachTest.class);
 		JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower()
-				.withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(false, true, JxlsJexlPermissions.RESTRICTED));
+				.withExpressionEvaluatorFactory(getExpressionEvaluatorFactory(false, true, JxlsJexlPermissions.RESTRICTED));
 		try {
 			tester.test(data, builder);
 			Assert.fail("JxlsException expected");
@@ -74,7 +78,15 @@ public class ExceptionHandlerTest {
         // Test
 		Jxls3Tester tester = Jxls3Tester.xlsx(EachTest.class);
 		JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower()
-				.withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(false, true, new JxlsJexlPermissions(Employee.class.getName())));
+				.withExpressionEvaluatorFactory(getExpressionEvaluatorFactory(false, true, new JxlsJexlPermissions(Employee.class.getName())));
 		tester.test(data, builder);
+	}
+	
+	protected ExpressionEvaluatorFactory getExpressionEvaluatorFactory(boolean strict) {
+		return new ExpressionEvaluatorFactoryJexlImpl(strict);
+	}
+
+	protected ExpressionEvaluatorFactory getExpressionEvaluatorFactory(boolean silent, boolean strict, JxlsJexlPermissions permissions) {
+		return new ExpressionEvaluatorFactoryJexlImpl(silent, strict, permissions);
 	}
 }
