@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
@@ -171,10 +170,6 @@ public class TestWorkbook implements AutoCloseable {
         return workbook.getForceFormulaRecalculation();
     }
     
-	public Cell _getCell(int row, int column) {
-		return sheet.getRow(row - 1).getCell(column - 1);
-	}
-
     @Override
     public void close() {
         if (workbook != null) {

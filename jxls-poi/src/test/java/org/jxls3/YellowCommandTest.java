@@ -1,5 +1,8 @@
 package org.jxls3;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +16,7 @@ import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
+import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.Util;
 
 public class YellowCommandTest {
@@ -24,18 +28,19 @@ public class YellowCommandTest {
         data.put("employees", Employee.generateSampleEmployeeData());
 
         // Test
-        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withAreaBuilder(new XlsCommentAreaBuilder() {
-        	// TODO add YellowCommand
-        }));
-        
-        // Verify
-        try (TestWorkbook w = tester.getWorkbook()) {
-            w.selectSheet(0);
-            // XXX Baustelle
-			System.out.println("C1: " + w._getCell(1, 3).getCellStyle().getFillBackgroundColorColor()); // not null ok
-			System.out.println("C2: " + w._getCell(2, 3).getCellStyle().getFillBackgroundColorColor()); // null ok
-			System.out.println("C6: " + w._getCell(6, 3).getCellStyle().getFillBackgroundColorColor()); // TODO must non null
+        XlsCommentAreaBuilder.addCommandMapping("yellow", YellowCommand.class);
+        try {
+	        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+			tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
+	        
+	        // Verify
+	        try (TestWorkbook w = tester.getWorkbook()) {
+	            w.selectSheet(0);
+	            assertEquals("yellow", w.getCellValueAsString(6, 3));
+	            assertNull(w.getCellValueAsString(5, 3));
+	        }
+        } finally {
+        	XlsCommentAreaBuilder.removeCommandMapping("yellow");
         }
 	}
 	
@@ -60,9 +65,10 @@ public class YellowCommandTest {
 		public Size applyAt(CellRef cellRef, Context context) {
 	        Boolean conditionResult = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), condition, context);
 	        if (conditionResult.booleanValue()) {
-	        	// TODO make cell yellow
+	        	System.out.println("make cell yellow: " + cellRef);
+	        	((PoiTransformer) getTransformer()).editCell(cellRef, cell -> cell.setCellValue("yellow"));
 	        }
-			return new Size(0, 0);
+			return new Size(1, 1);
 		}
 	}
 }

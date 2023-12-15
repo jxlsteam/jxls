@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -661,5 +662,14 @@ public class PoiTransformer extends AbstractTransformer {
                 }
             }
         }
+    }
+
+    public void editCell(CellRef cellRef, Consumer<Cell> action) {
+		Row row = workbook.getSheet(cellRef.getSheetName()).getRow(cellRef.getRow());
+		Cell cell = row.getCell(cellRef.getCol());
+		if (cell == null) {
+			cell = row.createCell(cellRef.getCol());
+		}
+		action.accept(cell);
     }
 }

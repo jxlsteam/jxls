@@ -137,6 +137,10 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         commandMap.put(commandName, clazz);
     }
 
+	public static void removeCommandMapping(String commandName) {
+		commandMap.remove(commandName);
+	}
+
     /**
      * Builds a list of {@link org.jxls.area.XlsArea} objects defined by top level AreaCommand markup ("jx:area")
      * containing a tree of all nested commands
