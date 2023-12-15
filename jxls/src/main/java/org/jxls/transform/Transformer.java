@@ -8,9 +8,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ImageType;
-import org.jxls.common.Size;
 import org.jxls.common.ExceptionHandler;
+import org.jxls.common.Size;
 
 /**
  * Defines interface methods for Excel operations
@@ -66,10 +65,6 @@ public interface Transformer {
 
     List<CellData> getCommentedCells();
 
-    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
-
-    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY);
-
     boolean deleteSheet(String sheetName);
 
     void setHidden(String sheetName, boolean hidden);
@@ -77,8 +72,6 @@ public interface Transformer {
     void updateRowHeight(String srcSheetName, int srcRowNum, String targetSheetName, int targetRowNum);
 
     void adjustTableSize(CellRef ref, Size size);
-
-    void mergeCells(CellRef ref, int rows, int cols);
 
     /**
      * This property is used to recalculate all formulas before saving the workbook.

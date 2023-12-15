@@ -1,11 +1,18 @@
 package org.jxls.command;
 
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.area.Area;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.ImageType;
 import org.jxls.common.Size;
+import org.jxls.transform.poi.PoiTransformer;
 
 /**
  * <p>Implements image rendering</p>
@@ -148,7 +155,60 @@ public class ImageCommand extends AbstractCommand {
             }
             imgBytes = (byte[]) imgObj;
         }
-        getTransformer().addImage(imageAnchorArea, imgBytes, imageType, scaleX, scaleY);
+        addImage(((PoiTransformer) getTransformer()).getWorkbook(), imageAnchorArea, imgBytes, imageType, scaleX, scaleY);
         return area.getSize();
+    }
+    
+    private void addImage(Workbook workbook, AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
+        int poiPictureType = findPoiPictureTypeByImageType(imageType);
+        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
+        addImage(workbook, areaRef, pictureIdx, scaleX, scaleY);
+    }
+
+    private int findPoiPictureTypeByImageType(ImageType imageType) {
+        if (imageType == null) {
+            throw new IllegalArgumentException("imageType must not be null");
+        }
+		switch (imageType) {
+		case PNG:
+			return Workbook.PICTURE_TYPE_PNG;
+		case JPEG:
+			return Workbook.PICTURE_TYPE_JPEG;
+		case EMF:
+			return Workbook.PICTURE_TYPE_EMF;
+		case WMF:
+			return Workbook.PICTURE_TYPE_WMF;
+		case DIB:
+			return Workbook.PICTURE_TYPE_DIB;
+		case PICT:
+			return Workbook.PICTURE_TYPE_PICT;
+		default:
+			return -1;
+		}
+    }
+
+    private void addImage(Workbook workbook, AreaRef areaRef, int imageIdx, Double scaleX, Double scaleY) {
+        boolean pictureResizeFlag = scaleX != null && scaleY != null;
+        CreationHelper helper = workbook.getCreationHelper();
+        Sheet sheet = workbook.getSheet(areaRef.getSheetName());
+        if (sheet == null) {
+            sheet = workbook.createSheet(areaRef.getSheetName());
+        }
+        Drawing<?> drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = helper.createClientAnchor();
+        anchor.setCol1(areaRef.getFirstCellRef().getCol());
+        anchor.setRow1(areaRef.getFirstCellRef().getRow());
+        if (pictureResizeFlag) {
+            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
+            anchor.setCol2(-1);
+            anchor.setRow2(-1);
+        } else {
+            anchor.setCol2(areaRef.getLastCellRef().getCol());
+            anchor.setRow2(areaRef.getLastCellRef().getRow());
+        }
+        Picture picture = drawing.createPicture(anchor, imageIdx);
+        if (pictureResizeFlag) {
+            picture.resize(scaleX, scaleY);
+        }
     }
 }

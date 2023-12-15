@@ -9,17 +9,11 @@ import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellAddress;
@@ -34,7 +28,6 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.ExceptionHandler;
-import org.jxls.common.ImageType;
 import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
@@ -61,12 +54,6 @@ public class PoiTransformer extends AbstractTransformer {
     private final boolean isSXSSF;
     private ExceptionHandler exceptionHandler = new PoiExceptionLogger();
     
-    /**
-     * The cell style is lost after the merge, the following operation restores the merged cell
-     * to the style of the first cell before the merge.
-     */
-    private CellStyle cellStyle;
-
     /**
      * No streaming
      * @param workbook
@@ -424,44 +411,7 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
 
-    private void addImage(AreaRef areaRef, int imageIdx, Double scaleX, Double scaleY) {
-        boolean pictureResizeFlag = scaleX != null && scaleY != null;
-        CreationHelper helper = workbook.getCreationHelper();
-        Sheet sheet = workbook.getSheet(areaRef.getSheetName());
-        if (sheet == null) {
-            sheet = workbook.createSheet(areaRef.getSheetName());
-        }
-        Drawing<?> drawing = sheet.createDrawingPatriarch();
-        ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setCol1(areaRef.getFirstCellRef().getCol());
-        anchor.setRow1(areaRef.getFirstCellRef().getRow());
-        if (pictureResizeFlag) {
-            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
-            anchor.setCol2(-1);
-            anchor.setRow2(-1);
-        } else {
-            anchor.setCol2(areaRef.getLastCellRef().getCol());
-            anchor.setRow2(areaRef.getLastCellRef().getRow());
-        }
-        Picture picture = drawing.createPicture(anchor, imageIdx);
-        if (pictureResizeFlag) {
-            picture.resize(scaleX, scaleY);
-        }
-    }
-
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
-        int poiPictureType = findPoiPictureTypeByImageType(imageType);
-        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
-        addImage(areaRef, pictureIdx, scaleX, scaleY);
-    }
-
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
-        int poiPictureType = findPoiPictureTypeByImageType(imageType);
-        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
-        addImage(areaRef, pictureIdx, null, null);
-    }
+    
 
     @Override
     public void write() throws IOException {
@@ -497,34 +447,6 @@ public class PoiTransformer extends AbstractTransformer {
         } catch (Exception e) {
             logger.warn("Error disposing streamed workbook", e);
         }
-    }
-
-    private int findPoiPictureTypeByImageType(ImageType imageType) {
-        int poiType = -1;
-        if (imageType == null) {
-            throw new IllegalArgumentException("Image type is undefined");
-        }
-        switch (imageType) {
-            case PNG:
-                poiType = Workbook.PICTURE_TYPE_PNG;
-                break;
-            case JPEG:
-                poiType = Workbook.PICTURE_TYPE_JPEG;
-                break;
-            case EMF:
-                poiType = Workbook.PICTURE_TYPE_EMF;
-                break;
-            case WMF:
-                poiType = Workbook.PICTURE_TYPE_WMF;
-                break;
-            case DIB:
-                poiType = Workbook.PICTURE_TYPE_DIB;
-                break;
-            case PICT:
-                poiType = Workbook.PICTURE_TYPE_PICT;
-                break;
-        }
-        return poiType;
     }
 
     private List<CellData> readCommentsFromSheet(Sheet sheet, int rowNum) {
@@ -624,40 +546,6 @@ public class PoiTransformer extends AbstractTransformer {
                         table.getCTTable().setRef(
                                 areaRef.getFirstCellRef().toString(true) + ":" + areaRef.getLastCellRef().toString(true));
                     }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void mergeCells(CellRef cellRef, int rows, int cols) {
-        Sheet sheet = getWorkbook().getSheet(cellRef.getSheetName());
-        CellRangeAddress region = new CellRangeAddress(
-                cellRef.getRow(),
-                cellRef.getRow() + rows - 1,
-                cellRef.getCol(),
-                cellRef.getCol() + cols - 1);
-        sheet.addMergedRegion(region);
-
-        try {
-            cellStyle = getCellStyle(cellRef);
-        } catch (Exception ignore) {
-        }
-        for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) {
-                row = sheet.createRow(i);
-            }
-            for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
-                Cell cell = row.getCell(j);
-                if (cell == null) {
-                    cell = row.createCell(j);
-                }
-                if (cellStyle == null) {
-                    cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
-                    cell.getCellStyle().setVerticalAlignment(VerticalAlignment.CENTER);
-                } else {
-                    cell.setCellStyle(cellStyle);
                 }
             }
         }

@@ -323,18 +323,6 @@ class PoiTransformerTest extends Specification{
             commentedCells.get(2).getCellComment() == "Test comment"
     }
 
-    def "test addImage"(){
-        given:
-            InputStream imageInputStream = PoiTransformerTest.class.getResourceAsStream("/org/jxls/templatebasedtests/ja.png");
-            byte[] imageBytes = IOUtils.toByteArray(imageInputStream);
-        when:
-            def transformer = PoiTransformer.createTransformer(wb)
-            transformer.addImage(new AreaRef("'sheet 1'!A1:C10"), imageBytes, ImageType.PNG);
-        then:
-            def pictures = wb.getAllPictures()
-            pictures.size() == 1
-    }
-
     def "test write without output stream"(){
         given:
         InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(workbookBytes))

@@ -8,9 +8,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ImageType;
-import org.jxls.common.Size;
 import org.jxls.common.ExceptionHandler;
+import org.jxls.common.Size;
 
 /**
  * Decorator pattern for Transformer, in particular write() can be extended overriding beforeWrite()
@@ -95,11 +94,6 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
-        transformer.addImage(areaRef, imageBytes, imageType);
-    }
-
-    @Override
     public boolean deleteSheet(String sheetName) {
         return transformer.deleteSheet(sheetName);
     }
@@ -117,11 +111,6 @@ public class TransformerDelegator implements Transformer {
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
         transformer.adjustTableSize(ref, size);
-    }
-
-    @Override
-    public void mergeCells(CellRef ref, int rows, int cols) {
-        transformer.mergeCells(ref, rows, cols);
     }
 
     @Override
@@ -154,11 +143,6 @@ public class TransformerDelegator implements Transformer {
         return transformer.isForwardOnly();
     }
 
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
-        transformer.addImage(areaRef, imageBytes, imageType, scaleX, scaleY);
-    }
-    
     @Override
     public ExceptionHandler getExceptionHandler() {
         return transformer.getExceptionHandler();

@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
-import org.jxls.common.ImageType;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
@@ -136,18 +134,8 @@ public abstract class AbstractTransformer implements Transformer {
     }
 
     @Override
-    public void mergeCells(CellRef ref, int rows, int cols) {
-        throw new UnsupportedOperationException("mergeCells operation is not implemented in the " + this.getClass().getName());
-    }
-
-    @Override
     public void writeButNotCloseStream() throws IOException {
         throw new UnsupportedOperationException("writeButNotCloseStream operation is not implemented in the " + this.getClass().getName());
-    }
-
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
-        throw new UnsupportedOperationException("addImage operation is not implemented in the " + this.getClass().getName());
     }
 
     @Override
