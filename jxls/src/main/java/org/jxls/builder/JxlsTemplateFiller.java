@@ -5,11 +5,14 @@ import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.jxls.area.Area;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.ExceptionHandler;
@@ -28,18 +31,20 @@ public class JxlsTemplateFiller {
     protected final boolean recalculateFormulasOnOpening;
     protected final KeepTemplateSheet keepTemplateSheet;
     protected final AreaBuilder areaBuilder;
+    protected final Map<String, Class<? extends Command>> commands;
     protected final boolean clearTemplateCells;
     protected final JxlsTransformerFactory transformerFactory;
     protected final JxlsStreaming streaming;
     protected final InputStream template;
     protected Transformer transformer;
     protected List<Area> areas;
-    
+	private final Map<String, Class<? extends Command>> rem = new HashMap<>();
+
     protected JxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
             String expressionNotationBegin, String expressionNotationEnd, ExceptionHandler exceptionHandler, //
             FormulaProcessor formulaProcessor, boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
-            KeepTemplateSheet keepTemplateSheet, //
-            AreaBuilder areaBuilder, boolean clearTemplateCells, JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, //
+            KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder, Map<String, Class<? extends Command>> commands,
+            boolean clearTemplateCells, JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, //
             InputStream template) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
@@ -50,6 +55,7 @@ public class JxlsTemplateFiller {
         this.formulaProcessor = formulaProcessor;
         this.keepTemplateSheet = keepTemplateSheet;
         this.areaBuilder = areaBuilder;
+        this.commands = commands;
         this.clearTemplateCells = clearTemplateCells;
         this.transformerFactory = transformerFactory;
         this.streaming = streaming;
@@ -60,6 +66,7 @@ public class JxlsTemplateFiller {
         try (OutputStream outputStream = output.getOutputStream()) {
             createTransformer(outputStream);
             configureTransformer();
+            installCommands();
             processAreas(data);
             preWrite();
             write();
@@ -68,8 +75,27 @@ public class JxlsTemplateFiller {
         } finally {
             areas = null;
             transformer = null;
+            restoreCommands();
         }
     }
+
+	private void installCommands() {
+		commands.forEach((k, v) -> {
+			rem.put(k, XlsCommentAreaBuilder.getCommandClass(k));
+			XlsCommentAreaBuilder.addCommandMapping(k, v);
+		});
+	}
+
+	private void restoreCommands() {
+		rem.forEach((k, v) -> {
+			if (v == null) {
+				XlsCommentAreaBuilder.removeCommandMapping(k);
+			} else {
+				XlsCommentAreaBuilder.addCommandMapping(k, v);
+			}
+		});
+		rem.clear();
+	}
 
     protected void createTransformer(OutputStream outputStream) {
         transformer = transformerFactory.create(template, outputStream, streaming);

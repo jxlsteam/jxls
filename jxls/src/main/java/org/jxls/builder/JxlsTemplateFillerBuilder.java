@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.Command;
 import org.jxls.common.ExceptionHandler;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
@@ -38,6 +40,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     /** old names: deleteTemplateSheet, hideTemplateSheet */
     protected KeepTemplateSheet keepTemplateSheet = KeepTemplateSheet.DELETE;
     private AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+    protected final Map<String, Class<? extends Command>> commands = new HashMap<>();
     protected boolean clearTemplateCells = true;
     private JxlsTransformerFactory transformerFactory;
     protected JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
@@ -58,7 +61,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
         		exceptionHandler, formulaProcessor, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                keepTemplateSheet, areaBuilder, clearTemplateCells, transformerFactory, streaming, template);
+                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
     }
     
     /**
@@ -146,6 +149,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return areaBuilder;
     }
     
+    public SELF withCommand(String name, Class<? extends Command> commandClass) {
+    	commands.put(name, commandClass);
+    	return (SELF) this;
+    }
+
     public SELF withClearTemplateCells(boolean clearTemplateCells) {
         this.clearTemplateCells = clearTemplateCells;
         return (SELF) this;

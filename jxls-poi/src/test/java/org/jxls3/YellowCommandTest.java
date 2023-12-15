@@ -9,7 +9,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.AbstractCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
@@ -28,19 +27,14 @@ public class YellowCommandTest {
         data.put("employees", Employee.generateSampleEmployeeData());
 
         // Test
-        XlsCommentAreaBuilder.addCommandMapping("yellow", YellowCommand.class);
-        try {
-	        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-			tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
-	        
-	        // Verify
-	        try (TestWorkbook w = tester.getWorkbook()) {
-	            w.selectSheet(0);
-	            assertEquals("yellow", w.getCellValueAsString(6, 3));
-	            assertNull(w.getCellValueAsString(5, 3));
-	        }
-        } finally {
-        	XlsCommentAreaBuilder.removeCommandMapping("yellow");
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+		tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withCommand("yellow", YellowCommand.class));
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            assertEquals("yellow", w.getCellValueAsString(6, 3));
+            assertNull(w.getCellValueAsString(5, 3));
         }
 	}
 	
