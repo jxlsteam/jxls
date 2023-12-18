@@ -69,7 +69,6 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     /**
      * @param data -
      * @param output -
-     * @throws IOException 
      */
     public void buildAndFill(Map<String, Object> data, JxlsOutput output) {
         build().fill(data, output);
