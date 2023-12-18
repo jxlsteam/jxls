@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
 
 /**
@@ -19,11 +20,11 @@ public class SheetNameGenerator implements CellRefGenerator {
     }
 
     @Override
-    public CellRef generateCellRef(int index, Context context) {
+    public CellRef generateCellRef(int index, Context context, JxlsLogger logger) {
         String sheetName = index >= 0 && index < sheetNames.size() ? sheetNames.get(index) : null;
         Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
         if (builder instanceof SafeSheetNameBuilder b) {
-            sheetName = b.createSafeSheetName(sheetName, index);
+            sheetName = b.createSafeSheetName(sheetName, index, logger);
         }
         if (sheetName == null) {
             return null;

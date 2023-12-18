@@ -17,22 +17,17 @@ import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn Date: 1/30/12 12:15 PM
  */
 public class EachIfCommandDemo {
-    private static final Logger logger = LoggerFactory.getLogger(EachIfCommandDemo.class);
     private static final String template = "each_if_demo.xls";
     private static final String output = "target/each_if_demo_output.xls";
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Each/If Commands demo");
         List<Department> departments = Department.createDepartments();
-        logger.info("Opening input stream");
         try (InputStream is = EachIfCommandDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
@@ -40,7 +35,6 @@ public class EachIfCommandDemo {
                 // implementations
                 // transformer.getTransformationConfig().setExpressionEvaluator(new
                 // JexlExpressionEvaluatorNoThreadLocal());
-                logger.info("Creating area");
                 XlsArea xlsArea = new XlsArea("Template!A1:G15", transformer);
                 XlsArea departmentArea = new XlsArea("Template!A2:G13", transformer);
                 EachCommand departmentEachCommand = new EachCommand("department", "departments", departmentArea);
@@ -54,18 +48,13 @@ public class EachIfCommandDemo {
                 xlsArea.addCommand(new AreaRef("Template!A2:F12"), departmentEachCommand);
                 Context context = new Context();
                 context.putVar("departments", departments);
-                logger.info("Applying at cell " + new CellRef("Down!B2"));
                 xlsArea.applyAt(new CellRef("Down!B2"), context);
                 xlsArea.processFormulas();
-                logger.info("Setting EachCommand direction to Right");
                 departmentEachCommand.setDirection(EachCommand.Direction.RIGHT);
-                logger.info("Applying at cell " + new CellRef("Right!A1"));
                 xlsArea.reset();
                 xlsArea.applyAt(new CellRef("Right!A1"), context);
                 xlsArea.processFormulas();
-                logger.info("Complete");
                 transformer.write();
-                logger.info("written to file");
             }
         }
     }

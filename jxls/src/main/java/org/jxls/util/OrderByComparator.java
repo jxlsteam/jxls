@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.jxls.builder.xls.JxlsCommentException;
 import org.jxls.common.JxlsException;
 
 /**
@@ -91,12 +92,12 @@ public class OrderByComparator<T> implements Comparator<T> {
                         ordering = ORDER_DESC;
                         ignoreCase = Boolean.TRUE;
                     } else {
-						throw new JxlsException("Expected \"" + ASC + "\", \"" + DESC + "\", \"" + ASC_IGNORECASE
+						throw new JxlsCommentException("Expected \"" + ASC + "\", \"" + DESC + "\", \"" + ASC_IGNORECASE
 								+ "\" or \"" + DESC_IGNORECASE + "\": " + expr);
                     }
                 }
             } else {
-				throw new JxlsException("Expected \"property\" [" + ASC + "|" + DESC + "|" + ASC_IGNORECASE + "|"
+				throw new JxlsCommentException("Expected \"property\" [" + ASC + "|" + DESC + "|" + ASC_IGNORECASE + "|"
 						+ DESC_IGNORECASE + "] : " + expr);
             }
 

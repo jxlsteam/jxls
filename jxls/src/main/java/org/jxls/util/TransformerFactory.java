@@ -7,8 +7,6 @@ import java.lang.reflect.Method;
 
 import org.jxls.common.JxlsException;
 import org.jxls.transform.Transformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates {@link Transformer} instances in runtime
@@ -19,7 +17,6 @@ public class TransformerFactory {
     public static final String INIT_METHOD = "createTransformer";
     public static final String TRANSFORMER_SYSTEM_PROPERTY = "jxlstransformer";
     public static final String POI_TRANSFORMER = "poi";
-    private static final Logger logger = LoggerFactory.getLogger(TransformerFactory.class);
 
     /**
      * Creates a transformer initialized for reading a template from an {@link InputStream} and writing output to {@link OutputStream}
@@ -36,7 +33,7 @@ public class TransformerFactory {
         if (transformer == null) {
             throw new JxlsException("Can not load Transformer class. Please make sure you have necessary libraries in CLASSPATH.");
         }
-        logger.debug("Transformer class is {}", transformer.getName());
+        // TODO logging: debug("Transformer class is {}", transformer.getName());
         try {
             Method initMethod = transformer.getMethod(INIT_METHOD, InputStream.class, OutputStream.class);
             return (Transformer) initMethod.invoke(null, inputStream, outputStream);
@@ -73,7 +70,7 @@ public class TransformerFactory {
 
     private static Class<?> loadTransformerByClass(String transformerClassName) {
         try {
-            logger.debug("Loading transformer by class {}", transformerClassName);
+            // TODO logging: logger.debug("Loading transformer by class {}", transformerClassName);
             return Class.forName(transformerClassName);
         } catch (Exception e) {
             throw new JxlsException("Failed to load Transformer class: " + transformerClassName, e);

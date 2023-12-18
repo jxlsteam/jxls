@@ -48,7 +48,7 @@ public class ExpressionEvaluator4JSR223Impl implements ExpressionEvaluator {
         try {
             return scriptEngine.eval(expression, holder.binding);
         } catch (ScriptException e) {
-            throw new EvaluationException("Evaluate error on: " + expression, e);
+            throw new EvaluationException("Evaluate error on: " + expression, e); // TODO JxlsLogger?
         }
     }
 

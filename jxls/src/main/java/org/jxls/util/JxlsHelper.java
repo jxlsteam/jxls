@@ -14,6 +14,7 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.formula.FastFormulaProcessor;
@@ -314,7 +315,7 @@ public class JxlsHelper {
         Transformer transformer = createTransformer(templateStream, targetStream);
         List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
         if (xlsAreaList.isEmpty()) {
-            throw new IllegalStateException("No XlsArea were detected for this processing");
+            throw new JxlsException("No XlsArea were detected for this processing");
         }
         Area firstArea = xlsAreaList.get(0);
         CellRef targetCellRef = new CellRef(targetCell);
@@ -436,7 +437,7 @@ public class JxlsHelper {
     public Transformer createTransformer(InputStream templateStream, OutputStream targetStream) {
         Transformer transformer = TransformerFactory.createTransformer(templateStream, targetStream);
         if (transformer == null) {
-            throw new IllegalStateException("Cannot load XLS transformer. Please make sure a Transformer implementation is in classpath");
+            throw new JxlsException("Cannot load transformer. Please make sure a Transformer implementation is in CLASSPATH.");
         }
         if (expressionNotationBegin != null && expressionNotationEnd != null) {
             transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin,

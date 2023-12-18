@@ -15,9 +15,9 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ExceptionHandler;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FormulaProcessor;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.Transformer;
 
@@ -25,7 +25,7 @@ public class JxlsTemplateFiller {
     protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     protected final String expressionNotationBegin;
     protected final String expressionNotationEnd;
-    protected final ExceptionHandler exceptionHandler;
+    protected final JxlsLogger logger;
     protected final FormulaProcessor formulaProcessor;
     protected final boolean ignoreColumnProps;
     protected final boolean ignoreRowProps;
@@ -43,7 +43,7 @@ public class JxlsTemplateFiller {
 	private final Map<String, Class<? extends Command>> rem = new HashMap<>();
 
     protected JxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
-            String expressionNotationBegin, String expressionNotationEnd, ExceptionHandler exceptionHandler, //
+            String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger, //
             FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
             boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
             KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder, Map<String, Class<? extends Command>> commands,
@@ -52,7 +52,7 @@ public class JxlsTemplateFiller {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
-        this.exceptionHandler = exceptionHandler;
+        this.logger = logger;
         this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
         this.recalculateFormulasOnOpening = recalculateFormulasOnOpening;
         this.formulaProcessor = formulaProcessor;
@@ -103,15 +103,12 @@ public class JxlsTemplateFiller {
 	}
 
     protected void createTransformer(OutputStream outputStream) {
-        transformer = transformerFactory.create(template, outputStream, streaming);
+        transformer = transformerFactory.create(template, outputStream, streaming, logger);
     }
 
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(ignoreColumnProps);
     	transformer.setIgnoreRowProps(ignoreRowProps);
-		if (exceptionHandler != null) {
-			transformer.setExceptionHandler(exceptionHandler);
-		}
         transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
         transformer.getTransformationConfig().setExpressionEvaluatorFactory(expressionEvaluatorFactory);
     }

@@ -16,26 +16,21 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // old filename: MultipleSheetDemo.java
 public class MultiSheetMarkup4Demo {
-    private static final Logger logger = LoggerFactory.getLogger(MultiSheetMarkup4Demo.class);
     private static final String template = "each_if_demo.xls";
     private static final String output = "target/multiple_sheet_demo_output.xls";
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Multiple Sheet demo");
         List<Department> departments = Department.createDepartments();
-        logger.info("Opening input stream");
         try (InputStream is = EachIfCommandDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
-                logger.info("Creating area");
                 XlsArea xlsArea = new XlsArea("Template!A1:G15", transformer);
                 XlsArea departmentArea = new XlsArea("Template!A2:G12", transformer);
                 EachCommand departmentEachCommand = new EachCommand("department", "departments", departmentArea, new SimpleCellRefGenerator());
@@ -48,12 +43,9 @@ public class MultiSheetMarkup4Demo {
                 xlsArea.addCommand(new AreaRef("Template!A2:F12"), departmentEachCommand);
                 Context context = new Context();
                 context.putVar("departments", departments);
-                logger.info("Applying at cell Sheet!A1");
                 xlsArea.applyAt(new CellRef("Sheet!A1"), context);
                 xlsArea.processFormulas();
-                logger.info("Complete");
                 transformer.write();
-                logger.info("written to file");
             }
         }
     }
@@ -61,7 +53,7 @@ public class MultiSheetMarkup4Demo {
     public static class SimpleCellRefGenerator implements CellRefGenerator {
 
         @Override
-        public CellRef generateCellRef(int index, Context context) {
+        public CellRef generateCellRef(int index, Context context, JxlsLogger logger) {
             return new CellRef("sheet" + index + "!B2");
         }
     }

@@ -19,8 +19,6 @@ import org.jxls.common.cellshift.InnerCellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Core implementation of {@link Area} interface
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
  */
 public class XlsArea implements Area {
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
-    private static final Logger logger = LoggerFactory.getLogger(XlsArea.class);
 
     private List<CommandData> commandDataList = new ArrayList<CommandData>();
     private Transformer transformer;
@@ -159,7 +156,7 @@ public class XlsArea implements Area {
         if (this == XlsArea.EMPTY_AREA) {
             return Size.ZERO_SIZE;
         }
-        logger.debug("Applying XlsArea at {}", cellRef);
+        transformer.getLogger().debug("Applying XlsArea at " + cellRef);
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
         AreaRef commandsArea = transformTopStaticArea(cellRef, context);
@@ -429,7 +426,7 @@ public class XlsArea implements Area {
                 transformer.transform(srcCell, targetCell, context, updateRowHeight);
                 cellRange.markAsTransformed(row, col);
             } catch (Exception e) {
-                transformer.getExceptionHandler().handleTransformException(e, srcCell.toString(), targetCell.toString());
+                transformer.getLogger().handleTransformException(e, srcCell.toString(), targetCell.toString());
             }
             fireAfterTransformCell(srcCell, targetCell, context);
         }
@@ -445,7 +442,7 @@ public class XlsArea implements Area {
                 try {
                     transformer.updateRowHeight(startCellRef.getSheetName(), srcRow, areaStartCellRef.getSheetName(), targetRow);
                 } catch (Exception e) {
-                    transformer.getExceptionHandler().handleUpdateRowHeightsException(e, relativeSrcRow, targetRow);
+                    transformer.getLogger().handleUpdateRowHeightsException(e, relativeSrcRow, targetRow);
                 }
             }
         }
@@ -523,7 +520,7 @@ public class XlsArea implements Area {
                         transformer.transform(srcCell, targetCell, context, updateRowHeight);
                         cellRange.markAsTransformed(row, col);
                     } catch (Exception e) {
-                        transformer.getExceptionHandler().handleTransformException(e, srcCell.toString(), targetCell.toString());
+                        transformer.getLogger().handleTransformException(e, srcCell.toString(), targetCell.toString());
                     }
                     fireAfterTransformCell(srcCell, targetCell, context);
                 }

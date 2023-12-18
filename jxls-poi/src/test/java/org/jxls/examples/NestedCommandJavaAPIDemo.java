@@ -16,19 +16,15 @@ import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 12/30/13
  */
 public class NestedCommandJavaAPIDemo {
-    private static final Logger logger = LoggerFactory.getLogger(NestedCommandJavaAPIDemo.class);
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Nested Command JavaAPI demo");
         List<Employee> employees = Employee.generateSampleEmployeeData();
         try (InputStream is = NestedCommandJavaAPIDemo.class.getResourceAsStream("nested_command_javaapi_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/nested_command_javaapi_output.xls")) {

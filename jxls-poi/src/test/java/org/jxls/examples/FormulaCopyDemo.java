@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.jxls.common.Context;
 import org.jxls.entity.Org;
 import org.jxls.util.JxlsHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Formula copy demo
@@ -20,11 +18,9 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class FormulaCopyDemo {
-    private static final Logger logger = LoggerFactory.getLogger(FormulaCopyDemo.class);
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Formula Copy demo");
         List<Org> orgs = Org.generate(3, 3);
         try(InputStream is = FormulaCopyDemo.class.getResourceAsStream("formula_copy_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/formula_copy_output.xls")) {

@@ -12,8 +12,6 @@ import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 2nd Multi-sheet Markup Demo
@@ -21,15 +19,12 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class MultiSheetMarkup2Demo {
-    private static final Logger logger = LoggerFactory.getLogger(MultiSheetMarkup2Demo.class);
     private static final String template = "multisheet_markup_demo-2.xlsx";
     private static final String output = "target/multisheet_markup_output-2.xlsx";
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Multiple Sheet Markup demo 2");
         List<Department> departments = Department.createDepartments();
-        logger.info("Opening input stream");
         try (InputStream is = MultiSheetMarkup2Demo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Context context = PoiTransformer.createInitialContext();

@@ -31,10 +31,9 @@ public class JdbcHelper {
     public List<Map<String, Object>> query(String sql, Object... params) {
         List<Map<String, Object>> result;
         if (conn == null) {
-            throw new JxlsException("Null jdbc connection");
-        }
-        if (sql == null) {
-            throw new JxlsException("Null SQL statement");
+            throw new JxlsException("JDBC connection must not be null");
+        } else if (sql == null) {
+            throw new JxlsException("SQL statement must not be null");
         }
         sql = sql.replace(XlsCommentAreaBuilder.LINE_SEPARATOR, System.lineSeparator());
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -43,7 +42,7 @@ public class JdbcHelper {
                 result = handle(rs);
             }
         } catch (Exception e) {
-            throw new JxlsException("Failed to execute SQL\n" + e.getMessage(), e);
+            throw new JxlsException("Failed to execute SQL: " + e.getMessage(), e);
         }
         return result;
     }
@@ -70,7 +69,7 @@ public class JdbcHelper {
         }
 
         if (stmtCount != paramsCount) {
-            throw new SQLException("Wrong number of parameters: expected "
+            throw new JxlsException("SQL statement error. Wrong number of parameters: expected "
                     + stmtCount + ", was given " + paramsCount);
         }
 

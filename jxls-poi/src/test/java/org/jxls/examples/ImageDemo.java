@@ -16,14 +16,11 @@ import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.TransformerFactory;
 import org.jxls.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  */
 public class ImageDemo {
-    private static final Logger logger = LoggerFactory.getLogger(ImageDemo.class);
     private static final String template = "image_demo.xlsx";
     private static final String template2 = "image_demo2.xlsx";
     private static final String output = "target/image_output.xlsx";
@@ -34,7 +31,6 @@ public class ImageDemo {
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Image demo");
         execute();
         execute2();
         executeWithNullBytes();
@@ -42,7 +38,6 @@ public class ImageDemo {
     }
 
     private void execute() throws IOException {
-        logger.info("Opening input stream");
         try (InputStream is = ImageDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
@@ -55,7 +50,6 @@ public class ImageDemo {
                 xlsArea.addCommand("Sheet1!A4:D15", new ImageCommand("image", ImageType.PNG).addArea(imgArea));
                 xlsArea.applyAt(new CellRef("Sheet2!A1"), context);
                 transformer.write();
-                logger.info("written to file");
             }
         }
     }

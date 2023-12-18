@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
 import org.jxls.util.UtilWrapper;
 
@@ -113,7 +114,7 @@ public class GridCommand extends AbstractCommand {
     @Override
     public Command addArea(Area area) {
         if (areaList.size() >= 2) {
-            throw new IllegalArgumentException("Cannot add any more areas to GridCommand. You can add only 1 area as a 'header' and 1 area as a 'body'.");
+            throw new JxlsException("Cannot add any more areas to GridCommand. You can add only 1 area as a 'header' and 1 area as a 'body'.");
         }
         if (areaList.isEmpty()) {
             headerArea = area;
@@ -192,7 +193,7 @@ public class GridCommand extends AbstractCommand {
                 currentCell = new CellRef(cellRef.getSheetName(), currentCell.getRow() + height, cellRef.getCol());
             } else {
                 if (rowObjectProps.isEmpty()) {
-                    throw new IllegalArgumentException("Got a non-collection object type for a Grid row but object properties list is empty");
+                    throw new JxlsException("Got a non-collection object type for a Grid row but object properties list is empty");
                 }
                 int width = 0;
                 int height = 0;
@@ -205,8 +206,7 @@ public class GridCommand extends AbstractCommand {
                         width += size.getWidth();
                         height = Math.max(height, size.getHeight());
                     } catch (Exception e) {
-                        String message = "Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName();
-                        throw new IllegalStateException(message, e);
+                        throw new JxlsException("Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName(), e);
                     }
                 }
                 totalWidth = Math.max(width, totalWidth);

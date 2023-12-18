@@ -10,18 +10,21 @@ import java.util.List;
 
 import org.junit.Test;
 import org.jxls.common.GroupData;
+import org.jxls.logging.JxlsLogger;
+import org.jxls.logging.NoOpLogger;
 
 /**
  * Test groupOrder algorithm. Used by EachCommand (groupOrder attribute).
  */
 public class GroupOrderTest {
-
+    private static final JxlsLogger logger = new NoOpLogger();
+    
     /**
      * There's a difference between no groupOrder attribute and groupOrder="asc"!
      */
     @Test
     public void groupOrderNull() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", null);
+        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", null, logger);
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(25, nextAge(iter));
@@ -35,7 +38,7 @@ public class GroupOrderTest {
      */
     @Test
     public void groupOrderAsc() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "ASC");
+        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "ASC", logger);
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(20, nextAge(iter));
@@ -49,7 +52,7 @@ public class GroupOrderTest {
      */
     @Test
     public void groupOrderDesc() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "desc");
+        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "desc", logger);
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(30, nextAge(iter));

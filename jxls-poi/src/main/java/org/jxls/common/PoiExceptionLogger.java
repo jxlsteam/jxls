@@ -1,38 +1,41 @@
 package org.jxls.common;
 
-import org.jxls.area.XlsArea;
-import org.jxls.command.EachCommand;
-import org.jxls.transform.poi.PoiTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jxls.logging.JxlsLogger;
 
-public class PoiExceptionLogger implements ExceptionHandler {
-    private static final Logger logger1 = LoggerFactory.getLogger(PoiTransformer.class);
-    private static final Logger logger2 = LoggerFactory.getLogger(XlsArea.class);
-    private static final Logger logger3 = LoggerFactory.getLogger(EachCommand.class);
+public class PoiExceptionLogger implements JxlsLogger {
 
     @Override
     public void handleCellException(Exception e, String cell, String contextKeys) {
-        logger1.error("Failed to write a cell with {} and context keys {}", cell, contextKeys, e);
+        error(e, "Failed to write a cell with " + cell + " and context keys " + contextKeys);
     }
 
     @Override
     public void handleFormulaException(Exception e, String cell, String formula) {
-        logger1.error("Failed to set formula = " + formula + " into cell = " + cell, e);
+        error(e, "Failed to set formula = " + formula + " into cell = " + cell);
     }
 
     @Override
     public void handleTransformException(Exception e, String sourceCell, String targetCell) {
-        logger2.error("Failed to transform " + sourceCell + " into " + targetCell, e);
+        error(e, "Failed to transform " + sourceCell + " into " + targetCell);
     }
 
     @Override
     public void handleUpdateRowHeightsException(Exception e, int sourceRow, int targetRow) {
-        logger2.error("Failed to update row height for src row={} and target row={}", sourceRow, targetRow, e);
+        error(e, "Failed to update row height for src row=" + sourceRow + " and target row=" + targetRow);
     }
 
     @Override
     public void handleEvaluationException(Exception e, String cell, String expression) {
-        logger3.warn("Failed to evaluate collection expression {}", expression, e);
+        warn(e, "Failed to evaluate collection expression " + expression);
+    }
+
+    @Override
+    public void handleGetObjectPropertyException(Exception e, Object obj, String propertyName) {
+        warn(e, "Failed to get property '" + propertyName + "' of object " + obj);
+    }
+
+    @Override
+    public void handleSetObjectPropertyException(Exception e, Object obj, String propertyName, String propertyValue) {
+        warn(e, "Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj);
     }
 }

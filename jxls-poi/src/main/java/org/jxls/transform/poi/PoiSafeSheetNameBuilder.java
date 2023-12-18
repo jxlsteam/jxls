@@ -4,20 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.poi.ss.util.WorkbookUtil;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Ensures valid and unique Excel sheet names.
  * Use: For every Excel file put a new class instance with name SafeSheetNameBuilder.CONTEXT_VAR_NAME into the Context.
  */
 public class PoiSafeSheetNameBuilder implements SafeSheetNameBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(PoiSafeSheetNameBuilder.class);
     private final Set<String> usedSheetNames = new HashSet<>();
     
     @Override
-    public String createSafeSheetName(final String givenSheetName, int index) {
+    public String createSafeSheetName(final String givenSheetName, int index, JxlsLogger logger) {
         String sheetName = WorkbookUtil.createSafeSheetName(givenSheetName);
         int serialNumber = getFirstSerialNumber();
         String newName = sheetName;
@@ -31,7 +29,7 @@ public class PoiSafeSheetNameBuilder implements SafeSheetNameBuilder {
             serialNumber++;
         }
         if (!givenSheetName.equals(newName)) {
-            logger.info("Change invalid sheet name {} to {}", givenSheetName, sheetName);
+            logger.info("Change invalid sheet name " + givenSheetName + " to " + sheetName);
         }
         usedSheetNames.add(newName);
         return newName;

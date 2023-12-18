@@ -28,10 +28,8 @@ import org.jxls.common.CellRefRowPrecedenceComparator;
 import org.jxls.common.Context;
 import org.jxls.common.GroupData;
 import org.jxls.common.JxlsException;
-import org.jxls.expression.EvaluationException;
 import org.jxls.expression.ExpressionEvaluator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * Utility class with various helper methods used by other classes
@@ -39,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class Util {
-    private static final Logger logger = LoggerFactory.getLogger(Util.class);
     public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
     public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
@@ -314,10 +311,10 @@ public class Util {
      */
     public static Boolean isConditionTrue(ExpressionEvaluator evaluator, String condition, Context context) {
         Object conditionResult = evaluator.evaluate(condition, context.toMap());
-        if (!(conditionResult instanceof Boolean)) {
-            throw new JxlsException("Condition result is not a boolean value - " + condition);
+        if (conditionResult instanceof Boolean) {
+            return (Boolean) conditionResult;
         }
-        return (Boolean) conditionResult;
+        throw new JxlsException("Result of condition \"" + condition + "\" is not a Boolean value");
     }
 
     /**
@@ -328,10 +325,10 @@ public class Util {
      */
     public static Boolean isConditionTrue(ExpressionEvaluator evaluator, Context context) {
         Object conditionResult = evaluator.evaluate(context.toMap());
-        if (!(conditionResult instanceof Boolean)) {
-            throw new EvaluationException("Condition result is not a boolean value - " + evaluator.getExpression());
+        if (conditionResult instanceof Boolean) {
+            return (Boolean) conditionResult;
         }
-        return (Boolean) conditionResult;
+        throw new JxlsException("Result of condition \"" + evaluator.getExpression() + "\" is not a Boolean value");
     }
 
     /**
@@ -339,18 +336,12 @@ public class Util {
      * @param obj -
      * @param propertyName -
      * @param propertyValue -
-     * @param ignoreNonExisting -
      */
-    public static void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
+    public static void setObjectProperty(Object obj, String propertyName, String propertyValue, JxlsLogger logger) {
         try {
             setObjectProperty(obj, propertyName, propertyValue);
         } catch (Exception e) {
-            String msg = "Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj;
-            if (ignoreNonExisting) {
-                logger.info(msg, e);
-            } else {
-                throw new JxlsPropertyException(msg, true, e);
-            }
+            logger.handleSetObjectPropertyException(e, obj, propertyName, propertyValue);
         }
     }
 
@@ -374,20 +365,14 @@ public class Util {
      * Gets value of the passed object by the given property name.
      * @param obj Map, DynaBean or Java bean
      * @param propertyName -
-     * @param failSilently -
      * @return value (can be null)
      */
-    public static Object getObjectProperty(Object obj, String propertyName, boolean failSilently) {
+    public static Object getObjectProperty(Object obj, String propertyName, JxlsLogger logger) {
         try {
             return getObjectProperty(obj, propertyName);
         } catch (Exception e) {
-            String msg = "Failed to get property '" + propertyName + "' of object " + obj;
-            if (failSilently) {
-                logger.info(msg, e);
-                return null;
-            } else {
-                throw new JxlsPropertyException(msg, false, e);
-            }
+            logger.handleGetObjectPropertyException(e, obj, propertyName);
+            return null;
         }
     }
 
@@ -415,7 +400,7 @@ public class Util {
      * @param groupOrder -
      * @return a collection of group data objects
      */
-    public static Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder) {
+    public static Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder, JxlsLogger logger) {
         Collection<GroupData> result = new ArrayList<GroupData>();
         if (collection == null) {
             return result;
@@ -431,13 +416,13 @@ public class Util {
             groupByValues = new LinkedHashSet<>();
         }
         for (Object bean : collection) {
-            groupByValues.add(getGroupKey(bean, groupProperty));
+            groupByValues.add(getGroupKey(bean, groupProperty, logger));
         }
         for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext();) {
             Object groupValue = iterator.next();
             List<Object> groupItems = new ArrayList<>();
             for (Object bean : collection) {
-                if (groupValue.equals(getGroupKey(bean, groupProperty))) {
+                if (groupValue.equals(getGroupKey(bean, groupProperty, logger))) {
                     groupItems.add(bean);
                 }
             }
@@ -455,7 +440,7 @@ public class Util {
      * @param groupOrder an order to sort the groups
      * @return a collection of group data objects
      */
-    public static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder) {
+    public static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, JxlsLogger logger) {
         Collection<GroupData> result = new ArrayList<GroupData>();
         if (iterable == null) {
             return result;
@@ -471,13 +456,13 @@ public class Util {
             groupByValues = new LinkedHashSet<>();
         }
         for (Object bean : iterable) {
-            groupByValues.add(getGroupKey(bean, groupProperty));
+            groupByValues.add(getGroupKey(bean, groupProperty, logger));
         }
         for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext();) {
             Object groupValue = iterator.next();
             List<Object> groupItems = new ArrayList<>();
             for (Object bean : iterable) {
-                if (groupValue.equals(getGroupKey(bean, groupProperty))) {
+                if (groupValue.equals(getGroupKey(bean, groupProperty, logger))) {
                     groupItems.add(bean);
                 }
             }
@@ -488,8 +473,8 @@ public class Util {
         return result;
     }
 
-    private static Object getGroupKey(Object bean, String propertyName) {
-        Object ret = getObjectProperty(bean, propertyName, true);
+    private static Object getGroupKey(Object bean, String propertyName, JxlsLogger logger) {
+        Object ret = getObjectProperty(bean, propertyName, logger);
         return ret == null ? "null" : ret;
     }
 

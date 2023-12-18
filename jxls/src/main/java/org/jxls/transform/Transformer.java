@@ -8,8 +8,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ExceptionHandler;
 import org.jxls.common.Size;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * Defines interface methods for Excel operations
@@ -119,16 +119,16 @@ public interface Transformer {
      * @return true if the transformer can process cells only in a single pass
      */
     boolean isForwardOnly();
-    
-    /**
-     * @return not null
-     */
-    ExceptionHandler getExceptionHandler();
 
     /**
-     * @param exceptionHandler not null
+     * @return never null
      */
-    void setExceptionHandler(ExceptionHandler exceptionHandler);
+    JxlsLogger getLogger();
+    
+    /**
+     * @param logger not null
+     */
+    void setLogger(JxlsLogger logger);
     
     void setIgnoreColumnProps(boolean ignoreColumnProps);
     

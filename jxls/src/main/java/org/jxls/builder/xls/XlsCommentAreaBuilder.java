@@ -21,6 +21,7 @@ import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 import org.jxls.util.LiteralsExtractor;
 import org.jxls.util.Util;
@@ -218,12 +219,11 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             }
             int nameEndIndex = line.indexOf(ATTR_PREFIX, COMMAND_PREFIX.length());
             if (nameEndIndex < 0) {
-                String errMsg = "Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.";
-                throw new IllegalStateException(errMsg);
+                throw new JxlsCommentException("Failed to parse command line [" + line + "]. Expected '" + ATTR_PREFIX + "' symbol.");
             }
             String commandName = line.substring(COMMAND_PREFIX.length(), nameEndIndex).trim();
             Map<String, String> attrMap = buildAttrMap(line, nameEndIndex);
-            CommandData commandData = createCommandData(cellData, commandName, attrMap);
+            CommandData commandData = createCommandData(cellData, commandName, attrMap, transformer.getLogger());
             if (commandData != null) {
                 commandDatas.add(commandData);
                 List<Area> areas = buildAreas(transformer, cellData, line);
@@ -280,7 +280,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
         return parseCommandAttributes(attrString);
     }
 
-    private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap) {
+    private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap, JxlsLogger logger) {
         Class<? extends Command> clazz = commandMap.get(commandName);
         if (clazz == null) {
             throw new JxlsCommentException("Failed to find Command class mapped to command name '" + commandName + "'");
@@ -289,7 +289,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             Command command = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if (!attr.getKey().equals(LAST_CELL_ATTR_NAME)) {
-                    Util.setObjectProperty(command, attr.getKey(), attr.getValue(), true);
+                    Util.setObjectProperty(command, attr.getKey(), attr.getValue(), logger);
                 }
             }
             String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);

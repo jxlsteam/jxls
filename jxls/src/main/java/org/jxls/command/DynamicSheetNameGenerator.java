@@ -6,6 +6,7 @@ import java.util.Set;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
 
 /**
@@ -24,13 +25,13 @@ public class DynamicSheetNameGenerator implements CellRefGenerator {
     }
 
     @Override
-    public CellRef generateCellRef(int index, Context context) {
+    public CellRef generateCellRef(int index, Context context, JxlsLogger logger) {
         String sheetName = (String) expressionEvaluator.evaluate(sheetNameExpression, context.toMap());
         boolean safeName = false;
         Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
         if (builder instanceof SafeSheetNameBuilder sBuilder) {
             // The SafeSheetNameBuilder builds a valid and unique sheetName. This is the new style.
-            sheetName = sBuilder.createSafeSheetName(sheetName, index);
+            sheetName = sBuilder.createSafeSheetName(sheetName, index, logger);
             safeName = true;
         }
         if (sheetName == null) {

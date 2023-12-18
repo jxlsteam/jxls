@@ -15,19 +15,15 @@ import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 11/4/13
  */
 public class ObjectCollectionJavaAPIDemo {
-    private static final Logger logger = LoggerFactory.getLogger(ObjectCollectionJavaAPIDemo.class);
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Object Collection JavaAPI demo");
         List<Employee> employees = Employee.generateSampleEmployeeData();
         try (InputStream is = ObjectCollectionDemo.class.getResourceAsStream("object_collection_javaapi_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/object_collection_javaapi_output.xls")) {

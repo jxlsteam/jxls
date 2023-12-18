@@ -1,6 +1,8 @@
 package org.jxls.common;
 
-public class PoiExceptionThrower implements ExceptionHandler {
+import org.jxls.logging.JxlsLogger;
+
+public class PoiExceptionThrower implements JxlsLogger {
 
     @Override
     public void handleCellException(Exception e, String cell, String contextKeys) {
@@ -25,5 +27,15 @@ public class PoiExceptionThrower implements ExceptionHandler {
     @Override
     public void handleEvaluationException(Exception e, String cell, String expression) {
         throw new JxlsException("Failed to evaluate collection expression \"" + expression + "\" in each command at " + cell, e);
+    }
+
+    @Override
+    public void handleGetObjectPropertyException(Exception e, Object obj, String propertyName) {
+        throw new JxlsException("Failed to get property '" + propertyName + "' of object " + obj, e);
+    }
+
+    @Override
+    public void handleSetObjectPropertyException(Exception e, Object obj, String propertyName, String propertyValue) {
+        throw new JxlsException("Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj, e);
     }
 }

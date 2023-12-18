@@ -288,7 +288,7 @@ public class EachCommand extends AbstractCommand {
             return this;
         }
         if (areaList.size() >= 1) {
-            throw new IllegalArgumentException("You can add only a single area to 'each' command");
+            throw new JxlsException("You can add only a single area to 'each' command");
         }
         this.area = area;
         return super.addArea(area);
@@ -301,7 +301,7 @@ public class EachCommand extends AbstractCommand {
             itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
             orderCollection(itemsCollection);
         } catch (Exception e) {
-            getTransformer().getExceptionHandler().handleEvaluationException(e, cellRef.toString(), items);
+            getLogger().handleEvaluationException(e, cellRef.toString(), items);
             itemsCollection = Collections.emptyList();
         }
         Size size;
@@ -314,7 +314,7 @@ public class EachCommand extends AbstractCommand {
                 itemsCollection = filter(context, itemsCollection, selectExpression);
                 selectExpression = null;
             }
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder);
+            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder, getLogger());
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar, selectExpression);
         }
@@ -386,7 +386,7 @@ public class EachCommand extends AbstractCommand {
                 continue;
             }
             if (cellRefGenerator != null) {
-                currentCell = cellRefGenerator.generateCellRef(index++, context);
+                currentCell = cellRefGenerator.generateCellRef(index++, context, getLogger());
             }
             if (currentCell == null) {
                 break;

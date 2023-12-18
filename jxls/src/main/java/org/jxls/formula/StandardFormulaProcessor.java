@@ -16,8 +16,6 @@ import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CellRefUtil;
 import org.jxls.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a standard formula processor implementation which takes into account
@@ -27,7 +25,6 @@ import org.slf4j.LoggerFactory;
  * because it is much faster although may not provide the correct results for more complex cases.</p>
  */
 public class StandardFormulaProcessor extends AbstractFormulaProcessor {
-    private static final Logger logger = LoggerFactory.getLogger(StandardFormulaProcessor.class);
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
     // TODO method too long
@@ -45,7 +42,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             if (formulaCellData.getArea() == null || !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName())) {
                 continue;
             }
-            logger.debug("Processing formula cell {}", formulaCellData);
+            transformer.getLogger().debug("Processing formula cell " + formulaCellData);
             List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
             Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
             Map<String, List<CellRef>> jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);

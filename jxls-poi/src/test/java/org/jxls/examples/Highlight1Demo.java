@@ -22,8 +22,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.PoiTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 1st Highlight Demo
@@ -31,11 +29,9 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn Date: 10/22/13
  */
 public class Highlight1Demo {
-    private static final Logger logger = LoggerFactory.getLogger(Highlight1Demo.class);
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Highlight demo");
         List<Employee> employees = Employee.generateSampleEmployeeData();
         try (InputStream is = Highlight1Demo.class.getResourceAsStream("highlight_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/highlight_output.xls")) {
@@ -55,7 +51,6 @@ public class Highlight1Demo {
     }
 
     public static class HighlightCellAreaListener implements AreaListener {
-        private static final Logger logger = LoggerFactory.getLogger(HighlightCellAreaListener.class);
         private PoiTransformer transformer;
         private final CellRef paymentCell = new CellRef("Template!C4");
 
@@ -77,11 +72,9 @@ public class Highlight1Demo {
 
         @Override
         public void afterTransformCell(CellRef srcCell, CellRef targetCell, Context context) {
-            logger.info("Source: " + srcCell.getCellName() + ", Target: " + targetCell.getCellName());
             if (paymentCell.equals(srcCell)) { // we are at employee payment cell
                 Employee employee = (Employee) context.getVar("employee");
                 if (employee.getPayment().doubleValue() > 2000) { // highlight payment when >= $2000
-                    logger.info("highlighting payment for employee " + employee.getName());
                     highlightCell(targetCell);
                 }
             }

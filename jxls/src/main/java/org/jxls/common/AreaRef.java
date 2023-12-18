@@ -50,7 +50,7 @@ public class AreaRef {
 
         String part1 = parts[1];
         if (CellRefUtil.isPlainColumn(part0) || CellRefUtil.isPlainColumn(part1)) {
-            throw new IllegalArgumentException("Plain column references are not currently supported");
+            throw new IllegalArgumentException("Plain column references are currently not supported");
         } else {
             firstCellRef = new CellRef(part0);
             lastCellRef = new CellRef(part1);

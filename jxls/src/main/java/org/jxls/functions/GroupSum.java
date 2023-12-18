@@ -107,7 +107,7 @@ public class GroupSum<T> {
     private Object getValue(Object i, String fieldName) {
         if (i instanceof Map<?,?> map) {
             if (!map.containsKey(fieldName)) {
-                throw new RuntimeException("Attribute " + fieldName + " does not exist in collection element!");
+                throw new JxlsException("Attribute " + fieldName + " does not exist in collection element!");
             }
             return map.get(fieldName);
         } else {

@@ -11,19 +11,15 @@ import java.util.List;
 import org.junit.Test;
 import org.jxls.entity.Employee;
 import org.jxls.template.SimpleExporter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by Leonid Vysochyn on 19-Jul-15.
  */
 public class SimpleExporterDemo {
-    private static final Logger logger = LoggerFactory.getLogger(GridCommandDemo.class);
     private static final String template = "simple_export_template.xlsx";
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Simple Export demo");
         try(OutputStream os1 = new FileOutputStream("target/simple_export_output1.xls")) {
             List<Employee> employees = Employee.generateSampleEmployeeData();
             List<String> headers = Arrays.asList("Name", "Birthday", "Payment");

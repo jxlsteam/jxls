@@ -22,28 +22,23 @@ import org.jxls.entity.Department;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  */
 public class SxssfDemo {
-    private static final Logger logger = LoggerFactory.getLogger(SxssfDemo.class);
     public static final int EMPLOYEE_COUNT = 30000;
     public static final int DEPARTMENT_COUNT = 100;
     public static final int DEP_EMPLOYEE_COUNT = 500;
 
     @Test
     public void test() throws IOException, InvalidFormatException, ParseException {
-        logger.info("Entering Stress Sxssf demo");
         simpleSxssf();
         executeStress1();
         executeStress2();
     }
 
     private void simpleSxssf() throws ParseException, IOException, InvalidFormatException {
-        logger.info("running simple Sxssf demo");
         try (InputStream is = SxssfDemo.class.getResourceAsStream("sxssf_template.xlsx")) {
             List<Employee> employees = Employee.generate(10);
             try (OutputStream os = new FileOutputStream("target/simple_sxssf_output.xlsx")) {
@@ -66,10 +61,7 @@ public class SxssfDemo {
     }
 
     private void executeStress1() throws IOException, InvalidFormatException {
-        logger.info("Running Stress Sxssf demo 1");
-        logger.info("Generating " + EMPLOYEE_COUNT + " employees..");
         List<Employee> employees = Employee.generate(EMPLOYEE_COUNT);
-        logger.info("Created " + employees.size() + " employees");
         try (InputStream is = SxssfDemo.class.getResourceAsStream("stress1_sxssf.xlsx")) {
             assert is != null;
             Workbook workbook = WorkbookFactory.create(is);
@@ -82,10 +74,7 @@ public class SxssfDemo {
             context.putVar("totalCellUpdater", new TotalCellUpdater());
             context.putVar("employees", employees);
             context.getConfig().setIsFormulaProcessingRequired(false);
-            long startTime = System.nanoTime();
             xlsArea.applyAt(new CellRef("Result!A1"), context);
-            long endTime = System.nanoTime();
-            logger.info("Stress Sxssf demo 1 time (s): " + (endTime - startTime) / 1000000000);
             workbook.setForceFormulaRecalculation(true);
             workbook.setActiveSheet(1);
             try (OutputStream os = new FileOutputStream("target/sxssf_stress1_output.xlsx")) {
@@ -95,10 +84,7 @@ public class SxssfDemo {
     }
 
     private void executeStress2() throws IOException, InvalidFormatException {
-        logger.info("Running Stress Sxssf demo 2");
-        logger.info("Generating " + DEPARTMENT_COUNT + " departments with " + DEP_EMPLOYEE_COUNT + " employees in each");
         List<Department> departments = Department.generate(DEPARTMENT_COUNT, DEP_EMPLOYEE_COUNT);
-        logger.info("Created " + departments.size() + " departments");
         try (InputStream is = SxssfDemo.class.getResourceAsStream("stress2_sxssf.xlsx")) {
             Workbook workbook = WorkbookFactory.create(is);
             // setting rowAccessWindowSize to 600 to be able to process static cells in a
@@ -112,10 +98,7 @@ public class SxssfDemo {
             context.putVar("cellRefUpdater", new CellRefUpdater());
             context.putVar("totalCellUpdater", new DepartmentTotalCellUpdater());
             context.putVar("departments", departments);
-            long startTime = System.nanoTime();
             xlsArea.applyAt(new CellRef("Result!A1"), context);
-            long endTime = System.nanoTime();
-            logger.info("Stress Sxssf demo 2 time (s): " + (endTime - startTime) / 1e9);
             workbook.setForceFormulaRecalculation(true);
             workbook.setActiveSheet(1);
             try (OutputStream os = new FileOutputStream("target/sxssf_stress2_output.xlsx")) {
@@ -156,8 +139,6 @@ public class SxssfDemo {
                     String resultFormula = String.format("SUM(E%d:E%d)",
                             targetCell.getRow() - department.getStaff().size() + 1, targetCell.getRow());
                     cellData.setEvaluationResult(resultFormula);
-                } else {
-                    logger.warn("Cannot update the total cell since department is null");
                 }
             }
         }

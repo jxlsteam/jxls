@@ -11,6 +11,7 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.GroupData;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * A wrapper around {@link Util} class to prevent static methods spreading
@@ -61,28 +62,28 @@ public class UtilWrapper {
         return Util.isConditionTrue(evaluator, context);
     }
 
-    public void setObjectProperty(Object obj, String propertyName, String propertyValue, boolean ignoreNonExisting) {
-        Util.setObjectProperty(obj, propertyName, propertyValue, ignoreNonExisting);
+    public void setObjectProperty(Object obj, String propertyName, String propertyValue, JxlsLogger logger) {
+        Util.setObjectProperty(obj, propertyName, propertyValue, logger);
     }
 
     public void setObjectProperty(Object obj, String propertyName, String propertyValue) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Util.setObjectProperty(obj, propertyName, propertyValue);
     }
 
-    public Object getObjectProperty(Object obj, String propertyName, boolean failSilently) {
-        return Util.getObjectProperty(obj, propertyName, failSilently);
+    public Object getObjectProperty(Object obj, String propertyName, JxlsLogger logger) {
+        return Util.getObjectProperty(obj, propertyName, logger);
     }
 
     public Object getObjectProperty(Object obj, String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         return Util.getObjectProperty(obj, propertyName);
     }
 
-    public Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder) {
-        return Util.groupCollection(collection, groupProperty, groupOrder);
+    public Collection<GroupData> groupCollection(Collection<?> collection, String groupProperty, String groupOrder, JxlsLogger logger) {
+        return Util.groupCollection(collection, groupProperty, groupOrder, logger);
     }
 
-    public Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder) {
-        return Util.groupIterable(iterable, groupProperty, groupOrder);
+    public Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, JxlsLogger logger) {
+        return Util.groupIterable(iterable, groupProperty, groupOrder, logger);
     }
 
     public byte[] toByteArray(InputStream stream) throws IOException {

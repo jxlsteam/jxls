@@ -17,22 +17,17 @@ import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  */
 public class UserCommandExcelMarkupDemo {
-    private static final Logger logger = LoggerFactory.getLogger(UserCommandExcelMarkupDemo.class);
     private static final String template = "user_command_markup_template.xls";
     private static final String output = "target/user_command_markup_output.xls";
 
     @Test
     public void test() throws IOException, InvalidFormatException, ParseException {
-        logger.info("Running User Command Markup demo");
         List<Employee> employees = Employee.generateSampleEmployeeData();
-        logger.info("Opening input stream");
         try (InputStream is = UserCommandExcelMarkupDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
@@ -44,7 +39,6 @@ public class UserCommandExcelMarkupDemo {
                 context.putVar("employees", employees);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
                 transformer.write();
-                logger.info("Finished UserCommandExcelMarkupDemo");
             }
         }
     }

@@ -14,6 +14,7 @@ import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.common.PoiExceptionThrower;
 import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
 import org.jxls.transform.Transformer;
 import org.jxls.unittests.PoiSafeSheetNameBuilderUnitTest;
@@ -34,7 +35,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
         final List<String> safeNames = new ArrayList<>();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new SafeSheetNameBuilder() {
             @Override
-            public String createSafeSheetName(String givenSheetName, int index) {
+            public String createSafeSheetName(String givenSheetName, int index, JxlsLogger logger) {
                 String ret = givenSheetName + " sheet";
                 safeNames.add(ret);
                 return ret;
@@ -84,7 +85,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
                 transformer.getTransformationConfig().setExpressionEvaluatorFactory(x -> new JexlExpressionEvaluator(false, true));
                 
                 // throw exceptions instead of just logging them
-                transformer.setExceptionHandler(new PoiExceptionThrower());
+                transformer.setLogger(new PoiExceptionThrower());
                 return transformer;
             }
         };

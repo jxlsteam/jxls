@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jxls.area.Area;
+import org.jxls.logging.JxlsLogger;
+import org.jxls.logging.NoOpLogger;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
@@ -73,8 +75,13 @@ public abstract class AbstractCommand implements Command {
     protected Transformer getTransformer() {
         return areaList.isEmpty() ? null : areaList.get(0).getTransformer();
     }
-
+    
     protected TransformationConfig getTransformationConfig() {
         return getTransformer().getTransformationConfig();
+    }
+
+    protected JxlsLogger getLogger() {
+        Transformer transformer = getTransformer();
+        return (transformer == null || transformer.getLogger() == null) ? new NoOpLogger() : transformer.getLogger();
     }
 }

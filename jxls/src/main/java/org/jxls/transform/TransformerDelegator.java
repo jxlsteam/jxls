@@ -8,8 +8,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ExceptionHandler;
 import org.jxls.common.Size;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * Decorator pattern for Transformer, in particular write() can be extended overriding beforeWrite()
@@ -144,16 +144,16 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public ExceptionHandler getExceptionHandler() {
-        return transformer.getExceptionHandler();
+	public void setLogger(JxlsLogger logger) {
+        transformer.setLogger(logger);
     }
 
     @Override
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        transformer.setExceptionHandler(exceptionHandler);
+    public JxlsLogger getLogger() {
+        return transformer.getLogger();
     }
 
-	@Override
+    @Override
 	public void setIgnoreColumnProps(boolean ignoreColumnProps) {
 		transformer.setIgnoreColumnProps(ignoreColumnProps);
 	}

@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jxls.builder.JxlsStreaming;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CannotOpenWorkbookException;
@@ -17,7 +18,7 @@ import org.jxls.util.CannotOpenWorkbookException;
 public class PoiTransformerFactory implements JxlsTransformerFactory {
 
     @Override
-    public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming) {
+    public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
         Workbook workbook = openWorkbook(template);
         PoiTransformer transformer = createTransformer(workbook, streaming);
         transformer.setOutputStream(outputStream);

@@ -11,22 +11,17 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Leonid Vysochyn
  *         Date: 2/9/12
  */
 public class FormulaExportDemo {
-    private static final Logger logger = LoggerFactory.getLogger(FormulaExportDemo.class);
     private static final String template = "formulas_demo.xls";
     private static final String output = "target/formulas_demo_output.xls";
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Formulas demo");
-        logger.info("Opening input stream");
         try (InputStream is = FormulaExportDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);
@@ -41,7 +36,6 @@ public class FormulaExportDemo {
                 sheet1Area.applyAt(new CellRef("Sheet1!F11"), context);
                 sheet1Area.processFormulas();
                 transformer.write();
-                logger.info("written to file");
             }
         }
     }

@@ -96,8 +96,7 @@ public class LiteralsExtractor {
                             }
                         } else {
                             // no opening, but closing !!
-                            String errorMessage = "Got closing ) but no opening of it. Pos: " + text.substring(0, i);
-                            throw new IllegalArgumentException(errorMessage);
+                            throw new IllegalArgumentException("Got ')' but not '(' of it. Pos: " + text.substring(0, i));
                         }
                     }
                     break;

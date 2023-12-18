@@ -21,8 +21,6 @@ import org.jxls.common.Context;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * JEXL Custom Function Demo
@@ -32,13 +30,11 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn on 22-Jul-15.
  */
 public class JexlCustomFunctionDemo {
-    private static final Logger logger = LoggerFactory.getLogger(JexlCustomFunctionDemo.class);
     private static final String template = "jexl_custom_function_template.xlsx";
     private static final String output = "target/jexl_custom_function_output.xlsx";
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running JEXL Custom Function demo");
         try (InputStream is = JexlCustomFunctionDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = TransformerFactory.createTransformer(is, os);

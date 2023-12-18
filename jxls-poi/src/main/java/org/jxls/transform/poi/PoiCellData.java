@@ -24,8 +24,6 @@ import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.util.Util;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Cell data wrapper for POI cell
@@ -33,8 +31,6 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class PoiCellData extends org.jxls.common.CellData {
-    private static final Logger logger = LoggerFactory.getLogger(PoiCellData.class);
-
     private PoiRowData poiRowData;
     private RichTextString richTextString;
     private CellStyle cellStyle;
@@ -253,12 +249,12 @@ public class PoiCellData extends org.jxls.common.CellData {
         } catch (FormulaParseException e) {
             try {
                 String formulaString = evaluationResult.toString();
-                logger.error("Failed to set cell formula " + formulaString + " for cell " + this.toString(), e);
+                getTransformer().getLogger().warn(e, "Failed to set cell formula " + formulaString + " for cell " + this.toString());
                 // Not required as setCellValue will set the cellType to STRING
                 // cell.setCellType(org.apache.poi.ss.usermodel.CellType.STRING);
                 cell.setCellValue(formulaString);
             } catch (Exception ex) {
-                logger.warn("Failed to convert formula to string for cell " + this.toString());
+                getTransformer().getLogger().error(ex, "Failed to convert formula to string for cell " + this.toString());
             }
         }
     }

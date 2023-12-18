@@ -13,18 +13,14 @@ import org.junit.Test;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.util.JxlsHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by Leonid Vysochyn on 30-Jun-15.
  */
 public class GridCommandDemo {
-    private static final Logger logger = LoggerFactory.getLogger(GridCommandDemo.class);
 
     @Test
     public void test() throws ParseException, IOException {
-        logger.info("Running Grid command demo");
         List<Employee> employees = Employee.generateSampleEmployeeData();
         executeGridMatrixDemo(employees);
         executeGridObjectListDemo(employees);

@@ -111,7 +111,7 @@ public class Issue73Test {
                 transformer.getTransformationConfig().setExpressionEvaluatorFactory(x -> new JexlExpressionEvaluator(false, true));
                 
                 // throw exceptions instead of just logging them
-                transformer.setExceptionHandler(new PoiExceptionThrower());
+                transformer.setLogger(new PoiExceptionThrower());
                 return transformer;
             }
         });

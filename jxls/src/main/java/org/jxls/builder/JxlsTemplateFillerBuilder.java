@@ -11,13 +11,14 @@ import java.util.Map;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
-import org.jxls.common.ExceptionHandler;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
+import org.jxls.logging.JxlsLogger;
+import org.jxls.logging.NoOpLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.util.CannotOpenWorkbookException;
 
@@ -30,7 +31,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public static final String DEFAULT_EXPRESSION_END = "}";
     protected String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
     protected String expressionNotationEnd = DEFAULT_EXPRESSION_END;
-    protected ExceptionHandler exceptionHandler;
+    protected JxlsLogger logger = new NoOpLogger();
     /** null: no formula processing */
     private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
     protected boolean ignoreColumnProps = false;
@@ -62,7 +63,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     		throw new JxlsException("Please call withTemplate()");
     	}
         return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
-        		exceptionHandler, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+        		logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
                 keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
     }
     
@@ -101,8 +102,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 	    return (SELF) this;
 	}
 
-    public SELF withExceptionHandler(ExceptionHandler exceptionHandler) {
-    	this.exceptionHandler = exceptionHandler;
+    public SELF withLogger(JxlsLogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("logger must not be null");
+        }
+    	this.logger = logger;
     	return (SELF) this;
     }
 
@@ -188,28 +192,28 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
 
-    public SELF withTemplate(InputStream template) {
-    	if (template == null) {
+    public SELF withTemplate(InputStream templateInputStream) {
+    	if (templateInputStream == null) {
     		throw new CannotOpenWorkbookException();
     	}
-        this.template = template;
+        template = templateInputStream;
         return (SELF) this;
     }
 
-    public SELF withTemplate(URL template) throws IOException {
-    	if (template == null) {
-    		throw new IllegalArgumentException("template must not be null");
+    public SELF withTemplate(URL templateURL) throws IOException {
+    	if (templateURL == null) {
+    		throw new IllegalArgumentException("templateURL must not be null");
     	}
-        return withTemplate(template.openStream());
+        return withTemplate(templateURL.openStream());
     }
 
-    public SELF withTemplate(File template) throws FileNotFoundException {
-    	if (template == null) {
-    		throw new IllegalArgumentException("template must not be null");
-    	} else if (!template.isFile()) {
-    		throw new JxlsException("Template file does not exist: " + template.getAbsolutePath());
+    public SELF withTemplate(File templateFile) throws FileNotFoundException {
+    	if (templateFile == null) {
+    		throw new IllegalArgumentException("templateFile must not be null");
+    	} else if (!templateFile.isFile()) {
+    		throw new JxlsException("Template file does not exist: " + templateFile.getAbsolutePath());
     	}
-        return withTemplate(new FileInputStream(template));
+        return withTemplate(new FileInputStream(templateFile));
     }
 
     public SELF withTemplate(String templateFileName) throws FileNotFoundException {
