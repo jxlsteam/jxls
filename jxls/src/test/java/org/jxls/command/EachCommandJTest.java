@@ -1,6 +1,7 @@
 package org.jxls.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -13,15 +14,15 @@ import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
+import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
-import org.jxls.util.UtilWrapper;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EachCommandJTest {
+public class EachCommandJTest { // TODO rename EachCommandTest
     @Mock
     private Area area;
     @Mock
@@ -29,9 +30,9 @@ public class EachCommandJTest {
     @Mock
     private TransformationConfig transformationConfig;
     @Mock
-    private Size size;
+    private ExpressionEvaluator expressionEvaluator;
     @Mock
-    private UtilWrapper util;
+    private Size size;
 
     @Test
     public void shouldRestoreVarNameInContextIfExists() {
@@ -45,10 +46,10 @@ public class EachCommandJTest {
         list.add("item 3");
         context.putVar("items", list);
         EachCommand eachCommand = new EachCommand("myVar", "items", area);
-        eachCommand.setUtil(util);
         when(area.getTransformer()).thenReturn(transformer);
         when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
-        when(util.transformToIterableObject(null, "items", context)).thenReturn(list);
+        when(eachCommand.getExpressionEvaluator()).thenReturn(expressionEvaluator);
+        when(eachCommand.transformToIterableObject("items", context)).thenReturn(list);
         when(area.applyAt(cellRef, context)).thenReturn(size);
         // when
         eachCommand.applyAt(cellRef, context);
@@ -62,7 +63,6 @@ public class EachCommandJTest {
         CellRef cellRef = new CellRef("A1");
         Context context = new Context();
         EachCommand eachCommand = new EachCommand("myVar", "items", area);
-        eachCommand.setUtil(new UtilWrapper());
         when(area.getTransformer()).thenReturn(transformer);
         when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
         when(transformer.getTransformationConfig().getExpressionEvaluator()).thenReturn(new JexlExpressionEvaluator());
@@ -70,5 +70,24 @@ public class EachCommandJTest {
         Size size = eachCommand.applyAt(cellRef, context);
         // then
         assertNotNull(size);
+    }
+
+    /** Return empty collection instead of throwing exception if EachCommand.items resolves to null. */
+    @Test
+    public void issue200() {
+        // Prepare
+        Context emptyContext = new Context();
+        EachCommand each = new EachCommand() {
+            @Override
+            protected ExpressionEvaluator getExpressionEvaluator() {
+                return new JexlExpressionEvaluator();
+            }
+        };
+        
+        // Test
+        Iterable<Object> ret = each.transformToIterableObject("notExisting", emptyContext);
+        
+        // Verify
+        assertFalse("Collection must be empty", ret.iterator().hasNext());
     }
 }

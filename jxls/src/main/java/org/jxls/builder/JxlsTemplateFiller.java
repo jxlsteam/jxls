@@ -1,10 +1,9 @@
 package org.jxls.builder;
 
-import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import java.util.function.Consumer;
 import org.jxls.area.Area;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
+import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluatorFactory;
@@ -142,6 +142,26 @@ public class JxlsTemplateFiller {
 			return;
 		}
 		getSheetsNameOfMultiSheetTemplate(areas).stream().forEach(action);
+    }
+
+    /**
+     * Return names of all multi sheet template
+     *
+     * @param areaList list of area
+     * @return string array
+     */
+    public static List<String> getSheetsNameOfMultiSheetTemplate(List<Area> areaList) {
+        List<String> templateSheetsName = new ArrayList<>();
+        for (Area xlsArea : areaList) {
+            for (Command command : xlsArea.findCommandByName("each")) {
+                boolean isAreaHasMultiSheetAttribute = ((EachCommand) command).getMultisheet() != null && !((EachCommand) command).getMultisheet().isEmpty();
+                if (isAreaHasMultiSheetAttribute) {
+                    templateSheetsName.add(xlsArea.getAreaRef().getSheetName());
+                    break;
+                }
+            }
+        }
+        return templateSheetsName;
     }
 
     protected void write() throws IOException {

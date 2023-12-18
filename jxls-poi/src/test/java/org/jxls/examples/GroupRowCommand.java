@@ -9,7 +9,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.Util;
 
 /**
  * An implementation of a Command for row grouping
@@ -36,7 +35,7 @@ public class GroupRowCommand  extends AbstractCommand {
         int endRow = cellRef.getRow() + resultSize.getHeight() - 1;
         sheet.groupRow(startRow, endRow);
         if (collapseIf != null && collapseIf.trim().length() > 0) {
-            boolean collapseFlag = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), collapseIf, context);
+            boolean collapseFlag = getTransformationConfig().getExpressionEvaluator().isConditionTrue(collapseIf, context.toMap()).booleanValue();
             sheet.setRowGroupCollapsed(startRow, collapseFlag);
         }
         return resultSize;

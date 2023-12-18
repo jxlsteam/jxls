@@ -21,11 +21,11 @@ import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.common.ObjectPropertyAccess;
 import org.jxls.formula.AbstractFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 import org.jxls.util.LiteralsExtractor;
-import org.jxls.util.Util;
 
 /**
  * Builds {@link org.jxls.area.XlsArea} from Excel comments in the Excel template
@@ -290,7 +290,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             Command command = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, String> attr : attrMap.entrySet()) {
                 if (!attr.getKey().equals(LAST_CELL_ATTR_NAME)) {
-                    Util.setObjectProperty(command, attr.getKey(), attr.getValue(), logger);
+                    ObjectPropertyAccess.setObjectProperty(command, attr.getKey(), attr.getValue(), logger);
                 }
             }
             String lastCellRef = attrMap.get(LAST_CELL_ATTR_NAME);

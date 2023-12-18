@@ -1,7 +1,5 @@
 package org.jxls.util;
 
-import static org.jxls.util.Util.getSheetsNameOfMultiSheetTemplate;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +8,7 @@ import java.util.List;
 
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
@@ -265,13 +264,13 @@ public class JxlsHelper {
             }
         }
         if (isHideTemplateSheet()) {
-            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(xlsAreaList);
+            List<String> sheetNameTemplate = JxlsTemplateFiller.getSheetsNameOfMultiSheetTemplate(xlsAreaList);
             for (String sheetName : sheetNameTemplate) {
                 transformer.setHidden(sheetName, true);
             }
         }
         if (isDeleteTemplateSheet()) {
-            List<String> sheetNameTemplate = getSheetsNameOfMultiSheetTemplate(xlsAreaList);
+            List<String> sheetNameTemplate = JxlsTemplateFiller.getSheetsNameOfMultiSheetTemplate(xlsAreaList);
             for (String sheetName : sheetNameTemplate) {
                 transformer.deleteSheet(sheetName);
             }

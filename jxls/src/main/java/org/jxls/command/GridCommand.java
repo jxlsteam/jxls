@@ -12,7 +12,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
-import org.jxls.util.UtilWrapper;
 
 /**
  * The command implements a grid with dynamic columns and rows
@@ -36,7 +35,6 @@ public class GridCommand extends AbstractCommand {
     private List<String> rowObjectProps = new ArrayList<>();
     private Area headerArea;
     private Area bodyArea;
-    private UtilWrapper util = new UtilWrapper();
 
     public GridCommand() {
     }
@@ -138,7 +136,7 @@ public class GridCommand extends AbstractCommand {
         if (headerArea == null || headers == null) {
             return Size.ZERO_SIZE;
         }
-        Iterable<?> headers = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.headers, context);
+        Iterable<?> headers = transformToIterableObject(this.headers, context);
         CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;
@@ -160,7 +158,7 @@ public class GridCommand extends AbstractCommand {
         if (bodyArea == null || data == null) {
             return Size.ZERO_SIZE;
         }
-        Iterable<?> dataCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), this.data, context);
+        Iterable<?> dataCollection = transformToIterableObject(this.data, context);
 
         CellRef currentCell = cellRef;
         int totalWidth = 0;

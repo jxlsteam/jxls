@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.jxls.area.Area;
@@ -12,10 +16,11 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.GroupData;
 import org.jxls.common.JxlsException;
+import org.jxls.common.ObjectPropertyAccess;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.util.OrderByComparator;
-import org.jxls.util.UtilWrapper;
 
 /**
  * <p>Implements iteration over collection or array of items</p><ul>
@@ -40,7 +45,6 @@ public class EachCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "each";
     static final String GROUP_DATA_KEY = "_group";
 
-    private UtilWrapper util = new UtilWrapper();
     private String items;
     private String var;
     private String varIndex;
@@ -100,14 +104,6 @@ public class EachCommand extends AbstractCommand {
     @Override
     public String getName() {
         return COMMAND_NAME;
-    }
-
-    UtilWrapper getUtil() {
-        return util;
-    }
-
-    void setUtil(UtilWrapper util) {
-        this.util = util;
     }
 
     /**
@@ -302,7 +298,7 @@ public class EachCommand extends AbstractCommand {
     public Size applyAt(CellRef cellRef, Context context) {
         Iterable<?> itemsCollection = null;
         try {
-            itemsCollection = util.transformToIterableObject(getTransformationConfig().getExpressionEvaluator(), items, context);
+            itemsCollection = transformToIterableObject(items, context);
             orderCollection(itemsCollection);
         } catch (Exception e) {
             getLogger().handleEvaluationException(e, cellRef.toString(), items);
@@ -318,7 +314,7 @@ public class EachCommand extends AbstractCommand {
                 itemsCollection = filter(context, itemsCollection, selectExpression);
                 selectExpression = null;
             }
-            Collection<GroupData> groupedData = util.groupIterable(itemsCollection, groupBy, groupOrder, getLogger());
+            Collection<GroupData> groupedData = groupIterable(itemsCollection, groupBy, groupOrder, getLogger());
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar, selectExpression);
         }
@@ -332,8 +328,7 @@ public class EachCommand extends AbstractCommand {
         if (itemsCollection instanceof List<?> itemsList && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
                     .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
-            OrderByComparator<Object> comp = new OrderByComparator<>(orderByProps, util);
-            itemsList.sort(comp);
+            itemsList.sort(new OrderByComparator<>(orderByProps));
         }
     }
 
@@ -348,7 +343,7 @@ public class EachCommand extends AbstractCommand {
             if (varIndex != null) {
                 context.putVar(varIndex, currentIndex);
             }
-            if (util.isConditionTrue(selectEvaluator, context)) {
+            if (selectEvaluator.isConditionTrue(context.toMap())) {
                 filteredList.add(obj);
             }
             currentIndex++;
@@ -386,7 +381,7 @@ public class EachCommand extends AbstractCommand {
             if (varIndex != null) {
                 context.putVar(varIndex, currentIndex);
             }
-            if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
+            if (selectEvaluator != null && !Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
                 continue;
             }
             if (cellRefGenerator != null) {
@@ -454,5 +449,50 @@ public class EachCommand extends AbstractCommand {
             }
         }
         return pVariable;
+    }
+    
+    /**
+     * Groups items from an iterable collection using passed group property and group order
+     * @param iterable iterable object
+     * @param groupProperty property to use to group the items
+     * @param groupOrder an order to sort the groups
+     * @return a collection of group data objects
+     */
+    static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, JxlsLogger logger) {
+        Collection<GroupData> result = new ArrayList<GroupData>();
+        if (iterable == null) {
+            return result;
+        }
+        Set<Object> groupByValues;
+        if (groupOrder != null) {
+            if ("desc".equalsIgnoreCase(groupOrder)) {
+                groupByValues = new TreeSet<>(Collections.reverseOrder());
+            } else {
+                groupByValues = new TreeSet<>();
+            }
+        } else {
+            groupByValues = new LinkedHashSet<>();
+        }
+        for (Object bean : iterable) {
+            groupByValues.add(getGroupKey(bean, groupProperty, logger));
+        }
+        for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext();) {
+            Object groupValue = iterator.next();
+            List<Object> groupItems = new ArrayList<>();
+            for (Object bean : iterable) {
+                if (groupValue.equals(getGroupKey(bean, groupProperty, logger))) {
+                    groupItems.add(bean);
+                }
+            }
+            if (!groupItems.isEmpty()) {
+                result.add(new GroupData(groupItems.get(0), groupItems));
+            }
+        }
+        return result;
+    }
+
+    private static Object getGroupKey(Object bean, String propertyName, JxlsLogger logger) {
+        Object ret = ObjectPropertyAccess.getObjectProperty(bean, propertyName, logger);
+        return ret == null ? "null" : ret;
     }
 }

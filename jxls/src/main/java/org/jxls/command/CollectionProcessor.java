@@ -2,12 +2,11 @@ package org.jxls.command;
 
 import org.jxls.common.Context;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.util.UtilWrapper;
 
 public abstract class CollectionProcessor {
 
     public void traverse(Context context, Iterable<?> itemsCollection, String varName, String varIndex,
-            ExpressionEvaluator selectEvaluator, UtilWrapper util) {
+            ExpressionEvaluator selectEvaluator) {
         Object currentVarObject = varName == null ? null : context.getRunVar(varName);
         Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
         int currentIndex = 0;
@@ -16,7 +15,7 @@ public abstract class CollectionProcessor {
             if (varIndex != null) {
                 context.putVar(varIndex, currentIndex);
             }
-            if (selectEvaluator != null && !util.isConditionTrue(selectEvaluator, context)) {
+            if (selectEvaluator != null && !Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
                 continue;
             }
             if (processItem(obj)) {

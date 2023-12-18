@@ -1,10 +1,14 @@
 package org.jxls.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jxls.area.Area;
+import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
+import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
@@ -86,5 +90,30 @@ public abstract class AbstractCommand implements Command {
             throw new JxlsException("Command has no transformer and can not write to log");
         }
         return transformer.getLogger();
+    }
+
+    /**
+     * Evaluates the passed collection name into an {@link Iterable} object
+     * @param expressionEvaluator -
+     * @param collectionName -
+     * @param context -
+     * @return an iterable object from the {@link Context} under given name
+     */
+    protected Iterable<Object> transformToIterableObject(String collectionName, Context context) {
+        Object collectionObject = getExpressionEvaluator().evaluate(collectionName, context.toMap());
+        if (collectionObject == null) {
+            return Collections.emptyList();
+        } else if (collectionObject instanceof Object[]) {
+            return Arrays.asList((Object[])/*cast is important*/ collectionObject);
+        } else if (collectionObject instanceof Iterable) {
+            @SuppressWarnings("unchecked")
+            Iterable<Object> iterable = (Iterable<Object>) collectionObject;
+            return iterable;
+        }
+        throw new JxlsException(collectionName + " expression is not a collection or an array");
+    }
+
+    protected ExpressionEvaluator getExpressionEvaluator() {
+        return getTransformationConfig().getExpressionEvaluator();
     }
 }

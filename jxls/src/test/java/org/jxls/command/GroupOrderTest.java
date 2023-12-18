@@ -1,4 +1,4 @@
-package org.jxls.util;
+package org.jxls.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +22,7 @@ public class GroupOrderTest {
      */
     @Test
     public void groupOrderNull() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", null, logger());
+        Collection<GroupData> result = EachCommand.groupIterable(getTestData(), "age", null, logger());
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(25, nextAge(iter));
@@ -36,7 +36,7 @@ public class GroupOrderTest {
      */
     @Test
     public void groupOrderAsc() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "ASC", logger());
+        Collection<GroupData> result = EachCommand.groupIterable(getTestData(), "age", "ASC", logger());
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(20, nextAge(iter));
@@ -50,7 +50,7 @@ public class GroupOrderTest {
      */
     @Test
     public void groupOrderDesc() {
-        Collection<GroupData> result = Util.groupIterable(getTestData(), "age", "desc", logger());
+        Collection<GroupData> result = EachCommand.groupIterable(getTestData(), "age", "desc", logger());
         
         Iterator<GroupData> iter = result.iterator();
         assertEquals(30, nextAge(iter));

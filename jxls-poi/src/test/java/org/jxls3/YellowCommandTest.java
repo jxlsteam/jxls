@@ -18,7 +18,6 @@ import org.jxls.common.Size;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.Util;
 
 public class YellowCommandTest {
 
@@ -59,7 +58,7 @@ public class YellowCommandTest {
 
 		@Override
 		public Size applyAt(CellRef cellRef, Context context) {
-	        Boolean conditionResult = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), condition, context);
+	        Boolean conditionResult = getTransformationConfig().getExpressionEvaluator().isConditionTrue(condition, context.toMap());
 	        if (conditionResult.booleanValue()) {
 	    		Row row = ((PoiTransformer) getTransformer()).getWorkbook().getSheet(cellRef.getSheetName()).getRow(cellRef.getRow());
 	    		Cell cell = row.getCell(cellRef.getCol());

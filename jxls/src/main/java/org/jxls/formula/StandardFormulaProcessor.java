@@ -15,7 +15,6 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CellRefUtil;
-import org.jxls.util.Util;
 
 /**
  * This is a standard formula processor implementation which takes into account
@@ -70,19 +69,19 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                             formulaTargetAreaRef, cellRefEntry);
                     if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
                         // for BY_COLUMN formula strategy we take only a subset of the cells
-                        replacementCells = Util.createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells,
+                        replacementCells = createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells,
                                 usedCellRefs);
                         usedCellRefs.addAll(replacementCells);
                     }
-                    String replacementString = Util.createTargetCellRef(replacementCells);
+                    String replacementString = createTargetCellRef(replacementCells);
                     if (targetFormulaString.startsWith("SUM")
-                            && Util.countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM) {
+                            && countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM) {
                         // Excel doesn't support more than 255 arguments in functions.
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue B059 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
                     } else {
                         String from = regexJointedLookBehind
-                                + Util.sheetNameRegex(cellRefEntry)
+                                + sheetNameRegex(cellRefEntry)
                                 + regexExcludePrefixSymbols
                                 + Pattern.quote(cellRefEntry.getKey().getCellName());
                         String to = Matcher.quoteReplacement(replacementString);
@@ -103,7 +102,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                     List<CellRef> replacementCells = findFormulaCellRefReplacements(
                             transformer, targetFormulaCellRef, formulaSourceAreaRef,
                             formulaTargetAreaRef, cellRefMapEntryParam);
-                    String replacementString = Util.createTargetCellRef(replacementCells);
+                    String replacementString = createTargetCellRef(replacementCells);
                     targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
                 }
                 String sheetNameReplacementRegex = Pattern.quote(targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER);
@@ -172,5 +171,21 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             }
         }
         return relevantCellRefs;
+    }
+    
+    /**
+     * Calculates a number of occurences of a symbol in the string
+     * @param str -
+     * @param ch -
+     * @return -
+     */
+    private int countOccurences(String str, char ch) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == ch) {
+                count++;
+            }
+        }
+        return count;
     }
 }

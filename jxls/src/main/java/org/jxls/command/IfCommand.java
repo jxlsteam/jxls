@@ -6,7 +6,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
-import org.jxls.util.Util;
 
 /**
  * Implements if-else logic
@@ -93,7 +92,7 @@ public class IfCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
-        Boolean conditionResult = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), condition, context);
+        Boolean conditionResult = getTransformationConfig().getExpressionEvaluator().isConditionTrue(condition, context.toMap());
         if (conditionResult.booleanValue()) {
             return ifArea.applyAt(cellRef, context);
         } else {

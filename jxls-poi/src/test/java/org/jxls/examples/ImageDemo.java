@@ -1,5 +1,6 @@
 package org.jxls.examples;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,6 @@ import org.jxls.entity.Department;
 import org.jxls.transform.Transformer;
 import org.jxls.util.JxlsHelper;
 import org.jxls.util.TransformerFactory;
-import org.jxls.util.Util;
 
 /**
  * @author Leonid Vysochyn
@@ -46,7 +46,7 @@ public class ImageDemo {
                 XlsArea xlsArea = new XlsArea("Sheet1!A1:N30", transformer);
                 Context context = new Context();
                 InputStream imageInputStream = ImageDemo.class.getResourceAsStream("business.png");
-                byte[] imageBytes = Util.toByteArray(imageInputStream);
+                byte[] imageBytes = toByteArray(imageInputStream);
                 context.putVar("image", imageBytes);
                 XlsArea imgArea = new XlsArea("Sheet1!A5:D15", transformer);
                 xlsArea.addCommand("Sheet1!A4:D15", new ImageCommand("image", ImageType.PNG).addArea(imgArea));
@@ -61,7 +61,7 @@ public class ImageDemo {
             try (OutputStream os = new FileOutputStream(output2)) {
                 Context context = new Context();
                 InputStream imageInputStream = ImageDemo.class.getResourceAsStream("business.png");
-                byte[] imageBytes = Util.toByteArray(imageInputStream);
+                byte[] imageBytes = toByteArray(imageInputStream);
                 Department department = new Department("Test Department");
                 department.setImage(imageBytes);
                 context.putVar("dep", department);
@@ -88,12 +88,32 @@ public class ImageDemo {
             try (OutputStream os = new FileOutputStream(output4)) {
                 Context context = new Context();
                 InputStream imageInputStream = ImageDemo.class.getResourceAsStream("business.png");
-                byte[] imageBytes = Util.toByteArray(imageInputStream);
+                byte[] imageBytes = toByteArray(imageInputStream);
                 Department department = new Department("Test Department");
                 department.setImage(imageBytes);
                 context.putVar("dep", department);
                 JxlsHelper.getInstance().processTemplate(is, os, context);
             }
         }
+    }
+    
+    /**
+     * Reads all the data from the input stream, and returns the bytes read.
+     * 
+     * @param stream -
+     * @return byte array
+     * @throws IOException -
+     */
+    private byte[] toByteArray(InputStream stream) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        int read = 0;
+        while (read != -1) {
+            read = stream.read(buffer);
+            if (read > 0) {
+                baos.write(buffer, 0, read);
+            }
+        }
+        return baos.toByteArray();
     }
 }

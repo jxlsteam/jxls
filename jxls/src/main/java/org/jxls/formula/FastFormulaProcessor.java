@@ -12,7 +12,6 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CellRefUtil;
-import org.jxls.util.Util;
 
 /**
  * Fast formula processor implementation.
@@ -55,9 +54,9 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                     // calculate the formula replacement string based on the formula strategy set for the cell
                     if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
                         // BY_COLUMN strategy (non-default) means we will take only cell references in the same column as the original cell
-                        List<CellRef> targetCellRefs = Util.createTargetCellRefListByColumn(targetFormulaCellRef, targetCells, usedCellRefs);
+                        List<CellRef> targetCellRefs = createTargetCellRefListByColumn(targetFormulaCellRef, targetCells, usedCellRefs);
                         usedCellRefs.addAll(targetCellRefs);
-                        replacementString = Util.createTargetCellRef(targetCellRefs);
+                        replacementString = createTargetCellRef(targetCellRefs);
                     } else if (targetCells.size() == targetFormulaCells.size()) {
                         // if the number of the cell reference target cells is the same as the number of cells into which
                         // the formula was transformed we assume that a formula target cell should use the
@@ -66,20 +65,20 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                         replacementString = targetCellRefCellRef.getCellName();
                     } else {
                         // trying to group the individual target cell refs used in a formula into a range
-                        List<List<CellRef>> rangeList = Util.groupByRanges(targetCells, targetFormulaCells.size());
+                        List<List<CellRef>> rangeList = groupByRanges(targetCells, targetFormulaCells.size());
                         if (rangeList.size() == targetFormulaCells.size()) {
                             // if the number of ranges equals to the number of target formula cells
                             // we assume the formula cells directly map onto ranges and so just taking a corresponding range by index
                             List<CellRef> range = rangeList.get(i);
-                            replacementString = Util.createTargetCellRef(range);
+                            replacementString = createTargetCellRef(range);
                         } else {
                             // the range grouping did not succeed and we just use the list of target cells to calculate the replacement string
-                            replacementString = Util.createTargetCellRef(targetCells);
+                            replacementString = createTargetCellRef(targetCells);
                         }
                     }
                     String from = regexJointedLookBehind
-                            + Util.sheetNameRegex(cellRefEntry)
-                            + Util.getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName()));
+                            + sheetNameRegex(cellRefEntry)
+                            + getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName()));
                     String to = Matcher.quoteReplacement(replacementString);
                     targetFormulaString = targetFormulaString.replaceAll(from, to);
                 }
@@ -92,15 +91,15 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                     }
                     isFormulaJointedCellRefsEmpty = false;
                     // trying to group the target cell references into ranges
-                    List<List<CellRef>> rangeList = Util.groupByRanges(targetCellRefList, targetFormulaCells.size());
+                    List<List<CellRef>> rangeList = groupByRanges(targetCellRefList, targetFormulaCells.size());
                     String replacementString;
                     if (rangeList.size() == targetFormulaCells.size()) {
                         // if the number of ranges equals to the number of target formula cells
                         // we assume the formula cells directly map onto ranges and so just taking a corresponding range by index
                         List<CellRef> range = rangeList.get(i);
-                        replacementString = Util.createTargetCellRef(range);
+                        replacementString = createTargetCellRef(range);
                     } else {
-                        replacementString = Util.createTargetCellRef(targetCellRefList);
+                        replacementString = createTargetCellRef(targetCellRefList);
                     }
                     targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
                 }
@@ -120,5 +119,13 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                         targetFormulaString);
             }
         }
+    }
+
+    /**
+     * @param name -
+     * @return regular expression to detect the passed cell name
+     */
+    private String getStrictCellNameRegex(String name) {
+        return "(?<=[^A-Z]|^)" + name + "(?=\\D|$)";
     }
 }

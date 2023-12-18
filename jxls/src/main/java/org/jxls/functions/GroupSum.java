@@ -10,7 +10,6 @@ import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
-import org.jxls.util.Util;
 
 /**
  * Group sum
@@ -92,7 +91,7 @@ public class GroupSum<T> {
         for (Object i : collection) {
             Object value = getValue(i, fieldName);
             context.putVar(objectVarName, i);
-            if (Util.isConditionTrue(expressionEvaluator, filter, context) == Boolean.TRUE) {
+            if (expressionEvaluator.isConditionTrue(filter, context.toMap()) == Boolean.TRUE) {
                 sum.add(value);
             }
         }

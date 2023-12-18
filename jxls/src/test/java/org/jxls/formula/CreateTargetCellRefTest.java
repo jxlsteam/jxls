@@ -1,4 +1,4 @@
-package org.jxls.util;
+package org.jxls.formula;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import org.jxls.common.CellRef;
 /**
  * Tests for Util.createTargetCellRef()
  */
-public class UtilCreateTargetCellRefTest {
+public class CreateTargetCellRefTest {
 
     @Test
     public void single() {
@@ -91,12 +91,12 @@ public class UtilCreateTargetCellRefTest {
 
     @Test
     public void argIsNull() {
-        Assert.assertEquals("", Util.createTargetCellRef(null));
+        Assert.assertEquals("", AbstractFormulaProcessor.createTargetCellRef(null));
     }
 
     @Test
     public void argIsEmpty() {
-        Assert.assertEquals("", Util.createTargetCellRef(Collections.<CellRef>emptyList()));
+        Assert.assertEquals("", AbstractFormulaProcessor.createTargetCellRef(Collections.<CellRef>emptyList()));
     }
 
     private void check(String expected, String... cellRefs) {
@@ -110,7 +110,7 @@ public class UtilCreateTargetCellRefTest {
         }
         
         // Test
-        String result = Util.createTargetCellRef(cellRefsList);
+        String result = AbstractFormulaProcessor.createTargetCellRef(cellRefsList);
         
         // Verify
         Assert.assertEquals(expected, result);

@@ -1,6 +1,7 @@
 package org.jxls.formula;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.regex.Pattern;
 import org.jxls.area.Area;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.common.CellRefColPrecedenceComparator;
+import org.jxls.common.CellRefRowPrecedenceComparator;
 import org.jxls.transform.Transformer;
 
 /**
@@ -121,5 +124,218 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
             }
         }
         return cellRefs;
+    }
+
+    /**
+     * Combines a list of cell references into a range
+     * E.g. for cell references A1, A2, A3, A4 it returns A1:A4
+     * @param targetCellDataList -
+     * @return a range containing all the cell references if such range exists or otherwise the passed cells separated by commas
+     */
+    static String createTargetCellRef(List<CellRef> targetCellDataList) {
+        // testcase: UtilCreateTargetCellRefTest. Can be optimized in Java 8.
+        if (targetCellDataList == null) {
+            return "";
+        }
+        int size = targetCellDataList.size();
+        if (size == 0) {
+            return "";
+        } else if (size == 1) {
+            return targetCellDataList.get(0).getCellName();
+        }
+        
+        // falsify if same sheet
+        for (int i = 0; i < size - 1; i++) {
+            if (!targetCellDataList.get(i).getSheetName().equals(targetCellDataList.get(i + 1).getSheetName())) {
+                return buildCellRefsString(targetCellDataList);
+            }
+        }
+        
+        // falsify if rectangular
+        CellRef upperLeft = targetCellDataList.get(0);
+        CellRef lowerRight = targetCellDataList.get(size - 1);
+        int rowCount = lowerRight.getRow() - upperLeft.getRow() + 1;
+        int colCount = lowerRight.getCol() - upperLeft.getCol() + 1;
+        if (size != colCount * rowCount) {
+            return buildCellRefsString(targetCellDataList);
+        }
+        // Fast exit if horizontal or vertical
+        if (rowCount == 1 || colCount == 1) {
+            return upperLeft.getCellName() + ":" + lowerRight.getCellName();
+        }
+        
+        // Hole in rectangle with same cell count check
+        // Check if upperLeft is most upper cell and most left cell. And check if lowerRight is most lower cell and most right cell.
+        int minRow = upperLeft.getRow();
+        int minCol = upperLeft.getCol();
+        int maxRow = minRow;
+        int maxCol = minCol;
+        for (CellRef cell : targetCellDataList) {
+            if (cell.getCol() < minCol) {
+                minCol = cell.getCol();
+            }
+            if (cell.getCol() > maxCol) {
+                maxCol = cell.getCol();
+            }
+            if (cell.getRow() < minRow) {
+                minRow = cell.getRow();
+            }
+            if (cell.getRow() > maxRow) {
+                maxRow = cell.getRow();
+            }
+        }
+        if (!(maxRow == lowerRight.getRow() && minRow == upperLeft.getRow() && maxCol == lowerRight.getCol() && minCol == upperLeft.getCol())) {
+            return buildCellRefsString(targetCellDataList);
+        }
+
+        // Selection is either vertical, horizontal line or rectangular -> same return structure in each case
+        return upperLeft.getCellName() + ":" + lowerRight.getCellName();
+    }
+
+    private static String buildCellRefsString(List<CellRef> cellRefs) {
+        String reply = "";
+        for (CellRef cellRef : cellRefs) {
+            reply += "," + cellRef.getCellName();
+        }
+        return reply.substring(1);
+    }
+    
+    /**
+     * Groups a list of cell references into a list ranges which can be used in a formula substitution
+     * @param cellRefList a list of cell references
+     * @param targetRangeCount a number of ranges to use when grouping
+     * @return a list of cell ranges grouped by row or by column
+     */
+    protected List<List<CellRef>> groupByRanges(List<CellRef> cellRefList, int targetRangeCount) {
+        List<List<CellRef>> colRanges = groupByColRange(cellRefList);
+        if (targetRangeCount == 0 || colRanges.size() == targetRangeCount) {
+            return colRanges;
+        }
+        List<List<CellRef>> rowRanges = groupByRowRange(cellRefList);
+        if (rowRanges.size() == targetRangeCount) {
+            return rowRanges;
+        } else {
+            return colRanges;
+        }
+    }
+
+    /**
+     * Groups a list of cell references in a column into a list of ranges
+     * @param cellRefList -
+     * @return a list of cell reference groups
+     */
+    protected List<List<CellRef>> groupByColRange(List<CellRef> cellRefList) {
+        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        if (cellRefList == null || cellRefList.size() == 0) {
+            return rangeList;
+        }
+        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        Collections.sort(cellRefListCopy, new CellRefColPrecedenceComparator());
+
+        String sheetName = cellRefListCopy.get(0).getSheetName();
+        int row = cellRefListCopy.get(0).getRow();
+        int col = cellRefListCopy.get(0).getCol();
+        List<CellRef> currentRange = new ArrayList<CellRef>();
+        currentRange.add(cellRefListCopy.get(0));
+        boolean rangeComplete = false;
+        for (int i = 1; i < cellRefListCopy.size(); i++) {
+            CellRef cellRef = cellRefListCopy.get(i);
+            if (!cellRef.getSheetName().equals(sheetName)) {
+                rangeComplete = true;
+            } else {
+                int rowDelta = cellRef.getRow() - row;
+                int colDelta = cellRef.getCol() - col;
+                if (rowDelta == 1 && colDelta == 0) {
+                    currentRange.add(cellRef);
+                } else {
+                    rangeComplete = true;
+                }
+            }
+            sheetName = cellRef.getSheetName();
+            row = cellRef.getRow();
+            col = cellRef.getCol();
+            if (rangeComplete) {
+                rangeList.add(currentRange);
+                currentRange = new ArrayList<CellRef>();
+                currentRange.add(cellRef);
+                rangeComplete = false;
+            }
+        }
+        rangeList.add(currentRange);
+        return rangeList;
+    }
+
+    /**
+     * Groups a list of cell references in a row into a list of ranges
+     * @param cellRefList -
+     * @return -
+     */
+    protected List<List<CellRef>> groupByRowRange(List<CellRef> cellRefList) {
+        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        if (cellRefList == null || cellRefList.size() == 0) {
+            return rangeList;
+        }
+        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        Collections.sort(cellRefListCopy, new CellRefRowPrecedenceComparator());
+
+        String sheetName = cellRefListCopy.get(0).getSheetName();
+        int row = cellRefListCopy.get(0).getRow();
+        int col = cellRefListCopy.get(0).getCol();
+        List<CellRef> currentRange = new ArrayList<CellRef>();
+        currentRange.add(cellRefListCopy.get(0));
+        boolean rangeComplete = false;
+        for (int i = 1; i < cellRefListCopy.size(); i++) {
+            CellRef cellRef = cellRefListCopy.get(i);
+            if (!cellRef.getSheetName().equals(sheetName)) {
+                rangeComplete = true;
+            } else {
+                int rowDelta = cellRef.getRow() - row;
+                int colDelta = cellRef.getCol() - col;
+                if (colDelta == 1 && rowDelta == 0) {
+                    currentRange.add(cellRef);
+                } else {
+                    rangeComplete = true;
+                }
+            }
+            sheetName = cellRef.getSheetName();
+            row = cellRef.getRow();
+            col = cellRef.getCol();
+            if (rangeComplete) {
+                rangeList.add(currentRange);
+                currentRange = new ArrayList<CellRef>();
+                currentRange.add(cellRef);
+                rangeComplete = false;
+            }
+        }
+        rangeList.add(currentRange);
+        return rangeList;
+    }
+
+    /**
+     * @param cellRefEntry -
+     * @return the sheet name regular expression string
+     */
+    protected String sheetNameRegex(Map.Entry<CellRef, List<CellRef>> cellRefEntry) {
+        return (cellRefEntry.getKey().isIgnoreSheetNameInFormat() ? "(?<!!)" : "");
+    }
+    
+    /**
+     * Creates a list of target formula cell references
+     * @param targetFormulaCellRef -
+     * @param targetCells -
+     * @param cellRefsToExclude -
+     * @return -
+     */
+    protected List<CellRef> createTargetCellRefListByColumn(CellRef targetFormulaCellRef, List<CellRef> targetCells, List<CellRef> cellRefsToExclude) {
+        List<CellRef> resultCellList = new ArrayList<>();
+        int col = targetFormulaCellRef.getCol();
+        for (CellRef targetCell : targetCells) {
+            if (targetCell.getCol() == col
+                    && targetCell.getRow() < targetFormulaCellRef.getRow()
+                    && !cellRefsToExclude.contains(targetCell)) {
+                resultCellList.add(targetCell);
+            }
+        }
+        return resultCellList;
     }
 }

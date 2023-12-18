@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jxls.builder.xls.JxlsCommentException;
 import org.jxls.common.JxlsException;
+import org.jxls.common.ObjectPropertyAccess;
 
 /**
  * <p>An <code>OrderByComparator</code> is a <code>Comparator</code> that is
@@ -16,27 +17,19 @@ import org.jxls.common.JxlsException;
  * last if ascending, and first if descending.</p>
  */
 public class OrderByComparator<T> implements Comparator<T> {
-    private final UtilWrapper util;
-
-    /**
-     * Sort ascending (default).
-     */
+    /** Sort ascending and don't ignore case (default). */
     public static final String ASC = "ASC";
+    /** Sort ascending and ignore case. */
     public static final String ASC_IGNORECASE = "ASC_IGNORECASE";
-    /**
-     * Sort descending.
-     */
+    /** Sort descending and don't ignore case. */
     public static final String DESC = "DESC";
+    /** Sort descending and ignore case. */
     public static final String DESC_IGNORECASE = "DESC_IGNORECASE";
 
-    /**
-     * Constant to order ascending.
-     */
-    public static final int ORDER_ASC = 1;
-    /**
-     * Constant to order descending.
-     */
-    public static final int ORDER_DESC = -1;
+    /** Constant to order ascending */
+    private static final int ORDER_ASC = 1;
+    /** Constant to order descending */
+    private static final int ORDER_DESC = -1;
 
     private List<String> myProperties;
     private List<Integer> myOrderings;
@@ -47,11 +40,9 @@ public class OrderByComparator<T> implements Comparator<T> {
      * Constructs an <code>OrderByComparator</code> based on a <code>List</code>
      * of expressions, of the format "property [ASC|DESC]".
      * @param expressions A <code>List</code> of expressions.
-     * @param util -
      * @throws JxlsException If there is a problem parsing the expressions.
      */
-    public OrderByComparator(List<String> expressions, UtilWrapper util) {
-        this.util = util;
+    public OrderByComparator(List<String> expressions) {
         setExpressions(expressions);
     }
 
@@ -118,8 +109,8 @@ public class OrderByComparator<T> implements Comparator<T> {
 
             Comparable value1, value2;
             try {
-                value1 = (Comparable) util.getObjectProperty(o1, property);
-                value2 = (Comparable) util.getObjectProperty(o2, property);
+                value1 = (Comparable) ObjectPropertyAccess.getObjectProperty(o1, property);
+                value2 = (Comparable) ObjectPropertyAccess.getObjectProperty(o2, property);
             } catch (ClassCastException e) {
                 throw new JxlsException("Property \"" + property + "\" must implement Comparable.");
             } catch (Exception e) {

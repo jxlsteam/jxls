@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.command.Person;
 
 public class OrderByComparatorTest {
 
@@ -24,7 +25,7 @@ public class OrderByComparatorTest {
         orderBy.add("city desc");
         orderBy.add(" name");
         
-        Collections.sort(persons, new OrderByComparator<Person>(orderBy, new UtilWrapper()));
+        Collections.sort(persons, new OrderByComparator<Person>(orderBy));
         
         int i = 0;
         assertEquals("Jack/null", persons.get(i++).getNameAndCity());
