@@ -73,17 +73,17 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
         }
         return jointedCellRefMap;
     }
+
+    protected static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
     
-    public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
-    public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
     public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
-    public static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
+    private static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
     private static final Pattern regexCellRefExcludingJointedPattern = Pattern.compile(regexCellRefExcludingJointed);
     private static final Pattern regexCellRefPattern = Pattern.compile(regexCellRef);
-    public static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
+    private static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
     public static final Pattern regexJointedCellRefPattern = Pattern.compile(regexJointedCellRef);
-    public static final String regexExcludePrefixSymbols = "(?<!\\w)";
-
+    protected static final String regexExcludePrefixSymbols = "(?<!\\w)";
+    
     /**
      * Parses a "jointed cell" reference and extracts individual cell references
      * @param jointedCellRef a jointed cell reference to parse

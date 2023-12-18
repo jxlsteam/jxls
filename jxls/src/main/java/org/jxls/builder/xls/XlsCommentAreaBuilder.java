@@ -113,7 +113,8 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     private static Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
-    private static final String regexAreaRef = AbstractFormulaProcessor.regexCellRef + ":" + AbstractFormulaProcessor.regexSimpleCellRef;
+    private static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
+    private static final String regexAreaRef = AbstractFormulaProcessor.regexCellRef + ":" + regexSimpleCellRef;
     private static final Pattern regexAreaRefPattern = Pattern.compile(regexAreaRef);
 
     static {
