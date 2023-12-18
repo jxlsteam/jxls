@@ -394,7 +394,7 @@ public class Util {
     }
 
     /**
-     * Similar to {@link #groupIterable(Iterable, String, String, JxlsHelper)} method but works for collections
+     * Similar to {@link #groupIterable(Iterable, String, String, JxlsLogger)} method but works for collections
      * @param collection -
      * @param groupProperty -
      * @param groupOrder -
