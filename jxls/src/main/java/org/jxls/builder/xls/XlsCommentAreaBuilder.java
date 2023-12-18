@@ -53,10 +53,8 @@ import org.jxls.util.Util;
  * <pre> "jx:each" - {@link org.jxls.command.EachCommand}
  * "jx:if" - {@link IfCommand}
  * "jx:area" - {@link AreaCommand} - for defining the top areas
- * "jx:image" - {@link ImageCommand}
  * "jx:grid" - {@link GridCommand}
- * "jx:updateCell" - {@link UpdateCellCommand}
- * "jx:mergeCells" - {@link MergeCellsCommand}</pre>
+ * "jx:updateCell" - {@link UpdateCellCommand}</pre>
  *
  * <p>Custom command classes mapping can be added using addCommandMapping(String commandName, Class clazz) method</p>
  *
