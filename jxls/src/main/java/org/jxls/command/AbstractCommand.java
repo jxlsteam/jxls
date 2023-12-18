@@ -94,7 +94,6 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Evaluates the passed collection name into an {@link Iterable} object
-     * @param expressionEvaluator -
      * @param collectionName -
      * @param context -
      * @return an iterable object from the {@link Context} under given name
