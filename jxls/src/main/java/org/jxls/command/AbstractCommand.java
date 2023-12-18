@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jxls.area.Area;
+import org.jxls.common.JxlsException;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.logging.NoOpLogger;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
@@ -82,6 +82,9 @@ public abstract class AbstractCommand implements Command {
 
     protected JxlsLogger getLogger() {
         Transformer transformer = getTransformer();
-        return (transformer == null || transformer.getLogger() == null) ? new NoOpLogger() : transformer.getLogger();
+        if (transformer == null) {
+            throw new JxlsException("Command has no transformer and can not write to log");
+        }
+        return transformer.getLogger();
     }
 }

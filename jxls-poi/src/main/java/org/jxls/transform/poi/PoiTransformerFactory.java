@@ -21,6 +21,7 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
     public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
         Workbook workbook = openWorkbook(template);
         PoiTransformer transformer = createTransformer(workbook, streaming);
+        transformer.setLogger(logger);
         transformer.setOutputStream(outputStream);
         return transformer;
     }

@@ -9,8 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
+import org.jxls.command.ImageCommand;
 import org.jxls.common.Context;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Testcase for issues 159 (insert image) and 178 (text underline issues)
@@ -28,8 +30,8 @@ public class IssueB159Test {
         }
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(model, JxlsPoiTemplateFillerBuilder.newInstance().withCommand("image", ImageCommand.class));
         
         // Verify
         // TODO I guess in the template file the image command in cell I9 must be extended with: lockRange=false

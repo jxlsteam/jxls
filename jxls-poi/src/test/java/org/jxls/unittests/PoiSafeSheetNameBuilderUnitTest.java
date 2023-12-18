@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.jxls.command.SheetNameGenerator;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.logging.NoOpLogger;
 import org.jxls.templatebasedtests.multisheet.PoiSafeSheetNameBuilderTest;
 import org.jxls.transform.SafeSheetNameBuilder;
 import org.jxls.transform.poi.PoiContext;
@@ -24,7 +24,7 @@ import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
  * @see PoiSafeSheetNameBuilderTest
  */
 public class PoiSafeSheetNameBuilderUnitTest {
-    private static final JxlsLogger logger = new NoOpLogger();
+    private static final JxlsLogger logger = new PoiExceptionThrower();
 
     /**
      * Tests PoiSafeSheetNameBuilder.

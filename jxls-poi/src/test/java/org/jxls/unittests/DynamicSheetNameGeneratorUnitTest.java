@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.jxls.command.DynamicSheetNameGenerator;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.logging.NoOpLogger;
 import org.jxls.templatebasedtests.multisheet.AbstractMultiSheetTest.TestExpressionEvaluator;
 import org.jxls.templatebasedtests.multisheet.DynamicSheetNameGeneratorTest;
 import org.jxls.transform.SafeSheetNameBuilder;
@@ -21,7 +21,7 @@ import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
  * @see DynamicSheetNameGeneratorTest
  */
 public class DynamicSheetNameGeneratorUnitTest {
-    private static final JxlsLogger logger = new NoOpLogger();
+    private static final JxlsLogger logger = new PoiExceptionThrower();
     
     /** Old-style test */
     @Test

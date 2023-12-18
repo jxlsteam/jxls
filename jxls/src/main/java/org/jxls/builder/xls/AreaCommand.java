@@ -22,4 +22,7 @@ public class AreaCommand extends AbstractCommand {
     public Size applyAt(CellRef cellRef, Context context) {
         return Size.ZERO_SIZE;
     }
+    
+    public void setSheetStreaming(String ignored) {
+    }
 }

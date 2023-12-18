@@ -18,6 +18,7 @@ import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.common.cellshift.InnerCellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 
 /**
@@ -156,7 +157,10 @@ public class XlsArea implements Area {
         if (this == XlsArea.EMPTY_AREA) {
             return Size.ZERO_SIZE;
         }
-        transformer.getLogger().debug("Applying XlsArea at " + cellRef);
+        JxlsLogger logger = transformer.getLogger();
+        if (logger != null) {
+            logger.debug("Applying XlsArea at " + cellRef);
+        }
         fireBeforeApplyEvent(cellRef, context);
         createCellRange();
         AreaRef commandsArea = transformTopStaticArea(cellRef, context);

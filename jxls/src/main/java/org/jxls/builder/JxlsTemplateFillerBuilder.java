@@ -18,7 +18,6 @@ import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.logging.NoOpLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.util.CannotOpenWorkbookException;
 
@@ -31,7 +30,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public static final String DEFAULT_EXPRESSION_END = "}";
     protected String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
     protected String expressionNotationEnd = DEFAULT_EXPRESSION_END;
-    protected JxlsLogger logger = new NoOpLogger();
+    protected JxlsLogger logger;
     /** null: no formula processing */
     private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
     protected boolean ignoreColumnProps = false;

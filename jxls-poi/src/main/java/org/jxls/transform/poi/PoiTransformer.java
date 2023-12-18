@@ -27,7 +27,7 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.PoiExceptionLogger;
+import org.jxls.common.JxlsException;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
@@ -48,7 +48,7 @@ public class PoiTransformer extends AbstractTransformer {
     private OutputStream outputStream;
     private InputStream inputStream;
     private final boolean isSXSSF;
-    private JxlsLogger logger = new PoiExceptionLogger();
+    private JxlsLogger logger;
     
     /**
      * No streaming
@@ -210,7 +210,7 @@ public class PoiTransformer extends AbstractTransformer {
         CellData cellData = getCellData(srcCellRef);
         if (cellData != null) {
             if (targetCellRef == null || targetCellRef.getSheetName() == null) {
-                logger.info("targetCellRef is null or has empty sheet name, cellRef=" + targetCellRef);
+                getLogger().info("targetCellRef is null or has empty sheet name, cellRef=" + targetCellRef);
                 return null; // do not transform
             }
         }
@@ -236,12 +236,15 @@ public class PoiTransformer extends AbstractTransformer {
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
-            logger.handleCellException(e, cellData.toString(), context.toMap().keySet().toString());
+            getLogger().handleCellException(e, cellData.toString(), context.toMap().keySet().toString());
         }
     }
 
     @Override
     public JxlsLogger getLogger() {
+        if (logger == null) {
+            throw new JxlsException("Transformer has no logger");
+        }
         return logger;
     }
     
@@ -338,7 +341,7 @@ public class PoiTransformer extends AbstractTransformer {
             poiCell.setCellFormula(formulaString);
             clearCellValue(poiCell);
         } catch (Exception e) {
-            logger.handleFormulaException(e, cellRef.getCellName(), formulaString);
+            getLogger().handleFormulaException(e, cellRef.getCellName(), formulaString);
         }
     }
     
@@ -441,7 +444,7 @@ public class PoiTransformer extends AbstractTransformer {
                 ((SXSSFWorkbook) workbook).dispose();
             }
         } catch (Exception e) {
-            logger.warn(e, "Error disposing streamed workbook");
+            getLogger().warn(e, "Error disposing streamed workbook");
         }
     }
 
@@ -485,7 +488,7 @@ public class PoiTransformer extends AbstractTransformer {
             workbook.removeSheetAt(sheetIndex);
             return true;
         } else {
-            logger.warn("Failed to find sheet '" + sheetName + "' in sheet map. Skipping the deletion.");
+            getLogger().warn("Failed to find sheet '" + sheetName + "' in sheet map. Skipping the deletion.");
             return false;
         }
     }
@@ -532,7 +535,7 @@ public class PoiTransformer extends AbstractTransformer {
         if (size.getHeight() > 0 && xwb != null) {
             XSSFSheet sheet = xwb.getSheet(ref.getSheetName());
             if (sheet == null) {
-                logger.error("Can not access sheet '" + ref.getSheetName() + "'");
+                getLogger().error("Can not access sheet '" + ref.getSheetName() + "'");
             } else {
                 for (XSSFTable table : sheet.getTables()) {
                     AreaRef areaRef = new AreaRef(table.getSheetName() + "!" + table.getCTTable().getRef());

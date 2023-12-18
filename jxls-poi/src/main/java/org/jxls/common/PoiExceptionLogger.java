@@ -38,4 +38,40 @@ public class PoiExceptionLogger implements JxlsLogger {
     public void handleSetObjectPropertyException(Exception e, Object obj, String propertyName, String propertyValue) {
         warn(e, "Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj);
     }
+
+    @Override
+    public void debug(String msg) {
+    }
+
+    @Override
+    public void info(String msg) {
+        write("INFO", msg, null);
+    }
+
+    @Override
+    public void warn(String msg) {
+        write("WARN", msg, null);
+    }
+
+    @Override
+    public void warn(Throwable e, String msg) {
+        write("WARN", msg, e);
+    }
+
+    @Override
+    public void error(String msg) {
+        write("ERROR", msg, null);
+    }
+
+    @Override
+    public void error(Throwable e, String msg) {
+        write("ERROR", msg, e);
+    }
+    
+    protected void write(String level, String msg, Throwable e) {
+        System.err.println("JXLS [" + level + "] " + msg);
+        if (e != null) {
+            e.printStackTrace();
+        }
+    }
 }

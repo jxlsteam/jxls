@@ -14,13 +14,13 @@ public interface JxlsLogger {
 
     // generic logging
     
-    default void debug(String msg) {}
+    void debug(String msg);
     
-    default void info(String msg) {}
+    void info(String msg);
 
-    default void warn(String msg) {}
-    default void warn(Throwable e, String msg) {}
+    void warn(String msg);
+    void warn(Throwable e, String msg);
     
-    default void error(String msg) {}
-    default void error(Throwable e, String msg) {}
+    void error(String msg);
+    void error(Throwable e, String msg);
 }

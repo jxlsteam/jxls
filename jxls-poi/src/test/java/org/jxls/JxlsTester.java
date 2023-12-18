@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.junit.Assert;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
@@ -74,6 +75,7 @@ public class JxlsTester implements AutoCloseable {
      */
     public void processTemplate(Context context) {
         try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
+            Assert.assertNotNull("Resource not found: " + excelTemplateFilename, is);
             try (OutputStream os = new FileOutputStream(out)) {
                 JxlsHelper jxls = JxlsHelper.getInstance();
                 if (useFastFormulaProcessor) {
