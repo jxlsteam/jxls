@@ -11,6 +11,10 @@ public class JxlsStreaming {
     private final boolean streaming;
     private final Set<String> sheetNames;
     private final boolean autoDetect;
+    /** option for streaming; see SXSSFWorkbook.DEFAULT_WINDOW_SIZE */
+    private int rowAccessWindowSize = 100;
+    private boolean compressTmpFiles = false;
+    private boolean useSharedStringsTable = false;
 
     public static final JxlsStreaming STREAMING_OFF = new JxlsStreaming(false, null, false);
     /** Use standard streaming for all sheets */
@@ -42,5 +46,32 @@ public class JxlsStreaming {
 
     public boolean isAutoDetect() {
         return autoDetect;
+    }
+
+    /**
+     * Not often used streaming options
+     * @param rowAccessWindowSize default 100, see SXSSFWorkbook.DEFAULT_WINDOW_SIZE
+     * @param compressTmpFiles default false
+     * @param useSharedStringsTable default false
+     * @return new JxlsStreaming object
+     */
+    public JxlsStreaming withOptions(int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        JxlsStreaming ret = new JxlsStreaming(streaming, sheetNames, autoDetect);
+        ret.rowAccessWindowSize = rowAccessWindowSize;
+        ret.compressTmpFiles = compressTmpFiles;
+        ret.useSharedStringsTable = useSharedStringsTable;
+        return ret;
+    }
+
+    public int getRowAccessWindowSize() {
+        return rowAccessWindowSize;
+    }
+
+    public boolean isCompressTmpFiles() {
+        return compressTmpFiles;
+    }
+
+    public boolean isUseSharedStringsTable() {
+        return useSharedStringsTable;
     }
 }

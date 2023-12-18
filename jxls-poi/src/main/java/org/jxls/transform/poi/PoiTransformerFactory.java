@@ -36,13 +36,19 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
 
     protected PoiTransformer createTransformer(Workbook workbook, JxlsStreaming streaming) {
         if (streaming.isAutoDetect()) {
-            return new SelectSheetsForStreamingPoiTransformer(workbook, getAllSheetsInWhichStreamingIsConfigured(workbook));
+            return new SelectSheetsForStreamingPoiTransformer(workbook, getAllSheetsInWhichStreamingIsConfigured(workbook),
+                    streaming.getRowAccessWindowSize(), streaming.isCompressTmpFiles(), streaming.isUseSharedStringsTable());
+        
         } else if (streaming.getSheetNames() != null) {
-            return new SelectSheetsForStreamingPoiTransformer(workbook, streaming.getSheetNames());
+            return new SelectSheetsForStreamingPoiTransformer(workbook, streaming.getSheetNames(),
+                    streaming.getRowAccessWindowSize(), streaming.isCompressTmpFiles(), streaming.isUseSharedStringsTable());
+        
         } else if (streaming.isStreaming()) {
             // Don't use PoiTransformer here because SelectSheetsForStreamingPoiTransformer is better.
-            return new SelectSheetsForStreamingPoiTransformer(workbook, true);
-        } else {
+            return new SelectSheetsForStreamingPoiTransformer(workbook, true,
+                    streaming.getRowAccessWindowSize(), streaming.isCompressTmpFiles(), streaming.isUseSharedStringsTable());
+        
+        } else { // no streaming
             return new PoiTransformer(workbook, false);
         }
     }

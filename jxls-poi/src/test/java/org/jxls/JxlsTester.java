@@ -24,7 +24,6 @@ public class JxlsTester implements AutoCloseable {
     private boolean useFastFormulaProcessor = false;
     /** evaluating formulas turned on by default because in testcases we want to verify the output files */
     private boolean evaluateFormulas = true;
-    private boolean fullFormulaRecalculationOnOpening = false;
 
     /**
      * Use this constructor if you really need to change the Excel template filename (reasons can be: different templates in one testclass;
@@ -82,7 +81,6 @@ public class JxlsTester implements AutoCloseable {
                     jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
                 }
                 jxls.setEvaluateFormulas(evaluateFormulas);
-                jxls.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
                 jxls.processTemplate(is, os, context);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
@@ -105,7 +103,6 @@ public class JxlsTester implements AutoCloseable {
                     jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
                 }
                 jxls.setEvaluateFormulas(evaluateFormulas);
-                jxls.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
                 jxls.processTemplate(context, transformer);
             }
         } catch (IOException e) { // Testcase does not need not catch IOException.
@@ -170,15 +167,6 @@ public class JxlsTester implements AutoCloseable {
 
     public JxlsTester dontEvaluateFormulas() {
         evaluateFormulas = false;
-        return this;
-    }
-
-    public boolean isFullFormulaRecalculationOnOpening() {
-        return fullFormulaRecalculationOnOpening;
-    }
-
-    public JxlsTester setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
-        this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
         return this;
     }
 

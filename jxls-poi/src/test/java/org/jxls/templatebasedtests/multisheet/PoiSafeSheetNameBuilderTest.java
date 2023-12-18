@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
 import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.common.Context;
@@ -17,6 +18,7 @@ import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
 import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.unittests.PoiSafeSheetNameBuilderUnitTest;
 
 /**
@@ -45,8 +47,8 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
         
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
         
         assertEquals("Number of safeNames is wrong", 2, safeNames.size());
         assertEquals("Name of 1st sheet is wrong", "data sheet", safeNames.get(0));
@@ -63,8 +65,8 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
         
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
     }
 
     /**

@@ -33,6 +33,7 @@ public class PreWriteTest {
         verify115_9(tester);
     }
 
+	// issue 87
 	@Test
     public void recalculateFormulasOnOpening() {
         // Prepare
@@ -43,7 +44,13 @@ public class PreWriteTest {
         JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance()
         		.withRecalculateFormulasBeforeSaving(false).withRecalculateFormulasOnOpening(true);
 		tester.test(data, builder);
-		verify0(tester); // Reading the value of B3 using POI results in 0.
+		
+		// Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            Assert.assertEquals(Double.valueOf(0d), w.getCellValueAsDouble(3, 2), 0.005d); // Reading the value of B3 using POI results in 0.
+            Assert.assertTrue(w.isForceFormulaRecalculation());
+        }
 		// You can only verify this manually using Excel for opening the result file: value of B3 must be 115.9
 	}
 

@@ -22,13 +22,15 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
         super(workbook, true);
     }
 
-    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, boolean allSheets) {
-        super(workbook, true);
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, boolean allSheets,
+            int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        super(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
         this.allSheets = allSheets;
     }
 
-    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, Set<String> sheetNames) {
-        super(workbook, true);
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, Set<String> sheetNames,
+            int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        super(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
         this.dataSheetsToUseStreaming = sheetNames;
     }
 

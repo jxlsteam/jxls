@@ -1,29 +1,23 @@
 package org.jxls.templatebasedtests;
 
-import java.io.FileOutputStream;
+import static org.junit.Assert.assertEquals;
+import static org.jxls.builder.JxlsStreaming.STREAMING_ON;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.Test;
-import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
-import org.jxls.common.CellRef;
+import org.jxls.Jxls3Tester;
+import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiContext;
-import org.jxls.transform.poi.PoiTransformer;
 
 /**
  * jx:each with direction=RIGHT with SXSSF Transformer rewrites static cells
@@ -32,21 +26,21 @@ public class IssueB160Test {
 
     @Test
     public void test() throws IOException, ParseException {
-        List<Map<String, Object>> lotsOfStuff = createLotsOfStuff();
+        // Prepare
         Context context = new PoiContext();
-        context.putVar("lotsOfStuff", lotsOfStuff);
+        context.putVar("lotsOfStuff", createLotsOfStuff());
         context.putVar("columns", new Columns());
-        try (InputStream in = IssueB160Test.class.getResourceAsStream("IssueB160Test.xlsx")) {
-            try (OutputStream os = new FileOutputStream("target/IssueB160Test_output.xlsx")) {
-                Workbook workbook = WorkbookFactory.create(in);
-                PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 2, false);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-                List<Area> xlsAreaList = areaBuilder.build(transformer, true);
-                Area xlsArea = xlsAreaList.get(0);
-                xlsArea.applyAt(new CellRef("Result!A1"), context);
-                SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();
-                workbook2.write(os);
-            }
+        
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(STREAMING_ON.withOptions(2, false, false)));
+
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(0);
+            assertEquals("header2_dynamic", w.getCellValueAsString(4, 3));
+            assertEquals("stuff_2_value2", w.getCellValueAsString(6, 3));
+            assertEquals("Static last line", w.getCellValueAsString(7, 1));
         }
     }
 
@@ -70,28 +64,14 @@ public class IssueB160Test {
     public static class Columns {
         
         public Collection<String> keyOf(List<Map<String, Object>> row) {
-            List<String> ret = new ArrayList<>();
-            for (String key : row.get(0).keySet()) {
-                if (key.endsWith("_dynamic")) {
-                    ret.add(key);
-                }
-            }
-            return ret;
-            // Java 8: return row.get(0).keySet().stream().filter(k -> k.endsWith("_dynamic")).collect(Collectors.toList());
+            return row.get(0).keySet().stream().filter(k -> k.endsWith("_dynamic")).collect(Collectors.toList());
         }
 
         public Collection<Object> valueOf(Map<String, Object> row) {
-            List<Object> ret = new ArrayList<>();
-            for (Entry<String, Object> entry : row.entrySet()) {
-                if (entry.getKey() != null && entry.getKey().endsWith("_dynamic")) {
-                    ret.add(entry.getValue());
-                }
-            }
-            return ret;
-            /* Java 8: return row.entrySet().stream()
+            return row.entrySet().stream()
                     .filter(entry -> entry.getKey() != null && entry.getKey().endsWith("_dynamic"))
                     .map(Map.Entry::getValue)
-                    .collect(Collectors.toList());*/
+                    .collect(Collectors.toList());
         }
     }
 }

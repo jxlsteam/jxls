@@ -28,6 +28,7 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
+import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
@@ -48,7 +49,7 @@ public class PoiTransformer extends AbstractTransformer {
     private OutputStream outputStream;
     private InputStream inputStream;
     private final boolean isSXSSF;
-    private JxlsLogger logger;
+    private JxlsLogger logger = new PoiExceptionLogger();
     
     /**
      * No streaming

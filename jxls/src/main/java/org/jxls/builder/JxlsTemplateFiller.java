@@ -68,7 +68,6 @@ public class JxlsTemplateFiller {
     }
 
     public void fill(Map<String, Object> data, JxlsOutput output) {
-System.out.println(logger.getClass().getName());        
         try (OutputStream outputStream = output.getOutputStream()) {
             createTransformer(outputStream);
             configureTransformer();

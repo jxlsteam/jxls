@@ -281,6 +281,10 @@ public class EachCommand extends AbstractCommand {
     public void setOldSelectBehavior(boolean oldSelectBehavior) {
         this.oldSelectBehavior = oldSelectBehavior;
     }
+    
+    public void setOldSelectBehavior(String oldSelectBehavior) {
+        this.oldSelectBehavior = "true".equalsIgnoreCase(oldSelectBehavior);
+    }
 
     @Override
     public Command addArea(Area area) {
