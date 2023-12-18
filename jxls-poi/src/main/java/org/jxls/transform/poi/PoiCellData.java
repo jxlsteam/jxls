@@ -22,7 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.util.Util;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 
 /**
@@ -240,7 +239,7 @@ public class PoiCellData extends org.jxls.common.CellData {
 
     private void updateFormulaCellContents(Cell cell) {
         try {
-            if (Util.formulaContainsJointedCellRef((String) evaluationResult)) {
+            if (formulaContainsJointedCellRef((String) evaluationResult)) {
                 cell.setCellValue((String) evaluationResult);
             } else {
                 cell.setCellFormula((String) evaluationResult);

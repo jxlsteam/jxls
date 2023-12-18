@@ -81,9 +81,9 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                         // Thus, we just concatenate all cells with "+" to have the same effect (see issue B059 for more detail)
                         targetFormulaString = replacementString.replaceAll(",", "+");
                     } else {
-                        String from = Util.regexJointedLookBehind
+                        String from = regexJointedLookBehind
                                 + Util.sheetNameRegex(cellRefEntry)
-                                + Util.regexExcludePrefixSymbols
+                                + regexExcludePrefixSymbols
                                 + Pattern.quote(cellRefEntry.getKey().getCellName());
                         String to = Matcher.quoteReplacement(replacementString);
                         targetFormulaString = targetFormulaString.replaceAll(from, to);

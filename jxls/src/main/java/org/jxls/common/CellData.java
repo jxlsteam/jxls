@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.xls.JxlsCommentException;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.formula.AbstractFormulaProcessor;
 import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
-import org.jxls.util.Util;
 
 /**
  * Represents an Excel cell data holder and cell value evaluator
@@ -218,7 +218,17 @@ public class CellData {
     }
 
     public boolean isJointedFormulaCell() {
-        return isParameterizedFormulaCell() && Util.formulaContainsJointedCellRef(cellValue.toString());
+        return isParameterizedFormulaCell() && formulaContainsJointedCellRef(cellValue.toString());
+    }
+    
+    /**
+     * Checks if the formula contains jointed cell references
+     * Jointed references have format U_(cell1, cell2) e.g. $[SUM(U_(F8,F13))]
+     * @param formula string
+     * @return true if the formula contains jointed cell references
+     */
+    protected boolean formulaContainsJointedCellRef(String formula) {
+        return AbstractFormulaProcessor.regexJointedCellRefPattern.matcher(formula).find();
     }
 
     public boolean addTargetPos(CellRef cellRef) {

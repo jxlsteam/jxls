@@ -25,6 +25,7 @@ import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.expression.Dummy;
 import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.formula.AbstractFormulaProcessor;
 
 public class UtilTest {
     // see more tests in UtilCreateTargetCellRefTest
@@ -110,7 +111,7 @@ public class UtilTest {
         // Test
         String table = "_tabu";
         String columnHeader = " 1 column b";
-        List<String> formulaCellRefs = Util.getFormulaCellRefs(table + "[" + columnHeader + "]");
+        List<String> formulaCellRefs = AbstractFormulaProcessor.getFormulaCellRefs(table + "[" + columnHeader + "]");
         
         // Verify
         assertEquals(1, formulaCellRefs.size());
@@ -121,7 +122,7 @@ public class UtilTest {
     public void test_getFormulaCellRefs_tableSyntax2() {
         // Test
         String formula = "FUNC(one[AB CD],two[123], -1, three[c])";
-        List<String> formulaCellRefs = Util.getFormulaCellRefs(formula);
+        List<String> formulaCellRefs = AbstractFormulaProcessor.getFormulaCellRefs(formula);
         
         // Verify
         assertEquals(3, formulaCellRefs.size());

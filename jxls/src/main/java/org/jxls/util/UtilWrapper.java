@@ -18,22 +18,6 @@ import org.jxls.logging.JxlsLogger;
  */
 public class UtilWrapper {
 
-    public List<String> getFormulaCellRefs(String formula) {
-        return Util.getFormulaCellRefs(formula);
-    }
-
-    public List<String> getJointedCellRefs(String formula) {
-        return Util.getJointedCellRefs(formula);
-    }
-
-    public List<String> getCellRefsFromJointedCellRef(String jointedCellRef) {
-        return Util.getCellRefsFromJointedCellRef(jointedCellRef);
-    }
-
-    public boolean formulaContainsJointedCellRef(String formula) {
-        return Util.formulaContainsJointedCellRef(formula);
-    }
-
     public String createTargetCellRef(List<CellRef> targetCellDataList) {
         return Util.createTargetCellRef(targetCellDataList);
     }

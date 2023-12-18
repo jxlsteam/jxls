@@ -21,6 +21,7 @@ import org.jxls.command.UpdateCellCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.formula.AbstractFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 import org.jxls.util.LiteralsExtractor;
@@ -112,6 +113,8 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
     private static Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
+    private static final String regexAreaRef = AbstractFormulaProcessor.regexCellRef + ":" + AbstractFormulaProcessor.regexSimpleCellRef;
+    private static final Pattern regexAreaRefPattern = Pattern.compile(regexAreaRef);
 
     static {
         commandMap.put(EachCommand.COMMAND_NAME, EachCommand.class);
@@ -257,7 +260,7 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
 
     private List<AreaRef> extractAreaRefs(CellData cellData, String areasAttr) {
         List<AreaRef> areaRefs = new ArrayList<AreaRef>();
-        Matcher areaRefMatcher = Util.regexAreaRefPattern.matcher(areasAttr);
+        Matcher areaRefMatcher = regexAreaRefPattern.matcher(areasAttr);
         while (areaRefMatcher.find()) {
             String areaRefName = areaRefMatcher.group();
             AreaRef areaRef = new AreaRef(areaRefName);

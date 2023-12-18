@@ -77,7 +77,7 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                             replacementString = Util.createTargetCellRef(targetCells);
                         }
                     }
-                    String from = Util.regexJointedLookBehind
+                    String from = regexJointedLookBehind
                             + Util.sheetNameRegex(cellRefEntry)
                             + Util.getStrictCellNameRegex(Pattern.quote(cellRefEntry.getKey().getCellName()));
                     String to = Matcher.quoteReplacement(replacementString);

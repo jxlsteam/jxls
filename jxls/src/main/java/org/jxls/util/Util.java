@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
@@ -37,69 +35,6 @@ import org.jxls.logging.JxlsLogger;
  * @author Leonid Vysochyn
  */
 public class Util {
-    public static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
-    public static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
-    public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
-    public static final String regexAreaRef = regexCellRef + ":" + regexSimpleCellRef;
-    public static final Pattern regexAreaRefPattern = Pattern.compile(regexAreaRef);
-    public static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
-    private static final Pattern regexCellRefExcludingJointedPattern = Pattern.compile(regexCellRefExcludingJointed);
-    private static final Pattern regexCellRefPattern = Pattern.compile(regexCellRef);
-    public static final String regexJointedCellRef = "U_\\([^\\)]+\\)";
-    private static final Pattern regexJointedCellRefPattern = Pattern.compile(regexJointedCellRef);
-    public static final String regexExcludePrefixSymbols = "(?<!\\w)";
-
-    /**
-     * Parses a formula and returns a list of cell names used in it
-     * E.g. for formula "B4*(1+C4)" the returned list will contain "B4", "C4"
-     * @param formula string
-     * @return a list of cell names used in the formula
-     */
-    public static List<String> getFormulaCellRefs(String formula) {
-        return getStringPartsByPattern(formula, regexCellRefExcludingJointedPattern);
-    }
-
-    private static List<String> getStringPartsByPattern(String str, Pattern pattern) {
-        List<String> cellRefs = new ArrayList<String>();
-        if (str != null) {
-            Matcher cellRefMatcher = pattern.matcher(str);
-            while (cellRefMatcher.find()) {
-                cellRefs.add(cellRefMatcher.group());
-            }
-        }
-        return cellRefs;
-    }
-
-    /**
-     * Parses a formula to extract a list of so called "jointed cells"
-     * The jointed cells are cells combined with a special notation "U_(cell1, cell2)" into a single cell
-     * They are used in formulas like this "$[SUM(U_(F8,F13))]".
-     * Here the formula will use both F8 and F13 source cells to calculate the sum
-     * @param formula a formula string to parse
-     * @return a list of jointed cells used in the formula
-     */
-    public static List<String> getJointedCellRefs(String formula) {
-        return getStringPartsByPattern(formula, regexJointedCellRefPattern);
-    }
-
-    /**
-     * Parses a "jointed cell" reference and extracts individual cell references
-     * @param jointedCellRef a jointed cell reference to parse
-     * @return a list of cell names extracted from the jointed cell reference
-     */
-    public static List<String> getCellRefsFromJointedCellRef(String jointedCellRef) {
-        return getStringPartsByPattern(jointedCellRef, regexCellRefPattern);
-    }
-
-    /**
-     * Checks if the formula contains jointed cell references
-     * Jointed references have format U_(cell1, cell2) e.g. $[SUM(U_(F8,F13))]
-     * @param formula string
-     * @return true if the formula contains jointed cell references
-     */
-    public static boolean formulaContainsJointedCellRef(String formula) {
-        return regexJointedCellRefPattern.matcher(formula).find();
-    }
 
     /**
      * Combines a list of cell references into a range
