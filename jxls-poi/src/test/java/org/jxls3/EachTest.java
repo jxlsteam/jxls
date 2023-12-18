@@ -2,6 +2,7 @@ package org.jxls3;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.jxls.builder.JxlsStreaming.AUTO_DETECT;
@@ -80,10 +81,12 @@ public class EachTest {
         // Prepare
         Map<String,Object> data = new HashMap<>();
         data.put("employees", Employee.generateSampleEmployeeData());
+        InputStream template = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx");
+        assertNotNull(template);
+        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template);
 
         // Test
-        InputStream template = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx");
-        JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template).buildAndFill(data, new File(":/"/*error*/));
+        builder.buildAndFill(data, new File(":/"/*error*/));
 	}
 
 	/** orderBy="e.name, e.payment DESC" */
