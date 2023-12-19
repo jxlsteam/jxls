@@ -3,6 +3,8 @@ package org.jxls.expression;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.jxls.common.JxlsException;
+
 /**
  * A factory to create {@link ExpressionEvaluator} instance which is based on JSR 223
  */
@@ -12,6 +14,9 @@ public final class ExpressionEvaluatorFactoryJSR223Impl implements ExpressionEva
 
     public ExpressionEvaluatorFactoryJSR223Impl(String lang) {
         scriptEngine = manager.getEngineByName(lang);
+        if (scriptEngine == null) {
+            throw new JxlsException("Can not get script engine");
+        }
     }
 
     @Override

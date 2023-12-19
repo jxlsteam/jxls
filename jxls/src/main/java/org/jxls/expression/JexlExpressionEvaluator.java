@@ -79,7 +79,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
-            // TODO JxlsLogger?
+            // JxlsLogger not needed here.
         }
     }
 
@@ -90,7 +90,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e);
-            // TODO JxlsLogger?
+            // JxlsLogger not needed here.
         }
     }
 

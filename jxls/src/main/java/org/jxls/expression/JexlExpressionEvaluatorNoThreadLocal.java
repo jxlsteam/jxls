@@ -69,7 +69,8 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
             }
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
-            throw new EvaluationException("An error occurred when evaluating expression " + expression, e); // TODO JxlsLogger?
+            throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
+            // JxlsLogger not needed here.
         }
     }
 
@@ -79,7 +80,8 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
         try {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
-            throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e); // TODO JxlsLogger?
+            throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e);
+            // JxlsLogger not needed here.
         }
     }
 
