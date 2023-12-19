@@ -196,4 +196,23 @@ public class EachTest {
 			return departments;
 		}
     }
+    
+    @Test
+    public void varIndex() throws ParseException {
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "varIndex");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            for (int i = 1; i <= 5; i++) {
+                assertEquals(i, w.getCellValueAsDouble(1 + i, 3), 0.5d);
+            }
+        }
+    }
 }
