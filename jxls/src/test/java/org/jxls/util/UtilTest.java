@@ -17,7 +17,7 @@ import org.jxls.common.Size;
 import org.jxls.formula.AbstractFormulaProcessor;
 
 public class UtilTest {
-    // see more tests in UtilCreateTargetCellRefTest
+    // see more tests in CreateTargetCellRefTest
 
     @Test
     public void should_return_sheet_names_of_multi_sheet_template() {
@@ -38,9 +38,6 @@ public class UtilTest {
         // THEN
         assertEquals(sheetsNameOfMultiSheetTemplate, singletonList("areaWithMultiSheetOutput"));
     }
-    
-    
-    
     
 // #240 not part of v2.13.0    @Test
     public void test_getFormulaCellRefs_tableSyntax() {
