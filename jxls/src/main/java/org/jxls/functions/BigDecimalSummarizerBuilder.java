@@ -14,7 +14,6 @@ public class BigDecimalSummarizerBuilder implements SummarizerBuilder<BigDecimal
                 if (number != null) {
                     sum = sum.add((BigDecimal) number);
                 }
-
             }
 
             @Override
