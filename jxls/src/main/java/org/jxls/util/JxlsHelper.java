@@ -337,68 +337,6 @@ public class JxlsHelper {
     }
 
     /**
-     * Processes the template with the {@link GridCommand}
-     *
-     * @param templateStream template input stream
-     * @param targetStream output stream for the result
-     * @param context data map
-     * @param objectProps object properties to use with the {@link GridCommand}
-     * @return this
-     * @throws IOException -
-     */
-    public JxlsHelper processGridTemplate(InputStream templateStream, OutputStream targetStream, Context context, String objectProps) throws IOException {
-        Transformer transformer = createTransformer(templateStream, targetStream);
-        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
-        for (Area xlsArea : xlsAreaList) {
-            GridCommand gridCommand = (GridCommand) xlsArea.getCommandDataList().get(0).getCommand();
-            gridCommand.setProps(objectProps);
-            setFormulaProcessor(xlsArea);
-            xlsArea.applyAt(new CellRef(xlsArea.getStartCellRef().getCellName()), context);
-            if (processFormulas) {
-                xlsArea.processFormulas();
-            }
-        }
-        transformer.write();
-        return this;
-    }
-
-    /**
-     * Processes the input template with {@link GridCommand} at given target cell
-     * using the given object properties and context
-     *
-     * @param templateStream template input stream
-     * @param targetStream result output stream
-     * @param context data map
-     * @param objectProps object properties to use with {@link GridCommand}
-     * @param targetCell start target cell to use when processing the template
-     * @throws IOException -
-     */
-    public void processGridTemplateAtCell(InputStream templateStream, OutputStream targetStream, Context context,
-            String objectProps, String targetCell) throws IOException {
-        Transformer transformer = createTransformer(templateStream, targetStream);
-        List<Area> xlsAreaList = areaBuilder.build(transformer, clearTemplateCells);
-        Area firstArea = xlsAreaList.get(0);
-        CellRef targetCellRef = new CellRef(targetCell);
-        GridCommand gridCommand = (GridCommand) firstArea.getCommandDataList().get(0).getCommand();
-        gridCommand.setProps(objectProps);
-        firstArea.applyAt(targetCellRef, context);
-        if (processFormulas) {
-            setFormulaProcessor(firstArea);
-            firstArea.processFormulas();
-        }
-        String sourceSheetName = firstArea.getStartCellRef().getSheetName();
-        if (!sourceSheetName.equalsIgnoreCase(targetCellRef.getSheetName())) {
-            if (hideTemplateSheet) {
-                transformer.setHidden(sourceSheetName, true);
-            }
-            if (deleteTemplateSheet) {
-                transformer.deleteSheet(sourceSheetName);
-            }
-        }
-        transformer.write();
-    }
-
-    /**
      * Registers grid template to be used with {@link SimpleExporter}
      *
      * @param inputStream template input stream

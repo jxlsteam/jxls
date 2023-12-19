@@ -64,6 +64,7 @@ public class AreaBuilderTest {
 			if (!markersWithoutEnd.isEmpty()) {
 				throw new RuntimeException("There are markers without end marker:\n" + markersWithoutEnd.toString());
 			}
+			// TODO cleanup duplicate code
 			//>>duplicate code>>
 	        List<Area> userAreas = new ArrayList<Area>();
 	        List<Area> allAreas = new ArrayList<Area>();
