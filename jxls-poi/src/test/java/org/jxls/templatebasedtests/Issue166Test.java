@@ -52,7 +52,7 @@ public class Issue166Test {
         tester.createTransformerAndProcessTemplate(context, installCustomFunctions_noThreadLocal(context));
 
         // Test
-        evaluator.clear();
+        JexlExpressionEvaluatorNoThreadLocal.clear();
         
         // Verify
         verify(tester);
@@ -64,8 +64,9 @@ public class Issue166Test {
         JxlsTester tester = JxlsTester.xlsx(getClass());
         tester.createTransformerAndProcessTemplate(context, installCustomFunctions_threadLocal(context));
 
+        new JexlExpressionEvaluator();
         // Test
-        new JexlExpressionEvaluator().clear(); // clear cache for current thread
+        JexlExpressionEvaluator.clear(); // clear cache for current thread
         
         // Verify
         verify(tester);
