@@ -140,7 +140,6 @@ public class AreaBuilderTest {
 					for (Marker m : markers) {
 						if (m.getName().equals(name)) {
 							m.setEndCell(d.getCellRef());
-							d.getCellRef(); // TODO remove comment
 							break;
 						}
 					}
