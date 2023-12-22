@@ -1,14 +1,12 @@
 package org.jxls.functions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 
 /**
@@ -43,6 +41,9 @@ public class GroupSum<T> {
      * @return sum of type T
      */
     public T sum(String fieldName, String expression) {
+        if (transformationConfig == null) {
+            throw new JxlsException("Please set GroupSum.transformationConfig!");
+        }
         return sum(fieldName, getItems(expression));
     }
     
@@ -53,7 +54,7 @@ public class GroupSum<T> {
      * @param collection the collection; inside Excel file it's a JEXL expression
      * @return sum of type T
      */
-    public T sum(String fieldName, Collection<Object> collection) {
+    public T sum(String fieldName, Iterable<Object> collection) {
         Summarizer<T> sum = sumBuilder.build();
         for (Object i : collection) {
             sum.add(getValue(i, fieldName));
@@ -81,7 +82,7 @@ public class GroupSum<T> {
         return sum(fieldName, getItems(expression), filter);
     }
     
-    public T sum(String fieldName, Collection<Object> collection, String filter) {
+    public T sum(String fieldName, Iterable<Object> collection, String filter) {
         if (transformationConfig == null) {
             throw new JxlsException("Please set GroupSum.transformationConfig!");
         }
@@ -91,12 +92,12 @@ public class GroupSum<T> {
         for (Object i : collection) {
             Object value = getValue(i, fieldName);
             context.putVar(objectVarName, i);
-            if (expressionEvaluator.isConditionTrue(filter, context.toMap()) == Boolean.TRUE) {
+            if (Boolean.TRUE.equals(expressionEvaluator.isConditionTrue(filter, context.toMap()))) {
                 sum.add(value);
             }
         }
         if (oldValue != null) {
-            context.putVar(objectVarName, oldValue);
+            context.putVar(objectVarName, oldValue); // TODO runVar support
         } else {
             context.removeVar(objectVarName);
         }
@@ -118,18 +119,17 @@ public class GroupSum<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Collection<Object> getItems(String expression) {
+    private Iterable<Object> getItems(String expression) {
         Object result = getValue(expression);
         if (result == null) {
             throw new NullPointerException("\"" + expression + "\" is null!");
-        } else if (!(result instanceof Collection)) {
-            throw new ClassCastException(expression + " is not a Collection!");
+        } else if (!(result instanceof Iterable)) {
+            throw new ClassCastException(expression + " is not an Iterable!");
         }
-        return (Collection<Object>) result;
+        return (Iterable<Object>) result;
     }
 
     private Object getValue(String expression) {
-        return new JexlExpressionEvaluator(expression).evaluate(context.toMap());
+        return getTransformationConfig().getExpressionEvaluator().evaluate(expression, context.toMap());
     }
 }
