@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
+import org.jxls.area.XlsArea;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
@@ -66,7 +67,7 @@ public class IssueSxssfTransformerTest {
 
     private Context prepareContext() {
         final Context context = new PoiContext();
-        context.getConfig().setIsFormulaProcessingRequired(false);
+        context.putVar(XlsArea.IS_FORMULA_PROCESSING_REQUIRED, Boolean.FALSE);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();
         mapArrayList.add(Collections.singletonMap("entity", "ABC"));

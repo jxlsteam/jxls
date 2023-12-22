@@ -28,6 +28,7 @@ import org.jxls.transform.Transformer;
  */
 public class XlsArea implements Area {
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
+    public static final String IS_FORMULA_PROCESSING_REQUIRED = "jx:isFormulaProcessingRequired";
 
     private List<CommandData> commandDataList = new ArrayList<CommandData>();
     private Transformer transformer;
@@ -231,7 +232,7 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
-        if (context.getConfig().isFormulaProcessingRequired()) {
+        if (Boolean.TRUE.equals(context.getVar(IS_FORMULA_PROCESSING_REQUIRED))) {
             AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
             updateCellDataFinalAreaForFormulaCells(newAreaRef);
         }
@@ -524,8 +525,9 @@ public class XlsArea implements Area {
     }
 
     private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
-        Context.Config config = context.getConfig();
-        if (!config.isFormulaProcessingRequired()) return;
+        if (!Boolean.TRUE.equals(context.getVar(IS_FORMULA_PROCESSING_REQUIRED))) {
+            return;
+        }
         CellData cellData = transformer.getCellData(srcCell);
         if (cellData != null) {
             cellData.setArea(this);

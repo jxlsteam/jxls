@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
 import org.jxls.area.Area;
+import org.jxls.area.XlsArea;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.CellDataUpdater;
@@ -51,8 +52,7 @@ public class SxssfDemo {
                 context.putVar("cellRefUpdater", new CellRefUpdater());
                 context.putVar("employees", employees);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
-                context.getConfig().setIsFormulaProcessingRequired(false); // with SXSSF you cannot use normal formula
-                                                                           // processing
+                context.putVar(XlsArea.IS_FORMULA_PROCESSING_REQUIRED, Boolean.FALSE); // with SXSSF you cannot use normal formula processing
                 workbook.setForceFormulaRecalculation(true);
                 workbook.setActiveSheet(1);
                 transformer.getWorkbook().write(os);
@@ -73,7 +73,7 @@ public class SxssfDemo {
             context.putVar("cellRefUpdater", new CellRefUpdater());
             context.putVar("totalCellUpdater", new TotalCellUpdater());
             context.putVar("employees", employees);
-            context.getConfig().setIsFormulaProcessingRequired(false);
+            context.putVar(XlsArea.IS_FORMULA_PROCESSING_REQUIRED, Boolean.FALSE);
             xlsArea.applyAt(new CellRef("Result!A1"), context);
             workbook.setForceFormulaRecalculation(true);
             workbook.setActiveSheet(1);
@@ -94,7 +94,7 @@ public class SxssfDemo {
             List<Area> xlsAreaList = areaBuilder.build(transformer, true);
             Area xlsArea = xlsAreaList.get(0);
             Context context = new PoiContext();
-            context.getConfig().setIsFormulaProcessingRequired(false);
+            context.putVar(XlsArea.IS_FORMULA_PROCESSING_REQUIRED, Boolean.FALSE);
             context.putVar("cellRefUpdater", new CellRefUpdater());
             context.putVar("totalCellUpdater", new DepartmentTotalCellUpdater());
             context.putVar("departments", departments);
