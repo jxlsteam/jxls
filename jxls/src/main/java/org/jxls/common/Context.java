@@ -54,16 +54,7 @@ public class Context {
      * Special config class to use in Area processing
      */
     public static class Config {
-        private boolean ignoreSourceCellStyle = false;
         private Map<String, String> cellStyleMap = new HashMap<>();
-
-        public boolean isIgnoreSourceCellStyle() {
-            return ignoreSourceCellStyle;
-        }
-
-        public void setIgnoreSourceCellStyle(boolean ignoreSourceCellStyle) {
-            this.ignoreSourceCellStyle = ignoreSourceCellStyle;
-        }
 
         public Map<String, String> getCellStyleMap() {
             return cellStyleMap;

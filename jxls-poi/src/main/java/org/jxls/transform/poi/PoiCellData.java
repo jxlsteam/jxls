@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
@@ -148,7 +149,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             updateCellGeneralInfo(cell);
             updateCellContents(cell);
             CellStyle targetCellStyle = cellStyle;
-            if (context.getConfig().isIgnoreSourceCellStyle()) {
+            if (Boolean.TRUE.equals(context.getVar(CellData.IGNORE_SOURCE_CELL_STYLE) )) {
                 CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, context.getConfig().getCellStyleMap(), transformer);
                 if (dataFormatCellStyle != null) {
                     targetCellStyle = dataFormatCellStyle;

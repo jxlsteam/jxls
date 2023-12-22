@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
+import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
@@ -164,8 +165,8 @@ public class GridCommand extends AbstractCommand {
         int totalWidth = 0;
         int totalHeight = 0;
         Context.Config config = context.getConfig();
-        boolean oldIgnoreSourceCellStyle = config.isIgnoreSourceCellStyle();
-        config.setIgnoreSourceCellStyle(true);
+        Boolean oldIgnoreSourceCellStyle = (Boolean) context.getVar(CellData.IGNORE_SOURCE_CELL_STYLE);
+        context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, Boolean.TRUE);
         Map<String,String> oldStyleCellMap = config.getCellStyleMap();
         config.setCellStyleMap(this.cellStyleMap);
         // TODO possible error: content of DATA_VAR is not saved & restored
@@ -213,7 +214,7 @@ public class GridCommand extends AbstractCommand {
             }
         }
         context.removeVar(DATA_VAR);
-        config.setIgnoreSourceCellStyle(oldIgnoreSourceCellStyle);
+        context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, oldIgnoreSourceCellStyle);
         config.setCellStyleMap(oldStyleCellMap);
         return new Size(totalWidth, totalHeight);
     }
