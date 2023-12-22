@@ -164,11 +164,10 @@ public class GridCommand extends AbstractCommand {
         CellRef currentCell = cellRef;
         int totalWidth = 0;
         int totalHeight = 0;
-        Context.Config config = context.getConfig();
         Boolean oldIgnoreSourceCellStyle = (Boolean) context.getVar(CellData.IGNORE_SOURCE_CELL_STYLE);
         context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, Boolean.TRUE);
-        Map<String,String> oldStyleCellMap = config.getCellStyleMap();
-        config.setCellStyleMap(this.cellStyleMap);
+        Map<String, String> oldStyleCellMap = (Map<String, String>) context.getVar(CellData.CELL_STYLE_MAP);
+        context.putVar(CellData.CELL_STYLE_MAP, this.cellStyleMap);
         // TODO possible error: content of DATA_VAR is not saved & restored
         for (Object rowObject : dataCollection) {
             if (rowObject.getClass().isArray() || rowObject instanceof Iterable) {
@@ -215,7 +214,7 @@ public class GridCommand extends AbstractCommand {
         }
         context.removeVar(DATA_VAR);
         context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, oldIgnoreSourceCellStyle);
-        config.setCellStyleMap(oldStyleCellMap);
+        context.putVar(CellData.CELL_STYLE_MAP, oldStyleCellMap);
         return new Size(totalWidth, totalHeight);
     }
 }

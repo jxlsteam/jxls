@@ -55,6 +55,7 @@ public class CellData {
     private static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
     private static final String DEFAULT_VALUE = "defaultValue";
     public static final String IGNORE_SOURCE_CELL_STYLE = "jx:ignoreSourceCellStyle";
+    public static final String CELL_STYLE_MAP = "jx:cellStyleMap";
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, LOCAL_DATE, LOCAL_TIME, LOCAL_DATETIME, ZONED_DATETIME, INSTANT, FORMULA, BLANK, ERROR
