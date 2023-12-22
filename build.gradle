@@ -24,6 +24,12 @@ subprojects {
     compileJava.options.encoding = 'windows-1252'
     compileTestJava.options.encoding = 'windows-1252'
     
+    dependencies {
+        testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.1'
+        testImplementation 'org.mockito:mockito-core:4.11.0'
+        testRuntimeOnly 'commons-logging:commons-logging:1.3.0'
+    }
+    
     java {
         withJavadocJar()
         withSourcesJar()
