@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.jxls.area.XlsArea;
 import org.jxls.builder.xls.JxlsCommentException;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.formula.AbstractFormulaProcessor;
 import org.jxls.transform.TransformationConfig;
@@ -30,7 +31,7 @@ public class CellData {
     private static final String USER_FORMULA_SUFFIX = "]";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
-    public static final String JX_PARAMS_PREFIX = "jx:params";
+    public static final String JX_PARAMS_PREFIX = XlsCommentAreaBuilder.COMMAND_PREFIX + "params";
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some

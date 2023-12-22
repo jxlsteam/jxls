@@ -64,9 +64,24 @@ public class IfTest {
             assertNull(w.getCellValueAsString(7, 1)); // A7
         }
     }
-    
+
     @Test
-    public void noComments() {
+    public void noElse() {
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "noElse");
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            assertEquals("Elsa", w.getCellValueAsString(2, 1)); 
+            assertEquals("Maria", w.getCellValueAsString(3, 1)); 
+            assertNull(w.getCellValueAsString(4, 1)); 
+        }
+    }
+
+    @Test
+    public void noComments() { // TODO better name: noNotes
         // Test
         InputStream template = getClass().getResourceAsStream("IfTest_noComments.xlsx");
         File out = new File("target/IfTest_noComments_output.xlsx");

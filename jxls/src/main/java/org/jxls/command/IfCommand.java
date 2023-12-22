@@ -93,7 +93,7 @@ public class IfCommand extends AbstractCommand {
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         Boolean conditionResult = getTransformationConfig().getExpressionEvaluator().isConditionTrue(condition, context.toMap());
-        if (conditionResult.booleanValue()) {
+        if (Boolean.TRUE.equals(conditionResult)) {
             return ifArea.applyAt(cellRef, context);
         } else {
             return elseArea.applyAt(cellRef, context);

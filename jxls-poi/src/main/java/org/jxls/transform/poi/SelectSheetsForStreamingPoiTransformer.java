@@ -15,8 +15,8 @@ import org.jxls.common.Context;
  * You can use this PoiTransformer implementation to decide which worksheets use streaming.
  */
 public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
-    private Set<String> dataSheetsToUseStreaming = null;
-    private boolean allSheets = false;
+	protected Set<String> dataSheetsToUseStreaming = null;
+    protected boolean allSheets = false;
     
     public SelectSheetsForStreamingPoiTransformer(Workbook workbook) {
         super(workbook, true);
@@ -49,7 +49,7 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
             destSheet = getWorkbook().createSheet(targetCellRef.getSheetName());
             PoiUtil.copySheetProperties(getWorkbook().getSheet(srcCellRef.getSheetName()), destSheet);
         }
-        boolean useStreamingForThisSheet = allSheets || (dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(targetCellRef.getSheetName()));
+        boolean useStreamingForThisSheet = useStreaming(targetCellRef.getSheetName());
         if (!useStreamingForThisSheet && isStreaming()) {
             // use "fat" data sheet for transformation
             destSheet = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
@@ -72,6 +72,10 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
             }
         }
         transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
+    }
+    
+    protected boolean useStreaming(String sheetName) {
+    	return allSheets || (dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(sheetName));
     }
     
     @Override

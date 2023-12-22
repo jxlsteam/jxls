@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
-import org.jxls.command.ImageCommand;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
@@ -31,7 +30,7 @@ public class IssueB159Test {
 
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(model, JxlsPoiTemplateFillerBuilder.newInstance().withCommand("image", ImageCommand.class));
+        tester.test(model, JxlsPoiTemplateFillerBuilder.newInstance());
         
         // Verify
         // TODO I guess in the template file the image command in cell I9 must be extended with: lockRange=false

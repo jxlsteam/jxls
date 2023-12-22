@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -68,7 +67,7 @@ public class MultiSheetTest {
 	public void hideTemplateSheet() {
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withHideTemplateSheet());
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance().withKeepTemplateSheet(KeepTemplateSheet.HIDE));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -84,11 +83,31 @@ public class MultiSheetTest {
         }
     }
 
+	@Test
+	public void getter() {
+		// Prepare
+		Map<String, Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "getter");
+        tester.test(data(), JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            verifySheet(w, "Elsa");
+            verifySheet(w, "Oleg");
+            verifySheet(w, "Neil");
+            verifySheet(w, "Maria");
+            verifySheet(w, "John");
+        }
+	}
+
 	private Map<String, Object> data() {
 		Map<String, Object> data = new HashMap<>();
         List<Employee> employees = Employee.generateSampleEmployeeData();
 		data.put("employees", employees);
-        data.put("sheetNames", employees.stream().map(i -> i.getName()).collect(Collectors.toList()));
+        data.put("sheetNames", employees.stream().map(i -> i.getName()).toList());
 		return data;
 	}
 

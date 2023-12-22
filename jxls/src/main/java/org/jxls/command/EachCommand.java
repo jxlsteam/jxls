@@ -314,7 +314,7 @@ public class EachCommand extends AbstractCommand {
                 itemsCollection = filter(context, itemsCollection, selectExpression);
                 selectExpression = null;
             }
-            Collection<GroupData> groupedData = groupIterable(itemsCollection, groupBy, groupOrder, getLogger());
+            Collection<GroupData> groupedData = groupIterable(itemsCollection, groupBy, groupOrder, var, getLogger());
             String groupVar = var != null ? var : GROUP_DATA_KEY;
             size = processCollection(context, groupedData, cellRef, groupVar, selectExpression);
         }
@@ -327,7 +327,7 @@ public class EachCommand extends AbstractCommand {
     private void orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List<?> itemsList && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
-                    .stream().map(f -> removeVarPrefix(f.trim())).collect(Collectors.toList());
+                    .stream().map(f -> removeVarPrefix(f, var)).collect(Collectors.toList());
             itemsList.sort(new OrderByComparator<>(orderByProps));
         }
     }
@@ -440,11 +440,12 @@ public class EachCommand extends AbstractCommand {
         throw new JxlsException("The sheet names var '" + multisheet + "' must be of type List<String>.");
     }
     
-    private String removeVarPrefix(String pVariable) {
+    private static String removeVarPrefix(String pVariable, String pVar) {
+    	pVariable = pVariable.trim();
         int o = pVariable.indexOf(".");
         if (o >= 0) {
             String pre = pVariable.substring(0, o).trim();
-            if (pre.equals(var)) {
+            if (pre.equals(pVar)) {
                 return pVariable.substring(o + 1).trim();
             }
         }
@@ -458,7 +459,7 @@ public class EachCommand extends AbstractCommand {
      * @param groupOrder an order to sort the groups
      * @return a collection of group data objects
      */
-    static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, JxlsLogger logger) {
+    static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, String var, JxlsLogger logger) {
         Collection<GroupData> result = new ArrayList<GroupData>();
         if (iterable == null) {
             return result;
@@ -474,13 +475,13 @@ public class EachCommand extends AbstractCommand {
             groupByValues = new LinkedHashSet<>();
         }
         for (Object bean : iterable) {
-            groupByValues.add(getGroupKey(bean, groupProperty, logger));
+            groupByValues.add(getGroupKey(bean, groupProperty, var, logger));
         }
         for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext();) {
             Object groupValue = iterator.next();
             List<Object> groupItems = new ArrayList<>();
             for (Object bean : iterable) {
-                if (groupValue.equals(getGroupKey(bean, groupProperty, logger))) {
+                if (groupValue.equals(getGroupKey(bean, groupProperty, var, logger))) {
                     groupItems.add(bean);
                 }
             }
@@ -491,8 +492,8 @@ public class EachCommand extends AbstractCommand {
         return result;
     }
 
-    private static Object getGroupKey(Object bean, String propertyName, JxlsLogger logger) {
-        Object ret = ObjectPropertyAccess.getObjectProperty(bean, propertyName, logger);
+    private static Object getGroupKey(Object bean, String propertyName, String var, JxlsLogger logger) {
+        Object ret = ObjectPropertyAccess.getObjectProperty(bean, removeVarPrefix(propertyName, var), logger);
         return ret == null ? "null" : ret;
     }
 }

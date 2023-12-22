@@ -2,7 +2,6 @@ package org.jxls.examples;
 
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
-import org.jxls.command.MergeCellsCommand;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
@@ -19,6 +18,6 @@ public class MergedCellsDemo  {
         context.putVar("departments", Department.createDepartments());
         
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().withCommand("mergeCells", MergeCellsCommand.class));
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
     }
 }

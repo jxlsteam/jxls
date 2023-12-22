@@ -146,11 +146,6 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
 
-    public SELF withHideTemplateSheet() {
-        keepTemplateSheet = KeepTemplateSheet.HIDE;
-        return (SELF) this;
-    }
-    
     public SELF withAreaBuilder(AreaBuilder areaBuilder) {
     	if (areaBuilder == null) {
     		throw new IllegalArgumentException("areaBuilder must not be null");
