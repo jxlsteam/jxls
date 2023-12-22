@@ -232,7 +232,7 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
-        if (Boolean.TRUE.equals(context.getVar(IS_FORMULA_PROCESSING_REQUIRED))) {
+        if (Boolean.TRUE.equals(context.getRunVar(IS_FORMULA_PROCESSING_REQUIRED))) {
             AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
             updateCellDataFinalAreaForFormulaCells(newAreaRef);
         }
@@ -525,7 +525,7 @@ public class XlsArea implements Area {
     }
 
     private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
-        if (!Boolean.TRUE.equals(context.getVar(IS_FORMULA_PROCESSING_REQUIRED))) {
+        if (!Boolean.TRUE.equals(context.getRunVar(IS_FORMULA_PROCESSING_REQUIRED))) {
             return;
         }
         CellData cellData = transformer.getCellData(srcCell);

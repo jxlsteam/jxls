@@ -149,8 +149,8 @@ public class PoiCellData extends org.jxls.common.CellData {
             updateCellGeneralInfo(cell);
             updateCellContents(cell);
             CellStyle targetCellStyle = cellStyle;
-            if (Boolean.TRUE.equals(context.getVar(CellData.IGNORE_SOURCE_CELL_STYLE) )) {
-                CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, (Map<String, String>) context.getVar(CellData.CELL_STYLE_MAP), transformer);
+            if (Boolean.TRUE.equals(context.getRunVar(CellData.IGNORE_SOURCE_CELL_STYLE) )) {
+                CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, (Map<String, String>) context.getRunVar(CellData.CELL_STYLE_MAP), transformer);
                 if (dataFormatCellStyle != null) {
                     targetCellStyle = dataFormatCellStyle;
                 }
