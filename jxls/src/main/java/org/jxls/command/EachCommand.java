@@ -466,7 +466,7 @@ public class EachCommand extends AbstractCommand {
         }
         Set<Object> groupByValues;
         if (groupOrder != null) {
-            if ("desc".equalsIgnoreCase(groupOrder)) {
+            if ("desc".equalsIgnoreCase(groupOrder) || "desc_ignoreCase".equalsIgnoreCase(groupOrder)) {
                 groupByValues = new TreeSet<>(Collections.reverseOrder());
             } else {
                 groupByValues = new TreeSet<>();
@@ -474,14 +474,26 @@ public class EachCommand extends AbstractCommand {
         } else {
             groupByValues = new LinkedHashSet<>();
         }
+        boolean ignoreCase = groupOrder.toLowerCase().endsWith("_ignorecase");
         for (Object bean : iterable) {
-            groupByValues.add(getGroupKey(bean, groupProperty, var, logger));
+            Object groupKey = getGroupKey(bean, groupProperty, var, logger);
+            if (ignoreCase && groupKey instanceof String s) {
+                groupKey = s.toLowerCase();
+            }
+            groupByValues.add(groupKey);
         }
         for (Iterator<Object> iterator = groupByValues.iterator(); iterator.hasNext();) {
             Object groupValue = iterator.next();
             List<Object> groupItems = new ArrayList<>();
             for (Object bean : iterable) {
-                if (groupValue.equals(getGroupKey(bean, groupProperty, var, logger))) {
+                Object groupKey = getGroupKey(bean, groupProperty, var, logger);
+                boolean eq;
+                if (ignoreCase && groupValue instanceof String a && groupKey instanceof String b) {
+                    eq = a.equalsIgnoreCase(b);
+                } else {
+                    eq = groupValue.equals(groupKey);
+                }
+                if (eq) {
                     groupItems.add(bean);
                 }
             }
