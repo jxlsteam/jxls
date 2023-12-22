@@ -7,6 +7,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.expression.JexlExpressionEvaluator;
 import org.jxls.transform.TransformationConfig;
 
 /**
@@ -41,9 +42,6 @@ public class GroupSum<T> {
      * @return sum of type T
      */
     public T sum(String fieldName, String expression) {
-        if (transformationConfig == null) {
-            throw new JxlsException("Please set GroupSum.transformationConfig!");
-        }
         return sum(fieldName, getItems(expression));
     }
     
@@ -130,6 +128,9 @@ public class GroupSum<T> {
     }
 
     private Object getValue(String expression) {
-        return getTransformationConfig().getExpressionEvaluator().evaluate(expression, context.toMap());
+        if (transformationConfig == null) {
+            return new JexlExpressionEvaluator(expression).evaluate(context.toMap()); // TODO not good, but how to get TransformerConfig? Yes I know there's setTransformationConfig()
+        }
+        return transformationConfig.getExpressionEvaluator().evaluate(expression, context.toMap());
     }
 }
