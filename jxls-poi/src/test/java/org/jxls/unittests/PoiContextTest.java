@@ -29,11 +29,11 @@ public class PoiContextTest {
     @Test
     public void createNonEmptyContext() {
         Map<String, Object> vars = new HashMap<>();
-        vars.put("a", 123);
+        vars.put("a", Integer.valueOf(123));
         Context context = new PoiContext(vars);
         Object poiObject = context.getVar(PoiContext.POI_OBJECT_KEY);
         assertNotNull(poiObject);
         assertTrue(poiObject instanceof PoiUtil);
-        assertEquals(123, context.getVar("a"));
+        assertEquals(Integer.valueOf(123), context.getVar("a"));
     }
 }

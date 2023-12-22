@@ -128,8 +128,8 @@ public class If01Test {
 
         public Commodity(String subject, double price, double weight, String sellBuy) {
             put("subject", subject);
-            put("price", price);
-            put("weight", weight);
+            put("price", Double.valueOf(price));
+            put("weight", Double.valueOf(weight));
             put("sellBuy", sellBuy);
         }
     }

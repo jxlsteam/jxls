@@ -46,7 +46,7 @@ public class IssueB159Test {
         
         List<Integer> details = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            details.add(i);
+            details.add(Integer.valueOf(i));
         }
         model.put("details", details);
         

@@ -124,7 +124,7 @@ public class ImageCommand extends AbstractCommand {
 
     @Override
     public Boolean getLockRange() {
-        return needResizePicture() ? false : super.getLockRange();
+        return needResizePicture() ? Boolean.FALSE : super.getLockRange();
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ImageCommand extends AbstractCommand {
         }
         Picture picture = drawing.createPicture(anchor, imageIdx);
         if (pictureResizeFlag) {
-            picture.resize(scaleX, scaleY);
+            picture.resize(scaleX.doubleValue(), scaleY.doubleValue());
         }
     }
     

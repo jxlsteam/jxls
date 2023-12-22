@@ -40,7 +40,7 @@ public class IssueB122Test {
             assertEquals(50d, w.getCellValueAsDouble(4, 39), 0.1d); // column AM
             int row = 12;
             for (Person person : persons) {
-                assertEquals(Double.valueOf(person.getMerkmal()), w.getCellValueAsDouble(row++, 39), 0.1d);
+                assertEquals(person.getMerkmal().doubleValue(), w.getCellValueAsDouble(row++, 39), 0.1d);
             }
         }
     }

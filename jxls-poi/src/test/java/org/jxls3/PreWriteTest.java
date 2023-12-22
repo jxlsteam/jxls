@@ -48,7 +48,7 @@ public class PreWriteTest {
 		// Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet(0);
-            Assert.assertEquals(Double.valueOf(0d), w.getCellValueAsDouble(3, 2), 0.005d); // Reading the value of B3 using POI results in 0.
+            Assert.assertEquals(0d, w.getCellValueAsDouble(3, 2), 0.005d); // Reading the value of B3 using POI results in 0.
             Assert.assertTrue(w.isForceFormulaRecalculation());
         }
 		// You can only verify this manually using Excel for opening the result file: value of B3 must be 115.9
@@ -64,14 +64,14 @@ public class PreWriteTest {
 	private void verify0(Jxls3Tester tester) {
 		try (TestWorkbook w = tester.getWorkbook()) {
 	        w.selectSheet(0);
-	        Assert.assertEquals(Double.valueOf(0d), w.getCellValueAsDouble(3, 2), 0.005d);
+	        Assert.assertEquals(0d, w.getCellValueAsDouble(3, 2), 0.005d);
 	    }
 	}
 
 	private void verify115_9(Jxls3Tester tester) {
 		try (TestWorkbook w = tester.getWorkbook()) {
 	        w.selectSheet(0);
-	        Assert.assertEquals(Double.valueOf(115.9), w.getCellValueAsDouble(3, 2), 0.005d);
+	        Assert.assertEquals(115.9d, w.getCellValueAsDouble(3, 2), 0.005d);
 	    }
 	}
 }

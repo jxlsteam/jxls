@@ -23,7 +23,7 @@ public class IssueB166Test {
         List<Map<String, Object>> rs = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("count", i);
+            map.put("count", Integer.valueOf(i));
             rs.add(map);
         }
         final Context context = new Context();

@@ -20,7 +20,7 @@ public class IssueB162Test {
         // Prepare
         Context context = new Context();
         context.putVar("employees", Employee.generateSampleEmployeeData());
-        context.putVar("bonus", 0.1);
+        context.putVar("bonus", Double.valueOf(0.1));
 
         // Test
         JxlsTester tester = JxlsTester.xls(getClass());

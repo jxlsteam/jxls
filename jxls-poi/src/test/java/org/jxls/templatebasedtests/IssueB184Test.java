@@ -26,7 +26,7 @@ public class IssueB184Test {
         // Prepare
         List<Integer> data = new ArrayList<>();
         for (int j = 1; j <= 3; j++) {
-            data.add(j);
+            data.add(Integer.valueOf(j));
         }
         Context context = new Context();
         context.putVar("data", data);

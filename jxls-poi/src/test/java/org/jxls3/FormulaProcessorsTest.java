@@ -51,7 +51,7 @@ public class FormulaProcessorsTest {
 		    w.selectSheet(0);
 			for (int row = 2; row <= 6; row++) {
 				// Rows 3 to 6 have the value of row 2 because the FormulaProcessor did not change the formulas for each row.
-				assertEquals(Double.valueOf(3000), w.getCellValueAsDouble(row, 5), 0.005d);
+				assertEquals(3000d, w.getCellValueAsDouble(row, 5), 0.005d);
 			}
 		}
         assertNull(builder.getFormulaProcessor());

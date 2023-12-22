@@ -41,20 +41,20 @@ public class NestedSumsTest {
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
 
-            assertEquals("Wrong amount in D25!\n", Double.valueOf(123d), w.getCellValueAsDouble(25, 4));
+            assertEquals("Wrong amount in D25!\n", 123d, w.getCellValueAsDouble(25, 4), 0.005d);
 
-            assertEquals("Wrong group sum in D9!\n", Double.valueOf(1000d), w.getCellValueAsDouble(9, 4));
-            assertEquals("Wrong group sum in D15!\n", Double.valueOf(700d), w.getCellValueAsDouble(15, 4));
-            assertEquals("Wrong sum in D16!\n", Double.valueOf(1700d), w.getCellValueAsDouble(16, 4));
+            assertEquals("Wrong group sum in D9!\n", 1000d, w.getCellValueAsDouble(9, 4), 0.005d);
+            assertEquals("Wrong group sum in D15!\n", 700d, w.getCellValueAsDouble(15, 4), 0.005d);
+            assertEquals("Wrong sum in D16!\n", 1700d, w.getCellValueAsDouble(16, 4), 0.005d);
             
-            assertEquals("Wrong group sum in D23!\n", Double.valueOf(600d), w.getCellValueAsDouble(23, 4));
-            assertEquals("Wrong group sum in D26!\n", Double.valueOf(123d), w.getCellValueAsDouble(26, 4));
-            assertEquals("Wrong sum in D27!\n", Double.valueOf(723d), w.getCellValueAsDouble(27, 4));
+            assertEquals("Wrong group sum in D23!\n", 600d, w.getCellValueAsDouble(23, 4), 0.005d);
+            assertEquals("Wrong group sum in D26!\n", 123d, w.getCellValueAsDouble(26, 4), 0.005d);
+            assertEquals("Wrong sum in D27!\n", 723d, w.getCellValueAsDouble(27, 4), 0.005d);
             
-            assertEquals("Wrong group sum in D32!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(32, 4));
-            assertEquals("Wrong sum in D33!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(33, 4));
+            assertEquals("Wrong group sum in D32!\n", 0.31d, w.getCellValueAsDouble(32, 4), 0.005d);
+            assertEquals("Wrong sum in D33!\n", 0.31d, w.getCellValueAsDouble(33, 4), 0.005d);
             
-            assertEquals("Wrong grand total! (D35)\n", Double.valueOf(2423.31d), w.getCellValueAsDouble(35, 4));
+            assertEquals("Wrong grand total! (D35)\n", 2423.31d, w.getCellValueAsDouble(35, 4), 0.005d);
         }
     }
 
@@ -77,12 +77,12 @@ public class NestedSumsTest {
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(5, 4));
-            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(15, 4));
-            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(16, 4));
-            assertEquals(Double.valueOf(0.31d), w.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf(2423.31), w.getCellValueAsDouble(21, 4));
+            assertEquals(1700d, w.getCellValueAsDouble(5, 4), 0.005d);
+            assertEquals( 600d, w.getCellValueAsDouble(12, 4), 0.005d);
+            assertEquals( 123d, w.getCellValueAsDouble(15, 4), 0.005d);
+            assertEquals( 723d, w.getCellValueAsDouble(16, 4), 0.005d);
+            assertEquals(0.31d, w.getCellValueAsDouble(19, 4), 0.005d);
+            assertEquals(2423.31d, w.getCellValueAsDouble(21, 4), 0.005d);
         }
     }
 
@@ -111,11 +111,11 @@ public class NestedSumsTest {
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(22, 4));
-            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(23, 4));
-            assertEquals(Double.valueOf(2423.31d), w.getCellValueAsDouble(29, 4));
+            assertEquals(1700d, w.getCellValueAsDouble(12, 4), 0.005d);
+            assertEquals( 600d, w.getCellValueAsDouble(19, 4), 0.005d);
+            assertEquals( 123d, w.getCellValueAsDouble(22, 4), 0.005d);
+            assertEquals( 723d, w.getCellValueAsDouble(23, 4), 0.005d);
+            assertEquals(2423.31d, w.getCellValueAsDouble(29, 4), 0.005d);
         }
     }
     

@@ -79,9 +79,9 @@ public class GroupSumTest {
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Group sums");
-            assertEquals("1st group sum is wrong! (Main department) E5\n", Double.valueOf(170000d), w.getCellValueAsDouble(5, 5));
-            assertEquals("2nd group sum is wrong! (Finance department) E10\n", Double.valueOf(130000d), w.getCellValueAsDouble(10, 5));
-            assertEquals("Total sum (calculated by G.sum) in cell E12 is wrong!\n", Double.valueOf(300000d), w.getCellValueAsDouble(12, 5));
+            assertEquals("1st group sum is wrong! (Main department) E5\n", 170000d, w.getCellValueAsDouble(5, 5), 0.005d);
+            assertEquals("2nd group sum is wrong! (Finance department) E10\n", 130000d, w.getCellValueAsDouble(10, 5), 0.005d);
+            assertEquals("Total sum (calculated by G.sum) in cell E12 is wrong!\n", 300000d, w.getCellValueAsDouble(12, 5), 0.005d);
         }
     }
     
@@ -111,8 +111,8 @@ public class GroupSumTest {
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Group sums");
-            assertEquals("wrong Geldern sum (E8)\n", Double.valueOf(140000 + 32000), w.getCellValueAsDouble(8, 5));
-            assertEquals("wrong outside Geldern sum (E9)\n", Double.valueOf(30000), w.getCellValueAsDouble(9, 5));
+            assertEquals("wrong Geldern sum (E8)\n", 140000 + 32000, w.getCellValueAsDouble(8, 5), 0.005d);
+            assertEquals("wrong outside Geldern sum (E9)\n", 30000, w.getCellValueAsDouble(9, 5), 0.005d);
         }
     }
 }

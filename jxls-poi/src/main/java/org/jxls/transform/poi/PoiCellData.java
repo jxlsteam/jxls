@@ -101,7 +101,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cellType = CellType.STRING;
                 break;
             case BOOLEAN:
-                cellValue = cell.getBooleanCellValue();
+                cellValue = Boolean.valueOf(cell.getBooleanCellValue());
                 cellType = CellType.BOOLEAN;
                 break;
             case NUMERIC:
@@ -113,7 +113,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cellType = CellType.FORMULA;
                 break;
             case ERROR:
-                cellValue = cell.getErrorCellValue();
+                cellValue = Byte.valueOf(cell.getErrorCellValue());
                 cellType = CellType.ERROR;
                 break;
             case BLANK:
@@ -130,7 +130,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             cellValue = cell.getDateCellValue();
             cellType = CellType.DATE;
         } else {
-            cellValue = cell.getNumericCellValue();
+            cellValue = Double.valueOf(cell.getNumericCellValue());
             cellType = CellType.NUMBER;
         }
     }
@@ -190,7 +190,8 @@ public class PoiCellData extends org.jxls.common.CellData {
                 updateStringCellContents(cell);
                 break;
             case BOOLEAN:
-                cell.setCellValue((Boolean) evaluationResult);
+                Boolean tf = (Boolean) evaluationResult;
+                cell.setCellValue(tf.booleanValue());
                 break;
             case DATE:
                 cell.setCellValue((Date) evaluationResult);
@@ -217,7 +218,8 @@ public class PoiCellData extends org.jxls.common.CellData {
                 updateFormulaCellContents(cell);
                 break;
             case ERROR:
-                cell.setCellErrorValue((Byte) evaluationResult);
+                Byte b = (Byte) evaluationResult;
+                cell.setCellErrorValue(b.byteValue());
                 break;
             case BLANK:
                 cell.setBlank();

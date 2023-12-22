@@ -108,14 +108,10 @@ public class TestWorkbook implements AutoCloseable {
      * Expects numeric cell and returns its double value.
      * @param row starts with 1
      * @param column 1 = A
-     * @return Double
+     * @return double
      */
-    public Double getCellValueAsDouble(int row, int column) {
-        try {
-            return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
-        } catch (NullPointerException e) {
-            return null;
-        }
+    public double getCellValueAsDouble(int row, int column) {
+        return Double.valueOf(sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue()).doubleValue();
     }
 
     /**
