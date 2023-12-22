@@ -38,8 +38,6 @@ public class XlsArea implements Area {
     private List<AreaListener> areaListeners = new ArrayList<AreaListener>();
     private boolean cellsCleared = false;
     private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
-    // default cell shift strategy
-    private CellShiftStrategy cellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
 
@@ -82,16 +80,6 @@ public class XlsArea implements Area {
     @Override
     public void setParentCommand(Command command) {
         this.parentCommand = command;
-    }
-
-    @Override
-    public CellShiftStrategy getCellShiftStrategy() {
-        return cellShiftStrategy;
-    }
-
-    @Override
-    public void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy) {
-        this.cellShiftStrategy = cellShiftStrategy;
     }
 
     @Override

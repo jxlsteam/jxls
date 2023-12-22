@@ -8,7 +8,6 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
-import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.Transformer;
 
@@ -28,10 +27,6 @@ public interface Area {
     AreaRef getAreaRef();
 
     List<CommandData> getCommandDataList();
-
-    CellShiftStrategy getCellShiftStrategy();
-
-    void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy);
 
     FormulaProcessor getFormulaProcessor();
 
