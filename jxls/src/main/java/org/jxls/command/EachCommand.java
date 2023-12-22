@@ -474,7 +474,7 @@ public class EachCommand extends AbstractCommand {
         } else {
             groupByValues = new LinkedHashSet<>();
         }
-        boolean ignoreCase = groupOrder.toLowerCase().endsWith("_ignorecase");
+        boolean ignoreCase = groupOrder != null && groupOrder.toLowerCase().endsWith("_ignorecase");
         for (Object bean : iterable) {
             Object groupKey = getGroupKey(bean, groupProperty, var, logger);
             if (ignoreCase && groupKey instanceof String s) {
