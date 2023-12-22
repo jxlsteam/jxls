@@ -18,6 +18,7 @@ import org.jxls.command.EachCommand;
 import org.jxls.command.GridCommand;
 import org.jxls.command.IfCommand;
 import org.jxls.command.UpdateCellCommand;
+import org.jxls.common.AreaListener;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -322,5 +323,23 @@ public class XlsCommentAreaBuilder implements AreaBuilder {
             attrMap.put(attrName, attrValue);
         }
         return attrMap;
+    }
+    
+    /**
+     * Method for adding an AreaListener to an area given by an AreaRef
+     * @param areaListener to be added AreaListener
+     * @param areaRef area where the AreaListener has to be added
+     * @param areas all areas to search for
+     */
+    protected void addAreaListener(AreaListener areaListener, AreaRef areaRef, List<Area> areas) {
+        for (Area area : areas) {
+            if (areaRef.equals(area.getAreaRef())) {
+                area.addAreaListener(areaListener);
+                return;
+            }
+            for (CommandData command : area.getCommandDataList()) {
+                addAreaListener(areaListener, areaRef, command.getCommand().getAreaList()); // recursive
+            }
+        }
     }
 }

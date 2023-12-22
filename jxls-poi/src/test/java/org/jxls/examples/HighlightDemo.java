@@ -1,11 +1,10 @@
 package org.jxls.examples;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -14,44 +13,47 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.AreaListener;
+import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
+import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiTransformer;
 
 /**
- * 1st Highlight Demo
- * 
- * @author Leonid Vysochyn Date: 10/22/13
+ * @author Leonid Vysochyn 
+ * @since 10/22/13
  */
-public class Highlight1Demo {
+public class HighlightDemo {
 
     @Test
     public void test() throws ParseException, IOException {
-        List<Employee> employees = Employee.generateSampleEmployeeData();
-        try (InputStream is = Highlight1Demo.class.getResourceAsStream("highlight_template.xls")) {
-            try (OutputStream os = new FileOutputStream("target/highlight_output.xls")) {
-                PoiTransformer transformer = PoiTransformer.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-                List<Area> xlsAreaList = areaBuilder.build(transformer, false);
-                Area mainArea = xlsAreaList.get(0);
-                Area loopArea = xlsAreaList.get(0).getCommandDataList().get(0).getCommand().getAreaList().get(0);
-                loopArea.addAreaListener(new HighlightCellAreaListener(transformer));
-                Context context = new Context();
-                context.putVar("employees", employees);
-                mainArea.applyAt(new CellRef("Result!A1"), context);
-                mainArea.processFormulas();
-                transformer.write();
+        // Prepare
+        Map<String,Object> data = new HashMap<>();
+        data.put("employees", Employee.generateSampleEmployeeData());
+        
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withAreaBuilder(new XlsCommentAreaBuilder() {
+            @Override
+            public List<Area> build(Transformer transformer, boolean ctc) {
+                List<Area> areas = super.build(transformer, ctc);
+                addAreaListener(new HighlightCellAreaListener((PoiTransformer) transformer),
+                        new AreaRef("Template!A4:D4")/*jx:each command*/, areas);
+                return areas;
             }
-        }
+        }));
+        
+        // Verify: cells C5, C6 and C8 must have a orange background.
     }
 
     public static class HighlightCellAreaListener implements AreaListener {
-        private PoiTransformer transformer;
+        private final PoiTransformer transformer;
         private final CellRef paymentCell = new CellRef("Template!C4");
 
         public HighlightCellAreaListener(PoiTransformer transformer) {
