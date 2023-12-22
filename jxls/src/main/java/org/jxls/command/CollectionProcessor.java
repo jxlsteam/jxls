@@ -13,7 +13,7 @@ public abstract class CollectionProcessor {
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
             if (varIndex != null) {
-                context.putVar(varIndex, currentIndex);
+                context.putVar(varIndex, Integer.valueOf(currentIndex));
             }
             if (selectEvaluator != null && !Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
                 continue;

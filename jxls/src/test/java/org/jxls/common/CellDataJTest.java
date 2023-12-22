@@ -29,13 +29,13 @@ public class CellDataJTest {
     
     @Test
     public void creation_with_sheetName_row_col_type_value() {
-        CellData cellData = new CellData("Sheet1", 5, 10, CellData.CellType.NUMBER, 1.2);
+        CellData cellData = new CellData("Sheet1", 5, 10, CellData.CellType.NUMBER, Double.valueOf(1.2));
 
         assertEquals("Sheet1", cellData.getSheetName());
         assertEquals(5, cellData.getRow());
         assertEquals(10, cellData.getCol());
         assertEquals(CellData.CellType.NUMBER, cellData.getCellType());
-        assertEquals(1.2, cellData.getCellValue());
+        assertEquals(Double.valueOf(1.2), cellData.getCellValue());
         assertEquals(new CellRef("Sheet1", 5, 10), cellData.getCellRef());
     }
 

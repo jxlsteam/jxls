@@ -145,7 +145,7 @@ public class XlsArea implements Area {
         for (CommandData commandData : commandDataList) {
             CellRef startCellRef = commandData.getSourceStartCellRef();
             Size size = commandData.getSourceSize();
-            if (commandData.getCommand().getLockRange()) {
+            if (Boolean.TRUE.equals(commandData.getCommand().getLockRange())) {
                 excludeCells(startCellRef, size);
             }
         }

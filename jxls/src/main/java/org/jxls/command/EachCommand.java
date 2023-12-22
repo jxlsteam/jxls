@@ -341,9 +341,9 @@ public class EachCommand extends AbstractCommand {
         for (Object obj : itemsCollection) {
             context.putVar(var, obj);
             if (varIndex != null) {
-                context.putVar(varIndex, currentIndex);
+                context.putVar(varIndex, Integer.valueOf(currentIndex));
             }
-            if (selectEvaluator.isConditionTrue(context.toMap())) {
+            if (Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
                 filteredList.add(obj);
             }
             currentIndex++;
@@ -379,7 +379,7 @@ public class EachCommand extends AbstractCommand {
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
             if (varIndex != null) {
-                context.putVar(varIndex, currentIndex);
+                context.putVar(varIndex, Integer.valueOf(currentIndex));
             }
             if (selectEvaluator != null && !Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
                 continue;

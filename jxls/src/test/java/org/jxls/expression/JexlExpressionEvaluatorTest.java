@@ -20,8 +20,8 @@ public class JexlExpressionEvaluatorTest {
     public void simple2VarExpression() {
         String expression = "2 * x + y";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
-        vars.put("y", 3);
+        vars.put("x", Integer.valueOf(2));
+        vars.put("y", Integer.valueOf(3));
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate(expression, vars);
         assertNotNull(result);
@@ -32,8 +32,8 @@ public class JexlExpressionEvaluatorTest {
     public void shouldThrowEvaluationExceptionWhenError() {
         String expression = "2 * x + y )";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
-        vars.put("y", 3);
+        vars.put("x", Integer.valueOf(2));
+        vars.put("y", Integer.valueOf(3));
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         try {
             expressionEvaluator.evaluate( expression, vars );
@@ -48,7 +48,7 @@ public class JexlExpressionEvaluatorTest {
     public void evaluateWhenVarIsNull() {
         String expression = "2*x + dummy.intValue";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
+        vars.put("x", Integer.valueOf(2));
         vars.put("dummy", null);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate( expression , vars);

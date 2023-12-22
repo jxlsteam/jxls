@@ -26,7 +26,7 @@ public abstract class AbstractCommand implements Command {
      * Other commands will no longer execute in this area after locking
      * default true
      */
-    private Boolean lockRange = true;
+    private Boolean lockRange = Boolean.TRUE;
 
     @Override
     public Command addArea(Area area) {

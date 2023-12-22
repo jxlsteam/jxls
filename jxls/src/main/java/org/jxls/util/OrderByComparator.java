@@ -93,7 +93,7 @@ public class OrderByComparator<T> implements Comparator<T> {
             }
 
             myProperties.add(property);
-            myOrderings.add(ordering);
+            myOrderings.add(Integer.valueOf(ordering));
             myIgnoreCase.add(ignoreCase);
         }
     }
@@ -104,7 +104,7 @@ public class OrderByComparator<T> implements Comparator<T> {
         int comp = 0;
         for (int i = 0; i < mySize; i++) {
             String property = myProperties.get(i);
-            int ordering = myOrderings.get(i);
+            int ordering = myOrderings.get(i).intValue();
             boolean ignoreCase = myIgnoreCase.get(i).booleanValue();
 
             Comparable value1, value2;
