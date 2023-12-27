@@ -1,28 +1,35 @@
 package org.jxls.templatebasedtests;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Assert;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.area.XlsArea;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsTemplateFiller;
+import org.jxls.builder.KeepTemplateSheet;
+import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.PoiExceptionThrower;
+import org.jxls.expression.ExpressionEvaluatorFactory;
+import org.jxls.formula.FormulaProcessor;
+import org.jxls.logging.JxlsLogger;
+import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Test for issue 153
@@ -31,38 +38,34 @@ import org.jxls.transform.poi.PoiTransformer;
  * cause: commit 5354beaf
  */
 public class IssueSxssfTransformerTest {
-
+    
     @Test
     public void test() throws IOException {
-        // Test
-        final String output = "target/" + getClass().getSimpleName() + "_output.xlsx";
-        try (InputStream is = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx")) {
-            try (OutputStream os = new FileOutputStream(output)) {
-                final Workbook workbook = WorkbookFactory.create(is);
-                final int activeSheetIndex = workbook.getActiveSheetIndex();
-                PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 1000, true);
-                final List<Area> excelAreas = new XlsCommentAreaBuilder().build(transformer, true);
-                for (final Area excelArea : excelAreas) {
-                    processArea(excelArea);
-                }
-                workbook.setForceFormulaRecalculation(true);
-                workbook.setActiveSheet(activeSheetIndex);
-                SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();
-                workbook2.write(os);
-            }
-        }
-        
-        // Verify
-        try (TestWorkbook w = new TestWorkbook(new File(output))) {
-            w.selectSheet(1);
-            Assert.assertEquals("Manager:", w.getCellValueAsString(3, 1)); // A3
-        }
-    }
+        PoiTransformerFactory transformerFactory = new PoiTransformerFactory() {
+            @Override
+            protected PoiTransformer createTransformer(Workbook workbook, JxlsStreaming streaming) {
+                return PoiTransformer.createSxssfTransformer(workbook, 1000, true);
+            };
+        };
 
-    private void processArea(Area area) {
-        Context context = prepareContext();
-        final CellRef ref = new CellRef("Result", 0, 0);
-        area.applyAt(ref, context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(prepareContext().toMap(), new JxlsPoiTemplateFillerBuilder() {
+            @Override
+            public JxlsTemplateFiller build() {
+                return new MyJxlsTemplateFiller(getExpressionEvaluatorFactory(), expressionNotationBegin,
+                        expressionNotationEnd, new PoiExceptionThrower(), getFormulaProcessor(), ignoreColumnProps,
+                        ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                        keepTemplateSheet, getAreaBuilder(), commands, clearTemplateCells, transformerFactory, JxlsStreaming.STREAMING_ON,
+                        IssueSxssfTransformerTest.class.getResourceAsStream("IssueSxssfTransformerTest.xlsx"));
+            }
+        }.withRecalculateFormulasOnOpening(true));
+
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(1);
+            assertEquals("Manager:", w.getCellValueAsString(3, 1)); // A3
+            assertEquals("ABC", w.getCellValueAsString(3, 2)); // B3
+        }
     }
 
     private Context prepareContext() {
@@ -82,5 +85,32 @@ public class IssueSxssfTransformerTest {
         context.putVar("departmentsName", mapArrayList);
         context.putVar("departmentsOrgName", mapOrgArrayList);
         return context;
+    }
+    
+    public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
+
+        protected MyJxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
+                String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger,
+                FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
+                boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening,
+                KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
+                Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
+                JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, InputStream template) {
+            super(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd, logger, formulaProcessor,
+                    ignoreColumProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                    keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
+        }
+        
+        @Override
+        protected void processAreas(Map<String, Object> data) {
+            areas = areaBuilder.build(transformer, true);
+            for (Area area : areas) {
+                CellRef ref = new CellRef("Result", 0, 0);
+                area.applyAt(ref, new Context(data));
+            }
+//            workbook.setActiveSheet(activeSheetIndex);
+//            SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();
+//            workbook2.write(os);
+        }
     }
 }

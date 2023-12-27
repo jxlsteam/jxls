@@ -4,21 +4,29 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsTemplateFiller;
+import org.jxls.builder.KeepTemplateSheet;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.PoiExceptionThrower;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
-import org.jxls.transform.Transformer;
-import org.jxls.util.JxlsHelper;
+import org.jxls.expression.ExpressionEvaluatorFactory;
+import org.jxls.formula.FormulaProcessor;
+import org.jxls.logging.JxlsLogger;
+import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
+import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Issue 147
@@ -31,19 +39,28 @@ import org.jxls.util.JxlsHelper;
  */
 public class Issue147MultiResizingXlsAreasTest {
     private final AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-
+    private Context context;
+    
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        context = new Context();
         context.putVar("employees", Employee.generateSampleEmployeeData());
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        try (InputStream is = tester.openInputStream(); OutputStream os = tester.openOutputStream()) {
-            Transformer transformer = JxlsHelper.getInstance().createTransformer(is, os);
-            processTemplate(context, transformer);
-        }
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        // install own MyJxlsTemplateFiller
+        JxlsPoiTemplateFillerBuilder builder = new JxlsPoiTemplateFillerBuilder() {
+            @Override
+            public JxlsTemplateFiller build() {
+                return new MyJxlsTemplateFiller(getExpressionEvaluatorFactory(), expressionNotationBegin, expressionNotationEnd,
+                        new PoiExceptionThrower(), getFormulaProcessor(), ignoreColumnProps, ignoreRowProps,
+                        recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                        keepTemplateSheet, areaBuilder, commands, clearTemplateCells, new PoiTransformerFactory(), streaming,
+                        Issue147MultiResizingXlsAreasTest.class.getResourceAsStream("Issue147MultiResizingXlsAreasTest.xlsx"));
+            }
+        };
+        tester.test(context.toMap(), builder);
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -57,19 +74,34 @@ public class Issue147MultiResizingXlsAreasTest {
             assertEquals(38 * 15, w.getRowHeight(21)); // Footer
         }
     }
+    
+    public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
 
-    private void processTemplate(Context context, Transformer transformer) throws IOException {
-        List<Area> xlsAreaList = areaBuilder.build(transformer, true);
-        Size delta = Size.ZERO_SIZE;
-        for (Area xlsArea : xlsAreaList) {
-            CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),
-                    xlsArea.getStartCellRef().getRow() + delta.getHeight(),
-                    xlsArea.getStartCellRef().getCol() + delta.getWidth());
-            Size startSize = xlsArea.getSize();
-            Size endSize = xlsArea.applyAt(targetCellRef, context);
-            delta = delta.add(endSize.minus(startSize));
-            xlsArea.processFormulas();
+        protected MyJxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
+                String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger,
+                FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
+                boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening,
+                KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
+                Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
+                JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, InputStream template) {
+            super(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd, logger, formulaProcessor,
+                    ignoreColumProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                    keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
         }
-        transformer.write();
+        
+        @Override
+        protected void processAreas(Map<String, Object> data) {
+            areas = areaBuilder.build(transformer, true);
+            Size delta = Size.ZERO_SIZE;
+            for (Area xlsArea : areas) {
+                CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),
+                        xlsArea.getStartCellRef().getRow() + delta.getHeight(),
+                        xlsArea.getStartCellRef().getCol() + delta.getWidth());
+                Size startSize = xlsArea.getSize();
+                Size endSize = xlsArea.applyAt(targetCellRef, context);
+                delta = delta.add(endSize.minus(startSize));
+                xlsArea.processFormulas();
+            }
+        }
     }
 }

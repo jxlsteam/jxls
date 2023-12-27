@@ -423,7 +423,7 @@ public class PoiTransformer extends AbstractTransformer {
     @Override
     public void writeButNotCloseStream() throws IOException {
         if (outputStream == null) {
-            throw new IllegalStateException("Cannot write a workbook with an uninitialized output stream");
+            throw new IllegalStateException("Cannot write a workbook with an uninitialized output stream. Was Transformer.setOutputStream() called?");
         }
         if (workbook == null) {
             throw new IllegalStateException("Cannot write an uninitialized workbook");

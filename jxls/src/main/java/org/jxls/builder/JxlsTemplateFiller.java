@@ -113,6 +113,10 @@ public class JxlsTemplateFiller {
         transformer.getTransformationConfig().setExpressionEvaluatorFactory(expressionEvaluatorFactory);
     }
 
+    /**
+     * Implementation must set areas variable.
+     * @param data -
+     */
     protected void processAreas(Map<String, Object> data) {
         areas = areaBuilder.build(transformer, clearTemplateCells);
         Context context = new Context(data);

@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactory;
-import org.jxls.util.JxlsHelper;
 
 /**
  * Transformation configuration class
@@ -36,18 +35,12 @@ public class TransformationConfig {
 
     public ExpressionEvaluator getExpressionEvaluator() {
 		if (expressionEvaluator == null) {
-			if (expressionEvaluatorFactory == null) {
-				expressionEvaluatorFactory = JxlsHelper.getInstance().getExpressionEvaluatorFactory();
-			}
 			expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator(null);
 		}
 		return expressionEvaluator;
     }
 
     public ExpressionEvaluator getExpressionEvaluator(String expression) {
-		if (expressionEvaluatorFactory == null) {
-			expressionEvaluatorFactory = JxlsHelper.getInstance().getExpressionEvaluatorFactory();
-		}
 		return expressionEvaluatorFactory.createExpressionEvaluator(expression);
     }
 

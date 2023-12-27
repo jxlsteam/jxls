@@ -9,15 +9,11 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
-import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.common.PoiExceptionThrower;
-import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
-import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.unittests.PoiSafeSheetNameBuilderUnitTest;
 
@@ -80,22 +76,13 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
         testSheets.get(0).setName("data["); // make name invalid
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
-        TransformerChecker tc = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                // strict non-silent mode for getting all errors
-                transformer.getTransformationConfig().setExpressionEvaluatorFactory(x -> new JexlExpressionEvaluator(false, true));
-                
-                // throw exceptions instead of just logging them
-                transformer.setLogger(new PoiExceptionThrower());
-                return transformer;
-            }
-        };
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
         try {
-            tester.createTransformerAndProcessTemplate(context, tc);
+            tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance()
+                    .withExceptionThrower()
+                    .withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(true)));
             
             // Verify
             Assert.fail("JxlsException \"...'data['...\" expected!");

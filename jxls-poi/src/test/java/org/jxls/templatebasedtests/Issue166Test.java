@@ -1,85 +1,40 @@
 package org.jxls.templatebasedtests;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.expression.JexlExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluatorNoThreadLocal;
-import org.jxls.transform.TransformationConfig;
-import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 public class Issue166Test {
-    private static final JexlPermissions PERMISSIONS = JexlPermissions.parse(JXLS2CustomFunctions.class.getName());
-    private JexlExpressionEvaluatorNoThreadLocal evaluator;
-    
-    @Test
-    public void createReportTwice_noThreadLocal() {
-        createExcelReportUsingCustomFunctions_noThreadLocal();
-        createExcelReportUsingCustomFunctions_noThreadLocal();
-    }
-
-    @Test
-    public void createReportTwice_threadLocal() {
-        createExcelReportUsingCustomFunctions_threadLocal();
-        createExcelReportUsingCustomFunctions_threadLocal();
-    }
+    private Map<String, Object> data;
+    // Removed namespace based testcases because it's not recommended to use custom functions that way. createExcelReport() shows the easier way.
 
     /**
-     * testcase 3: with thread local and without "namespace" custom functions. (syntax: cf:mach)
+     * testcase with thread local and without "namespace" custom functions.
      * We use custom functions here as POJO object in the context. (syntax: cf.mach)
      */
     @Test
-    public void createReportTwice_3() {
-        createExcelReport3();
-        createExcelReport3();
+    public void createReportTwice() {
+        createExcelReport();
+        createExcelReport();
     }
 
-    private void createExcelReportUsingCustomFunctions_noThreadLocal() {
+    private void createExcelReport() {
         // Prepare
         Context context = createContext();
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.createTransformerAndProcessTemplate(context, installCustomFunctions_noThreadLocal(context));
-
-        // Test
-        JexlExpressionEvaluatorNoThreadLocal.clear();
+        context.putVar("cf", new MyCustomFunctions());
+        data = context.toMap();
         
-        // Verify
-        verify(tester);
-    }
-
-    private void createExcelReportUsingCustomFunctions_threadLocal() {
-        // Prepare
-        Context context = createContext();
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.createTransformerAndProcessTemplate(context, installCustomFunctions_threadLocal(context));
-
-        new JexlExpressionEvaluator();
         // Test
-        JexlExpressionEvaluator.clear(); // clear cache for current thread
-        
-        // Verify
-        verify(tester);
-    }
-
-    private void createExcelReport3() {
-        // Prepare
-        Context context = createContext();
-        context.putVar("cf", new JXLS2CustomFunctions(context));
-
-        // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "3");
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "3");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower());
         
         // Verify
         verify(tester);
@@ -95,55 +50,30 @@ public class Issue166Test {
         public String getAbc() {
             return "Hi you " + i + "!";
         }
-    }
-
-    private TransformerChecker installCustomFunctions_noThreadLocal(Context context) {
-        TransformerChecker tc = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                TransformationConfig config = transformer.getTransformationConfig();
-                evaluator = new JexlExpressionEvaluatorNoThreadLocal();
-                config.setExpressionEvaluatorFactory(x -> evaluator);
-                Map<String, Object> funcs = new HashMap<>();
-                funcs.put("cf", new JXLS2CustomFunctions(context));
-                JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();
-                evaluator.setJexlEngine(engine);
-                return transformer;
-            }
-        };
-        return tc;
-    }
-
-    private TransformerChecker installCustomFunctions_threadLocal(Context context) {
-        TransformerChecker tc = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                TransformationConfig config = transformer.getTransformationConfig();
-                JexlExpressionEvaluator evaluator_threadLocal = new JexlExpressionEvaluator();
-                config.setExpressionEvaluatorFactory(x -> evaluator_threadLocal);
-                Map<String, Object> funcs = new HashMap<>();
-                funcs.put("cf", new JXLS2CustomFunctions(context));
-                JexlEngine engine = new JexlBuilder().namespaces(funcs).permissions(PERMISSIONS).create();
-                evaluator_threadLocal.setJexlEngine(engine);
-                return transformer;
-            }
-        };
-        return tc;
-    }
-
-    public static class JXLS2CustomFunctions {
-        private final Context context;
         
-        public JXLS2CustomFunctions(Context context) {
-            this.context = context;
+        @Override
+        public String toString() {
+            return "MyItem:" + getAbc();
         }
+    }
+
+    public class MyCustomFunctions {
         
         public String mach(String varName) {
             return "m_" + getValue(varName);
         }
         
         private Object getValue(String expression) {
-            return new JexlExpressionEvaluator(expression).evaluate(context.toMap());
+            if (!data.containsKey("e")) {
+                // XXX Geht derzeit nicht, wegen data Zugriffsproblem.
+                System.err.println("Running var 'e' does not exist in data!  " + data.keySet());
+            }
+            return new JexlExpressionEvaluator(expression).evaluate(data);
+        }
+        
+        @Override
+        public String toString() {
+            return "JXLS2CustomFunctions";
         }
     }
 
@@ -157,7 +87,7 @@ public class Issue166Test {
         return context;
     }
 
-    private void verify(JxlsTester tester) {
+    private void verify(Jxls3Tester tester) {
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet(0);
             for (int i = 1; i < 30; i++) {

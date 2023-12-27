@@ -2,6 +2,8 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,15 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
 import org.jxls.TestWorkbook;
+import org.jxls.builder.JxlsStreaming;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
+import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Group sum test
@@ -99,14 +105,15 @@ public class GroupSumTest {
         context.putVar("G", groupSum);
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "filterCondition");
-        tester.createTransformerAndProcessTemplate(context, new TransformerChecker() {
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "filterCondition");
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().withTransformerFactory(new PoiTransformerFactory() {
             @Override
-            public Transformer checkTransformer(Transformer transformer) {
+            public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
+                Transformer transformer = super.create(template, outputStream, streaming, logger);
                 groupSum.setTransformationConfig(transformer.getTransformationConfig());
                 return transformer;
             }
-        });
+        }));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

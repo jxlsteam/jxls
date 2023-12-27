@@ -14,6 +14,7 @@ import org.jxls.command.GridCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
+import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.transform.Transformer;
 import org.jxls.util.TransformerFactory;
 
@@ -49,6 +50,7 @@ public class SimpleExporter {
     	}    	
     	InputStream is = new ByteArrayInputStream(templateBytes);
         Transformer transformer = TransformerFactory.createTransformer(is, outputStream);
+        transformer.getTransformationConfig().setExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl());
         AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
         List<Area> xlsAreaList = areaBuilder.build(transformer, true);
         Area xlsArea = xlsAreaList.get(0);

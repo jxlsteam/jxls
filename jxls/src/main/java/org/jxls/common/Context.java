@@ -15,9 +15,7 @@ public class Context {
     }
 
     public Context(Map<String, Object> varMap) {
-        for (Map.Entry<String, Object> entry : varMap.entrySet()) {
-            this.varMap.put(entry.getKey(), entry.getValue());
-        }
+        this.varMap = varMap;
     }
 
     public Map<String, Object> toMap() {
