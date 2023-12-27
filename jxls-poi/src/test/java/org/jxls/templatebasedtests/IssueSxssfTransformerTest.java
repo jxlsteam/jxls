@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
@@ -20,8 +19,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiContext;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Test for issue 153
@@ -33,24 +30,19 @@ public class IssueSxssfTransformerTest {
     
     @Test
     public void test() throws IOException {
-        PoiTransformerFactory transformerFactory = new PoiTransformerFactory() {
-            @Override
-            protected PoiTransformer createTransformer(Workbook workbook, JxlsStreaming streaming) {
-                return PoiTransformer.createSxssfTransformer(workbook, 1000, true);
-            };
-        };
-
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(prepareContext().toMap(), new JxlsPoiTemplateFillerBuilder() {
+        JxlsPoiTemplateFillerBuilder builder = new JxlsPoiTemplateFillerBuilder() {
             @Override
             public JxlsTemplateFiller build() {
-                return new MyJxlsTemplateFiller(getOptions(),
-                        IssueSxssfTransformerTest.class.getResourceAsStream("IssueSxssfTransformerTest.xlsx"));
+                return new MyJxlsTemplateFiller(getOptions(), template);
             }
-        }
-        .withExceptionThrower()
-        .withRecalculateFormulasOnOpening(true)
-        .withTransformerFactory(transformerFactory));
+        };
+        tester.test(prepareContext().toMap(), builder
+            .withExceptionThrower()
+            .withRecalculateFormulasOnOpening(true)
+            .withStreaming(JxlsStreaming.STREAMING_ON.withOptions(1000, true, false))
+            .withTemplate(IssueSxssfTransformerTest.class.getResourceAsStream(getClass().getSimpleName() + ".xlsx"))
+        );
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

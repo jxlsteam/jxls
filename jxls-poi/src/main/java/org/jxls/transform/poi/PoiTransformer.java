@@ -15,7 +15,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -34,7 +33,6 @@ import org.jxls.common.SheetData;
 import org.jxls.common.Size;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.AbstractTransformer;
-import org.jxls.util.CannotOpenWorkbookException;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
 
 /**
@@ -51,14 +49,6 @@ public class PoiTransformer extends AbstractTransformer {
     private final boolean isSXSSF;
     private JxlsLogger logger = new PoiExceptionLogger();
     
-    /**
-     * No streaming
-     * @param workbook
-     */
-    private PoiTransformer(Workbook workbook) {
-        this(workbook, false);
-    }
-
     /**
      * @param workbook source workbook to transform
      * @param streaming false: without streaming, true: with streaming (with default parameter values)
@@ -93,76 +83,6 @@ public class PoiTransformer extends AbstractTransformer {
     
     public void setInputStream(InputStream is) {
         inputStream = is;
-    }
-
-    /**
-     * Creates transformer from an input stream template and output stream
-     * @param is input stream to read the Excel template file. Format can be XLSX (recommended) or XLS.
-     * @param os output stream to write the Excel file. Must be the same format.
-     * @return {@link PoiTransformer} instance
-     */
-    public static PoiTransformer createTransformer(InputStream is, OutputStream os) {
-        PoiTransformer transformer = createTransformer(is);
-        transformer.setOutputStream(os);
-        transformer.setInputStream(is);
-        return transformer;
-    }
-
-    /**
-     * Creates transformer instance for given input stream
-     * @param is input stream for the Excel template file. Format can be XLSX (recommended) or XLS.
-     * @return transformer instance reading the template from the passed input stream
-     * @throws CannotOpenWorkbookException if an error occurs during opening the Excel workbook
-     */
-    public static PoiTransformer createTransformer(InputStream is) {
-        Workbook workbook;
-        try {
-            workbook = WorkbookFactory.create(is);
-        } catch (Exception e) {
-            throw new CannotOpenWorkbookException(e);
-        }
-        return createTransformer(workbook);
-    }
-
-    /**
-     * Creates transformer instance from a {@link Workbook} instance
-     * @param workbook Excel template
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createTransformer(Workbook workbook) {
-        return new PoiTransformer(workbook);
-    }
-
-    /**
-     * Creates transformer for given workbook. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook) {
-        return createSxssfTransformer(workbook, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, false);
-    }
-
-    /**
-     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
-        return createSxssfTransformer(workbook, rowAccessWindowSize, compressTmpFiles, false);
-    }
-
-    /**
-     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
-     * @param useSharedStringsTable -
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
-        return new PoiTransformer(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
     }
 
     public static Context createInitialContext() {
