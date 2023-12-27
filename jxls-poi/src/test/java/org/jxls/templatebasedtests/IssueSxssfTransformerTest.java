@@ -14,18 +14,11 @@ import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.area.XlsArea;
-import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.JxlsOptions;
 import org.jxls.builder.JxlsStreaming;
 import org.jxls.builder.JxlsTemplateFiller;
-import org.jxls.builder.KeepTemplateSheet;
-import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.PoiExceptionThrower;
-import org.jxls.expression.ExpressionEvaluatorFactory;
-import org.jxls.formula.FormulaProcessor;
-import org.jxls.logging.JxlsLogger;
-import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiTransformer;
@@ -52,13 +45,13 @@ public class IssueSxssfTransformerTest {
         tester.test(prepareContext().toMap(), new JxlsPoiTemplateFillerBuilder() {
             @Override
             public JxlsTemplateFiller build() {
-                return new MyJxlsTemplateFiller(getExpressionEvaluatorFactory(), expressionNotationBegin,
-                        expressionNotationEnd, new PoiExceptionThrower(), getFormulaProcessor(), ignoreColumnProps,
-                        ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                        keepTemplateSheet, getAreaBuilder(), commands, clearTemplateCells, transformerFactory, JxlsStreaming.STREAMING_ON,
+                return new MyJxlsTemplateFiller(getOptions(),
                         IssueSxssfTransformerTest.class.getResourceAsStream("IssueSxssfTransformerTest.xlsx"));
             }
-        }.withRecalculateFormulasOnOpening(true));
+        }
+        .withExceptionThrower()
+        .withRecalculateFormulasOnOpening(true)
+        .withTransformerFactory(transformerFactory));
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -88,29 +81,18 @@ public class IssueSxssfTransformerTest {
     }
     
     public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
-
-        protected MyJxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger,
-                FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
-                boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening,
-                KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
-                Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
-                JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, InputStream template) {
-            super(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd, logger, formulaProcessor,
-                    ignoreColumProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                    keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
-        }
         
+        protected MyJxlsTemplateFiller(JxlsOptions options, InputStream template) {
+            super(options, template);
+        }
+
         @Override
         protected void processAreas(Map<String, Object> data) {
-            areas = areaBuilder.build(transformer, true);
+            areas = options.getAreaBuilder().build(transformer, true);
             for (Area area : areas) {
                 CellRef ref = new CellRef("Result", 0, 0);
                 area.applyAt(ref, new Context(data));
             }
-//            workbook.setActiveSheet(activeSheetIndex);
-//            SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();
-//            workbook2.write(os);
         }
     }
 }

@@ -15,55 +15,17 @@ import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.expression.ExpressionEvaluatorFactory;
-import org.jxls.formula.FormulaProcessor;
-import org.jxls.logging.JxlsLogger;
-import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.Transformer;
 
 public class JxlsTemplateFiller {
-    protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
-    protected final String expressionNotationBegin;
-    protected final String expressionNotationEnd;
-    protected final JxlsLogger logger;
-    protected final FormulaProcessor formulaProcessor;
-    protected final boolean ignoreColumnProps;
-    protected final boolean ignoreRowProps;
-    protected final boolean recalculateFormulasBeforeSaving;
-    protected final boolean recalculateFormulasOnOpening;
-    protected final KeepTemplateSheet keepTemplateSheet;
-    protected final AreaBuilder areaBuilder;
-    protected final Map<String, Class<? extends Command>> commands;
-    protected final boolean clearTemplateCells;
-    protected final JxlsTransformerFactory transformerFactory;
-    protected final JxlsStreaming streaming;
+    protected final JxlsOptions options;
     protected final InputStream template;
     protected Transformer transformer;
     protected List<Area> areas;
 	private final Map<String, Class<? extends Command>> rem = new HashMap<>();
 
-    protected JxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
-            String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger, //
-            FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
-            boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening, //
-            KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder, Map<String, Class<? extends Command>> commands,
-            boolean clearTemplateCells, JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, //
-            InputStream template) {
-        this.expressionEvaluatorFactory = expressionEvaluatorFactory;
-        this.expressionNotationBegin = expressionNotationBegin;
-        this.expressionNotationEnd = expressionNotationEnd;
-        this.logger = logger;
-        this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
-        this.recalculateFormulasOnOpening = recalculateFormulasOnOpening;
-        this.formulaProcessor = formulaProcessor;
-        this.ignoreColumnProps = ignoreColumProps;
-        this.ignoreRowProps = ignoreRowProps;
-        this.keepTemplateSheet = keepTemplateSheet;
-        this.areaBuilder = areaBuilder;
-        this.commands = commands;
-        this.clearTemplateCells = clearTemplateCells;
-        this.transformerFactory = transformerFactory;
-        this.streaming = streaming;
+    protected JxlsTemplateFiller(JxlsOptions options, InputStream template) {
+        this.options = options;
         this.template = template;
     }
 
@@ -85,7 +47,7 @@ public class JxlsTemplateFiller {
     }
 
 	private void installCommands() {
-		commands.forEach((k, v) -> {
+		options.getCommands().forEach((k, v) -> {
 			rem.put(k, XlsCommentAreaBuilder.getCommandClass(k));
 			XlsCommentAreaBuilder.addCommandMapping(k, v); // for the future we don't want it static
 		});
@@ -103,14 +65,14 @@ public class JxlsTemplateFiller {
 	}
 
     protected void createTransformer(OutputStream outputStream) {
-        transformer = transformerFactory.create(template, outputStream, streaming, logger);
+        transformer = options.getTransformerFactory().create(template, outputStream, options.getStreaming(), options.getLogger());
     }
 
     protected void configureTransformer() {
-    	transformer.setIgnoreColumnProps(ignoreColumnProps);
-    	transformer.setIgnoreRowProps(ignoreRowProps);
-        transformer.getTransformationConfig().buildExpressionNotation(expressionNotationBegin, expressionNotationEnd);
-        transformer.getTransformationConfig().setExpressionEvaluatorFactory(expressionEvaluatorFactory);
+    	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
+    	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
+        transformer.getTransformationConfig().buildExpressionNotation(options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
+        transformer.getTransformationConfig().setExpressionEvaluatorFactory(options.getExpressionEvaluatorFactory());
     }
 
     /**
@@ -118,24 +80,24 @@ public class JxlsTemplateFiller {
      * @param data -
      */
     protected void processAreas(Map<String, Object> data) {
-        areas = areaBuilder.build(transformer, clearTemplateCells);
+        areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
         Context context = new Context(data);
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
         }
-        if (formulaProcessor != null) {
+        if (options.getFormulaProcessor() != null) {
             for (Area area : areas) {
-                area.setFormulaProcessor(formulaProcessor);
+                area.setFormulaProcessor(options.getFormulaProcessor());
                 area.processFormulas();
             }
         }
     }
 
     protected void preWrite() {
-        transformer.setEvaluateFormulas(recalculateFormulasBeforeSaving);
-        transformer.setFullFormulaRecalculationOnOpening(recalculateFormulasOnOpening);
+        transformer.setEvaluateFormulas(options.isRecalculateFormulasBeforeSaving());
+        transformer.setFullFormulaRecalculationOnOpening(options.isRecalculateFormulasOnOpening());
 		Consumer<String> action;
-		switch (keepTemplateSheet) {
+		switch (options.getKeepTemplateSheet()) {
 		case DELETE:
 			action = sheetName -> transformer.deleteSheet(sheetName);
 			break;

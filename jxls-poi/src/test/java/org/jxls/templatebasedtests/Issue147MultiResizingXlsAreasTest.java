@@ -10,23 +10,13 @@ import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsOptions;
 import org.jxls.builder.JxlsTemplateFiller;
-import org.jxls.builder.KeepTemplateSheet;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
-import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.PoiExceptionThrower;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
-import org.jxls.expression.ExpressionEvaluatorFactory;
-import org.jxls.formula.FormulaProcessor;
-import org.jxls.logging.JxlsLogger;
-import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
-import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Issue 147
@@ -38,7 +28,7 @@ import org.jxls.transform.poi.PoiTransformerFactory;
  * target cell start, rather than original area start.
  */
 public class Issue147MultiResizingXlsAreasTest {
-    private final AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+//    private final AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
     private Context context;
     
     @Test
@@ -53,14 +43,12 @@ public class Issue147MultiResizingXlsAreasTest {
         JxlsPoiTemplateFillerBuilder builder = new JxlsPoiTemplateFillerBuilder() {
             @Override
             public JxlsTemplateFiller build() {
-                return new MyJxlsTemplateFiller(getExpressionEvaluatorFactory(), expressionNotationBegin, expressionNotationEnd,
-                        new PoiExceptionThrower(), getFormulaProcessor(), ignoreColumnProps, ignoreRowProps,
-                        recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                        keepTemplateSheet, areaBuilder, commands, clearTemplateCells, new PoiTransformerFactory(), streaming,
-                        Issue147MultiResizingXlsAreasTest.class.getResourceAsStream("Issue147MultiResizingXlsAreasTest.xlsx"));
+                return new MyJxlsTemplateFiller(getOptions(), template);
             }
         };
-        tester.test(context.toMap(), builder);
+        tester.test(context.toMap(), builder
+                .withExceptionThrower()
+                .withTemplate(getClass().getResourceAsStream("Issue147MultiResizingXlsAreasTest.xlsx")));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -77,21 +65,13 @@ public class Issue147MultiResizingXlsAreasTest {
     
     public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
 
-        protected MyJxlsTemplateFiller(ExpressionEvaluatorFactory expressionEvaluatorFactory,
-                String expressionNotationBegin, String expressionNotationEnd, JxlsLogger logger,
-                FormulaProcessor formulaProcessor, boolean ignoreColumProps, boolean ignoreRowProps,
-                boolean recalculateFormulasBeforeSaving, boolean recalculateFormulasOnOpening,
-                KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
-                Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
-                JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, InputStream template) {
-            super(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd, logger, formulaProcessor,
-                    ignoreColumProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                    keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
+        protected MyJxlsTemplateFiller(JxlsOptions options, InputStream template) {
+            super(options, template);
         }
         
         @Override
         protected void processAreas(Map<String, Object> data) {
-            areas = areaBuilder.build(transformer, true);
+            areas = options.getAreaBuilder().build(transformer, true);
             Size delta = Size.ZERO_SIZE;
             for (Area xlsArea : areas) {
                 CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),

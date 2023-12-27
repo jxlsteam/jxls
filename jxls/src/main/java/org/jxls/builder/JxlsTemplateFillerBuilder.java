@@ -61,9 +61,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     	} else if (template == null) {
     		throw new JxlsException("Please call withTemplate()");
     	}
-        return new JxlsTemplateFiller(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
-        		logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, template);
+        return new JxlsTemplateFiller(getOptions(), template);
     }
     
     /**
@@ -81,6 +79,12 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 	public void buildAndFill(Map<String, Object> data, File outputFile) {
 		buildAndFill(data, new JxlsOutputFile(outputFile));
 	}
+
+    public JxlsOptions getOptions() {
+        return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
+                logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming);
+    }
 
     public SELF withExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
         if (expressionEvaluatorFactory == null) {
