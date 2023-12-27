@@ -7,8 +7,8 @@ public abstract class CollectionProcessor {
 
     public void traverse(Context context, Iterable<?> itemsCollection, String varName, String varIndex,
             ExpressionEvaluator selectEvaluator) {
-        Object currentVarObject = varName == null ? null : context.getRunVar(varName);
-        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
+        Object currentVarObject = EachCommand.getRunVar(context, varName);
+        Object currentVarIndexObject = EachCommand.getRunVar(context, varIndex);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);

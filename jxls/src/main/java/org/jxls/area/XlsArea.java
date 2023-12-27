@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jxls.command.Command;
+import org.jxls.command.EachCommand;
 import org.jxls.common.AreaListener;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
@@ -232,7 +233,7 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
-        if (!Boolean.FALSE.equals(context.getRunVar(IS_FORMULA_PROCESSING_REQUIRED))) {
+        if (!Boolean.FALSE.equals(EachCommand.getRunVar(context, IS_FORMULA_PROCESSING_REQUIRED))) {
             AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
             updateCellDataFinalAreaForFormulaCells(newAreaRef);
         }
@@ -525,7 +526,7 @@ public class XlsArea implements Area {
     }
 
     private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
-        if (Boolean.FALSE.equals(context.getRunVar(IS_FORMULA_PROCESSING_REQUIRED))) {
+        if (Boolean.FALSE.equals(EachCommand.getRunVar(context, IS_FORMULA_PROCESSING_REQUIRED))) {
             return;
         }
         CellData cellData = transformer.getCellData(srcCell);

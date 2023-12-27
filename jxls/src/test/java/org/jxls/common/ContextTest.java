@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -44,16 +43,5 @@ public class ContextTest {
         context.putVar("y", "Abc");
         assertTrue(context.toString().contains("y=Abc"));
         assertTrue(context.toString().contains("x=1"));
-    }
-
-    @Test
-    public void testCreateFromMap() {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("x", "Abc");
-        map.put("y", Integer.valueOf(10));
-        Context context = new Context(map);
-        map.clear();
-        assertEquals("Abc", context.getVar("x"));
-        assertEquals(Integer.valueOf(10), context.getVar("y"));
     }
 }

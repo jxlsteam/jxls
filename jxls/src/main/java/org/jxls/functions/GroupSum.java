@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.jxls.command.EachCommand;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
@@ -86,7 +87,7 @@ public class GroupSum<T> {
         }
         ExpressionEvaluator expressionEvaluator = transformationConfig.getExpressionEvaluator();
         Summarizer<T> sum = sumBuilder.build();
-        Object oldValue = context.getRunVar(objectVarName);
+        Object oldValue = EachCommand.getRunVar(context, objectVarName);
         for (Object i : collection) {
             Object value = getValue(i, fieldName);
             context.putVar(objectVarName, i);

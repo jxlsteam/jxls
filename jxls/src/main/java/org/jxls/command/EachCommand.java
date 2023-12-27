@@ -335,8 +335,8 @@ public class EachCommand extends AbstractCommand {
     private Iterable<?> filter(Context context, Iterable<?> itemsCollection, String selectExpression) {
         List<Object> filteredList = new ArrayList<>();
         ExpressionEvaluator selectEvaluator = getTransformationConfig().getExpressionEvaluator(selectExpression);
-        Object currentVarObject = var == null ? null : context.getRunVar(var);
-        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
+        Object currentVarObject = getRunVar(context, var);
+        Object currentVarIndexObject = getRunVar(context, varIndex);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(var, obj);
@@ -373,8 +373,8 @@ public class EachCommand extends AbstractCommand {
         }
 
         CellRef currentCell = cellRef;
-        Object currentVarObject = varName == null ? null : context.getRunVar(varName);
-        Object currentVarIndexObject = varIndex == null ? null : context.getRunVar(varIndex);
+        Object currentVarObject = getRunVar(context, varName);
+        Object currentVarIndexObject = getRunVar(context, varIndex);
         int currentIndex = 0;
         for (Object obj : itemsCollection) {
             context.putVar(varName, obj);
@@ -413,6 +413,15 @@ public class EachCommand extends AbstractCommand {
         restoreVarObject(context, varIndex, currentVarIndexObject);
         restoreVarObject(context, varName, currentVarObject);
         return new Size(newWidth, newHeight);
+    }
+    
+    public static Object getRunVar(Context context, String varName) {
+        if (varName != null) {
+            if (context.toMap().containsKey(varName)) {
+                return context.getRunVar(varName);
+            }
+        }
+        return null;
     }
 
     private void restoreVarObject(Context context, String varName, Object varObject) {
