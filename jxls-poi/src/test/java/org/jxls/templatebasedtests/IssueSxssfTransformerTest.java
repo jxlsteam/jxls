@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
-import org.jxls.area.XlsArea;
 import org.jxls.builder.JxlsOptions;
 import org.jxls.builder.JxlsStreaming;
 import org.jxls.builder.JxlsTemplateFiller;
@@ -63,7 +62,7 @@ public class IssueSxssfTransformerTest {
 
     private Context prepareContext() {
         final Context context = new PoiContext();
-        context.putVar(XlsArea.IS_FORMULA_PROCESSING_REQUIRED, Boolean.FALSE);
+        context.setFormulaProcessingRequired(false);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();
         mapArrayList.add(Collections.singletonMap("entity", "ABC"));

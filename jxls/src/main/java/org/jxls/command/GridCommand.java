@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.area.Area;
-import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
@@ -164,10 +163,10 @@ public class GridCommand extends AbstractCommand {
         CellRef currentCell = cellRef;
         int totalWidth = 0;
         int totalHeight = 0;
-        Boolean oldIgnoreSourceCellStyle = (Boolean) EachCommand.getRunVar(context, CellData.IGNORE_SOURCE_CELL_STYLE);
-        context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, Boolean.TRUE);
-        Map<String, String> oldStyleCellMap = (Map<String, String>) EachCommand.getRunVar(context, CellData.CELL_STYLE_MAP);
-        context.putVar(CellData.CELL_STYLE_MAP, this.cellStyleMap);
+        boolean oldIgnoreSourceCellStyle = context.isIgnoreSourceCellStyle();
+        context.setIgnoreSourceCellStyle(true);
+        Map<String, String> oldCellStyleMap = context.getCellStyleMap();
+        context.setCellStyleMap(this.cellStyleMap);
         // TODO possible error: content of DATA_VAR is not saved & restored
         for (Object rowObject : dataCollection) {
             if (rowObject.getClass().isArray() || rowObject instanceof Iterable) {
@@ -213,8 +212,8 @@ public class GridCommand extends AbstractCommand {
             }
         }
         context.removeVar(DATA_VAR);
-        context.putVar(CellData.IGNORE_SOURCE_CELL_STYLE, oldIgnoreSourceCellStyle);
-        context.putVar(CellData.CELL_STYLE_MAP, oldStyleCellMap);
+        context.setIgnoreSourceCellStyle(oldIgnoreSourceCellStyle);
+        context.setCellStyleMap(oldCellStyleMap);
         return new Size(totalWidth, totalHeight);
     }
 }

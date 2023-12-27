@@ -10,7 +10,10 @@ import java.util.Map;
  */
 public class Context {
     protected Map<String, Object> varMap = new HashMap<String, Object>();
-
+    private boolean formulaProcessingRequired = true;
+    private boolean ignoreSourceCellStyle = false;
+    private Map<String, String> cellStyleMap;
+    
     public Context() {
     }
 
@@ -41,5 +44,29 @@ public class Context {
     @Override
     public String toString() {
         return "Context" + varMap;
+    }
+
+    public boolean isFormulaProcessingRequired() {
+        return formulaProcessingRequired;
+    }
+
+    public void setFormulaProcessingRequired(boolean formulaProcessingRequired) {
+        this.formulaProcessingRequired = formulaProcessingRequired;
+    }
+
+    public boolean isIgnoreSourceCellStyle() {
+        return ignoreSourceCellStyle;
+    }
+
+    public void setIgnoreSourceCellStyle(boolean ignoreSourceCellStyle) {
+        this.ignoreSourceCellStyle = ignoreSourceCellStyle;
+    }
+
+    public Map<String, String> getCellStyleMap() {
+        return cellStyleMap;
+    }
+
+    public void setCellStyleMap(Map<String, String> cellStyleMap) {
+        this.cellStyleMap = cellStyleMap;
     }
 }
