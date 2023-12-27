@@ -192,7 +192,7 @@ public class ImageCommand extends AbstractCommand {
     }
 
     private void addImage(Workbook workbook, AreaRef areaRef, int imageIdx, Double scaleX, Double scaleY) {
-        boolean pictureResizeFlag = scaleX != null && scaleY != null;
+        boolean resize = scaleX != null && scaleY != null;
         CreationHelper helper = workbook.getCreationHelper();
         Sheet sheet = workbook.getSheet(areaRef.getSheetName());
         if (sheet == null) {
@@ -202,7 +202,7 @@ public class ImageCommand extends AbstractCommand {
         ClientAnchor anchor = helper.createClientAnchor();
         anchor.setCol1(areaRef.getFirstCellRef().getCol());
         anchor.setRow1(areaRef.getFirstCellRef().getRow());
-        if (pictureResizeFlag) {
+        if (resize) {
             anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
             anchor.setCol2(-1);
             anchor.setRow2(-1);
@@ -211,7 +211,7 @@ public class ImageCommand extends AbstractCommand {
             anchor.setRow2(areaRef.getLastCellRef().getRow());
         }
         Picture picture = drawing.createPicture(anchor, imageIdx);
-        if (pictureResizeFlag) {
+        if (resize) {
             picture.resize(scaleX.doubleValue(), scaleY.doubleValue());
         }
     }
