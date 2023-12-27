@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -14,6 +16,7 @@ import org.jxls.command.Command;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
+import org.jxls.expression.NeedsExpressionEvaluator;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -47,6 +50,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     private JxlsTransformerFactory transformerFactory;
     protected JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
     protected InputStream template;
+    protected final List<NeedsExpressionEvaluator> needsExpressionEvaluatorList = new ArrayList<>();
 
     public static JxlsTemplateFillerBuilder<?> newInstance() {
         return new JxlsTemplateFillerBuilder<>();
@@ -83,7 +87,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public JxlsOptions getOptions() {
         return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
                 logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming);
+                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsExpressionEvaluatorList);
     }
 
     public SELF withExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -186,6 +190,14 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 
     public SELF withStreaming(JxlsStreaming streaming) {
         this.streaming = streaming == null ? JxlsStreaming.STREAMING_OFF : streaming;
+        return (SELF) this;
+    }
+    
+    public SELF needsExpressionEvaluator(NeedsExpressionEvaluator needsExpressionEvaluator) {
+        if (needsExpressionEvaluator == null) {
+            throw new IllegalArgumentException("needsExpressionEvaluator must not be null");
+        }
+        needsExpressionEvaluatorList.add(needsExpressionEvaluator);
         return (SELF) this;
     }
 

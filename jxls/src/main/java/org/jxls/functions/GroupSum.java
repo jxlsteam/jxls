@@ -8,15 +8,13 @@ import org.jxls.command.EachCommand;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.expression.NeedsExpressionEvaluator;
 
 /**
  * Group sum
  * <p>The sum function for calculation a group sum takes two arguments: the collection as JEXL expression (or its name as a String)
  * and the name (as String) of the attribute. The attribute can be a object property or a Map entry. The value type T can be of any
  * type and is implemented by a generic SummarizerBuilder.</p>
- * <p>Call setTransformationConfig() if you want to use the methods with filter condition parameter.</p>
  * 
  * <h2>Example</h2>
  * <p>Add an instance of this class e.g. with name "G" to your Context.</p>
@@ -24,15 +22,20 @@ import org.jxls.transform.TransformationConfig;
  * <p>Above the 2nd argument is a JEXL expression. The collection name as String is also possible:</p>
  * <pre>${G.sum("salary", "employees.items")}</pre>
  */
-public class GroupSum<T> {
+public class GroupSum<T> implements NeedsExpressionEvaluator {
     private final Context context;
     private final SummarizerBuilder<T> sumBuilder;
-    private TransformationConfig transformationConfig;
+    private ExpressionEvaluator expressionEvaluator;
     private String objectVarName = "i";
     
     public GroupSum(Context context, SummarizerBuilder<T> sumBuilder) {
         this.context = context;
         this.sumBuilder = sumBuilder;
+    }
+
+    @Override
+    public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
+        this.expressionEvaluator = expressionEvaluator;
     }
     
     /**
@@ -61,14 +64,6 @@ public class GroupSum<T> {
         return sum.getSum();
     }
 
-    public TransformationConfig getTransformationConfig() {
-        return transformationConfig;
-    }
-
-    public void setTransformationConfig(TransformationConfig transformationConfig) {
-        this.transformationConfig = transformationConfig;
-    }
-
     public String getObjectVarName() {
         return objectVarName;
     }
@@ -82,10 +77,6 @@ public class GroupSum<T> {
     }
     
     public T sum(String fieldName, Iterable<Object> collection, String filter) {
-        if (transformationConfig == null) {
-            throw new JxlsException("Please set GroupSum.transformationConfig!");
-        }
-        ExpressionEvaluator expressionEvaluator = transformationConfig.getExpressionEvaluator();
         Summarizer<T> sum = sumBuilder.build();
         Object oldValue = EachCommand.getRunVar(context, objectVarName);
         for (Object i : collection) {
@@ -129,9 +120,6 @@ public class GroupSum<T> {
     }
 
     private Object getValue(String expression) {
-        if (transformationConfig == null) {
-            return new JexlExpressionEvaluator(expression).evaluate(context.toMap()); // TODO not good, but how to get TransformerConfig? Yes I know there's setTransformationConfig()
-        }
-        return transformationConfig.getExpressionEvaluator().evaluate(expression, context.toMap());
+        return expressionEvaluator.evaluate(expression, context.toMap());
     }
 }

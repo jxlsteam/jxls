@@ -1,9 +1,11 @@
 package org.jxls.builder;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jxls.command.Command;
 import org.jxls.expression.ExpressionEvaluatorFactory;
+import org.jxls.expression.NeedsExpressionEvaluator;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
@@ -24,13 +26,14 @@ public class JxlsOptions {
     private final boolean clearTemplateCells;
     private final JxlsTransformerFactory transformerFactory;
     private final JxlsStreaming streaming;
+    private final List<NeedsExpressionEvaluator> needsExpressionEvaluatorList;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor,
             boolean ignoreColumnProps, boolean ignoreRowProps, boolean recalculateFormulasBeforeSaving,
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
-            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming) {
+            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsExpressionEvaluator> needsExpressionEvaluatorList) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -46,6 +49,7 @@ public class JxlsOptions {
         this.clearTemplateCells = clearTemplateCells;
         this.transformerFactory = transformerFactory;
         this.streaming = streaming;
+        this.needsExpressionEvaluatorList = needsExpressionEvaluatorList;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -106,5 +110,9 @@ public class JxlsOptions {
 
     public JxlsStreaming getStreaming() {
         return streaming;
+    }
+
+    public List<NeedsExpressionEvaluator> getNeedsExpressionEvaluatorList() {
+        return needsExpressionEvaluatorList;
     }
 }

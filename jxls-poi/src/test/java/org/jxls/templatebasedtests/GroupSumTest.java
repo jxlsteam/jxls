@@ -2,8 +2,6 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,18 +10,13 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
-import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
-import org.jxls.builder.JxlsStreaming;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
-import org.jxls.logging.JxlsLogger;
-import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
-import org.jxls.transform.poi.PoiTransformerFactory;
 
 /**
  * Group sum test
@@ -44,8 +37,7 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
         Context context = new Context();
         context.putVar("details", maps);
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
-        check(context);
+        check(context, new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
     }
 
     private Map<String, Object> createEmployee(String department, String name, String job, String city, double salary) {
@@ -69,18 +61,19 @@ public class GroupSumTest {
         beans.add(newEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
         Context context = new Context();
         context.putVar("details", beans);
-        context.putVar("G", new GroupSum<BigDecimal>(context, new BigDecimalSummarizerBuilder()));
-        check(context);
+        check(context, new GroupSum<BigDecimal>(context, new BigDecimalSummarizerBuilder()));
     }
     
     private Employee newEmployee(String department, String name, String job, String city, double salary) {
         return new Employee(name, null, salary, 0, department);
     }
     
-    private void check(Context context) {
+    private void check(Context context, GroupSum<?> groupSum) {
+        context.putVar("G", groupSum);
+        
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsExpressionEvaluator(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -106,14 +99,7 @@ public class GroupSumTest {
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "filterCondition");
-        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().withTransformerFactory(new PoiTransformerFactory() {
-            @Override
-            public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
-                Transformer transformer = super.create(template, outputStream, streaming, logger);
-                groupSum.setTransformationConfig(transformer.getTransformationConfig());
-                return transformer;
-            }
-        }));
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsExpressionEvaluator(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

@@ -15,6 +15,7 @@ import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 public class JxlsTemplateFiller {
@@ -71,8 +72,10 @@ public class JxlsTemplateFiller {
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
     	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
-        transformer.getTransformationConfig().buildExpressionNotation(options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
-        transformer.getTransformationConfig().setExpressionEvaluatorFactory(options.getExpressionEvaluatorFactory());
+        TransformationConfig tc = transformer.getTransformationConfig();
+        tc.buildExpressionNotation(options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
+        tc.setExpressionEvaluatorFactory(options.getExpressionEvaluatorFactory());
+        options.getNeedsExpressionEvaluatorList().forEach(ee -> ee.setExpressionEvaluator(tc.getExpressionEvaluator()));
     }
 
     /**
