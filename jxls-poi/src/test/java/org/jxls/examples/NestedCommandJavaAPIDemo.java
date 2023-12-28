@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.command.EachCommand;
 import org.jxls.command.IfCommand;
@@ -15,7 +16,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn
@@ -28,7 +28,7 @@ public class NestedCommandJavaAPIDemo {
         List<Employee> employees = Employee.generateSampleEmployeeData();
         try (InputStream is = NestedCommandJavaAPIDemo.class.getResourceAsStream("nested_command_javaapi_template.xls")) {
             try (OutputStream os = new FileOutputStream("target/nested_command_javaapi_output.xls")) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os);
                 XlsArea xlsArea = new XlsArea("Template!A1:D4", transformer);
                 XlsArea employeeArea = new XlsArea("Template!A4:D4", transformer);
                 EachCommand employeeEachCommand = new EachCommand("employee", "employees", employeeArea);

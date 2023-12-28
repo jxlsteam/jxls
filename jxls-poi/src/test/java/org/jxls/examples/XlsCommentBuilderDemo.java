@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -15,8 +16,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.transform.Transformer;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn
@@ -30,11 +29,11 @@ public class XlsCommentBuilderDemo {
         List<Department> departments = Department.createDepartments();
         try (InputStream is = XlsCommentBuilderDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os);
                 AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
                 List<Area> xlsAreaList = areaBuilder.build(transformer, false);
                 Area xlsArea = xlsAreaList.get(0);
-                Context context = PoiTransformer.createInitialContext();
+                Context context = new Context();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
                 xlsArea.processFormulas();

@@ -1,11 +1,18 @@
 package org.jxls;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Assert;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
+import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.util.CannotOpenWorkbookException;
 
 public class Jxls3Tester {
     private final Class<?> testclass;
@@ -37,5 +44,16 @@ public class Jxls3Tester {
     
     public TestWorkbook getWorkbook() {
         return new TestWorkbook(out);
+    }
+    
+    public static PoiTransformer createTransformer(InputStream is, OutputStream os) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
+            PoiTransformer transformer = new PoiTransformer(workbook, false);
+            transformer.setOutputStream(os);
+            return transformer;
+        } catch (EncryptedDocumentException | IOException e) {
+            throw new CannotOpenWorkbookException(e);
+        }
     }
 }

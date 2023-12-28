@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -16,7 +17,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn
@@ -30,7 +30,7 @@ public class UserCommandExcelMarkupDemo {
         List<Employee> employees = Employee.generateSampleEmployeeData();
         try (InputStream is = UserCommandExcelMarkupDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os);
                 AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
                 XlsCommentAreaBuilder.addCommandMapping("groupRow", GroupRowCommand.class);
                 List<Area> xlsAreaList = areaBuilder.build(transformer, true);

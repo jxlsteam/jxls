@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -16,7 +19,8 @@ import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
+import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.util.CannotOpenWorkbookException;
 
 /**
  * Helper class for grid export
@@ -49,7 +53,7 @@ public class SimpleExporter {
             }
     	}    	
     	InputStream is = new ByteArrayInputStream(templateBytes);
-        Transformer transformer = TransformerFactory.createTransformer(is, outputStream);
+        Transformer transformer = createTransformer(is, outputStream);
         transformer.getTransformationConfig().setExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl());
         AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
         List<Area> xlsAreaList = areaBuilder.build(transformer, true);
@@ -64,6 +68,17 @@ public class SimpleExporter {
             transformer.write();
         } catch (IOException e) {
             throw new JxlsException("Failed to write to output stream", e);
+        }
+    }
+
+    private PoiTransformer createTransformer(InputStream is, OutputStream os) {
+        try {
+            Workbook workbook = WorkbookFactory.create(is);
+            PoiTransformer transformer = new PoiTransformer(workbook, false);
+            transformer.setOutputStream(os);
+            return transformer;
+        } catch (EncryptedDocumentException | IOException e) {
+            throw new CannotOpenWorkbookException(e);
         }
     }
 }

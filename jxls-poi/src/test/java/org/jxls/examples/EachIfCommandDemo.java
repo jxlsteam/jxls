@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -16,7 +17,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn Date: 1/30/12 12:15 PM
@@ -30,7 +30,7 @@ public class EachIfCommandDemo {
         List<Department> departments = Department.createDepartments();
         try (InputStream is = EachIfCommandDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os);
                 // uncomment in case you want to avoid using ThreadLocals in ExpressionEvaluator
                 // implementations
                 // transformer.getTransformationConfig().setExpressionEvaluator(new

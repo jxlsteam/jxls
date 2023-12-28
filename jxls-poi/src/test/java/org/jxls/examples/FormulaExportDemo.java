@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.Transformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn
@@ -24,7 +24,7 @@ public class FormulaExportDemo {
     public void test() throws IOException {
         try (InputStream is = FormulaExportDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os);
                 XlsArea sheet1Area = new XlsArea("Sheet1!A1:D4", transformer);
                 XlsArea sheet2Area = new XlsArea("Sheet2!A1:A2", transformer);
                 XlsArea sheet3Area = new XlsArea("'Sheet 3'!A1:A2", transformer);

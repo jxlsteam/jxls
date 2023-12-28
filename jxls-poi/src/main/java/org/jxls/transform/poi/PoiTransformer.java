@@ -41,8 +41,6 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
  * @author Leonid Vysochyn
  */
 public class PoiTransformer extends AbstractTransformer {
-    public static final String POI_CONTEXT_KEY = "util";
-
     private Workbook workbook;
     private OutputStream outputStream;
     private InputStream inputStream;
@@ -83,12 +81,6 @@ public class PoiTransformer extends AbstractTransformer {
     
     public void setInputStream(InputStream is) {
         inputStream = is;
-    }
-
-    public static Context createInitialContext() {
-        Context context = new Context();
-        context.putVar(POI_CONTEXT_KEY, new PoiUtil());
-        return context;
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -25,7 +26,6 @@ import org.jxls.entity.Department;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.TransformerFactory;
 
 /**
  * @author Leonid Vysochyn Date: 2/16/12 5:39 PM
@@ -39,7 +39,7 @@ public class AreaListenerDemo {
         List<Department> departments = Department.createDepartments();
         try (InputStream is = EachIfCommandDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
+                Transformer transformer = Jxls3Tester.createTransformer(is, os); 
                 XlsArea xlsArea = new XlsArea("Template!A1:G15", transformer);
                 XlsArea departmentArea = new XlsArea("Template!A2:G12", transformer);
                 EachCommand departmentEachCommand = new EachCommand("department", "departments", departmentArea);
