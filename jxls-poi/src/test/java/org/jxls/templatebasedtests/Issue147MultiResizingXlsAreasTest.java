@@ -16,6 +16,7 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
@@ -73,14 +74,15 @@ public class Issue147MultiResizingXlsAreasTest {
         protected void processAreas(Map<String, Object> data) {
             areas = options.getAreaBuilder().build(transformer, true);
             Size delta = Size.ZERO_SIZE;
-            for (Area xlsArea : areas) {
-                CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),
-                        xlsArea.getStartCellRef().getRow() + delta.getHeight(),
-                        xlsArea.getStartCellRef().getCol() + delta.getWidth());
-                Size startSize = xlsArea.getSize();
-                Size endSize = xlsArea.applyAt(targetCellRef, context);
+            for (Area area : areas) {
+                CellRef targetCellRef = new CellRef(area.getStartCellRef().getSheetName(),
+                        area.getStartCellRef().getRow() + delta.getHeight(),
+                        area.getStartCellRef().getCol() + delta.getWidth());
+                Size startSize = area.getSize();
+                Size endSize = area.applyAt(targetCellRef, context);
                 delta = delta.add(endSize.minus(startSize));
-                xlsArea.processFormulas();
+                area.setFormulaProcessor(new StandardFormulaProcessor());
+                area.processFormulas();
             }
         }
     }

@@ -6,33 +6,26 @@ import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 
-/**
- * Transformation configuration class
- */
-public class TransformationConfig {
+public class TransformationConfig { // TODO find better name
     private static final String EXPRESSION_PART = "(.+?)";
-    private static final String DEFAULT_EXPRESSION_BEGIN = JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_BEGIN;
-    private static final String DEFAULT_EXPRESSION_END = JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_END;
-    private static final String DEFAULT_REGEX_EXPRESSION = "\\$\\{[^}]*}";
 
-    private ExpressionEvaluatorFactory expressionEvaluatorFactory;
-    private ExpressionEvaluator expressionEvaluator;
-    private String expressionNotationBegin = DEFAULT_EXPRESSION_BEGIN;
-    private String expressionNotationEnd = DEFAULT_EXPRESSION_END;
-    private Pattern expressionNotationPattern = Pattern.compile(DEFAULT_REGEX_EXPRESSION);
+    private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
+    private final String expressionNotationBegin;
+    private final String expressionNotationEnd;
+    private final Pattern expressionNotationPattern;
+    private ExpressionEvaluator expressionEvaluator = null;
 
-    public void buildExpressionNotation(String expressionBegin, String expressionEnd) {
-        this.expressionNotationBegin = expressionBegin;
-        this.expressionNotationEnd = expressionEnd;
-        String regexExpression = Pattern.quote(expressionNotationBegin) + EXPRESSION_PART + Pattern.quote(expressionNotationEnd);
-        expressionNotationPattern = Pattern.compile(regexExpression);
-    }
-
-    public void setExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
+    public TransformationConfig(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin, String expressionNotationEnd) {
+        if (expressionEvaluatorFactory == null) {
+            throw new IllegalArgumentException("expressionEvaluatorFactory must not be null");
+        }
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
-        expressionEvaluator = null;
-    }
+        this.expressionNotationBegin = expressionNotationBegin == null ? JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_BEGIN : expressionNotationBegin;
+        this.expressionNotationEnd = expressionNotationEnd == null ? JxlsTemplateFillerBuilder.DEFAULT_EXPRESSION_END : expressionNotationEnd;
 
+        expressionNotationPattern = Pattern.compile(Pattern.quote(this.expressionNotationBegin) + EXPRESSION_PART + Pattern.quote(this.expressionNotationEnd));
+    }
+    
     public ExpressionEvaluator getExpressionEvaluator() {
 		if (expressionEvaluator == null) {
 			expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator(null);

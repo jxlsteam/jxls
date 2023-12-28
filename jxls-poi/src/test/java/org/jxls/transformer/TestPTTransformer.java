@@ -42,6 +42,6 @@ public class TestPTTransformer extends TransformerDelegator {
 
     private String evaluate(String name) {
         name = name.replace("${", "").replace("}", ""); // XXX Krücke
-        return (String) getTransformationConfig().getExpressionEvaluator().evaluate(name, context.toMap());
+        return (String) context.getTransformationConfig().getExpressionEvaluator().evaluate(name, context.toMap());
     }
 }

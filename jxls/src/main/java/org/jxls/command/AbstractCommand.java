@@ -10,7 +10,6 @@ import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 /**
@@ -80,10 +79,6 @@ public abstract class AbstractCommand implements Command {
         return areaList.isEmpty() ? null : areaList.get(0).getTransformer();
     }
     
-    protected TransformationConfig getTransformationConfig() {
-        return getTransformer().getTransformationConfig();
-    }
-
     protected JxlsLogger getLogger() {
         Transformer transformer = getTransformer();
         if (transformer == null) {
@@ -99,7 +94,7 @@ public abstract class AbstractCommand implements Command {
      * @return an iterable object from the {@link Context} under given name
      */
     protected Iterable<Object> transformToIterableObject(String collectionName, Context context) {
-        Object collectionObject = getExpressionEvaluator().evaluate(collectionName, context.toMap());
+        Object collectionObject = getExpressionEvaluator(context).evaluate(collectionName, context.toMap());
         if (collectionObject == null) {
             return Collections.emptyList();
         } else if (collectionObject instanceof Object[]) {
@@ -112,7 +107,11 @@ public abstract class AbstractCommand implements Command {
         throw new JxlsException(collectionName + " expression is not an Iterable or an array");
     }
 
-    protected ExpressionEvaluator getExpressionEvaluator() {
-        return getTransformationConfig().getExpressionEvaluator();
+    protected ExpressionEvaluator getExpressionEvaluator(Context context) {
+        return context.getTransformationConfig().getExpressionEvaluator();
+    }
+
+    protected ExpressionEvaluator getExpressionEvaluator(Context context, String expression) {
+        return context.getTransformationConfig().getExpressionEvaluator(expression);
     }
 }

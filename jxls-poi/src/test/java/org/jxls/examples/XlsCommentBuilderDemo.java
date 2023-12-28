@@ -15,6 +15,7 @@ import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 
 /**
@@ -36,6 +37,7 @@ public class XlsCommentBuilderDemo {
                 Context context = new Context();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
+                xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
                 xlsArea.processFormulas();
                 xlsArea.reset();
                 EachCommand eachCommand = (EachCommand) xlsArea.findCommandByName("each").get(0);

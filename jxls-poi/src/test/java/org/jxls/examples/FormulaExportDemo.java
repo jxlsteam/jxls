@@ -10,6 +10,7 @@ import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 
 /**
@@ -34,6 +35,7 @@ public class FormulaExportDemo {
                 sheet2Area.applyAt(new CellRef("Sheet2!C6"), context);
                 sheet2Area.applyAt(new CellRef("Sheet2!D6"), context);
                 sheet1Area.applyAt(new CellRef("Sheet1!F11"), context);
+                sheet1Area.setFormulaProcessor(new StandardFormulaProcessor());
                 sheet1Area.processFormulas();
                 transformer.write();
             }

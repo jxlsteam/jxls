@@ -3,22 +3,39 @@ package org.jxls.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
+import org.jxls.transform.TransformationConfig;
+
 /**
- * Map bean context (Jxls internal class)
+ * Jxls context (Jxls internal class)
  * 
  * @author Leonid Vysochyn
  */
 public class Context {
-    protected Map<String, Object> varMap = new HashMap<String, Object>();
+    private final TransformationConfig transformationConfig;
+    private final Map<String, Object> varMap;
     private boolean formulaProcessingRequired = true;
     private boolean ignoreSourceCellStyle = false;
     private Map<String, String> cellStyleMap;
     
+    /**
+     * Should only be used for Jxls internal testcases
+     */
     public Context() {
+        this(null, new HashMap<String, Object>());
     }
 
-    public Context(Map<String, Object> varMap) {
+    public Context(TransformationConfig transformationConfig, Map<String, Object> varMap) {
+        this.transformationConfig = transformationConfig == null ? new TransformationConfig(new ExpressionEvaluatorFactoryJexlImpl(), null, null) : transformationConfig;
         this.varMap = varMap;
+    }
+    
+    public TransformationConfig getTransformationConfig() {
+        return transformationConfig;
+    }
+    
+    public boolean isConditionTrue(String condition) {
+        return transformationConfig.getExpressionEvaluator().isConditionTrue(condition, toMap());
     }
 
     public Map<String, Object> toMap() {

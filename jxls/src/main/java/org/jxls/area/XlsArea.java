@@ -17,7 +17,6 @@ import org.jxls.common.cellshift.AdjacentCellShiftStrategy;
 import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.common.cellshift.InnerCellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
-import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 
@@ -37,7 +36,7 @@ public class XlsArea implements Area {
     private Size size;
     private List<AreaListener> areaListeners = new ArrayList<AreaListener>();
     private boolean cellsCleared = false;
-    private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
+    private FormulaProcessor formulaProcessor;
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
 

@@ -138,10 +138,6 @@ public class CellData {
         this.evaluationResult = evaluationResult;
     }
 
-    private ExpressionEvaluator getExpressionEvaluator() {
-        return transformer.getTransformationConfig().getExpressionEvaluator();
-    }
-
     public FormulaStrategy getFormulaStrategy() {
         return formulaStrategy;
     }
@@ -288,11 +284,11 @@ public class CellData {
     
     private void evaluate(String strValue, Context context) {
         StringBuilder sb = new StringBuilder();
-        TransformationConfig transformationConfig = transformer.getTransformationConfig();
+        TransformationConfig transformationConfig = context.getTransformationConfig();
         int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
         int endExpressionLength = transformationConfig.getExpressionNotationEnd().length();
         Matcher exprMatcher = transformationConfig.getExpressionNotationPattern().matcher(strValue);
-        ExpressionEvaluator evaluator = getExpressionEvaluator();
+        ExpressionEvaluator evaluator = transformationConfig.getExpressionEvaluator();
         String matchedString;
         String expression;
         Object lastMatchEvalResult = null;

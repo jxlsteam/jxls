@@ -23,7 +23,6 @@ public abstract class AbstractTransformer implements Transformer {
     private boolean ignoreColumnProps = false;
     private boolean ignoreRowProps = false;
     protected final Map<String, SheetData> sheetMap = new LinkedHashMap<>();
-    private TransformationConfig transformationConfig = new TransformationConfig();
     private boolean evaluateFormulas = false;
     private boolean fullFormulaRecalculationOnOpening = false;
 
@@ -86,16 +85,6 @@ public abstract class AbstractTransformer implements Transformer {
     @Override
     public void setIgnoreRowProps(boolean ignoreRowProps) {
         this.ignoreRowProps = ignoreRowProps;
-    }
-
-    @Override
-    public TransformationConfig getTransformationConfig() {
-        return transformationConfig;
-    }
-
-    @Override
-    public void setTransformationConfig(TransformationConfig transformationConfig) {
-        this.transformationConfig = transformationConfig;
     }
 
     @Override

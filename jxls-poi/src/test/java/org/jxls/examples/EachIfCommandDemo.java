@@ -16,6 +16,7 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 
 /**
@@ -49,6 +50,7 @@ public class EachIfCommandDemo {
                 Context context = new Context();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!B2"), context);
+                xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
                 xlsArea.processFormulas();
                 departmentEachCommand.setDirection(EachCommand.Direction.RIGHT);
                 xlsArea.reset();

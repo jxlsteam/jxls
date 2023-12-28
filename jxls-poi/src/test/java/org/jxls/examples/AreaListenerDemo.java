@@ -24,6 +24,7 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.entity.Department;
 import org.jxls.entity.Employee;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
 
@@ -57,6 +58,7 @@ public class AreaListenerDemo {
                 Context context = new Context();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
+                xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
                 xlsArea.processFormulas();
                 departmentEachCommand.setDirection(EachCommand.Direction.RIGHT);
                 xlsArea.reset();

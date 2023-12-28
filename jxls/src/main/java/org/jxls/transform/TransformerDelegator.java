@@ -25,16 +25,6 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void setTransformationConfig(TransformationConfig transformationConfig) {
-        transformer.setTransformationConfig(transformationConfig);
-    }
-
-    @Override
-    public TransformationConfig getTransformationConfig() {
-        return transformer.getTransformationConfig();
-    }
-
-    @Override
     public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight) {
         transformer.transform(srcCellRef, targetCellRef, context, updateRowHeight);
     }

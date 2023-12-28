@@ -72,10 +72,6 @@ public class JxlsTemplateFiller {
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
     	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
-        TransformationConfig tc = transformer.getTransformationConfig();
-        tc.buildExpressionNotation(options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
-        tc.setExpressionEvaluatorFactory(options.getExpressionEvaluatorFactory());
-        options.getNeedsExpressionEvaluatorList().forEach(ee -> ee.setExpressionEvaluator(tc.getExpressionEvaluator()));
     }
 
     /**
@@ -84,7 +80,7 @@ public class JxlsTemplateFiller {
      */
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
-        Context context = createContext(data);
+        Context context = createContext(createTransformationConfig(), data);
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
         }
@@ -96,8 +92,15 @@ public class JxlsTemplateFiller {
         }
     }
 
-    protected Context createContext(Map<String, Object> data) {
-        return new Context(data);
+    protected Context createContext(TransformationConfig tc, Map<String, Object> data) {
+        return new Context(tc, data);
+    }
+
+    protected TransformationConfig createTransformationConfig() {
+        TransformationConfig tc = new TransformationConfig(options.getExpressionEvaluatorFactory(),
+                options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
+        options.getNeedsExpressionEvaluatorList().forEach(ee -> ee.setExpressionEvaluator(tc.getExpressionEvaluator()));
+        return tc;
     }
 
     protected void preWrite() {

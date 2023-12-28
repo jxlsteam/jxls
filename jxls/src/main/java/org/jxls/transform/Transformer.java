@@ -18,10 +18,6 @@ import org.jxls.logging.JxlsLogger;
  */
 public interface Transformer {
 
-    void setTransformationConfig(TransformationConfig transformationConfig);
-
-    TransformationConfig getTransformationConfig();
-
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
 
     /***
