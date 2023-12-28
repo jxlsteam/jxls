@@ -15,7 +15,6 @@ import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.templatebasedtests.multisheet.PoiSafeSheetNameBuilderTest;
 import org.jxls.transform.SafeSheetNameBuilder;
-import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
 
 /**
@@ -31,7 +30,8 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testSafeSheetNames() {
-        Context context = new PoiContext();
+        Context context = new Context();
+        context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
         List<String> sheetNames = new ArrayList<>();
         sheetNames.add("sheet 1");
@@ -50,9 +50,8 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testUniqueSheetNames_simple() {
-        Context context = new PoiContext();
-        Assert.assertTrue("precondition: PoiContext must contain " + PoiSafeSheetNameBuilder.class.getSimpleName(),
-                context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME) instanceof PoiSafeSheetNameBuilder);
+        Context context = new Context();
+        context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
         List<String> sheetNames = new ArrayList<>();
         sheetNames.add("a");

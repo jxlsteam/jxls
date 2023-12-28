@@ -18,7 +18,6 @@ import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
-import org.jxls.transform.poi.PoiContext;
 
 /**
  * Test for issue 153
@@ -53,7 +52,7 @@ public class IssueSxssfTransformerTest {
     }
 
     private Context prepareContext() {
-        final Context context = new PoiContext();
+        final Context context = new Context();
         context.setFormulaProcessingRequired(false);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();

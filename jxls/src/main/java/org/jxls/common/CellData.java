@@ -287,7 +287,7 @@ public class CellData {
     }
     
     private void evaluate(String strValue, Context context) {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer(); // TODO StringBuilder
         TransformationConfig transformationConfig = transformer.getTransformationConfig();
         int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
         int endExpressionLength = transformationConfig.getExpressionNotationEnd().length();

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Map bean context
+ * Map bean context (Jxls internal class)
  * 
  * @author Leonid Vysochyn
  */

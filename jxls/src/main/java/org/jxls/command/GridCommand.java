@@ -99,6 +99,7 @@ public class GridCommand extends AbstractCommand {
      */
     public void setFormatCells(String formatCells) {
         this.formatCells = formatCells;
+        cellStyleMap = new HashMap<>();
         if (formatCells == null) {
             return;
         }
@@ -124,6 +125,7 @@ public class GridCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
+System.out.println(getProps());
         Size headerAreaSize = processHeaders(cellRef, context);
         CellRef bodyCellRef = new CellRef(cellRef.getSheetName(), cellRef.getRow() + headerAreaSize.getHeight(), cellRef.getCol());
         Size bodyAreaSize = processBody(bodyCellRef, context);

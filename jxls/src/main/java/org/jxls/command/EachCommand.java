@@ -416,7 +416,7 @@ public class EachCommand extends AbstractCommand {
     }
     
     public static Object getRunVar(Context context, String varName) {
-        if (varName != null) {
+        if (varName != null && context != null) {
             if (context.toMap().containsKey(varName)) {
                 return context.getRunVar(varName);
             }

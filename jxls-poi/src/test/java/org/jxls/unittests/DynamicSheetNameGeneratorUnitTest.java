@@ -12,7 +12,6 @@ import org.jxls.logging.JxlsLogger;
 import org.jxls.templatebasedtests.multisheet.AbstractMultiSheetTest.TestExpressionEvaluator;
 import org.jxls.templatebasedtests.multisheet.DynamicSheetNameGeneratorTest;
 import org.jxls.transform.SafeSheetNameBuilder;
-import org.jxls.transform.poi.PoiContext;
 import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
 
 /**
@@ -71,8 +70,10 @@ public class DynamicSheetNameGeneratorUnitTest {
     /** What does PoiSafeSheetNameBuilder with no modification? */
     @Test
     public void testWithPoiContext() {
+        // The PoiSafeSheetNameBuilder acts like the old-style DynamicSheetNameGenerator.
         // Prepare
-        Context context = new PoiContext(); // The PoiSafeSheetNameBuilder acts like the old-style DynamicSheetNameGenerator.
+        Context context = new Context();
+        context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
         context.putVar("sheetnames", "doe");
         
         // Test

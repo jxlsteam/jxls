@@ -217,21 +217,18 @@ public class ImageCommand extends AbstractCommand {
     }
     
 	/**
-     * Reads all the data from the input stream, and returns the bytes read.
+     * Reads all the data from the input stream and returns the bytes read.
      * 
-     * @param stream -
+     * @param inputStream -
      * @return byte array
      * @throws IOException -
      */
-    public static byte[] toByteArray(InputStream stream) throws IOException {
+    public static byte[] toByteArray(InputStream inputStream) throws IOException { // used by templates and SimpleExporter
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[4096];
-        int read = 0;
-        while (read != -1) {
-            read = stream.read(buffer);
-            if (read > 0) {
-                baos.write(buffer, 0, read);
-            }
+        int count;
+        while ((count = inputStream.read(buffer)) != -1) {
+            baos.write(buffer, 0, count);
         }
         return baos.toByteArray();
     }

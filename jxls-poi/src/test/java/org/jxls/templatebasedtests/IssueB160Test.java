@@ -17,7 +17,6 @@ import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
-import org.jxls.transform.poi.PoiContext;
 
 /**
  * jx:each with direction=RIGHT with SXSSF Transformer rewrites static cells
@@ -27,7 +26,7 @@ public class IssueB160Test {
     @Test
     public void test() throws IOException, ParseException {
         // Prepare
-        Context context = new PoiContext();
+        Context context = new Context();
         context.putVar("lotsOfStuff", createLotsOfStuff());
         context.putVar("columns", new Columns());
         
