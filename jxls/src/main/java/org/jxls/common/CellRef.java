@@ -27,6 +27,14 @@ public class CellRef implements Comparable<CellRef>{
         this(null, row, col);
     }
     
+    /**
+     * Copy constructor
+     * @param ref -
+     */
+    public CellRef(CellRef ref) {
+        this(ref.getSheetName(), ref.getRow(), ref.getCol());
+    }
+    
     public CellRef(String cellRef) {
         if (cellRef.endsWith("#REF!")) {
             throw new IllegalArgumentException("Cell reference invalid: " + cellRef);

@@ -111,12 +111,7 @@ public class FastFormulaProcessor extends AbstractFormulaProcessor {
                         && (!formulaCellData.isParameterizedFormulaCell() || formulaCellData.isJointedFormulaCell())) {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
-                transformer.setFormula(
-                        new CellRef(
-                                targetFormulaCellRef.getSheetName(),
-                                targetFormulaCellRef.getRow(),
-                                targetFormulaCellRef.getCol()),
-                        targetFormulaString);
+                transformer.setFormula(new CellRef(targetFormulaCellRef), targetFormulaString);
             }
         }
     }

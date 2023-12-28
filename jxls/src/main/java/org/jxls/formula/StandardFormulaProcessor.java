@@ -114,12 +114,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
                     targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
                 }
                 if (!targetFormulaString.isEmpty()) {
-                    transformer.setFormula(
-                            new CellRef(
-                                    targetFormulaCellRef.getSheetName(),
-                                    targetFormulaCellRef.getRow(),
-                                    targetFormulaCellRef.getCol()),
-                            targetFormulaString);
+                    transformer.setFormula(new CellRef(targetFormulaCellRef), targetFormulaString);
                 }
             }
         }
