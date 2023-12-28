@@ -36,9 +36,9 @@ public class GridTest {
     }
     
     @Test
-    public void noComments() { // TODO noNotes
-        InputStream template = getClass().getResourceAsStream("GridTest_noComments.xlsx");
-        File out = new File("target/GridTest_noComments_output.xlsx");
+    public void noNotes() {
+        InputStream template = getClass().getResourceAsStream("GridTest_noNotes.xlsx");
+        File out = new File("target/GridTest_noNotes_output.xlsx");
         out.getParentFile().mkdirs();
         JxlsTemplateFiller builder = JxlsPoiTemplateFillerBuilder.newInstance().withAreaBuilder((transformer, ctc) -> {
             List<Area> areas = new ArrayList<>();   

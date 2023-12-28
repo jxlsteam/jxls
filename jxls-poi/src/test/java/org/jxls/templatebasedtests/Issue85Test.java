@@ -30,7 +30,6 @@ public class Issue85Test {
         
         @Override
         public Object get(Object key) {
-            if ("jx:isFormulaProcessingRequired".equals(key)) return null; // TODO
             if (!containsKey(key)) {
                 throw new IllegalArgumentException("Map does not contain key: " + key);
             }

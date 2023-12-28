@@ -81,10 +81,10 @@ public class IfTest {
     }
 
     @Test
-    public void noComments() { // TODO better name: noNotes
+    public void noNotes() {
         // Test
-        InputStream template = getClass().getResourceAsStream("IfTest_noComments.xlsx");
-        File out = new File("target/IfTest_noComments_output.xlsx");
+        InputStream template = getClass().getResourceAsStream("IfTest_noNotes.xlsx");
+        File out = new File("target/IfTest_noNotes_output.xlsx");
         out.getParentFile().mkdirs();
         JxlsTemplateFiller builder = JxlsPoiTemplateFillerBuilder.newInstance().withAreaBuilder((transformer, ctc) -> {
         	List<Area> areas = new ArrayList<>();	
