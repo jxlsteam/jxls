@@ -28,7 +28,8 @@ import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
 
 /**
- * @author Leonid Vysochyn Date: 2/16/12 5:39 PM
+ * @author Leonid Vysochyn
+ * @since 2/16/12
  */
 public class AreaListenerDemo {
     private static final String template = "each_if_demo.xls";
