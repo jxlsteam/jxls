@@ -160,65 +160,52 @@ public class GridCommand extends AbstractCommand {
         }
         Iterable<?> dataCollection = transformToIterableObject(this.data, context);
 
-        GridCommandContext ctx = new GridCommandContext();
-        ctx.currentCell = cellRef;
+        GridCommandContext gcc = new GridCommandContext();
+        gcc.currentCell = cellRef;
         boolean oldIgnoreSourceCellStyle = context.isIgnoreSourceCellStyle();
         context.setIgnoreSourceCellStyle(true);
         Map<String, String> oldCellStyleMap = context.getCellStyleMap();
         context.setCellStyleMap(this.cellStyleMap);
         // TODO possible error: content of DATA_VAR is not saved & restored
         for (Object rowObject : dataCollection) {
-            if (rowObject.getClass().isArray() || rowObject instanceof Iterable) {
-                processArrayOrIterable(rowObject, cellRef, ctx, context);
+            Iterable<?> cellCollection;
+            if (rowObject instanceof Iterable) {
+                cellCollection = (Iterable<?>) rowObject;
+            } else if (rowObject.getClass().isArray()) {
+                cellCollection = Arrays.asList((Object[]) rowObject);
             } else {
-                processObjects(rowObject, cellRef, ctx, context);
+                cellCollection = objectsToIterable(rowObject);
             }
+            processCellCollection(cellCollection, cellRef, gcc, context);
         }
         context.removeVar(DATA_VAR);
         context.setIgnoreSourceCellStyle(oldIgnoreSourceCellStyle);
         context.setCellStyleMap(oldCellStyleMap);
-        return new Size(ctx.totalWidth, ctx.totalHeight);
+        return new Size(gcc.totalWidth, gcc.totalHeight);
     }
 
-    // TODO similar code
-    private void processArrayOrIterable(Object rowObject, final CellRef cellRef, GridCommandContext ctx, Context context) {
-        Iterable<?> cellCollection;
-        if (rowObject.getClass().isArray()) {
-            cellCollection = Arrays.asList((Object[]) rowObject);
-        } else {
-            cellCollection = (Iterable<?>) rowObject;
+    private Iterable<?> objectsToIterable(Object rowObject) {
+        if (rowObjectProps.isEmpty()) {
+            throw new JxlsException("Got a non-collection object type for a Grid row but object properties list is empty");
         }
+        return rowObjectProps.stream().map(prop -> {
+            try {
+                return PropertyUtils.getProperty(rowObject, prop);
+            } catch (Exception e) {
+                throw new JxlsException("Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName(), e);
+            }
+        }).toList();
+    }
+
+    private void processCellCollection(Iterable<?> cellCollection, final CellRef cellRef, GridCommandContext ctx, Context context) {
         int width = 0;
         int height = 0;
-        for (Object cellObject : cellCollection) {
-            context.putVar(DATA_VAR, cellObject);
+        for (Object value : cellCollection) {
+            context.putVar(DATA_VAR, value);
             Size size = bodyArea.applyAt(ctx.currentCell, context);
             ctx.currentCell = new CellRef(ctx.currentCell.getSheetName(), ctx.currentCell.getRow(), ctx.currentCell.getCol() + size.getWidth());
             width += size.getWidth();
             height = Math.max(height, size.getHeight());
-        }
-        ctx.totalWidth = Math.max(width, ctx.totalWidth);
-        ctx.totalHeight = ctx.totalHeight + height;
-        ctx.currentCell = new CellRef(cellRef.getSheetName(), ctx.currentCell.getRow() + height, cellRef.getCol());
-    }
-
-    private void processObjects(Object rowObject, final CellRef cellRef, GridCommandContext ctx, Context context) {
-        if (rowObjectProps.isEmpty()) {
-            throw new JxlsException("Got a non-collection object type for a Grid row but object properties list is empty");
-        }
-        int width = 0;
-        int height = 0;
-        for (String prop : rowObjectProps) {
-            try {
-                Object value = PropertyUtils.getProperty(rowObject, prop);
-                context.putVar(DATA_VAR, value);
-                Size size = bodyArea.applyAt(ctx.currentCell, context);
-                ctx.currentCell = new CellRef(ctx.currentCell.getSheetName(), ctx.currentCell.getRow(), ctx.currentCell.getCol() + size.getWidth());
-                width += size.getWidth();
-                height = Math.max(height, size.getHeight());
-            } catch (Exception e) {
-                throw new JxlsException("Failed to evaluate property " + prop + " of row object of class " + rowObject.getClass().getName(), e);
-            }
         }
         ctx.totalWidth = Math.max(width, ctx.totalWidth);
         ctx.totalHeight = ctx.totalHeight + height;
