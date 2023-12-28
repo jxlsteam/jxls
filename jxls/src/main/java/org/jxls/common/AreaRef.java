@@ -16,9 +16,7 @@ public class AreaRef {
     private int endCol;
 
     public AreaRef(CellRef firstCellRef, CellRef lastCellRef) {
-        // TODO The following if-condition is used 3 times in this class. Write testcase and refactor!
-        if ((firstCellRef.getSheetName() == null && lastCellRef.getSheetName() == null)
-                || (firstCellRef.getSheetName() != null && firstCellRef.getSheetName().equalsIgnoreCase(lastCellRef.getSheetName()))) {
+        if (compareSheetName(firstCellRef.getSheetName(), lastCellRef.getSheetName())) {
             this.firstCellRef = firstCellRef;
             this.lastCellRef = lastCellRef;
             updateStartEndRowCol();
@@ -86,14 +84,12 @@ public class AreaRef {
     
     public boolean contains(CellRef cellRef) {
         int row = cellRef.getRow();
-        if (row >= startRow && row <= endRow && cellRef.getCol() >= startCol && cellRef.getCol() <= endCol) {
-            String sheetName = getSheetName();
-            if (sheetName == null) {
-                return cellRef.getSheetName() == null;
-            }
-            return sheetName.equalsIgnoreCase(cellRef.getSheetName());
-        }
-        return false;
+        return row >= startRow && row <= endRow && cellRef.getCol() >= startCol && cellRef.getCol() <= endCol
+                && compareSheetName(getSheetName(), cellRef.getSheetName());
+    }
+
+    private boolean compareSheetName(String sheetName1, String sheetName2) {
+        return (sheetName1 == null && sheetName2 == null) || (sheetName1 != null && sheetName1.equalsIgnoreCase(sheetName2));
     }
 
     public boolean contains(int row, int col) {
@@ -102,15 +98,7 @@ public class AreaRef {
     }
     
     public boolean contains(AreaRef areaRef) {
-        if (areaRef == null) {
-            return true;
-        }
-        if ((getSheetName() == null && areaRef.getSheetName() == null)
-                || (getSheetName() != null && getSheetName().equalsIgnoreCase(areaRef.getSheetName()))) {
-            return contains(areaRef.getFirstCellRef()) && contains(areaRef.getLastCellRef());
-        } else {
-            return false;
-        }
+        return areaRef == null || contains(areaRef.getFirstCellRef()) && contains(areaRef.getLastCellRef());
     }
 
     @Override
@@ -120,21 +108,19 @@ public class AreaRef {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (o instanceof AreaRef areaRef) {
+            if (this == o) {
+                return true;
+            }
+            if (firstCellRef != null ? !firstCellRef.equals(areaRef.firstCellRef) : areaRef.firstCellRef != null) {
+                return false;
+            }
+            if (lastCellRef != null ? !lastCellRef.equals(areaRef.lastCellRef) : areaRef.lastCellRef != null) {
+                return false;
+            }
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        AreaRef areaRef = (AreaRef) o;
-        if (firstCellRef != null ? !firstCellRef.equals(areaRef.firstCellRef) : areaRef.firstCellRef != null) {
-            return false;
-        }
-        if (lastCellRef != null ? !lastCellRef.equals(areaRef.lastCellRef) : areaRef.lastCellRef != null) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     @Override
