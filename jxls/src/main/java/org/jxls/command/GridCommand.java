@@ -157,7 +157,7 @@ public class GridCommand extends AbstractCommand {
         if (bodyArea == null || data == null) {
             return Size.ZERO_SIZE;
         }
-        Iterable<?> dataCollection = transformToIterableObject(this.data, context);
+        Iterable<?> dataCollection = transformToIterableObject(data, context);
 
         GridCommandContext gcc = new GridCommandContext();
         gcc.currentCell = cellRef;
@@ -165,19 +165,19 @@ public class GridCommand extends AbstractCommand {
         context.setIgnoreSourceCellStyle(true);
         Map<String, String> oldCellStyleMap = context.getCellStyleMap();
         context.setCellStyleMap(this.cellStyleMap);
-        // TODO possible error: content of DATA_VAR is not saved & restored
-        for (Object rowObject : dataCollection) {
-            Iterable<?> cellCollection;
-            if (rowObject instanceof Iterable) {
-                cellCollection = (Iterable<?>) rowObject;
-            } else if (rowObject.getClass().isArray()) {
-                cellCollection = Arrays.asList((Object[]) rowObject);
-            } else {
-                cellCollection = objectsToIterable(rowObject);
+        try (RunVar runVar = new RunVar(DATA_VAR, context)) {
+            for (Object rowObject : dataCollection) {
+                Iterable<?> cellCollection;
+                if (rowObject instanceof Iterable) {
+                    cellCollection = (Iterable<?>) rowObject;
+                } else if (rowObject instanceof Object[]) {
+                    cellCollection = Arrays.asList((Object[]) rowObject);
+                } else {
+                    cellCollection = objectsToIterable(rowObject);
+                }
+                processCellCollection(cellCollection, runVar, cellRef, gcc, context);
             }
-            processCellCollection(cellCollection, cellRef, gcc, context);
         }
-        context.removeVar(DATA_VAR);
         context.setIgnoreSourceCellStyle(oldIgnoreSourceCellStyle);
         context.setCellStyleMap(oldCellStyleMap);
         return new Size(gcc.totalWidth, gcc.totalHeight);
@@ -196,11 +196,11 @@ public class GridCommand extends AbstractCommand {
         }).toList();
     }
 
-    private void processCellCollection(Iterable<?> cellCollection, final CellRef cellRef, GridCommandContext ctx, Context context) {
+    private void processCellCollection(Iterable<?> cellCollection, RunVar runVar, final CellRef cellRef, GridCommandContext ctx, Context context) {
         int width = 0;
         int height = 0;
         for (Object value : cellCollection) {
-            context.putVar(DATA_VAR, value);
+            runVar.put(value);
             Size size = bodyArea.applyAt(ctx.currentCell, context);
             ctx.currentCell = new CellRef(ctx.currentCell.getSheetName(), ctx.currentCell.getRow(), ctx.currentCell.getCol() + size.getWidth());
             width += size.getWidth();

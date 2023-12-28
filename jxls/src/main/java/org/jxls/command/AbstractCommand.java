@@ -109,7 +109,7 @@ public abstract class AbstractCommand implements Command {
             Iterable<Object> iterable = (Iterable<Object>) collectionObject;
             return iterable;
         }
-        throw new JxlsException(collectionName + " expression is not a collection or an array");
+        throw new JxlsException(collectionName + " expression is not an Iterable or an array");
     }
 
     protected ExpressionEvaluator getExpressionEvaluator() {
