@@ -326,7 +326,7 @@ public class CellRefUtil {
             throw new JxlsException("Mismatched quotes: " + reference);
         }
 
-        // TODO - refactor cell reference parsing logic to one place.
+        // T.O.D.O - refactor cell reference parsing logic to one place.
         // Current known incarnations:
         //   FormulaParser.GetName()
         //   CellReference.parseSheetName() (here)
