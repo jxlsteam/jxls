@@ -84,7 +84,7 @@ public class JxlsTemplateFiller {
      */
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
-        Context context = new Context(data);
+        Context context = createContext(data);
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
         }
@@ -94,6 +94,10 @@ public class JxlsTemplateFiller {
                 area.processFormulas();
             }
         }
+    }
+
+    protected Context createContext(Map<String, Object> data) {
+        return new Context(data);
     }
 
     protected void preWrite() {
