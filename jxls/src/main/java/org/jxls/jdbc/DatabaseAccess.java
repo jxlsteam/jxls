@@ -21,10 +21,10 @@ import org.jxls.common.JxlsException;
 /**
  * Execute SQL queries
  */
-public class JdbcHelper {
+public class DatabaseAccess {
     private final Connection conn;
 
-    public JdbcHelper(Connection connection) {
+    public DatabaseAccess(Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("connection must not be null");
         }

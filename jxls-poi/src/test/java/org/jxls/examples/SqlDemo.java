@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
 import org.jxls.entity.Employee;
-import org.jxls.jdbc.JdbcHelper;
+import org.jxls.jdbc.DatabaseAccess;
 
 // TODO need help to update to newer Derby version
 public class SqlDemo {
@@ -23,7 +23,7 @@ public class SqlDemo {
     public void test() throws ClassNotFoundException, SQLException {
         try (Connection conn = openConnection()) {
             Context context = new Context();
-            context.putVar("jdbc", new JdbcHelper(conn));
+            context.putVar("jdbc", new DatabaseAccess(conn));
             
             JxlsTester tester = JxlsTester.xlsx(getClass());
             tester.processTemplate(context);
