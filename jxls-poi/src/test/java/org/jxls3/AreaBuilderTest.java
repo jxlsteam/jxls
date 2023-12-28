@@ -16,7 +16,7 @@ import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
-import org.jxls.builder.AreaBuilder;
+import org.jxls.builder.xls.AbstractAreaBuilder;
 import org.jxls.builder.xls.AreaCommand;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -53,8 +53,8 @@ public class AreaBuilderTest {
         assertNotNull(builder.getAreaBuilder());
 	}
 	
-	static class MarkerAreaBuilder implements AreaBuilder {
-		private final List<Marker> markers=new ArrayList<>();
+	static class MarkerAreaBuilder extends AbstractAreaBuilder {
+        private final List<Marker> markers = new ArrayList<>();
 		
 		@Override
 		public List<Area> build(Transformer transformer, boolean clearTemplateCells) {
@@ -64,67 +64,10 @@ public class AreaBuilderTest {
 			if (!markersWithoutEnd.isEmpty()) {
 				throw new RuntimeException("There are markers without end marker:\n" + markersWithoutEnd.toString());
 			}
-			// TODO cleanup duplicate code
-			//>>duplicate code>>
-	        List<Area> userAreas = new ArrayList<Area>();
-	        List<Area> allAreas = new ArrayList<Area>();
-	        List<CommandData> allCommands = new ArrayList<CommandData>();
-	        //<<
-	        //similar code>>
-			transformer.getCommentedCells().forEach(d -> {
-				List<CommandData> commandDatas = buildCommands(transformer, d);
-				//>>duplicate code>>
-	            for (CommandData commandData : commandDatas) {
-	                if (commandData.getCommand() instanceof AreaCommand) {
-	                    XlsArea userArea = new XlsArea(commandData.getAreaRef(), transformer);
-	                    allAreas.add(userArea);
-	                    userAreas.add(userArea);
-	                } else {
-	                    List<Area> areas_ = commandData.getCommand().getAreaList();
-	                    allAreas.addAll(areas_);
-	                    allCommands.add(commandData);
-	                }
-	            }
-	            //<<
-			});
-			//>>duplicate code>>
-	        for (int i = 0; i < allCommands.size(); i++) {
-	            CommandData commandData = allCommands.get(i);
-	            AreaRef commandAreaRef = commandData.getAreaRef();
-	            List<Area> commandAreas = commandData.getCommand().getAreaList();
-	            Area minArea = null;
-	            List<Area> minAreas = new ArrayList<Area>();
-	            for (Area area : allAreas) {
-	                if (commandAreas.contains(area) || !area.getAreaRef().contains(commandAreaRef)) continue;
-	                boolean belongsToNextCommand = false;
-	                for (int j = i + 1; j < allCommands.size(); j++) {
-	                    CommandData nextCommand = allCommands.get(j);
-	                    if (nextCommand.getCommand().getAreaList().contains(area)) {
-	                        belongsToNextCommand = true;
-	                        break;
-	                    }
-	                }
-	                if (belongsToNextCommand || (minArea != null && !minArea.getAreaRef().contains(area.getAreaRef()))) continue;
-	                if (minArea != null && minArea.equals(area)) {
-	                    minAreas.add(area);
-	                } else {
-	                    minArea = area;
-	                    minAreas.clear();
-	                    minAreas.add( minArea );
-	                }
-	            }
-	            for (Area area : minAreas) {
-	                area.addCommand(commandData.getAreaRef(), commandData.getCommand());
-	            }
-	        }
-	        if (clearTemplateCells) {
-	        	userAreas.forEach(area -> area.clearCells());
-	        }
-	        return userAreas;
-	        //<<
+			return super.build(transformer, clearTemplateCells);
 		}
 
-		private  void findMarkers(CellData d) {
+		private void findMarkers(CellData d) {
 			String[] lines = d.getCellComment().split("\n");
 			for (String line : lines) {
 				String t = line.trim();
@@ -148,7 +91,8 @@ public class AreaBuilderTest {
 			}
 		}
 		
-		private List<CommandData> buildCommands(Transformer transformer, CellData d) {
+		@Override
+		protected List<CommandData> buildCommands(Transformer transformer, CellData d, String unused) {
 			List<CommandData> ret = new ArrayList<>();
 			String[] lines = d.getCellComment().split("\n");
 			for (String line : lines) {
