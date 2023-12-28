@@ -19,32 +19,30 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.JxlsException;
 
 /**
- * A class to help execute SQL queries via JDBC
+ * Execute SQL queries
  */
 public class JdbcHelper {
-    private Connection conn;
+    private final Connection conn;
 
-    public JdbcHelper(Connection conn) {
-        this.conn = conn;
+    public JdbcHelper(Connection connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection must not be null");
+        }
+        conn = connection;
     }
 
-    public List<Map<String, Object>> query(String sql, Object... params) {
-        List<Map<String, Object>> result;
-        if (conn == null) {
-            throw new JxlsException("JDBC connection must not be null");
-        } else if (sql == null) {
-            throw new JxlsException("SQL statement must not be null");
+    public List<Map<String, Object>> query(final String sql, Object... params) {
+        if (sql == null) {
+            throw new IllegalArgumentException("SQL statement must not be null");
         }
-        sql = sql.replace(XlsCommentAreaBuilder.LINE_SEPARATOR, System.lineSeparator());
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql.replace(XlsCommentAreaBuilder.LINE_SEPARATOR, System.lineSeparator()))) {
             fillStatement(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
-                result = handle(rs);
+                return handle(rs);
             }
         } catch (Exception e) {
-            throw new JxlsException("Failed to execute SQL: " + e.getMessage(), e);
+            throw new JxlsException("Failed to execute SQL query: " + e.getMessage(), e);
         }
-        return result;
     }
 
     // The implementation is a slightly modified version of a similar method of AbstractQueryRunner in Apache DBUtils
@@ -98,7 +96,7 @@ public class JdbcHelper {
         }
     }
 
-    public List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
+    protected List<Map<String, Object>> handle(ResultSet rs) throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<>();
         while (rs.next()) {
             rows.add(handleRow(rs));
@@ -108,14 +106,14 @@ public class JdbcHelper {
 
     private Map<String, Object> handleRow(ResultSet rs) throws SQLException {
         Map<String, Object> result = new CaseInsensitiveHashMap();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int cols = rsmd.getColumnCount();
+        ResultSetMetaData meta = rs.getMetaData();
+        int cols = meta.getColumnCount();
         for (int col = 1; col <= cols; col++) {
-            String columnName = rsmd.getColumnLabel(col);
+            String columnName = meta.getColumnLabel(col);
             if (columnName == null || columnName.isEmpty()) {
-                columnName = rsmd.getColumnName(col);
+                columnName = meta.getColumnName(col);
             }
-            if (rsmd.getColumnType(col) == CLOB) {
+            if (meta.getColumnType(col) == CLOB) {
                 try {
                     java.sql.Clob clob = rs.getClob(col);
                     if (clob == null) {
