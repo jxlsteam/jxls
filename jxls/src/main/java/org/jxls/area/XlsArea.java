@@ -188,15 +188,15 @@ public class XlsArea implements Area {
         int endCol = startCol + commandInitialSize.getWidth() - 1;
         int endRow = startRow + commandInitialSize.getHeight() - 1;
         if (heightChange != 0) {
-            processHeightChange(i, commandStartCellRef, startCol, heightChange, endCol, endRow);
+            processHeightChange(i, commandStartCellRef, startCol, endCol, endRow, heightChange);
         }
         if (widthChange != 0) {
-            processWidthChange(i, commandStartCellRef, startRow, widthChange, endCol, endRow);
+            processWidthChange(i, commandStartCellRef, startRow, endRow, endCol, widthChange);
         }
         return lastProcessedRow;
     }
 
-    private void processHeightChange(int i, CellRef commandStartCellRef, int startCol, int heightChange, int endCol, int endRow) {
+    private void processHeightChange(int i, CellRef commandStartCellRef, int startCol, int endCol, int endRow, int heightChange) {
         cellRange.shiftCellsWithColBlock(startCol, endCol, endRow, heightChange, true);
         Set<CommandData> commandsToShift = findCommandsForVerticalShift(
                 commandDataList.subList(i + 1, commandDataList.size()), startCol, endCol, endRow, heightChange);
@@ -221,7 +221,7 @@ public class XlsArea implements Area {
         }
     }
 
-    private void processWidthChange(int i, CellRef commandStartCellRef, int startRow, int widthChange, int endCol, int endRow) {
+    private void processWidthChange(int i, CellRef commandStartCellRef, int startRow, int endRow, int endCol, int widthChange) {
         cellRange.shiftCellsWithRowBlock(startRow, endRow, endCol, widthChange, true);
         Set<CommandData> commandsToShift = findCommandsForHorizontalShift(
                 commandDataList.subList(i + 1, commandDataList.size()), startRow, endRow, endCol, widthChange);
@@ -256,7 +256,6 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, relativeStartRow, relativeStartCol, size.getHeight() - 1, size.getWidth() - 1);
     }
 
-    // TODO similar code to findCommandsForVerticalShift() ?
     private Set<CommandData> findCommandsForHorizontalShift(List<CommandData> commandList, int startRow, int endRow, int shiftingCol, int widthChange) {
         Set<CommandData> result = new LinkedHashSet<>(commandList.size());
         for (int i = 0, commandListSize = commandList.size(); i < commandListSize; i++) {
@@ -296,7 +295,6 @@ public class XlsArea implements Area {
         return result;
     }
 
-    // TODO similar code to isNoWideCommandsInArea() ?  (Other duplicate code in this file?)
     private boolean isNoHighCommandsInArea(List<CommandData> commandList, int startCol, int endCol, int startRow, int endRow) {
         for (CommandData commandData : commandList) {
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
