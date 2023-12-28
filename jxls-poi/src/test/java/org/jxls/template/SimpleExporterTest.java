@@ -25,7 +25,7 @@ public class SimpleExporterTest {
         item.add("bcd");
         item.add(Double.valueOf(0));
         list.add(item);
-        File out = new File("target/SimpleExporterTest_output.xls");
+        File out = new File("target/SimpleExporterTest_output.xlsx");
         out.getParentFile().mkdirs();
         new SimpleExporter().gridExport(Arrays.asList("A", "B"), list, "Double:B2",
                 new FileOutputStream(out));

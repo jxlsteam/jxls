@@ -19,7 +19,7 @@ import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
  * Helper class for grid export
  */
 public class SimpleExporter {
-    public static final String GRID_TEMPLATE_XLS = "grid_template.xls";
+    public static final String GRID_TEMPLATE_XLS = "grid_template.xlsx";
     private byte[] templateBytes;
 
     public void registerGridTemplate(InputStream inputStream) throws IOException {
