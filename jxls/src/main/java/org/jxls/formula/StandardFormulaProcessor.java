@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +13,6 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.transform.Transformer;
-import org.jxls.util.CellRefUtil;
 
 /**
  * This is a standard formula processor implementation which takes into account
@@ -26,8 +24,6 @@ import org.jxls.util.CellRefUtil;
 public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     private static final int MAX_NUM_ARGS_FOR_SUM = 255;
 
-    // TODO method too long
-    // TODO partially similar code to FastFormulaProcessor
     /**
      * The method transforms all the formula cells according to the command
      * transformations happened during the area processing
@@ -36,87 +32,73 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
      */
     @Override
     public void processAreaFormulas(Transformer transformer, Area area) {
-        Set<CellData> formulaCells = transformer.getFormulaCells();
-        for (CellData formulaCellData : formulaCells) {
-            if (formulaCellData.getArea() == null || !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName())) {
+        transformer.getFormulaCells().forEach(formulaCellData -> {
+            if (!(formulaCellData.getArea() == null || !area.getAreaRef().getSheetName().equals(formulaCellData.getSheetName()))) {
+                processTargetFormulaCells(formulaCellData, transformer, area);
+            }
+        });
+    }
+
+    @Override
+    protected void processTargetFormulaCell(int i, CellData formulaCellData, FormulaProcessorContext fpc) {
+        AreaRef formulaSourceAreaRef = formulaCellData.getArea().getAreaRef();
+        AreaRef formulaTargetAreaRef = formulaCellData.getTargetParentAreaRef().get(i);
+        processTargetCellRefMap(formulaCellData, fpc.targetFormulaCellRef, formulaSourceAreaRef, formulaTargetAreaRef, fpc);
+        processJointedCellRefMap(fpc.targetFormulaCellRef, formulaSourceAreaRef, formulaTargetAreaRef, fpc);
+        processTargetFormula(formulaCellData, fpc);
+    }
+
+    private void processTargetCellRefMap(CellData formulaCellData, CellRef targetFormulaCellRef,
+            AreaRef formulaSourceAreaRef, AreaRef formulaTargetAreaRef, FormulaProcessorContext fpc) {
+        fpc.isFormulaCellRefsEmpty = true;
+        for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : fpc.targetCellRefMap.entrySet()) {
+            List<CellRef> targetCells = cellRefEntry.getValue();
+            if (targetCells.isEmpty()) {
                 continue;
             }
-            transformer.getLogger().debug("Processing formula cell " + formulaCellData);
-            List<CellRef> targetFormulaCells = formulaCellData.getTargetPos();
-            Map<CellRef, List<CellRef>> targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
-            Map<String, List<CellRef>> jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);
-            List<CellRef> usedCellRefs = new ArrayList<>();
-
-            // process all of the result (target) formula cells
-            // a result formula cell is a cell into which the original cell with the formula was transformed
-            for (int i = 0; i < targetFormulaCells.size(); i++) {
-                CellRef targetFormulaCellRef = targetFormulaCells.get(i);
-                String targetFormulaString = formulaCellData.getFormula();
-                if (formulaCellData.isParameterizedFormulaCell() && i < formulaCellData.getEvaluatedFormulas().size()) {
-                    targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
-                }
-                AreaRef formulaSourceAreaRef = formulaCellData.getArea().getAreaRef();
-                AreaRef formulaTargetAreaRef = formulaCellData.getTargetParentAreaRef().get(i);
-                boolean isFormulaCellRefsEmpty = true;
-                for (Map.Entry<CellRef, List<CellRef>> cellRefEntry : targetCellRefMap.entrySet()) {
-                    List<CellRef> targetCells = cellRefEntry.getValue();
-                    if (targetCells.isEmpty()) {
-                        continue;
-                    }
-                    isFormulaCellRefsEmpty = false;
-                    List<CellRef> replacementCells = findFormulaCellRefReplacements(
-                            transformer, targetFormulaCellRef, formulaSourceAreaRef,
-                            formulaTargetAreaRef, cellRefEntry);
-                    if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
-                        // for BY_COLUMN formula strategy we take only a subset of the cells
-                        replacementCells = createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells,
-                                usedCellRefs);
-                        usedCellRefs.addAll(replacementCells);
-                    }
-                    String replacementString = createTargetCellRef(replacementCells);
-                    if (targetFormulaString.startsWith("SUM")
-                            && countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM) {
-                        // Excel doesn't support more than 255 arguments in functions.
-                        // Thus, we just concatenate all cells with "+" to have the same effect (see issue B059 for more detail)
-                        targetFormulaString = replacementString.replaceAll(",", "+");
-                    } else {
-                        String from = regexJointedLookBehind
-                                + sheetNameRegex(cellRefEntry)
-                                + regexExcludePrefixSymbols
-                                + Pattern.quote(cellRefEntry.getKey().getCellName());
-                        String to = Matcher.quoteReplacement(replacementString);
-                        targetFormulaString = targetFormulaString.replaceAll(from, to);
-                    }
-                }
-                boolean isFormulaJointedCellRefsEmpty = true;
-                // iterate through all the jointed cell references used in the formula
-                for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : jointedCellRefMap.entrySet()) {
-                    List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
-                    if (targetCellRefList.isEmpty()) {
-                        continue;
-                    }
-                    Collections.sort(targetCellRefList);
-                    isFormulaJointedCellRefsEmpty = false;
-                    Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
-                            new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
-                    List<CellRef> replacementCells = findFormulaCellRefReplacements(
-                            transformer, targetFormulaCellRef, formulaSourceAreaRef,
-                            formulaTargetAreaRef, cellRefMapEntryParam);
-                    String replacementString = createTargetCellRef(replacementCells);
-                    targetFormulaString = targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
-                }
-                String sheetNameReplacementRegex = Pattern.quote(targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER);
-                targetFormulaString = targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
-                // if there were no regular or jointed cell references found for this formula use a default value
-                // if set or 0
-                if (isFormulaCellRefsEmpty && isFormulaJointedCellRefsEmpty
-                        && (!formulaCellData.isParameterizedFormulaCell() || formulaCellData.isJointedFormulaCell())) {
-                    targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
-                }
-                if (!targetFormulaString.isEmpty()) {
-                    transformer.setFormula(new CellRef(targetFormulaCellRef), targetFormulaString);
-                }
+            fpc.isFormulaCellRefsEmpty = false;
+            List<CellRef> replacementCells = findFormulaCellRefReplacements(
+                    fpc.transformer, targetFormulaCellRef, formulaSourceAreaRef,
+                    formulaTargetAreaRef, cellRefEntry);
+            if (formulaCellData.getFormulaStrategy() == CellData.FormulaStrategy.BY_COLUMN) {
+                // for BY_COLUMN formula strategy we take only a subset of the cells
+                replacementCells = createTargetCellRefListByColumn(targetFormulaCellRef, replacementCells, fpc.usedCellRefs);
+                fpc.usedCellRefs.addAll(replacementCells);
             }
+            String replacementString = createTargetCellRef(replacementCells);
+            if (fpc.targetFormulaString.startsWith("SUM")
+                    && countOccurences(replacementString, ',') >= MAX_NUM_ARGS_FOR_SUM) {
+                // Excel doesn't support more than 255 arguments in functions.
+                // Thus, we just concatenate all cells with "+" to have the same effect (see issue B059 for more detail)
+                fpc.targetFormulaString = replacementString.replaceAll(",", "+");
+            } else {
+                String from = regexJointedLookBehind
+                        + sheetNameRegex(cellRefEntry)
+                        + regexExcludePrefixSymbols
+                        + Pattern.quote(cellRefEntry.getKey().getCellName());
+                String to = Matcher.quoteReplacement(replacementString);
+                fpc.targetFormulaString = fpc.targetFormulaString.replaceAll(from, to);
+            }
+        }
+    }
+
+    private void processJointedCellRefMap(CellRef targetFormulaCellRef, AreaRef formulaSourceAreaRef, AreaRef formulaTargetAreaRef, FormulaProcessorContext fpc) {
+        fpc.isFormulaJointedCellRefsEmpty = true;
+        // iterate through all the jointed cell references used in the formula
+        for (Map.Entry<String, List<CellRef>> jointedCellRefEntry : fpc.jointedCellRefMap.entrySet()) {
+            List<CellRef> targetCellRefList = jointedCellRefEntry.getValue();
+            if (targetCellRefList.isEmpty()) {
+                continue;
+            }
+            Collections.sort(targetCellRefList);
+            fpc.isFormulaJointedCellRefsEmpty = false;
+            Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
+                    new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
+            List<CellRef> replacementCells = findFormulaCellRefReplacements(
+                    fpc.transformer, targetFormulaCellRef, formulaSourceAreaRef,
+                    formulaTargetAreaRef, cellRefMapEntryParam);
+            String replacementString = createTargetCellRef(replacementCells);
+            fpc.targetFormulaString = fpc.targetFormulaString.replaceAll(Pattern.quote(jointedCellRefEntry.getKey()), replacementString);
         }
     }
 
@@ -170,14 +152,14 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
     
     /**
      * Calculates a number of occurences of a symbol in the string
-     * @param str -
-     * @param ch -
+     * @param string -
+     * @param symbol -
      * @return -
      */
-    private int countOccurences(String str, char ch) {
+    private int countOccurences(String string, char symbol) {
         int count = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == ch) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == symbol) {
                 count++;
             }
         }

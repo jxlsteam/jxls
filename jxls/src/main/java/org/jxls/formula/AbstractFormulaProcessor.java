@@ -14,6 +14,7 @@ import org.jxls.common.CellRef;
 import org.jxls.common.CellRefColPrecedenceComparator;
 import org.jxls.common.CellRefRowPrecedenceComparator;
 import org.jxls.transform.Transformer;
+import org.jxls.util.CellRefUtil;
 
 /**
  * Partial implementation of {@link FormulaProcessor} interface
@@ -335,5 +336,58 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
             }
         }
         return resultCellList;
+    }
+    
+    static class FormulaProcessorContext {
+        Transformer transformer;
+        List<CellRef> targetFormulaCells;
+        Map<CellRef, List<CellRef>> targetCellRefMap;
+        Map<String, List<CellRef>> jointedCellRefMap;
+        List<CellRef> usedCellRefs = new ArrayList<>();
+        boolean isFormulaCellRefsEmpty;
+        boolean isFormulaJointedCellRefsEmpty;
+        String targetFormulaString;
+        CellRef targetFormulaCellRef;
+    }
+
+    protected void processTargetFormulaCells(CellData formulaCellData, Transformer transformer, Area area) {
+        transformer.getLogger().debug("Processing formula cell " + formulaCellData);
+        FormulaProcessorContext fpc = createFormulaProcessorContext(formulaCellData, transformer, area);
+
+        // process all of the result (target) formula cells
+        // a result formula cell is a cell into which the original cell with the formula was transformed
+        for (int i = 0; i < fpc.targetFormulaCells.size(); i++) {
+            fpc.targetFormulaCellRef = fpc.targetFormulaCells.get(i);
+            fpc.targetFormulaString = formulaCellData.getFormula();
+            if (formulaCellData.isParameterizedFormulaCell() && i < formulaCellData.getEvaluatedFormulas().size()) {
+                fpc.targetFormulaString = formulaCellData.getEvaluatedFormulas().get(i);
+            }
+            processTargetFormulaCell(i, formulaCellData, fpc);
+        }
+    }
+    
+    protected abstract void processTargetFormulaCell(int i, CellData formulaCellData, FormulaProcessorContext fpc);
+    
+    protected FormulaProcessorContext createFormulaProcessorContext(CellData formulaCellData, Transformer transformer, Area area) {
+        FormulaProcessorContext fpc = new FormulaProcessorContext();
+        fpc.transformer = transformer;
+        fpc.targetFormulaCells = formulaCellData.getTargetPos();
+        fpc.targetCellRefMap = buildTargetCellRefMap(transformer, area, formulaCellData);
+        fpc.jointedCellRefMap = buildJointedCellRefMap(transformer, formulaCellData);
+        return fpc;
+    }
+
+    protected void processTargetFormula(CellData formulaCellData, FormulaProcessorContext fpc) {
+        String sheetNameReplacementRegex = Pattern.quote(fpc.targetFormulaCellRef.getFormattedSheetName() + CellRefUtil.SHEET_NAME_DELIMITER);
+        fpc.targetFormulaString = fpc.targetFormulaString.replaceAll(sheetNameReplacementRegex, "");
+        // if there were no regular or jointed cell references found for this formula use a default value
+        // if set or 0
+        if (fpc.isFormulaCellRefsEmpty && fpc.isFormulaJointedCellRefsEmpty
+                && (!formulaCellData.isParameterizedFormulaCell() || formulaCellData.isJointedFormulaCell())) {
+            fpc.targetFormulaString = formulaCellData.getDefaultValue() != null ? formulaCellData.getDefaultValue() : "0";
+        }
+        if (!fpc.targetFormulaString.isEmpty()) {
+            fpc.transformer.setFormula(new CellRef(fpc.targetFormulaCellRef), fpc.targetFormulaString);
+        }
     }
 }
