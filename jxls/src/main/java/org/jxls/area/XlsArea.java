@@ -139,7 +139,6 @@ public class XlsArea implements Area {
         }
     }
 
-    // TODO Method too long
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         if (this == XlsArea.EMPTY_AREA) {
@@ -154,79 +153,7 @@ public class XlsArea implements Area {
         AreaRef commandsArea = transformTopStaticArea(cellRef, context);
         int lastProcessedRow = -1;
         for (int i = 0; i < commandDataList.size(); i++) {
-            cellRange.resetChangeMatrix();
-            CommandData commandData = commandDataList.get(i);
-            String shiftMode = commandData.getCommand().getShiftMode();
-            CellShiftStrategy commandCellShiftStrategy = detectCellShiftStrategy(shiftMode);
-            cellRange.setCellShiftStrategy(commandCellShiftStrategy);
-            CellRef commandStartCellRef = commandData.getStartCellRef();
-            Size commandInitialSize = commandData.getSize();
-            int startCol = commandStartCellRef.getCol() - startCellRef.getCol();
-            int startRow = commandStartCellRef.getRow() - startCellRef.getRow();
-            if (startRow > lastProcessedRow) {
-                transformStaticCells(cellRef, context, startRow, 0, startRow, startCol - 1);
-                lastProcessedRow = startRow;
-            }
-            CellRef newCell = new CellRef(cellRef.getSheetName(), startRow + cellRef.getRow(), startCol + cellRef.getCol());
-            Size commandNewSize = commandData.getCommand().applyAt(newCell, context);
-            int widthChange = commandNewSize.getWidth() - commandInitialSize.getWidth();
-            int heightChange = commandNewSize.getHeight() - commandInitialSize.getHeight();
-            int endCol = startCol + commandInitialSize.getWidth() - 1;
-            int endRow = startRow + commandInitialSize.getHeight() - 1;
-            if (heightChange != 0) {
-                cellRange.shiftCellsWithColBlock(startCol, endCol, endRow, heightChange, true);
-                Set<CommandData> commandsToShift = findCommandsForVerticalShift(commandDataList.subList(i+1, commandDataList.size()),
-                        startCol, endCol, endRow, heightChange);
-                for (CommandData commandDataToShift : commandsToShift) {
-                    CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
-                    int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
-                    int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
-                    int relativeEndCol = relativeStartCol + commandDataToShift.getSize().getWidth() - 1;
-                    cellRange.shiftCellsWithColBlock(relativeStartCol, relativeEndCol,
-                            relativeRow + commandDataToShift.getSize().getHeight() - 1, heightChange, false);
-                    commandDataToShift.setStartCellRef(
-                            new CellRef(commandStartCellRef.getSheetName(),
-                                    commandDataStartCellRef.getRow() + heightChange,
-                                    commandDataStartCellRef.getCol()));
-                    if (heightChange < 0) {
-                        CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
-                        Size initialSize = commandDataToShift.getSourceSize();
-                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
-                        int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
-                        int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
-                        int initialEndCol = initialStartCol + initialSize.getWidth() - 1;
-                        cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
-                    }
-                }
-            }
-            if (widthChange != 0) {
-                cellRange.shiftCellsWithRowBlock(startRow,
-                        endRow,
-                        endCol, widthChange, true);
-                Set<CommandData> commandsToShift = findCommandsForHorizontalShift(
-                        commandDataList.subList(i + 1, commandDataList.size()), startRow, endRow, endCol, widthChange);
-                for (CommandData commandDataToShift : commandsToShift) {
-                    CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
-                    int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
-                    int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
-                    int relativeEndRow = relativeStartRow + commandDataToShift.getSize().getHeight() - 1;
-                    cellRange.shiftCellsWithRowBlock(relativeStartRow, relativeEndRow,
-                            relativeCol + commandDataToShift.getSize().getWidth() - 1, widthChange, false);
-                    commandDataToShift.setStartCellRef(
-                            new CellRef(commandStartCellRef.getSheetName(),
-                                    commandDataStartCellRef.getRow(),
-                                    commandDataStartCellRef.getCol() + widthChange));
-                    if (widthChange < 0) {
-                        CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
-                        Size initialSize = commandDataToShift.getSourceSize();
-                        int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
-                        int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
-                        int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
-                        int initialEndCol = initialStartCellRef.getCol() + initialSize.getWidth() - 1;
-                        cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
-                    }
-                }
-            }
+            lastProcessedRow = processCommand(commandDataList.get(i), i, cellRef, lastProcessedRow, context);
         }
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
@@ -239,6 +166,84 @@ public class XlsArea implements Area {
             commandData.resetStartCellAndSize();
         }
         return finalSize;
+    }
+
+    private int processCommand(CommandData commandData, int i, CellRef cellRef, int lastProcessedRow, Context context) {
+        cellRange.resetChangeMatrix();
+        String shiftMode = commandData.getCommand().getShiftMode();
+        CellShiftStrategy commandCellShiftStrategy = detectCellShiftStrategy(shiftMode);
+        cellRange.setCellShiftStrategy(commandCellShiftStrategy);
+        CellRef commandStartCellRef = commandData.getStartCellRef();
+        Size commandInitialSize = commandData.getSize();
+        int startCol = commandStartCellRef.getCol() - startCellRef.getCol();
+        int startRow = commandStartCellRef.getRow() - startCellRef.getRow();
+        if (startRow > lastProcessedRow) {
+            transformStaticCells(cellRef, context, startRow, 0, startRow, startCol - 1);
+            lastProcessedRow = startRow;
+        }
+        CellRef newCell = new CellRef(cellRef.getSheetName(), startRow + cellRef.getRow(), startCol + cellRef.getCol());
+        Size commandNewSize = commandData.getCommand().applyAt(newCell, context);
+        int widthChange = commandNewSize.getWidth() - commandInitialSize.getWidth();
+        int heightChange = commandNewSize.getHeight() - commandInitialSize.getHeight();
+        int endCol = startCol + commandInitialSize.getWidth() - 1;
+        int endRow = startRow + commandInitialSize.getHeight() - 1;
+        if (heightChange != 0) {
+            processHeightChange(i, commandStartCellRef, startCol, heightChange, endCol, endRow);
+        }
+        if (widthChange != 0) {
+            processWidthChange(i, commandStartCellRef, startRow, widthChange, endCol, endRow);
+        }
+        return lastProcessedRow;
+    }
+
+    private void processHeightChange(int i, CellRef commandStartCellRef, int startCol, int heightChange, int endCol, int endRow) {
+        cellRange.shiftCellsWithColBlock(startCol, endCol, endRow, heightChange, true);
+        Set<CommandData> commandsToShift = findCommandsForVerticalShift(
+                commandDataList.subList(i + 1, commandDataList.size()), startCol, endCol, endRow, heightChange);
+        for (CommandData commandDataToShift : commandsToShift) {
+            CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
+            int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeEndCol = relativeStartCol + commandDataToShift.getSize().getWidth() - 1;
+            cellRange.shiftCellsWithColBlock(relativeStartCol, relativeEndCol,
+                    relativeRow + commandDataToShift.getSize().getHeight() - 1, heightChange, false);
+            commandDataToShift.setStartCellRef(new CellRef(commandStartCellRef.getSheetName(),
+                    commandDataStartCellRef.getRow() + heightChange, commandDataStartCellRef.getCol()));
+            if (heightChange < 0) {
+                CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
+                Size initialSize = commandDataToShift.getSourceSize();
+                int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
+                int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
+                int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
+                int initialEndCol = initialStartCol + initialSize.getWidth() - 1;
+                cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
+            }
+        }
+    }
+
+    private void processWidthChange(int i, CellRef commandStartCellRef, int startRow, int widthChange, int endCol, int endRow) {
+        cellRange.shiftCellsWithRowBlock(startRow, endRow, endCol, widthChange, true);
+        Set<CommandData> commandsToShift = findCommandsForHorizontalShift(
+                commandDataList.subList(i + 1, commandDataList.size()), startRow, endRow, endCol, widthChange);
+        for (CommandData commandDataToShift : commandsToShift) {
+            CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
+            int relativeCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
+            int relativeStartRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
+            int relativeEndRow = relativeStartRow + commandDataToShift.getSize().getHeight() - 1;
+            cellRange.shiftCellsWithRowBlock(relativeStartRow, relativeEndRow,
+                    relativeCol + commandDataToShift.getSize().getWidth() - 1, widthChange, false);
+            commandDataToShift.setStartCellRef(new CellRef(commandStartCellRef.getSheetName(),
+                    commandDataStartCellRef.getRow(), commandDataStartCellRef.getCol() + widthChange));
+            if (widthChange < 0) {
+                CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
+                Size initialSize = commandDataToShift.getSourceSize();
+                int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
+                int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
+                int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
+                int initialEndCol = initialStartCellRef.getCol() + initialSize.getWidth() - 1;
+                cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
+            }
+        }
     }
 
     private void transformStaticCells(CellRef cellRef, Context context, AreaRef commandsArea) {
