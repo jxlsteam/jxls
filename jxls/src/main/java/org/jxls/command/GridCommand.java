@@ -141,16 +141,15 @@ public class GridCommand extends AbstractCommand {
         CellRef currentCell = cellRef;
         int width = 0;
         int height = 0;
-        // TODO possible error: content of HEADER_VAR is not saved & restored
-        for (Object header : headers) {
-            context.putVar(HEADER_VAR, header);
-            Size size = headerArea.applyAt(currentCell, context);
-            currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
-            width += size.getWidth();
-            height = Math.max(height, size.getHeight());
+        try (RunVar runVar = new RunVar(HEADER_VAR, context)) {
+            for (Object header : headers) {
+                runVar.put(header);
+                Size size = headerArea.applyAt(currentCell, context);
+                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                width += size.getWidth();
+                height = Math.max(height, size.getHeight());
+            }
         }
-        context.removeVar(HEADER_VAR);
-    
         return new Size(width, height);
     }
 

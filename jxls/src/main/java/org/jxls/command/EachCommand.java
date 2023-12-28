@@ -335,21 +335,16 @@ public class EachCommand extends AbstractCommand {
     private Iterable<?> filter(Context context, Iterable<?> itemsCollection, String selectExpression) {
         List<Object> filteredList = new ArrayList<>();
         ExpressionEvaluator selectEvaluator = getTransformationConfig().getExpressionEvaluator(selectExpression);
-        Object currentVarObject = getRunVar(context, var);
-        Object currentVarIndexObject = getRunVar(context, varIndex);
         int currentIndex = 0;
-        for (Object obj : itemsCollection) {
-            context.putVar(var, obj);
-            if (varIndex != null) {
-                context.putVar(varIndex, Integer.valueOf(currentIndex));
+        try (RunVar runVar = new RunVar(var, varIndex, context)) {
+            for (Object obj : itemsCollection) {
+                runVar.put(obj, Integer.valueOf(currentIndex));
+                if (selectEvaluator.isConditionTrue(context.toMap())) {
+                    filteredList.add(obj);
+                }
+                currentIndex++;
             }
-            if (Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
-                filteredList.add(obj);
-            }
-            currentIndex++;
         }
-        restoreVarObject(context, varIndex, currentVarIndexObject);
-        restoreVarObject(context, var, currentVarObject);
         return filteredList;
     }
 
@@ -373,68 +368,43 @@ public class EachCommand extends AbstractCommand {
         }
 
         CellRef currentCell = cellRef;
-        Object currentVarObject = getRunVar(context, varName);
-        Object currentVarIndexObject = getRunVar(context, varIndex);
         int currentIndex = 0;
-        for (Object obj : itemsCollection) {
-            context.putVar(varName, obj);
-            if (varIndex != null) {
-                context.putVar(varIndex, Integer.valueOf(currentIndex));
+        try (RunVar runVar = new RunVar(varName, varIndex, context)) {
+            for (Object obj : itemsCollection) {
+                runVar.put(obj, Integer.valueOf(currentIndex));
+                if (selectEvaluator != null && !selectEvaluator.isConditionTrue(context.toMap())) {
+                    continue;
+                }
+                if (cellRefGenerator != null) {
+                    currentCell = cellRefGenerator.generateCellRef(index++, context, getLogger());
+                }
+                if (currentCell == null) {
+                    break;
+                }
+                Size size;
+                try {
+                    size = area.applyAt(currentCell, context);
+                } catch (NegativeArraySizeException e) {
+                    throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
+                }
+                if (cellRefGenerator != null) {
+                    newWidth = Math.max(newWidth, size.getWidth());
+                    newHeight = Math.max(newHeight, size.getHeight());
+                } else if (direction == Direction.DOWN) {
+                    currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
+                    newWidth = Math.max(newWidth, size.getWidth());
+                    newHeight += size.getHeight();
+                } else { // RIGHT
+                    currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
+                    newWidth += size.getWidth();
+                    newHeight = Math.max(newHeight, size.getHeight());
+                }
+                currentIndex++;
             }
-            if (selectEvaluator != null && !Boolean.TRUE.equals(selectEvaluator.isConditionTrue(context.toMap()))) {
-                continue;
-            }
-            if (cellRefGenerator != null) {
-                currentCell = cellRefGenerator.generateCellRef(index++, context, getLogger());
-            }
-            if (currentCell == null) {
-                break;
-            }
-            Size size;
-            try {
-                size = area.applyAt(currentCell, context);
-            } catch (NegativeArraySizeException e) {
-                throw new JxlsException("Check jx:each/lastCell parameter in template! Illegal area: " + area.getAreaRef(), e);
-            }
-            if (cellRefGenerator != null) {
-                newWidth = Math.max(newWidth, size.getWidth());
-                newHeight = Math.max(newHeight, size.getHeight());
-            } else if (direction == Direction.DOWN) {
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow() + size.getHeight(), currentCell.getCol());
-                newWidth = Math.max(newWidth, size.getWidth());
-                newHeight += size.getHeight();
-            } else { // RIGHT
-                currentCell = new CellRef(currentCell.getSheetName(), currentCell.getRow(), currentCell.getCol() + size.getWidth());
-                newWidth += size.getWidth();
-                newHeight = Math.max(newHeight, size.getHeight());
-            }
-            currentIndex++;
         }
-        restoreVarObject(context, varIndex, currentVarIndexObject);
-        restoreVarObject(context, varName, currentVarObject);
         return new Size(newWidth, newHeight);
     }
     
-    public static Object getRunVar(Context context, String varName) {
-        if (varName != null && context != null) {
-            if (context.toMap().containsKey(varName)) {
-                return context.getRunVar(varName);
-            }
-        }
-        return null;
-    }
-
-    private void restoreVarObject(Context context, String varName, Object varObject) {
-        if (varName == null) {
-            return;
-        }
-        if (varObject != null) {
-            context.putVar(varName, varObject);
-        } else {
-            context.removeVar(varName);
-        }
-    }
-
     private List<String> extractSheetNameList(Context context) {
         try {
             Object sheetnames = context.getVar(multisheet);

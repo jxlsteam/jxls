@@ -58,8 +58,7 @@ public class YellowCommandTest {
 
 		@Override
 		public Size applyAt(CellRef cellRef, Context context) {
-	        Boolean conditionResult = getTransformationConfig().getExpressionEvaluator().isConditionTrue(condition, context.toMap());
-	        if (conditionResult.booleanValue()) {
+	        if (getTransformationConfig().getExpressionEvaluator().isConditionTrue(condition, context.toMap())) {
 	    		Row row = ((PoiTransformer) getTransformer()).getWorkbook().getSheet(cellRef.getSheetName()).getRow(cellRef.getRow());
 	    		Cell cell = row.getCell(cellRef.getCol());
 	    		if (cell == null) {

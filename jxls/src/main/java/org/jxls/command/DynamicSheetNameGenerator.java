@@ -28,7 +28,7 @@ public class DynamicSheetNameGenerator implements CellRefGenerator {
     public CellRef generateCellRef(int index, Context context, JxlsLogger logger) {
         String sheetName = (String) expressionEvaluator.evaluate(sheetNameExpression, context.toMap());
         boolean safeName = false;
-        Object builder = EachCommand.getRunVar(context, SafeSheetNameBuilder.CONTEXT_VAR_NAME);
+        Object builder = RunVar.getRunVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, context);
         if (builder instanceof SafeSheetNameBuilder sBuilder) {
             // The SafeSheetNameBuilder builds a valid and unique sheetName. This is the new style.
             sheetName = sBuilder.createSafeSheetName(sheetName, index, logger);
