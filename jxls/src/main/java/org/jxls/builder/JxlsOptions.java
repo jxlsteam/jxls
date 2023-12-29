@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jxls.command.Command;
+import org.jxls.common.NeedsContext;
 import org.jxls.expression.ExpressionEvaluatorFactory;
-import org.jxls.expression.NeedsExpressionEvaluator;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
@@ -26,14 +26,14 @@ public class JxlsOptions {
     private final boolean clearTemplateCells;
     private final JxlsTransformerFactory transformerFactory;
     private final JxlsStreaming streaming;
-    private final List<NeedsExpressionEvaluator> needsExpressionEvaluatorList;
+    private final List<NeedsContext> needsContextList;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor,
             boolean ignoreColumnProps, boolean ignoreRowProps, boolean recalculateFormulasBeforeSaving,
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
-            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsExpressionEvaluator> needsExpressionEvaluatorList) {
+            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsContext> needsContextList) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -49,7 +49,7 @@ public class JxlsOptions {
         this.clearTemplateCells = clearTemplateCells;
         this.transformerFactory = transformerFactory;
         this.streaming = streaming;
-        this.needsExpressionEvaluatorList = needsExpressionEvaluatorList;
+        this.needsContextList = needsContextList;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -112,7 +112,7 @@ public class JxlsOptions {
         return streaming;
     }
 
-    public List<NeedsExpressionEvaluator> getNeedsExpressionEvaluatorList() {
-        return needsExpressionEvaluatorList;
+    public List<NeedsContext> getNeedsContextList() {
+        return needsContextList;
     }
 }

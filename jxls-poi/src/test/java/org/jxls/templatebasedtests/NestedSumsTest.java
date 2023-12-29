@@ -65,9 +65,9 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf() {
         // Prepare
-        Context context = new Context();
+        Context context = new Context(); // TODO Map
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
+        context.putVar("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
         
         // Test
@@ -100,8 +100,8 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf2() {
         // Prepare
-        Context context = new Context();
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
+        Context context = new Context(); // TODO Map
+        context.putVar("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
         context.putVar("list", getTestData());
 
         // Test

@@ -7,8 +7,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.command.RunVar;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.NeedsExpressionEvaluator;
+import org.jxls.common.NeedsContext;
 
 /**
  * Group sum
@@ -22,20 +21,18 @@ import org.jxls.expression.NeedsExpressionEvaluator;
  * <p>Above the 2nd argument is a JEXL expression. The collection name as String is also possible:</p>
  * <pre>${G.sum("salary", "employees.items")}</pre>
  */
-public class GroupSum<T> implements NeedsExpressionEvaluator {
-    private final Context context;
+public class GroupSum<T> implements NeedsContext {
+    private Context context;
     private final SummarizerBuilder<T> sumBuilder;
-    private ExpressionEvaluator expressionEvaluator;
     private String objectVarName = "i";
     
-    public GroupSum(Context context, SummarizerBuilder<T> sumBuilder) {
-        this.context = context;
+    public GroupSum(SummarizerBuilder<T> sumBuilder) {
         this.sumBuilder = sumBuilder;
     }
 
     @Override
-    public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
-        this.expressionEvaluator = expressionEvaluator;
+    public void setContext(Context context) {
+        this.context = context;
     }
     
     /**
@@ -81,7 +78,7 @@ public class GroupSum<T> implements NeedsExpressionEvaluator {
         try (RunVar runVar = new RunVar(objectVarName, context)) {
             for (Object object : collection) {
                 runVar.put(object);
-                if (expressionEvaluator.isConditionTrue(filter, context.toMap())) {
+                if (context.isConditionTrue(filter)) {
                     sum.add(getValue(object, fieldName));
                 }
             }
@@ -115,6 +112,6 @@ public class GroupSum<T> implements NeedsExpressionEvaluator {
     }
 
     private Object getValue(String expression) {
-        return expressionEvaluator.evaluate(expression, context.toMap());
+        return context.evaluate(expression);
     }
 }

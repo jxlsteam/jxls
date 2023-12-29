@@ -35,9 +35,9 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         maps.add(createEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
         maps.add(createEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
-        Context context = new Context();
+        Context context = new Context(); // TODO Map
         context.putVar("details", maps);
-        check(context, new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
+        check(context, new GroupSum<Double>(new DoubleSummarizerBuilder()));
     }
 
     private Map<String, Object> createEmployee(String department, String name, String job, String city, double salary) {
@@ -59,9 +59,9 @@ public class GroupSumTest {
         beans.add(newEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         beans.add(newEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
         beans.add(newEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
-        Context context = new Context();
+        Context context = new Context(); // TODO Map
         context.putVar("details", beans);
-        check(context, new GroupSum<BigDecimal>(context, new BigDecimalSummarizerBuilder()));
+        check(context, new GroupSum<BigDecimal>(new BigDecimalSummarizerBuilder()));
     }
     
     private Employee newEmployee(String department, String name, String job, String city, double salary) {
@@ -73,7 +73,7 @@ public class GroupSumTest {
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsExpressionEvaluator(groupSum));
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -92,14 +92,14 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Dagmar", "Assistent", "Geldern", 32000));
         maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         maps.add(createEmployee("01 Main department", "Draci the dragon", "Mascot", "Wetten", -1));
-        Context context = new Context();
+        Context context = new Context(); // TODO Map
         context.putVar("details", maps);
-        GroupSum<Double> groupSum = new GroupSum<Double>(context, new DoubleSummarizerBuilder());
+        GroupSum<Double> groupSum = new GroupSum<Double>(new DoubleSummarizerBuilder());
         context.putVar("G", groupSum);
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "filterCondition");
-        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsExpressionEvaluator(groupSum));
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().needsContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

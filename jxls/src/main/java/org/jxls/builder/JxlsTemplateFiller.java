@@ -80,10 +80,14 @@ public class JxlsTemplateFiller {
      */
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
+        
         Context context = createContext(createExpressionEvaluatorContext(), data);
+        options.getNeedsContextList().forEach(ee -> ee.setContext(context));
+        
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
         }
+        
         if (options.getFormulaProcessor() != null) {
             for (Area area : areas) {
                 area.setFormulaProcessor(options.getFormulaProcessor());
@@ -97,10 +101,10 @@ public class JxlsTemplateFiller {
     }
 
     protected ExpressionEvaluatorContext createExpressionEvaluatorContext() {
-        ExpressionEvaluatorContext tc = new ExpressionEvaluatorContext(options.getExpressionEvaluatorFactory(),
-                options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
-        options.getNeedsExpressionEvaluatorList().forEach(ee -> ee.setExpressionEvaluator(tc.getExpressionEvaluator()));
-        return tc;
+        return new ExpressionEvaluatorContext(
+                options.getExpressionEvaluatorFactory(),
+                options.getExpressionNotationBegin(),
+                options.getExpressionNotationEnd());
     }
 
     protected void preWrite() {

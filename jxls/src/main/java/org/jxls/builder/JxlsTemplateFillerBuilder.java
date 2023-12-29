@@ -14,9 +14,9 @@ import java.util.Map;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
 import org.jxls.common.JxlsException;
+import org.jxls.common.NeedsContext;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
-import org.jxls.expression.NeedsExpressionEvaluator;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -50,7 +50,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     private JxlsTransformerFactory transformerFactory;
     protected JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
     protected InputStream template;
-    protected final List<NeedsExpressionEvaluator> needsExpressionEvaluatorList = new ArrayList<>();
+    protected final List<NeedsContext> needsContextList = new ArrayList<>();
 
     public static JxlsTemplateFillerBuilder<?> newInstance() {
         return new JxlsTemplateFillerBuilder<>();
@@ -87,7 +87,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public JxlsOptions getOptions() {
         return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
                 logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsExpressionEvaluatorList);
+                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList);
     }
 
     public SELF withExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -193,11 +193,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
     
-    public SELF needsExpressionEvaluator(NeedsExpressionEvaluator needsExpressionEvaluator) {
-        if (needsExpressionEvaluator == null) {
-            throw new IllegalArgumentException("needsExpressionEvaluator must not be null");
+    public SELF needsContext(NeedsContext needsContext) {
+        if (needsContext == null) {
+            throw new IllegalArgumentException("needsContext must not be null");
         }
-        needsExpressionEvaluatorList.add(needsExpressionEvaluator);
+        needsContextList.add(needsContext);
         return (SELF) this;
     }
 
