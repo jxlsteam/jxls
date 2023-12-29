@@ -18,6 +18,11 @@ public class ExpressionEvaluatorContext {
     private final Pattern expressionNotationPattern;
     private ExpressionEvaluator expressionEvaluator = null;
 
+    /**
+     * @param expressionEvaluatorFactory often new ExpressionEvaluatorFactoryJexlImpl()
+     * @param expressionNotationBegin can be null, default "${"
+     * @param expressionNotationEnd can be null, default "}"
+     */
     public ExpressionEvaluatorContext(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin, String expressionNotationEnd) {
         if (expressionEvaluatorFactory == null) {
             throw new IllegalArgumentException("expressionEvaluatorFactory must not be null");
