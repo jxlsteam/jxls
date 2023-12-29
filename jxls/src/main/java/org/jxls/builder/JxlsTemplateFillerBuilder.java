@@ -144,6 +144,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 	    return withFormulaProcessor(new FastFormulaProcessor());
 	}
 	
+	/**
+	 * Cell reference tracking
+	 * @param updateCellDataArea false to turn this feature off
+	 * @return this
+	 */
 	public SELF withUpdateCellDataArea(boolean updateCellDataArea) {
 	    this.updateCellDataArea = updateCellDataArea;
 	    return (SELF) this;
