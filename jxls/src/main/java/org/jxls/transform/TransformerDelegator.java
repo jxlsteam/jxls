@@ -1,6 +1,7 @@
 package org.jxls.transform;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,11 @@ public class TransformerDelegator implements Transformer {
     @Override
     public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight) {
         transformer.transform(srcCellRef, targetCellRef, context, updateRowHeight);
+    }
+
+    @Override
+    public void setOutputStream(OutputStream outputStream) {
+        transformer.setOutputStream(outputStream);
     }
 
     @Override

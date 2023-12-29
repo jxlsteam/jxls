@@ -20,7 +20,7 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
     @Override
     public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
         Workbook workbook = openWorkbook(template);
-        PoiTransformer transformer = createTransformer(workbook, streaming);
+        Transformer transformer = createTransformer(workbook, streaming);
         transformer.setLogger(logger);
         transformer.setOutputStream(outputStream);
         return transformer;
@@ -34,7 +34,7 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
         }
     }
 
-    protected PoiTransformer createTransformer(Workbook workbook, JxlsStreaming streaming) {
+    protected Transformer createTransformer(Workbook workbook, JxlsStreaming streaming) {
         if (streaming.isAutoDetect()) {
             return new SelectSheetsForStreamingPoiTransformer(workbook, getAllSheetsInWhichStreamingIsConfigured(workbook),
                     streaming.getRowAccessWindowSize(), streaming.isCompressTmpFiles(), streaming.isUseSharedStringsTable());

@@ -1,6 +1,7 @@
 package org.jxls.transform;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,8 @@ public interface Transformer {
 
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
 
+    void setOutputStream(OutputStream outputStream);
+    
     /***
      * Writes Excel workbook to output stream but not close the stream
      * designed to use with ZipOutputStream or other OutputStream

@@ -381,6 +381,7 @@ public class PoiTransformer extends AbstractTransformer {
         return outputStream;
     }
 
+    @Override
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
