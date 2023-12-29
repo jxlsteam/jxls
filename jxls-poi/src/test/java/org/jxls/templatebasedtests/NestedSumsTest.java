@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Simplified real world testcase for nested sums
@@ -65,14 +67,14 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf() {
         // Prepare
-        Context context = new Context(); // TODO Map
+        Map<String, Object> data = new HashMap<>();
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
-        context.putVar("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
-        context.putVar("list", getTestData());
+        data.put("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
+        data.put("list", getTestData());
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf");
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "nestedSums_withIf");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -100,13 +102,13 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf2() {
         // Prepare
-        Context context = new Context(); // TODO Map
-        context.putVar("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
-        context.putVar("list", getTestData());
+        Map<String, Object> data = new HashMap<>();
+        data.put("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
+        data.put("list", getTestData());
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf2");
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "nestedSums_withIf2");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
