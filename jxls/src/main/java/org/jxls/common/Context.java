@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.transform.ExpressionEvaluatorContext;
 
 /**
  * Jxls context (Jxls internal class)
@@ -13,7 +13,7 @@ import org.jxls.transform.TransformationConfig;
  * @author Leonid Vysochyn
  */
 public class Context {
-    private final TransformationConfig transformationConfig;
+    private final ExpressionEvaluatorContext expressionEvaluatorContext;
     private final Map<String, Object> varMap;
     private boolean formulaProcessingRequired = true;
     private boolean ignoreSourceCellStyle = false;
@@ -26,8 +26,8 @@ public class Context {
         this(null, new HashMap<String, Object>());
     }
 
-    public Context(TransformationConfig transformationConfig, Map<String, Object> varMap) {
-        this.transformationConfig = transformationConfig == null ? new TransformationConfig(new ExpressionEvaluatorFactoryJexlImpl(), null, null) : transformationConfig;
+    public Context(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> varMap) {
+        this.expressionEvaluatorContext = expressionEvaluatorContext == null ? new ExpressionEvaluatorContext(new ExpressionEvaluatorFactoryJexlImpl(), null, null) : expressionEvaluatorContext;
         this.varMap = varMap;
     }
     
@@ -36,7 +36,7 @@ public class Context {
     }
 
     public ExpressionEvaluator getExpressionEvaluator(String expression) {
-        return transformationConfig.getExpressionEvaluator(expression);
+        return expressionEvaluatorContext.getExpressionEvaluator(expression);
     }
 
     /**
@@ -45,7 +45,7 @@ public class Context {
      * @return EvaluationResult
      */
     public EvaluationResult _evaluateRawExpression(String rawExpression) {
-        return transformationConfig.evaluateRawExpression(rawExpression, varMap);
+        return expressionEvaluatorContext.evaluateRawExpression(rawExpression, varMap);
     }
     
     public boolean isConditionTrue(String condition) {

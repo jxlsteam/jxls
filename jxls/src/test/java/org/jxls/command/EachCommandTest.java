@@ -8,7 +8,7 @@ import org.jxls.area.Area;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.transform.ExpressionEvaluatorContext;
 import org.jxls.transform.Transformer;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -20,7 +20,7 @@ public class EachCommandTest {
     @Mock
     private Transformer transformer;
     @Mock
-    private TransformationConfig transformationConfig;
+    private ExpressionEvaluatorContext expressionEvaluatorContext;
     @Mock
     private ExpressionEvaluator expressionEvaluator;
     @Mock

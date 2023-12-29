@@ -15,7 +15,7 @@ import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.transform.ExpressionEvaluatorContext;
 import org.jxls.transform.Transformer;
 
 public class JxlsTemplateFiller {
@@ -80,7 +80,7 @@ public class JxlsTemplateFiller {
      */
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
-        Context context = createContext(createTransformationConfig(), data);
+        Context context = createContext(createExpressionEvaluatorContext(), data);
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
         }
@@ -92,12 +92,12 @@ public class JxlsTemplateFiller {
         }
     }
 
-    protected Context createContext(TransformationConfig tc, Map<String, Object> data) {
-        return new Context(tc, data);
+    protected Context createContext(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> data) {
+        return new Context(expressionEvaluatorContext, data);
     }
 
-    protected TransformationConfig createTransformationConfig() {
-        TransformationConfig tc = new TransformationConfig(options.getExpressionEvaluatorFactory(),
+    protected ExpressionEvaluatorContext createExpressionEvaluatorContext() {
+        ExpressionEvaluatorContext tc = new ExpressionEvaluatorContext(options.getExpressionEvaluatorFactory(),
                 options.getExpressionNotationBegin(), options.getExpressionNotationEnd());
         options.getNeedsExpressionEvaluatorList().forEach(ee -> ee.setExpressionEvaluator(tc.getExpressionEvaluator()));
         return tc;

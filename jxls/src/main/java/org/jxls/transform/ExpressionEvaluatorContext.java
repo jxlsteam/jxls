@@ -9,7 +9,7 @@ import org.jxls.common.EvaluationResult;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 
-public class TransformationConfig { // TODO find better name
+public class ExpressionEvaluatorContext {
     private static final String EXPRESSION_PART = "(.+?)";
 
     private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
@@ -18,7 +18,7 @@ public class TransformationConfig { // TODO find better name
     private final Pattern expressionNotationPattern;
     private ExpressionEvaluator expressionEvaluator = null;
 
-    public TransformationConfig(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin, String expressionNotationEnd) {
+    public ExpressionEvaluatorContext(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin, String expressionNotationEnd) {
         if (expressionEvaluatorFactory == null) {
             throw new IllegalArgumentException("expressionEvaluatorFactory must not be null");
         }
