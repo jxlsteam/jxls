@@ -5,8 +5,8 @@ import org.jxls.logging.JxlsLogger;
 public class PoiExceptionThrower implements JxlsLogger {
 
     @Override
-    public void handleCellException(Exception e, String cell, String contextKeys) {
-        throw new JxlsException("Failed to write a cell with " + cell + " and context keys " + contextKeys, e);
+    public void handleCellException(Exception e, String cell, Context context) {
+        throw new JxlsException("Failed to write a cell with " + cell, e);
     }
 
     @Override

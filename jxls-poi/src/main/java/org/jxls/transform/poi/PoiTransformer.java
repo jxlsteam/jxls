@@ -149,7 +149,7 @@ public class PoiTransformer extends AbstractTransformer {
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
-            getLogger().handleCellException(e, cellData.toString(), context.toMap().keySet().toString());
+            getLogger().handleCellException(e, cellData.toString(), context);
         }
     }
 

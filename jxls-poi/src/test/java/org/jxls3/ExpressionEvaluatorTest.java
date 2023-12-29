@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
+import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.PoiExceptionThrower;
@@ -34,7 +35,7 @@ public class ExpressionEvaluatorTest {
         Jxls3Tester.xlsx(getClass()).test(new HashMap<>(),
                 JxlsPoiTemplateFillerBuilder.newInstance().withLogger(new PoiExceptionLogger() {
                     @Override
-                    public void handleCellException(Exception e, String cell, String contextKeys) {
+                    public void handleCellException(Exception e, String cell, Context context) {
                         catched = "CellData{Sheet1!A2, cellType=STRING, cellValue=${a***3}}".equals(cell);
                     }
                 }));
