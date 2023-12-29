@@ -12,7 +12,6 @@ allprojects {
 
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'groovy'
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
     
