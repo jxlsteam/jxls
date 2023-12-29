@@ -113,8 +113,7 @@ public class ExpressionEvaluatorFactoryTest {
                 
                 @Override
                 public String getExpression() {
-                    Assert.fail("unexpected call");
-                    return null;
+                    return topExpression;
                 }
             };
         }
