@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 
 /**
@@ -16,7 +17,7 @@ public class IssueB153Test {
     @Test
     public void test() throws Exception {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", Employee.generateSampleEmployeeData());
 
         // Test

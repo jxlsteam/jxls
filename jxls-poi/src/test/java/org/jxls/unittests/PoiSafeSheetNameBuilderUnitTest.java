@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.jxls.command.SheetNameGenerator;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.templatebasedtests.multisheet.PoiSafeSheetNameBuilderTest;
@@ -30,7 +31,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testSafeSheetNames() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
         List<String> sheetNames = new ArrayList<>();
@@ -50,7 +51,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testUniqueSheetNames_simple() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
         List<String> sheetNames = new ArrayList<>();
@@ -70,7 +71,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testUniqueSheetNames() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder() {
             @Override
             protected int getFirstSerialNumber() {
@@ -110,7 +111,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testNotEnoughSheetNames() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder() {
             @Override
             public String createSafeSheetName(String givenSheetName, int index, JxlsLogger logger) {
@@ -137,7 +138,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
      */
     @Test
     public void testNotEnoughSheetNames_noSafeSheetNameBuilder() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         Assert.assertNull("precondition: Context must not contain " + PoiSafeSheetNameBuilder.class.getSimpleName(),
                 context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME));
 
@@ -151,7 +152,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
 
     @Test
     public void testSheetNamesWithSerialNumber() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder() {
             @Override
             public String createSafeSheetName(String givenSheetName, int index, JxlsLogger logger) {

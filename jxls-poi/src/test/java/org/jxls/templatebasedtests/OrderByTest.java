@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Tests orderBy attribute of jx:each command (Issue B193)
@@ -17,7 +18,7 @@ public class OrderByTest {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", IssueB133Test.createEmployees());
         
         // Test

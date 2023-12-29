@@ -72,7 +72,7 @@ public class GroupSumTest {
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
-        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsContext(groupSum));
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsPublicContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -98,7 +98,7 @@ public class GroupSumTest {
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "filterCondition");
-        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsContext(groupSum));
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsPublicContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

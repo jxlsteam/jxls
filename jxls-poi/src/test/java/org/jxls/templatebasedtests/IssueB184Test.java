@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Issue 184
@@ -28,7 +29,7 @@ public class IssueB184Test {
         for (int j = 1; j <= 3; j++) {
             data.add(Integer.valueOf(j));
         }
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("data", data);
         
         // Test

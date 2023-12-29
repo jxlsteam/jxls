@@ -8,6 +8,7 @@ import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
 import org.jxls.builder.JxlsStreaming;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 // TODO MW: missing assertions (can file be opened? record size okay? speed okay?)
@@ -68,7 +69,7 @@ public class TableTest {
                 list20.add(a);
             }
         }
-        Context ctx = new Context();
+        Context ctx = new ContextImpl();
         ctx.putVar("list", list);
         ctx.putVar("list20", list20); // a short list for the 2nd sheet; always without streaming
         return ctx;

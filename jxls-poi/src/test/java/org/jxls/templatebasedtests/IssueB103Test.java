@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Cell format not being correctly shifted when having JXLS command and empty list
@@ -18,7 +19,7 @@ public class IssueB103Test {
     @Test
     public void test() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("nonEmptyList", new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")));
         context.putVar("emptyList", new ArrayList<String>());
         

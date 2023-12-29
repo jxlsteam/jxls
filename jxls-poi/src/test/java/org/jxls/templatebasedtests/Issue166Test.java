@@ -9,8 +9,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
-import org.jxls.common.Context;
-import org.jxls.common.NeedsContext;
+import org.jxls.common.NeedsPublicContext;
+import org.jxls.common.PublicContext;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 public class Issue166Test {
@@ -39,7 +39,7 @@ public class Issue166Test {
         
         // Test
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "3");
-        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower().needsContext(cf));
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().withExceptionThrower().needsPublicContext(cf));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -67,8 +67,8 @@ public class Issue166Test {
         }
     }
 
-    public class MyCustomFunctions implements NeedsContext {
-        private Context context;
+    public class MyCustomFunctions implements NeedsPublicContext {
+        private PublicContext context;
         
         public String mach(String varName) {
             return "m_" + getValue(varName);
@@ -79,7 +79,7 @@ public class Issue166Test {
         }
 
         @Override
-        public void setContext(Context context) {
+        public void setPublicContext(PublicContext context) {
             this.context = context;
         }
         

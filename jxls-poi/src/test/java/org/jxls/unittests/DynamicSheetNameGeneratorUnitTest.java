@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.jxls.command.DynamicSheetNameGenerator;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.templatebasedtests.multisheet.DynamicSheetNameGeneratorTest;
@@ -25,7 +26,7 @@ public class DynamicSheetNameGeneratorUnitTest {
     @Test
     public void test() {
         // Prepare
-        Context context = new Context(); // No SafeSheetNameBuilder.
+        Context context = new ContextImpl(); // No SafeSheetNameBuilder.
         context.putVar("sheetnames", "doe");
         
         // Test
@@ -40,14 +41,14 @@ public class DynamicSheetNameGeneratorUnitTest {
     @Test
     public void testNull() {
         DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("N/A", new CellRef("A1"));
-        assertNull(gen.generateCellRef(0, new Context(), logger));
+        assertNull(gen.generateCellRef(0, new ContextImpl(), logger));
     }
 
     /** New-style test. Setup own sheet name. */
     @Test
     public void testWithSafeNameBuilder() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder() {
             @Override
             public String createSafeSheetName(String givenSheetName, int index, JxlsLogger logger) {
@@ -71,7 +72,7 @@ public class DynamicSheetNameGeneratorUnitTest {
     public void testWithPoiContext() {
         // The PoiSafeSheetNameBuilder acts like the old-style DynamicSheetNameGenerator.
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
         context.putVar("sheetnames", "doe");
         

@@ -14,7 +14,7 @@ import java.util.Map;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
 import org.jxls.common.JxlsException;
-import org.jxls.common.NeedsContext;
+import org.jxls.common.NeedsPublicContext;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.formula.FastFormulaProcessor;
@@ -50,7 +50,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     private JxlsTransformerFactory transformerFactory;
     protected JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
     protected InputStream template;
-    protected final List<NeedsContext> needsContextList = new ArrayList<>();
+    protected final List<NeedsPublicContext> needsContextList = new ArrayList<>();
 
     public static JxlsTemplateFillerBuilder<?> newInstance() {
         return new JxlsTemplateFillerBuilder<>();
@@ -193,11 +193,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
     
-    public SELF needsContext(NeedsContext needsContext) {
-        if (needsContext == null) {
-            throw new IllegalArgumentException("needsContext must not be null");
+    public SELF needsPublicContext(NeedsPublicContext needsPublicContext) {
+        if (needsPublicContext == null) {
+            throw new IllegalArgumentException("needsPublicContext must not be null");
         }
-        needsContextList.add(needsContext);
+        needsContextList.add(needsPublicContext);
         return (SELF) this;
     }
 

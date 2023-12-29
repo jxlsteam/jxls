@@ -15,6 +15,7 @@ import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 
@@ -35,7 +36,7 @@ public class UserCommandExcelMarkupDemo {
                 XlsCommentAreaBuilder.addCommandMapping("groupRow", GroupRowCommand.class);
                 List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("employees", employees);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
                 transformer.write();

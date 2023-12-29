@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * @see IssueB089Test
@@ -20,7 +21,7 @@ public class ConditionalFormattingTest {
     @Test
     public void shouldCopyConditionalFormatInEachCommandLoop() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<Integer> numbers = Arrays.asList(2, 1, 4, 3, 5);
         context.putVar("numbers", numbers);
         context.putVar("val1", 0);

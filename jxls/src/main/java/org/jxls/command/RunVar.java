@@ -1,6 +1,6 @@
 package org.jxls.command;
 
-import org.jxls.common.Context;
+import org.jxls.common.PublicContext;
 
 /**
  * Running variable handling
@@ -10,13 +10,13 @@ public class RunVar implements AutoCloseable {
     private final String varName2;
     private final Object oldValue1;
     private final Object oldValue2;
-    private final Context context;
+    private final PublicContext context;
 
-    public RunVar(String varName, Context context) {
+    public RunVar(String varName, PublicContext context) {
         this(varName, null, context);
     }
 
-    public RunVar(String varName1, String varName2, Context context) {
+    public RunVar(String varName1, String varName2, PublicContext context) {
         if (varName1 == null) {
             throw new IllegalArgumentException("varName must not be null");
         }
@@ -64,9 +64,9 @@ public class RunVar implements AutoCloseable {
         }
     }
 
-    public static Object getRunVar(String varName, Context context) {
+    public static Object getRunVar(String varName, PublicContext context) {
         if (varName != null && context != null) {
-            if (context.toMap().containsKey(varName)) {
+            if (context.containsVar(varName)) {
                 return context.getRunVar(varName);
             }
         }

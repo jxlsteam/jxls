@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Issue with 'big double values' (like 1.3E22) being parsed as cell references
@@ -19,7 +20,7 @@ public class IssueB105Test {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("vars", Arrays.asList(new Values(), new Values(), new Values()));
 
         // Test

@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
@@ -22,7 +23,7 @@ public class IssueB159Test {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         Map<String, Object> model = getModel();
         for (String key : model.keySet()) {
             context.putVar(key, model.get(key));

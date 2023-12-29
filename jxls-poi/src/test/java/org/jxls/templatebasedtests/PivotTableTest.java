@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.util.JxlsNationalLanguageSupport;
@@ -21,7 +22,7 @@ public class PivotTableTest {
     @Test
     public void nls() throws Exception {
         // Prepare
-        final Context context = new Context();
+        final Context context = new ContextImpl();
         context.putVar("employees", getTestData());
         final Properties resourceBundle = new Properties();
         resourceBundle.put("name", "Name (EN)");

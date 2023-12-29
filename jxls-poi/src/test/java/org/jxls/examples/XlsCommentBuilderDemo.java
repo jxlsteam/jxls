@@ -14,6 +14,7 @@ import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
@@ -34,7 +35,7 @@ public class XlsCommentBuilderDemo {
                 AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
                 List<Area> xlsAreaList = areaBuilder.build(transformer, false);
                 Area xlsArea = xlsAreaList.get(0);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
                 xlsArea.setFormulaProcessor(new StandardFormulaProcessor());

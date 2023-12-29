@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.unittests.DynamicSheetNameGeneratorUnitTest;
 import org.jxls3.MultiSheetTest;
@@ -24,7 +25,7 @@ public class DynamicSheetNameGeneratorTest extends AbstractMultiSheetTest {
     @Test
     public void testWithExpression() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("sheets", getTestSheets());
         
         // Test

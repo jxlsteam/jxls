@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.jxls.command.RunVar;
-import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.common.NeedsContext;
+import org.jxls.common.NeedsPublicContext;
+import org.jxls.common.PublicContext;
 
 /**
  * Group sum
@@ -21,8 +21,8 @@ import org.jxls.common.NeedsContext;
  * <p>Above the 2nd argument is a JEXL expression. The collection name as String is also possible:</p>
  * <pre>${G.sum("salary", "employees.items")}</pre>
  */
-public class GroupSum<T> implements NeedsContext {
-    private Context context;
+public class GroupSum<T> implements NeedsPublicContext {
+    private PublicContext context;
     private final SummarizerBuilder<T> sumBuilder;
     private String objectVarName = "i";
     
@@ -31,7 +31,7 @@ public class GroupSum<T> implements NeedsContext {
     }
 
     @Override
-    public void setContext(Context context) {
+    public void setPublicContext(PublicContext context) {
         this.context = context;
     }
     

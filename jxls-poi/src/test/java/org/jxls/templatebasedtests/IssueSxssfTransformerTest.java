@@ -17,6 +17,7 @@ import org.jxls.builder.JxlsStreaming;
 import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
@@ -52,7 +53,7 @@ public class IssueSxssfTransformerTest {
     }
 
     private Context prepareContext() {
-        final Context context = new Context();
+        final Context context = new ContextImpl();
         context.setFormulaProcessingRequired(false);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();
@@ -81,7 +82,7 @@ public class IssueSxssfTransformerTest {
             areas = options.getAreaBuilder().build(transformer, true);
             for (Area area : areas) {
                 CellRef ref = new CellRef("Result", 0, 0);
-                area.applyAt(ref, new Context(null, data));
+                area.applyAt(ref, new ContextImpl(null, data));
             }
         }
     }

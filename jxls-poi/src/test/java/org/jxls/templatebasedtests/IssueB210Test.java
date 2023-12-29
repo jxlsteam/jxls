@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Problem with sums out of empty lists and multiple sheets
@@ -31,7 +32,7 @@ public class IssueB210Test {
 
     public void check(boolean useFastFormulaProcessor) throws Exception {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         ArrayList<Item> list = new ArrayList<>();
         if (WITH_DATA) list.add(new Item());
         context.putVar("list1", list);

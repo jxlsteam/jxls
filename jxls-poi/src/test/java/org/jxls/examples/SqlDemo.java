@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.jdbc.DatabaseAccess;
 
@@ -22,7 +23,7 @@ public class SqlDemo {
     @Test
     public void test() throws ClassNotFoundException, SQLException {
         try (Connection conn = openConnection()) {
-            Context context = new Context();
+            Context context = new ContextImpl();
             context.putVar("jdbc", new DatabaseAccess(conn));
             
             JxlsTester tester = JxlsTester.xlsx(getClass());

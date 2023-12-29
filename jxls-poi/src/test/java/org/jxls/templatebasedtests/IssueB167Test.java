@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 
 /**
@@ -19,7 +20,7 @@ public class IssueB167Test {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("var1", "Variable 1");
         context.putVar("var2", new Employee("Leo", new Date(), 1000, 0.10));
 

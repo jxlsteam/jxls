@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
-import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Issue with row height and jx:area not in A1
@@ -20,7 +20,7 @@ public class IssueB106Test {
     public void test() throws IOException {
         // Test
         JxlsTester tester = JxlsTester.xls(getClass());
-        tester.processTemplate(new Context());
+        tester.processTemplate(new ContextImpl());
 
         // Verify heights of rows 2 and 3
         try (TestWorkbook w = tester.getWorkbook()) {

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 public class IssueB206Test {
     // worked with 2.6.0, failure in 2.8.0-rc1
@@ -17,7 +18,7 @@ public class IssueB206Test {
     public void empty() throws Exception {
         // Test with empty lists
         JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(new Context());
+        tester.processTemplate(new ContextImpl());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -30,7 +31,7 @@ public class IssueB206Test {
     @Test
     public void filled() throws Exception {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("lines", createLines());
         context.putVar("titles", createTitles());
         context.putVar("subcatTitles", createSubcatTitles());

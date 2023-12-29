@@ -15,6 +15,7 @@ import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.transform.ExpressionEvaluatorContext;
 import org.jxls.transform.Transformer;
 
@@ -82,7 +83,7 @@ public class JxlsTemplateFiller {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
         
         Context context = createContext(createExpressionEvaluatorContext(), data);
-        options.getNeedsContextList().forEach(ee -> ee.setContext(context));
+        options.getNeedsPublicContextList().forEach(ee -> ee.setPublicContext(context));
         
         for (Area area : areas) {
             area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
@@ -97,7 +98,7 @@ public class JxlsTemplateFiller {
     }
 
     protected Context createContext(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> data) {
-        return new Context(expressionEvaluatorContext, data);
+        return new ContextImpl(expressionEvaluatorContext, data);
     }
 
     protected ExpressionEvaluatorContext createExpressionEvaluatorContext() {

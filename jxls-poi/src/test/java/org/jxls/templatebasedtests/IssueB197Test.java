@@ -14,6 +14,7 @@ import org.jxls.common.CellData;
 import org.jxls.common.CellData.CellType;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Jointed cell references do not work anymore with several empty collections.
@@ -26,7 +27,7 @@ public class IssueB197Test {
     @Test
     public void test() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("hansCar", Collections.EMPTY_LIST);
         context.putVar("hansFood", Collections.EMPTY_LIST);
         context.putVar("hansSchool", Arrays.asList(new CostObject("Public Transport", 450d), new CostObject("Books", 300d), new CostObject("Teacher", 3500d)));

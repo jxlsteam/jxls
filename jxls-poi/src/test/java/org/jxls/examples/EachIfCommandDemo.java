@@ -15,6 +15,7 @@ import org.jxls.command.IfCommand;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
@@ -47,7 +48,7 @@ public class EachIfCommandDemo {
                 Command employeeEachCommand = new EachCommand("employee", "department.staff", employeeArea);
                 departmentArea.addCommand(new AreaRef("Template!A9:F9"), employeeEachCommand);
                 xlsArea.addCommand(new AreaRef("Template!A2:F12"), departmentEachCommand);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!B2"), context);
                 xlsArea.setFormulaProcessor(new StandardFormulaProcessor());

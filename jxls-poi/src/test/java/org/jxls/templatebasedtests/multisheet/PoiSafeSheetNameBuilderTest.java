@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.JxlsException;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.logging.JxlsLogger;
@@ -29,7 +30,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
      */
     @Test
     public void testSafeSheetNameBuilder() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         final List<String> safeNames = new ArrayList<>();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new SafeSheetNameBuilder() {
             @Override
@@ -56,7 +57,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
      */
     @Test
     public void testNoSafeSheetNameBuilder() throws IOException {
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<TestSheet> testSheets = getTestSheets();
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
@@ -71,7 +72,7 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
     @Test
     public void testNoSafeSheetNameBuilder_invalidName() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<TestSheet> testSheets = getTestSheets();
         testSheets.get(0).setName("data["); // make name invalid
         context.putVar("sheets", testSheets);

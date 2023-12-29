@@ -12,6 +12,7 @@ import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
@@ -30,7 +31,7 @@ public class NestedSumsTest {
     @Test
     public void nestedSums() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<Map<String, Object>> testData = getTestData();
         testData.get(2).put("class2", "Liegenschaften");
         context.putVar("list", testData);

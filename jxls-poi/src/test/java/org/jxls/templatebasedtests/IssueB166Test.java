@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Wrong average on 2nd sheet
@@ -26,7 +27,7 @@ public class IssueB166Test {
             map.put("count", Integer.valueOf(i));
             rs.add(map);
         }
-        final Context context = new Context();
+        final Context context = new ContextImpl();
         context.putVar("rs0", rs);
 
         // Test

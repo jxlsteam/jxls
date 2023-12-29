@@ -14,6 +14,7 @@ import org.jxls.command.EachCommand;
 import org.jxls.command.IfCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 
@@ -37,7 +38,7 @@ public class NestedCommandJavaAPIDemo {
                 XlsArea elseArea = new XlsArea("Template!A4:D4", transformer);
                 IfCommand ifCommand = new IfCommand("employee.payment <= 2000", ifArea, elseArea);
                 employeeArea.addCommand("Template!A4:D4", ifCommand);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("employees", employees);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
                 transformer.write();

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.jxls.area.Area;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.Size;
 import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.transform.ExpressionEvaluatorContext;
@@ -31,7 +32,7 @@ public class EachCommandTest {
 //    public void shouldRestoreVarNameInContextIfExists() {
 //        // given
 //        CellRef cellRef = new CellRef("A1");
-//        Context context = new Context();
+//        Context context = new ContextImpl();
 //        context.putVar("myVar", "Value 1");
 //        List<Object> list = new ArrayList<>();
 //        list.add("item 1");
@@ -55,7 +56,7 @@ public class EachCommandTest {
 //    public void shouldIgnoreMissingItems() {
 //        // given
 //        CellRef cellRef = new CellRef("A1");
-//        Context context = new Context();
+//        Context context = new ContextImpl();
 //        EachCommand eachCommand = new EachCommand("myVar", "items", area);
 //        when(area.getTransformer()).thenReturn(transformer);
 ////TO-DO        when(transformer.getTransformationConfig()).thenReturn(transformationConfig);
@@ -70,7 +71,7 @@ public class EachCommandTest {
     @Test
     public void issue200() {
         // Prepare
-        Context emptyContext = new Context();
+        Context emptyContext = new ContextImpl();
         EachCommand each = new EachCommand();
         
         // Test

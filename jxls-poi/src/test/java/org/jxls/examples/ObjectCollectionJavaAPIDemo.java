@@ -13,6 +13,7 @@ import org.jxls.area.XlsArea;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
 
@@ -32,7 +33,7 @@ public class ObjectCollectionJavaAPIDemo {
                 XlsArea employeeArea = new XlsArea("Template!A4:D4", transformer);
                 EachCommand employeeEachCommand = new EachCommand("employee", "employees", employeeArea);
                 xlsArea.addCommand("A4:D4", employeeEachCommand);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("employees", employees);
                 xlsArea.applyAt(new CellRef("Result!A1"), context);
                 transformer.write();

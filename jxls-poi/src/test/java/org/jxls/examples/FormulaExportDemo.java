@@ -10,6 +10,7 @@ import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 
@@ -29,7 +30,7 @@ public class FormulaExportDemo {
                 XlsArea sheet1Area = new XlsArea("Sheet1!A1:D4", transformer);
                 XlsArea sheet2Area = new XlsArea("Sheet2!A1:A2", transformer);
                 XlsArea sheet3Area = new XlsArea("'Sheet 3'!A1:A2", transformer);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 sheet3Area.applyAt(new CellRef("Sheet1!K1"), context);
                 sheet2Area.applyAt(new CellRef("Sheet2!B6"), context);
                 sheet2Area.applyAt(new CellRef("Sheet2!C6"), context);

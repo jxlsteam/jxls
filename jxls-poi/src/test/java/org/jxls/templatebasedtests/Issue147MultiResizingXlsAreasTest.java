@@ -14,6 +14,7 @@ import org.jxls.builder.JxlsOptions;
 import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
 import org.jxls.formula.StandardFormulaProcessor;
@@ -35,7 +36,7 @@ public class Issue147MultiResizingXlsAreasTest {
     @Test
     public void test() throws IOException {
         // Prepare
-        context = new Context();
+        context = new ContextImpl();
         context.putVar("employees", Employee.generateSampleEmployeeData());
         
         // Test

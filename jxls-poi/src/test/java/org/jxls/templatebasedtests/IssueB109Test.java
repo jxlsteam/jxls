@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Issue with circular formula
@@ -18,7 +19,7 @@ public class IssueB109Test {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("emptyList", new ArrayList<>());
 
         // Test

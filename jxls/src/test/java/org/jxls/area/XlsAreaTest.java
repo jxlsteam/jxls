@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.jxls.command.Command;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.Size;
 import org.jxls.transform.Transformer;
 import org.mockito.Mock;
@@ -26,7 +27,7 @@ public class XlsAreaTest {
     @Test
     public void applyAtToAnotherSheet() throws Exception {
         XlsArea xlsArea = new XlsArea(new CellRef("sheet1!A1"), new CellRef("sheet1!G10"), transformer);
-        Context context = new Context();
+        Context context = new ContextImpl();
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 7, size.getWidth());
         assertEquals("Height is wrong", 10, size.getHeight());
@@ -38,7 +39,7 @@ public class XlsAreaTest {
     public void applyAtWithOneCommand() throws Exception {
         XlsArea xlsArea = new XlsArea(new CellRef("sheet1!A1"), new CellRef("sheet1!G10"), transformer);
         xlsArea.addCommand("sheet1!B3:C5", command1);
-        Context context = new Context();
+        Context context = new ContextImpl();
         when(command1.applyAt(new CellRef("sheet2!C4"), context)).thenReturn(new Size(3, 4));
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
         assertEquals("Width is wrong", 8, size.getWidth());
@@ -52,7 +53,7 @@ public class XlsAreaTest {
         XlsArea xlsArea = new XlsArea(new CellRef("sheet1!A1"), new CellRef("sheet1!G10"), transformer);
         xlsArea.addCommand("sheet1!B3:C5", command1);
         xlsArea.addCommand("sheet1!A7:B8", command2);
-        Context context = new Context();
+        Context context = new ContextImpl();
         when(command1.applyAt(new CellRef("sheet2!C4"), context)).thenReturn(new Size(3, 4));
         when(command2.applyAt(new CellRef("sheet2!B9"), context)).thenReturn(new Size(3, 3));
         Size size = xlsArea.applyAt(new CellRef("sheet2!B2"), context);
@@ -71,7 +72,7 @@ public class XlsAreaTest {
         XlsArea xlsArea = new XlsArea(new CellRef("sheet1!A1"), new CellRef("sheet1!G10"), transformer);
         xlsArea.addCommand("sheet1!B3:C5", command1);
         xlsArea.addCommand("sheet1!A7:B8", command2);
-        Context context = new Context();
+        Context context = new ContextImpl();
         when(command1.applyAt(new CellRef("sheet2!C4"), context)).thenReturn(new Size(2, 2));
         when(command2.applyAt(new CellRef("sheet2!B8"), context)).thenReturn(new Size(2, 2));
         when(command1.getLockRange()).thenReturn(Boolean.TRUE);

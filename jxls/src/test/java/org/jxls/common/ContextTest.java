@@ -15,7 +15,7 @@ public class ContextTest {
 
     @Test
     public void addVars() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("col", Integer.valueOf(1));
         context.putVar("row", Integer.valueOf(2));
         context.putVar("obj", "12345");
@@ -27,7 +27,7 @@ public class ContextTest {
 
     @Test
     public void removeVar() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("col", Integer.valueOf(1));
         Map<String, Object> vars = context.toMap();
         assertEquals(vars.get("col"), Integer.valueOf(1));
@@ -38,7 +38,7 @@ public class ContextTest {
     
     @Test 
     public void testToString() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("x", Integer.valueOf(1));
         context.putVar("y", "Abc");
         assertTrue(context.toString().contains("y=Abc"));
