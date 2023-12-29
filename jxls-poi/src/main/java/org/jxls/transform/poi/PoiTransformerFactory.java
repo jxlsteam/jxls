@@ -26,7 +26,7 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
         return transformer;
     }
 
-    protected Workbook openWorkbook(InputStream template) {
+    public static Workbook openWorkbook(InputStream template) {
         try {
             return WorkbookFactory.create(template);
         } catch (Exception e) {
