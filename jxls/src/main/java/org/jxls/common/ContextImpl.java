@@ -15,7 +15,8 @@ import org.jxls.transform.ExpressionEvaluatorContext;
 public class ContextImpl implements Context {
     private final ExpressionEvaluatorContext expressionEvaluatorContext;
     private final Map<String, Object> varMap;
-    private boolean formulaProcessingRequired = true;
+    /** old name: formulaProcessingRequired */
+    private boolean updateCellDataArea = true;
     private boolean ignoreSourceCellStyle = false;
     private Map<String, String> cellStyleMap;
     
@@ -92,13 +93,13 @@ public class ContextImpl implements Context {
     }
 
     @Override
-    public boolean isFormulaProcessingRequired() {
-        return formulaProcessingRequired;
+    public boolean isUpdateCellDataArea() {
+        return updateCellDataArea;
     }
 
     @Override
-    public void setFormulaProcessingRequired(boolean formulaProcessingRequired) {
-        this.formulaProcessingRequired = formulaProcessingRequired;
+    public void setUpdateCellDataArea(boolean updateCellDataArea) {
+        this.updateCellDataArea = updateCellDataArea;
     }
 
     @Override

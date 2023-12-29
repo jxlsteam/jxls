@@ -16,6 +16,7 @@ public class JxlsOptions {
     private final String expressionNotationEnd;
     private final JxlsLogger logger;
     private final FormulaProcessor formulaProcessor;
+    private final boolean updateCellDataArea;
     private final boolean ignoreColumnProps;
     private final boolean ignoreRowProps;
     private final boolean recalculateFormulasBeforeSaving;
@@ -29,7 +30,7 @@ public class JxlsOptions {
     private final List<NeedsPublicContext> needsContextList;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
-            String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor,
+            String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
             boolean ignoreColumnProps, boolean ignoreRowProps, boolean recalculateFormulasBeforeSaving,
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
@@ -39,6 +40,7 @@ public class JxlsOptions {
         this.expressionNotationEnd = expressionNotationEnd;
         this.logger = logger;
         this.formulaProcessor = formulaProcessor;
+        this.updateCellDataArea = updateCellDataArea;
         this.ignoreColumnProps = ignoreColumnProps;
         this.ignoreRowProps = ignoreRowProps;
         this.recalculateFormulasBeforeSaving = recalculateFormulasBeforeSaving;
@@ -70,6 +72,10 @@ public class JxlsOptions {
 
     public FormulaProcessor getFormulaProcessor() {
         return formulaProcessor;
+    }
+
+    public boolean isUpdateCellDataArea() {
+        return updateCellDataArea;
     }
 
     public boolean isIgnoreColumnProps() {

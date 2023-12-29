@@ -146,7 +146,7 @@ public class XlsArea implements Area {
         transformStaticCells(cellRef, context, commandsArea);
         fireAfterApplyEvent(cellRef, context);
         Size finalSize = new Size(cellRange.calculateWidth(), cellRange.calculateHeight());
-        if (context.isFormulaProcessingRequired()) {
+        if (context.isUpdateCellDataArea()) {
             AreaRef newAreaRef = new AreaRef(cellRef, finalSize);
             updateCellDataFinalAreaForFormulaCells(newAreaRef);
         }
@@ -515,13 +515,12 @@ public class XlsArea implements Area {
     }
 
     private void updateCellDataArea(CellRef srcCell, CellRef targetCell, Context context) {
-        if (!context.isFormulaProcessingRequired()) {
-            return;
-        }
-        CellData cellData = transformer.getCellData(srcCell);
-        if (cellData != null) {
-            cellData.setArea(this);
-            cellData.addTargetPos(targetCell);
+        if (context.isUpdateCellDataArea()) {
+            CellData cellData = transformer.getCellData(srcCell);
+            if (cellData != null) {
+                cellData.setArea(this);
+                cellData.addTargetPos(targetCell);
+            }
         }
     }
 

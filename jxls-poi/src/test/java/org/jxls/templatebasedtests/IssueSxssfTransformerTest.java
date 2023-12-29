@@ -54,7 +54,7 @@ public class IssueSxssfTransformerTest {
 
     private Context prepareContext() {
         final Context context = new ContextImpl();
-        context.setFormulaProcessingRequired(false);
+        context.setUpdateCellDataArea(false);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();
         mapArrayList.add(Collections.singletonMap("entity", "ABC"));

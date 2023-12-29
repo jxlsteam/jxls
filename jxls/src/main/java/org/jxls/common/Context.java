@@ -15,9 +15,9 @@ public interface Context extends PublicContext {
     
     EvaluationResult _evaluateRawExpression(String rawExpression);
 
-    boolean isFormulaProcessingRequired();
+    boolean isUpdateCellDataArea();
 
-    void setFormulaProcessingRequired(boolean formulaProcessingRequired);
+    void setUpdateCellDataArea(boolean updateCellDataArea);
 
     boolean isIgnoreSourceCellStyle();
 

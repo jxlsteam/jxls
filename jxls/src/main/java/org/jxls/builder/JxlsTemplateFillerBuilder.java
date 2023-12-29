@@ -36,6 +36,8 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected JxlsLogger logger;
     /** null: no formula processing */
     private FormulaProcessor formulaProcessor = new StandardFormulaProcessor();
+    /** old name: formulaProcessingRequired */
+    protected boolean updateCellDataArea = true;
     protected boolean ignoreColumnProps = false;
     protected boolean ignoreRowProps = false;
     /** old name: evaluateFormulas */
@@ -48,7 +50,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected final Map<String, Class<? extends Command>> commands = new HashMap<>();
     protected boolean clearTemplateCells = true;
     private JxlsTransformerFactory transformerFactory;
-    protected JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
+    private JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
     protected InputStream template;
     protected final List<NeedsPublicContext> needsContextList = new ArrayList<>();
 
@@ -86,7 +88,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 
     public JxlsOptions getOptions() {
         return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
-                logger, formulaProcessor, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
+                logger, formulaProcessor, updateCellDataArea, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
                 keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList);
     }
 
@@ -127,6 +129,11 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 
 	public SELF withFastFormulaProcessor() {
 	    return withFormulaProcessor(new FastFormulaProcessor());
+	}
+	
+	public SELF withUpdateCellDataArea(boolean updateCellDataArea) {
+	    this.updateCellDataArea = updateCellDataArea;
+	    return (SELF) this;
 	}
 	
 	public SELF withIgnoreColumnProps(boolean ignoreColumnProps) {
@@ -191,6 +198,10 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public SELF withStreaming(JxlsStreaming streaming) {
         this.streaming = streaming == null ? JxlsStreaming.STREAMING_OFF : streaming;
         return (SELF) this;
+    }
+    
+    public JxlsStreaming getStreaming() {
+        return streaming;
     }
     
     public SELF needsPublicContext(NeedsPublicContext needsPublicContext) {

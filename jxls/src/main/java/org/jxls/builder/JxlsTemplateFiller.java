@@ -83,16 +83,13 @@ public class JxlsTemplateFiller {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
         
         Context context = createContext(createExpressionEvaluatorContext(), data);
+        context.setUpdateCellDataArea(options.isUpdateCellDataArea());
         options.getNeedsPublicContextList().forEach(ee -> ee.setPublicContext(context));
         
-        for (Area area : areas) {
-            area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context);
-        }
+        areas.forEach(area -> area.applyAt(new CellRef(area.getStartCellRef().getCellName()), context));
         
         if (options.getFormulaProcessor() != null) {
-            for (Area area : areas) {
-                area.processFormulas(options.getFormulaProcessor());
-            }
+            areas.forEach(area -> area.processFormulas(options.getFormulaProcessor()));
         }
     }
 
