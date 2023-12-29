@@ -22,6 +22,7 @@ import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.transform.PreWriteAction;
 import org.jxls.util.CannotOpenWorkbookException;
 
 /**
@@ -53,6 +54,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     private JxlsStreaming streaming = JxlsStreaming.STREAMING_OFF;
     protected InputStream template;
     protected final List<NeedsPublicContext> needsContextList = new ArrayList<>();
+    protected final List<PreWriteAction> preWriteActions = new ArrayList<>();
 
     public static JxlsTemplateFillerBuilder<?> newInstance() {
         return new JxlsTemplateFillerBuilder<>();
@@ -89,7 +91,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     public JxlsOptions getOptions() {
         return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
                 logger, formulaProcessor, updateCellDataArea, ignoreColumnProps, ignoreRowProps, recalculateFormulasBeforeSaving, recalculateFormulasOnOpening,
-                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList);
+                keepTemplateSheet, areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList, preWriteActions);
     }
 
     public SELF withExpressionEvaluatorFactory(ExpressionEvaluatorFactory expressionEvaluatorFactory) {
@@ -209,6 +211,14 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
             throw new IllegalArgumentException("needsPublicContext must not be null");
         }
         needsContextList.add(needsPublicContext);
+        return (SELF) this;
+    }
+    
+    public SELF withPreWriteAction(PreWriteAction preWriteAction) {
+        if (preWriteAction == null) {
+            throw new IllegalArgumentException("preWriteAction must not be null");
+        }
+        preWriteActions.add(preWriteAction);
         return (SELF) this;
     }
 

@@ -9,6 +9,7 @@ import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.transform.PreWriteAction;
 
 public class JxlsOptions {
     private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
@@ -28,13 +29,15 @@ public class JxlsOptions {
     private final JxlsTransformerFactory transformerFactory;
     private final JxlsStreaming streaming;
     private final List<NeedsPublicContext> needsContextList;
+    private final List<PreWriteAction> preWriteActions;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
             boolean ignoreColumnProps, boolean ignoreRowProps, boolean recalculateFormulasBeforeSaving,
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
-            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList) {
+            JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList,
+            List<PreWriteAction> preWriteActions) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -52,6 +55,7 @@ public class JxlsOptions {
         this.transformerFactory = transformerFactory;
         this.streaming = streaming;
         this.needsContextList = needsContextList;
+        this.preWriteActions = preWriteActions;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -120,5 +124,9 @@ public class JxlsOptions {
 
     public List<NeedsPublicContext> getNeedsPublicContextList() {
         return needsContextList;
+    }
+
+    public List<PreWriteAction> getPreWriteActions() {
+        return preWriteActions;
     }
 }

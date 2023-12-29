@@ -24,8 +24,9 @@ public class JxlsTemplateFiller {
     protected final InputStream template;
     protected Transformer transformer;
     protected List<Area> areas;
+    private Context context;
 	private final Map<String, Class<? extends Command>> rem = new HashMap<>();
-
+	
     protected JxlsTemplateFiller(JxlsOptions options, InputStream template) {
         this.options = options;
         this.template = template;
@@ -42,6 +43,7 @@ public class JxlsTemplateFiller {
         } catch (IOException e) {
             throw new JxlsTemplateFillException(e);
         } finally {
+            context = null;
             areas = null;
             transformer = null;
             restoreCommands();
@@ -82,7 +84,7 @@ public class JxlsTemplateFiller {
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
         
-        Context context = createContext(createExpressionEvaluatorContext(), data);
+        context = createContext(createExpressionEvaluatorContext(), data);
         context.setUpdateCellDataArea(options.isUpdateCellDataArea());
         options.getNeedsPublicContextList().forEach(ee -> ee.setPublicContext(context));
         
@@ -119,6 +121,7 @@ public class JxlsTemplateFiller {
 			return;
 		}
 		getSheetsNameOfMultiSheetTemplate(areas).stream().forEach(action);
+		options.getPreWriteActions().forEach(preWriteAction -> preWriteAction.preWrite(transformer, context));
     }
 
     /**
