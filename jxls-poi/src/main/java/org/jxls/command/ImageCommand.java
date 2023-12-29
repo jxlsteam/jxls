@@ -3,6 +3,7 @@ package org.jxls.command;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -225,11 +226,14 @@ public class ImageCommand extends AbstractCommand {
      */
     public static byte[] toByteArray(InputStream inputStream) throws IOException { // used by templates and SimpleExporter
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int count;
-        while ((count = inputStream.read(buffer)) != -1) {
-            baos.write(buffer, 0, count);
-        }
+        copy(inputStream, baos);
         return baos.toByteArray();
+    }
+    
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[8 * 1024];
+        for (int count; (count = in.read(buffer)) != -1;) {
+            out.write(buffer, 0, count);
+        }
     }
 }
