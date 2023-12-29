@@ -339,7 +339,7 @@ public class EachCommand extends AbstractCommand {
         try (RunVar runVar = new RunVar(var, varIndex, context)) {
             for (Object obj : itemsCollection) {
                 runVar.put(obj, Integer.valueOf(currentIndex));
-                if (selectEvaluator.isConditionTrue(context.toMap())) {
+                if (selectEvaluator.isConditionTrue(context)) {
                     filteredList.add(obj);
                 }
                 currentIndex++;
@@ -371,7 +371,7 @@ public class EachCommand extends AbstractCommand {
         try (RunVar runVar = new RunVar(varName, varIndex, context)) {
             for (Object obj : itemsCollection) {
                 runVar.put(obj, Integer.valueOf(currentIndex));
-                if (selectEvaluator != null && !selectEvaluator.isConditionTrue(context.toMap())) {
+                if (selectEvaluator != null && !selectEvaluator.isConditionTrue(context)) {
                     continue;
                 }
                 if (cellRefGenerator != null) {

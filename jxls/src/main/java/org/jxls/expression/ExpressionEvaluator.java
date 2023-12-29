@@ -2,6 +2,7 @@ package org.jxls.expression;
 
 import java.util.Map;
 
+import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
 
 /**
@@ -11,38 +12,25 @@ import org.jxls.common.JxlsException;
  */
 public interface ExpressionEvaluator {
 
-    Object evaluate(String expression, Map<String, Object> context);
+    Object evaluate(String expression, Map<String, Object> data);
     
-    Object evaluate(Map<String, Object> context);
+    Object evaluate(Map<String, Object> data);
     
     String getExpression();
     
     /**
-     * Evaluates if the passed condition is true
-     * @param condition expression
-     * @param data -
+     * Evaluates if getExpression() is true
+     * @param context data access
      * @return expression result (true or false)
      * @throws JxlsException if return value is not a Boolean or null
      */
-    default boolean isConditionTrue(String condition, Map<String, Object> data) {
-        Object conditionResult = evaluate(condition, data);
+    default boolean isConditionTrue(Context context) {
+        Object conditionResult = evaluate(context.toMap());
         if (conditionResult instanceof Boolean b) {
             return Boolean.TRUE.equals(b);
+        } else if (conditionResult == null) {
+            throw new JxlsException("Result of condition \"" + getExpression() + "\" is null");
         }
-        throw new JxlsException("Result of condition \"" + condition + "\" is not a Boolean value or null");
-    }
-    
-    /**
-     * Evaluates if the passed condition is true
-     * @param data -
-     * @return expression result (true or false)
-     * @throws JxlsException if return value is not a Boolean or null
-     */
-    default boolean isConditionTrue(Map<String, Object> data) {
-        Object conditionResult = evaluate(data);
-        if (conditionResult instanceof Boolean b) {
-            return Boolean.TRUE.equals(b);
-        }
-        throw new JxlsException("Result of condition \"" + getExpression() + "\" is not a Boolean value or null");
+        throw new JxlsException("Result of condition \"" + getExpression() + "\" is not a Boolean");
     }
 }

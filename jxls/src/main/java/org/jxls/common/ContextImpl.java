@@ -53,7 +53,7 @@ public class ContextImpl implements Context {
     
     @Override
     public boolean isConditionTrue(String condition) {
-        return getExpressionEvaluator(condition).isConditionTrue(varMap);
+        return getExpressionEvaluator(condition).isConditionTrue(this);
     }
 
     @Override
