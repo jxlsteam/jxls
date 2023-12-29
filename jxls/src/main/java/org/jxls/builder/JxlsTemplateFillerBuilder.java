@@ -1,5 +1,6 @@
 package org.jxls.builder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -87,6 +88,16 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
 	public void buildAndFill(Map<String, Object> data, File outputFile) {
 		buildAndFill(data, new JxlsOutputFile(outputFile));
 	}
+
+	/**
+	 * @param data -
+	 * @return byte[]
+	 */
+    public byte[] buildAndFill(Map<String, Object> data) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        build().fill(data, () -> os);
+        return os.toByteArray();
+    }
 
     public JxlsOptions getOptions() {
         return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
