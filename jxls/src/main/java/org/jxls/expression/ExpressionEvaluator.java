@@ -25,7 +25,17 @@ public interface ExpressionEvaluator {
      * @throws JxlsException if return value is not a Boolean or null
      */
     default boolean isConditionTrue(Context context) {
-        Object conditionResult = evaluate(context.toMap());
+        return isConditionTrue(context.toMap());
+    }
+
+    /**
+     * Evaluates if getExpression() is true. Call this method only if you have no Context.
+     * @param data -
+     * @return expression result (true or false)
+     * @throws JxlsException if return value is not a Boolean or null
+     */
+    default boolean isConditionTrue(Map<String, Object> data) {
+        Object conditionResult = evaluate(data);
         if (conditionResult instanceof Boolean b) {
             return Boolean.TRUE.equals(b);
         } else if (conditionResult == null) {
