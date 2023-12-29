@@ -38,6 +38,11 @@ public class PoiExceptionLogger implements JxlsLogger {
     public void handleSetObjectPropertyException(Exception e, Object obj, String propertyName, String propertyValue) {
         warn(e, "Failed to set property '" + propertyName + "' to value '" + propertyValue + "' for object " + obj);
     }
+    
+    @Override
+    public void handleSheetNameChange(String invalidSheetName, String newSheetName) {
+        info("Change invalid sheet name " + invalidSheetName + " to " + newSheetName);
+    }
 
     @Override
     public void debug(String msg) {

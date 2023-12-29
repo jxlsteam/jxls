@@ -3,6 +3,7 @@ package org.jxls.unittests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.jxls.command.DynamicSheetNameGenerator;
 import org.jxls.common.CellRef;
@@ -20,8 +21,19 @@ import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
  * @see DynamicSheetNameGeneratorTest
  */
 public class DynamicSheetNameGeneratorUnitTest {
-    private static final JxlsLogger logger = new PoiExceptionThrower();
-    
+    private static int sheetNameChanged;
+    private static final JxlsLogger logger = new PoiExceptionThrower() {
+        @Override
+        public void handleSheetNameChange(String invalidSheetName, String newSheetName) {
+            sheetNameChanged++;
+        };
+    };
+
+    @Before
+    public void init() {
+        sheetNameChanged = 0;
+    }
+
     /** Old-style test */
     @Test
     public void test() {
@@ -36,6 +48,7 @@ public class DynamicSheetNameGeneratorUnitTest {
         assertEquals("doe", gen.generateCellRef(0, context, logger).getSheetName());
         assertEquals("'doe(1)'!A1", gen.generateCellRef(1, context, logger).toString());
         assertEquals("'doe(2)'!A1", gen.generateCellRef(2, context, logger).toString());
+        assertEquals(0, sheetNameChanged);
     }
 
     @Test
@@ -65,6 +78,7 @@ public class DynamicSheetNameGeneratorUnitTest {
         assertEquals("#1 data", gen.generateCellRef(0, context, logger).getSheetName());
         assertEquals("#2 data", gen.generateCellRef(1, context, logger).getSheetName());
         assertEquals("#3 data", gen.generateCellRef(2, context, logger).getSheetName());
+        assertEquals(0, sheetNameChanged);
     }
 
     /** What does PoiSafeSheetNameBuilder with no modification? */
@@ -83,5 +97,6 @@ public class DynamicSheetNameGeneratorUnitTest {
         assertEquals("doe", gen.generateCellRef(0, context, logger).getSheetName());
         assertEquals("doe(1)", gen.generateCellRef(1, context, logger).getSheetName());
         assertEquals("doe(2)", gen.generateCellRef(2, context, logger).getSheetName());
+        assertEquals(2, sheetNameChanged);
     }
 }

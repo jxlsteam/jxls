@@ -13,6 +13,7 @@ public interface JxlsLogger {
     void handleUpdateRowHeightsException(Exception e, int sourceRow, int targetRow);
     void handleSetObjectPropertyException(Exception e, Object obj, String propertyName, String propertyValue);
     void handleGetObjectPropertyException(Exception e, Object obj, String propertyName);
+    void handleSheetNameChange(String invalidSheetName, String newSheetName);
 
     // generic logging
     

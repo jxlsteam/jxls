@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.jxls.command.SheetNameGenerator;
 import org.jxls.common.CellRef;
@@ -24,8 +25,19 @@ import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
  * @see PoiSafeSheetNameBuilderTest
  */
 public class PoiSafeSheetNameBuilderUnitTest {
-    private static final JxlsLogger logger = new PoiExceptionThrower();
+    private static int sheetNameChanged;
+    private static final JxlsLogger logger = new PoiExceptionThrower() {
+        @Override
+        public void handleSheetNameChange(String invalidSheetName, String newSheetName) {
+            sheetNameChanged++;
+        };
+    };
 
+    @Before
+    public void init() {
+        sheetNameChanged = 0;
+    }
+    
     /**
      * Tests PoiSafeSheetNameBuilder.
      */
@@ -44,6 +56,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
         assertEquals("'sheet 2'!A1", generator.generateCellRef(1, context, logger).toString());
         assertEquals("Name contains invalid chars and/or is too long",
                 "'sheet 3   _='' - this is a very '!A1", generator.generateCellRef(2, context, logger).toString());
+        assertEquals(1, sheetNameChanged);
     }
 
     /**
@@ -63,6 +76,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
         assertEquals("1st sheet name not okay", "a", generator.generateCellRef(0, context, logger).getSheetName());
         assertEquals("2nd sheet name not okay", "a(1)", generator.generateCellRef(1, context, logger).getSheetName());
         assertEquals("3rd sheet name not okay", "a(2)", generator.generateCellRef(2, context, logger).getSheetName());
+        assertEquals(2, sheetNameChanged);
     }
 
     /**
@@ -104,6 +118,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
         assertEquals("10th sheet name not okay","a aaaaaaaaaaaaaaaaaaaaaaaaaa-10", generator.generateCellRef(9, context, logger).getSheetName());
         assertEquals("11th sheet name not okay","a aaaaaaaaaaaaaaaaaaaaaaaaaa-11", generator.generateCellRef(10, context, logger).getSheetName());
         assertEquals("12th sheet name not okay", "b", generator.generateCellRef(11, context, logger).getSheetName());
+        assertEquals(11, sheetNameChanged);
     }
 
     /**
@@ -131,6 +146,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
         assertEquals("2nd sheet name not okay", "2nd", generator.generateCellRef(1, context, logger).getSheetName());
         assertEquals("3rd sheet name not okay", "sheet 3", generator.generateCellRef(2, context, logger).getSheetName());
         assertEquals("4th sheet name not okay", "sheet 4", generator.generateCellRef(3, context, logger).getSheetName());
+        assertEquals(0, sheetNameChanged);
     }
 
     /**
@@ -148,6 +164,7 @@ public class PoiSafeSheetNameBuilderUnitTest {
 
         assertEquals("first", generator.generateCellRef(0, context, logger).getSheetName());
         assertNull(generator.generateCellRef(1, context, logger));
+        assertEquals(0, sheetNameChanged);
     }
 
     @Test
@@ -171,5 +188,6 @@ public class PoiSafeSheetNameBuilderUnitTest {
         assertEquals("2. Rechnungen", generator.generateCellRef(1, context, logger).getSheetName());
         assertEquals("3. Belege", generator.generateCellRef(2, context, logger).getSheetName());
         assertEquals("4. Finanzen", generator.generateCellRef(3, context, logger).getSheetName());
+        assertEquals(0, sheetNameChanged);
     }
 }
