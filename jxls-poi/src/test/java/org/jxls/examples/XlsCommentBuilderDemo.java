@@ -38,13 +38,13 @@ public class XlsCommentBuilderDemo {
                 Context context = new ContextImpl();
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
-                xlsArea.setFormulaProcessor(new StandardFormulaProcessor());
-                xlsArea.processFormulas();
+                StandardFormulaProcessor fp = new StandardFormulaProcessor();
+                xlsArea.processFormulas(fp);
                 xlsArea.reset();
                 EachCommand eachCommand = (EachCommand) xlsArea.findCommandByName("each").get(0);
                 eachCommand.setDirection(EachCommand.Direction.RIGHT);
                 xlsArea.applyAt(new CellRef("Right!A1"), context);
-                xlsArea.processFormulas();
+                xlsArea.processFormulas(fp);
                 transformer.write();
             }
         }

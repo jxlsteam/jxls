@@ -28,15 +28,11 @@ public interface Area {
 
     List<CommandData> getCommandDataList();
 
-    FormulaProcessor getFormulaProcessor();
-
-    void setFormulaProcessor(FormulaProcessor formulaProcessor);
-
     void addCommand(AreaRef ref, Command command);
 
     Transformer getTransformer();
     
-    void processFormulas();
+    void processFormulas(FormulaProcessor formulaProcessor);
     
     void addAreaListener(AreaListener listener);
     

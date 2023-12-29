@@ -91,8 +91,7 @@ public class JxlsTemplateFiller {
         
         if (options.getFormulaProcessor() != null) {
             for (Area area : areas) {
-                area.setFormulaProcessor(options.getFormulaProcessor());
-                area.processFormulas();
+                area.processFormulas(options.getFormulaProcessor());
             }
         }
     }

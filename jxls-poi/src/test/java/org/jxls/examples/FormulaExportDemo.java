@@ -36,8 +36,7 @@ public class FormulaExportDemo {
                 sheet2Area.applyAt(new CellRef("Sheet2!C6"), context);
                 sheet2Area.applyAt(new CellRef("Sheet2!D6"), context);
                 sheet1Area.applyAt(new CellRef("Sheet1!F11"), context);
-                sheet1Area.setFormulaProcessor(new StandardFormulaProcessor());
-                sheet1Area.processFormulas();
+                sheet1Area.processFormulas(new StandardFormulaProcessor());
                 transformer.write();
             }
         }

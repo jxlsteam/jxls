@@ -36,7 +36,6 @@ public class XlsArea implements Area {
     private Size size;
     private List<AreaListener> areaListeners = new ArrayList<AreaListener>();
     private boolean cellsCleared = false;
-    private FormulaProcessor formulaProcessor;
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
 
@@ -79,16 +78,6 @@ public class XlsArea implements Area {
     @Override
     public void setParentCommand(Command command) {
         this.parentCommand = command;
-    }
-
-    @Override
-    public FormulaProcessor getFormulaProcessor() {
-        return formulaProcessor;
-    }
-
-    @Override
-    public void setFormulaProcessor(FormulaProcessor formulaProcessor) {
-        this.formulaProcessor = formulaProcessor;
     }
 
     @Override
@@ -564,7 +553,7 @@ public class XlsArea implements Area {
     }
 
     @Override
-    public void processFormulas() {
+    public void processFormulas(FormulaProcessor formulaProcessor) {
         formulaProcessor.processAreaFormulas(transformer, this);
     }
 

@@ -82,8 +82,7 @@ public class Issue147MultiResizingXlsAreasTest {
                 Size startSize = area.getSize();
                 Size endSize = area.applyAt(targetCellRef, context);
                 delta = delta.add(endSize.minus(startSize));
-                area.setFormulaProcessor(new StandardFormulaProcessor());
-                area.processFormulas();
+                area.processFormulas(new StandardFormulaProcessor());
             }
         }
     }
