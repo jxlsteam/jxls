@@ -45,7 +45,7 @@ public class PoiExceptionThrower implements JxlsLogger {
 
     @Override
     public void info(String msg) {
-        write("INFO", msg, null);
+        System.out.println("JXLS [INFO] " + msg);
     }
 
     @Override

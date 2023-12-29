@@ -8,7 +8,6 @@ import java.util.List;
 import org.jxls.area.Area;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
 
@@ -94,24 +93,15 @@ public abstract class AbstractCommand implements Command {
      * @return an iterable object from the {@link Context} under given name
      */
     protected Iterable<Object> transformToIterableObject(String collectionName, Context context) {
-        Object collectionObject = getExpressionEvaluator(context).evaluate(collectionName, context.toMap());
+        Object collectionObject = context.evaluate(collectionName);
         if (collectionObject == null) {
             return Collections.emptyList();
         } else if (collectionObject instanceof Object[]) {
             return Arrays.asList((Object[])/*cast is important*/ collectionObject);
         } else if (collectionObject instanceof Iterable) {
-            @SuppressWarnings("unchecked")
             Iterable<Object> iterable = (Iterable<Object>) collectionObject;
             return iterable;
         }
         throw new JxlsException(collectionName + " expression is not an Iterable or an array");
-    }
-
-    protected ExpressionEvaluator getExpressionEvaluator(Context context) {
-        return context.getTransformationConfig().getExpressionEvaluator();
-    }
-
-    protected ExpressionEvaluator getExpressionEvaluator(Context context, String expression) {
-        return context.getTransformationConfig().getExpressionEvaluator(expression);
     }
 }

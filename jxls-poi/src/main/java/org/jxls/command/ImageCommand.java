@@ -150,7 +150,7 @@ public class ImageCommand extends AbstractCommand {
         AreaRef imageAnchorArea = new AreaRef(cellRef, imageAnchorAreaSize);
         byte[] imgBytes = imageBytes;
         if (src != null) {
-            Object imgObj = getExpressionEvaluator(context).evaluate(src, context.toMap());
+            Object imgObj = context.evaluate(src);
             if (imgObj == null) {
                 return area.getSize();
             }

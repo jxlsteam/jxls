@@ -16,9 +16,7 @@ import java.util.regex.Pattern;
 import org.jxls.area.XlsArea;
 import org.jxls.builder.xls.JxlsCommentException;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
-import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.formula.AbstractFormulaProcessor;
-import org.jxls.transform.TransformationConfig;
 import org.jxls.transform.Transformer;
 
 /**
@@ -282,41 +280,13 @@ public class CellData {
         return str.startsWith(USER_FORMULA_PREFIX) && str.endsWith(USER_FORMULA_SUFFIX);
     }
     
-    private void evaluate(String strValue, Context context) {
-        StringBuilder sb = new StringBuilder();
-        TransformationConfig transformationConfig = context.getTransformationConfig();
-        int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
-        int endExpressionLength = transformationConfig.getExpressionNotationEnd().length();
-        Matcher exprMatcher = transformationConfig.getExpressionNotationPattern().matcher(strValue);
-        ExpressionEvaluator evaluator = transformationConfig.getExpressionEvaluator();
-        String matchedString;
-        String expression;
-        Object lastMatchEvalResult = null;
-        int matchCount = 0;
-        int endOffset = 0;
-        while (exprMatcher.find()) {
-            endOffset = exprMatcher.end();
-            matchCount++;
-            matchedString = exprMatcher.group();
-            expression = matchedString.substring(beginExpressionLength, matchedString.length() - endExpressionLength);
-            lastMatchEvalResult = evaluator.evaluate(expression, context.toMap());
-            exprMatcher.appendReplacement(sb,
-                    Matcher.quoteReplacement(lastMatchEvalResult != null ? lastMatchEvalResult.toString() : ""));
-        }
-        String lastStringResult = lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "";
-        boolean isAppendTail = matchCount == 1 && endOffset < strValue.length();
-        if (matchCount > 1 || isAppendTail) {
-            exprMatcher.appendTail(sb);
-            evaluationResult = sb.toString();
-        } else if (matchCount == 1) {
-            if (sb.length() > lastStringResult.length()) {
-                evaluationResult = sb.toString();
-            } else {
-                evaluationResult = lastMatchEvalResult;
+    private void evaluate(String expression, Context context) {
+        EvaluationResult er = context._evaluateRawExpression(expression);
+        if (er != null) {
+            evaluationResult = er.getResult();
+            if (er.isSetTargetCellType()) {
                 setTargetCellType();
             }
-        } else if (matchCount == 0) {
-            evaluationResult = strValue;
         }
     }
 

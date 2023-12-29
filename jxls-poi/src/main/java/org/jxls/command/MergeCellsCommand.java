@@ -105,7 +105,7 @@ public class MergeCellsCommand extends AbstractCommand {
 
     private int getVal(String expression, Context context) {
         if (expression != null && expression.trim().length() > 0) {
-            Object obj = getExpressionEvaluator(context).evaluate(expression, context.toMap());
+            Object obj = context.evaluate(expression);
             try {
                 return Integer.parseInt(obj.toString());
             } catch (NumberFormatException e) {

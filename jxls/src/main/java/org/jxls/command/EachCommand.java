@@ -334,7 +334,7 @@ public class EachCommand extends AbstractCommand {
 
     private Iterable<?> filter(Context context, Iterable<?> itemsCollection, String selectExpression) {
         List<Object> filteredList = new ArrayList<>();
-        ExpressionEvaluator selectEvaluator = getExpressionEvaluator(context, selectExpression);
+        ExpressionEvaluator selectEvaluator = context.getExpressionEvaluator(selectExpression);
         int currentIndex = 0;
         try (RunVar runVar = new RunVar(var, varIndex, context)) {
             for (Object obj : itemsCollection) {
@@ -348,8 +348,7 @@ public class EachCommand extends AbstractCommand {
         return filteredList;
     }
 
-    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName,
-            String selectExpression) {
+    private Size processCollection(Context context, Iterable<?> itemsCollection, CellRef cellRef, String varName, String selectExpression) {
         int index = 0;
         int newWidth = 0;
         int newHeight = 0;
@@ -358,13 +357,13 @@ public class EachCommand extends AbstractCommand {
         if (cellRefGenerator == null && multisheet != null) {
             List<String> sheetNameList = extractSheetNameList(context);
             cellRefGenerator = sheetNameList == null
-                    ? new DynamicSheetNameGenerator(multisheet, cellRef, getExpressionEvaluator(context))
+                    ? new DynamicSheetNameGenerator(multisheet, cellRef)
                     : new SheetNameGenerator(sheetNameList, cellRef);
         }
         
         ExpressionEvaluator selectEvaluator = null;
         if (selectExpression != null) {
-            selectEvaluator = getExpressionEvaluator(context, selectExpression);
+            selectEvaluator = context.getExpressionEvaluator(selectExpression);
         }
 
         CellRef currentCell = cellRef;

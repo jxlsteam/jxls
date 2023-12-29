@@ -3,6 +3,7 @@ package org.jxls.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jxls.expression.ExpressionEvaluator;
 import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
 import org.jxls.transform.TransformationConfig;
 
@@ -30,12 +31,25 @@ public class Context {
         this.varMap = varMap;
     }
     
-    public TransformationConfig getTransformationConfig() {
-        return transformationConfig;
+    public Object evaluate(String expression) {
+        return getExpressionEvaluator(expression).evaluate(varMap);
+    }
+
+    public ExpressionEvaluator getExpressionEvaluator(String expression) {
+        return transformationConfig.getExpressionEvaluator(expression);
+    }
+
+    /**
+     * INTERNAL
+     * @param rawExpression e.g. "${e.name}"
+     * @return EvaluationResult
+     */
+    public EvaluationResult _evaluateRawExpression(String rawExpression) {
+        return transformationConfig.evaluateRawExpression(rawExpression, varMap);
     }
     
     public boolean isConditionTrue(String condition) {
-        return transformationConfig.getExpressionEvaluator().isConditionTrue(condition, toMap());
+        return getExpressionEvaluator(condition).isConditionTrue(varMap);
     }
 
     public Map<String, Object> toMap() {

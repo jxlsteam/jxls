@@ -9,7 +9,6 @@ import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.PoiExceptionThrower;
 import org.jxls.logging.JxlsLogger;
-import org.jxls.templatebasedtests.multisheet.AbstractMultiSheetTest.TestExpressionEvaluator;
 import org.jxls.templatebasedtests.multisheet.DynamicSheetNameGeneratorTest;
 import org.jxls.transform.SafeSheetNameBuilder;
 import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
@@ -30,7 +29,7 @@ public class DynamicSheetNameGeneratorUnitTest {
         context.putVar("sheetnames", "doe");
         
         // Test
-        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"), new TestExpressionEvaluator());
+        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"));
         
         // Verify
         assertEquals("doe", gen.generateCellRef(0, context, logger).getSheetName());
@@ -40,7 +39,7 @@ public class DynamicSheetNameGeneratorUnitTest {
 
     @Test
     public void testNull() {
-        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("N/A", new CellRef("A1"), new TestExpressionEvaluator());
+        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("N/A", new CellRef("A1"));
         assertNull(gen.generateCellRef(0, new Context(), logger));
     }
 
@@ -59,7 +58,7 @@ public class DynamicSheetNameGeneratorUnitTest {
         context.putVar("sheetnames", "data");
         
         // Test
-        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"), new TestExpressionEvaluator());
+        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"));
         
         // Verify
         assertEquals("#1 data", gen.generateCellRef(0, context, logger).getSheetName());
@@ -77,7 +76,7 @@ public class DynamicSheetNameGeneratorUnitTest {
         context.putVar("sheetnames", "doe");
         
         // Test
-        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"), new TestExpressionEvaluator());
+        DynamicSheetNameGenerator gen = new DynamicSheetNameGenerator("sheetnames", new CellRef("A1"));
         
         // Verify
         assertEquals("doe", gen.generateCellRef(0, context, logger).getSheetName());
