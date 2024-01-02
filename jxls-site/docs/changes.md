@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Release Notes
@@ -106,7 +106,7 @@ The release brings many bug-fixes and some improvements, in particular
 
 * National language support
 * Excel conditional formatting support for `jx:each` command [issue #110](https://bitbucket.org/leonate/jxls/issues/110/conditional-formatting-rules-are-not)
-* JxlsTester for writing template based testcases. See Jxls source page (TODO source_code.html) for more information.
+* JxlsTester for writing template based testcases. See [Jxls source page](sourcecode) for more information.
 * [Order-by for jx:each command](https://bitbucket.org/leonate/jxls/issues/193/add-orderby-to-jx-each-command)
 
 A list of resolved issues
@@ -132,12 +132,12 @@ A list of resolved issues
 ###### Compatibility notes and future plans
 * Signature of createTransformer() has been changed. The throws has been removed. Now the unchecked CannotOpenWorkbookException will be thrown.
 * jx:each and jx:grid now treat null lists as empty lists (see [issue#200](https://bitbucket.org/leonate/jxls/issues/200/treat-null-in-eachcommand-items-as-empty) )
-* POI 4.0 requires Java 8 and so it is the recommended version to use. JXLS code base will be migrated to Java 8 syntax in the upcoming versions.
+* POI 4.0 requires Java 8 and so it is the recommended version to use. Jxls code base will be migrated to Java 8 syntax in the upcoming versions.
 * The major change in 2.9.0 will be the move to Github. Our homepage and publishing to Maven-central will stay the same.
 
 v2.7.2
 --------
-This release fixes [issue#188 Referencing other sheet in JXLS-processed cell formula replaces formula with "=0"](https://bitbucket.org/leonate/jxls/issues/188/referencing-other-sheet-in-jxls-processed) .
+This release fixes [issue#188 Referencing other sheet in Jxls-processed cell formula replaces formula with "=0"](https://bitbucket.org/leonate/jxls/issues/188/referencing-other-sheet-in-jxls-processed) .
 
 Also it reverts back the behaviour from previous Jxls releases (2.6.0 and earlier) where the POI formulas evaluation was not triggered by default.
 See corresponding section on Excel Formulas page for more information on how to enable POI formulas evaluation if you need it.
@@ -250,7 +250,7 @@ v2.4.5
 The following issues have been fixed
 
 * [issue#100 Cell format not being correctly shifted with an empty list](https://bitbucket.org/leonate/jxls/issues/100/cell-format-not-being-correctly-shifted)
-* [issue#103 Cell format not being correctly shifted when having JXLS command and empty list](https://bitbucket.org/leonate/jxls/issues/103/cell-format-not-being-correctly-shifted)
+* [issue#103 Cell format not being correctly shifted when having Jxls command and empty list](https://bitbucket.org/leonate/jxls/issues/103/cell-format-not-being-correctly-shifted)
 * [issue#105 Issue with 'big double values' (like 1.3E22) being parsed as cell references (like E22)](https://bitbucket.org/leonate/jxls/issues/105/issue-with-big-double-values-like-13e22)
 * [issue#106 Issue with row height and jxls2 root not in A1](https://bitbucket.org/leonate/jxls/issues/106/issue-with-row-height-and-jxls2-root-not)
 * [issue#107 Issue with formatting of parts of text](https://bitbucket.org/leonate/jxls/issues/107/issue-with-formatting-of-parts-of-text)
@@ -276,8 +276,8 @@ v2.4.1
 ------
 This release features several bug-fixes and a few improvements
 
-* [issue#74: Use Resultsets on JXLS library](https://bitbucket.org/leonate/jxls/issues/74) 
-* [issue#77: JXLS Losing rows when using if-command inside each-command](https://bitbucket.org/leonate/jxls/issues/77) 
+* [issue#74: Use Resultsets on Jxls library](https://bitbucket.org/leonate/jxls/issues/74) 
+* [issue#77: Jxls Losing rows when using if-command inside each-command](https://bitbucket.org/leonate/jxls/issues/77) 
 * [issue#80: Cannot export more than 256 columns into .xlsx](https://bitbucket.org/leonate/jxls/issues/80) 
 * [issue#78: ConvertUtils is not thread safe](https://bitbucket.org/leonate/jxls/issues/78) 
 * [issue#81: ignore collection parse error in each-command](https://bitbucket.org/leonate/jxls/issues/81) 

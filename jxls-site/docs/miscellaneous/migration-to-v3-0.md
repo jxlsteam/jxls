@@ -66,7 +66,7 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 
 **tl;dr:** use Map&lt;String, Object> instead of Context and use JxlsPoiTemplateFillerBuilder instead of JxlsHelper.
 
-I had to switch to JXLS 3 myself and here are these tips from the experience I had:
+I had to switch to Jxls 3 myself and here are these tips from the experience I had:
 
 - Before switching to version 3, you should centralize the Jxls calls if you have not already done so. We also recommend writing a unit test for (almost) every report. We do it like this.
 - Instead of using `JxlsHelper.getInstance()` use `JxlsPoiTemplateFillerBuilder.newInstance()`. (See [builder options](../builder) documentation)

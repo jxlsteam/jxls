@@ -227,7 +227,7 @@ Map<String, Object> dataMap = new HashMap<>();
 and then call the builder and the template filler:
 
 ```
-JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.instance()
+JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance()
     // builder options...
     .withTemplate("filename.xlsx");
 JxlsTemplateFiller filler = builder.build();
@@ -239,7 +239,7 @@ Output is report.xlsx in the current directory.
 You can write it shorter:
 
 ```
-JxlsPoiTemplateFillerBuilder.instance()
+JxlsPoiTemplateFillerBuilder.newInstance()
     // builder options...
     .withTemplate("filename.xlsx")
     .buildAndFill(dataMap, new JxlsOutputFile(new File("report.xlsx")));

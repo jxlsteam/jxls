@@ -18,7 +18,7 @@ Call build() and fill(data, outputFile) for creating an Excel report.
 
 ```
 Map<String, Object> dataMap = new HashMap<>(); // and fill dataMap...
-JxlsTemplateFiller filler = JxlsPoiTemplateFillerBuilder.instance()
+JxlsTemplateFiller filler = JxlsPoiTemplateFillerBuilder.newInstance()
     // builder options...
     .withTemplate("filename.xlsx")
     .build();
@@ -29,7 +29,7 @@ Or shorter:
 
 ```
 Map<String, Object> dataMap = new HashMap<>(); // and fill dataMap...
-JxlsPoiTemplateFillerBuilder.instance()
+JxlsPoiTemplateFillerBuilder.newInstance()
     // builder options...
     .withTemplate("filename.xlsx")
     .buildAndFill(dataMap, new File("report.xlsx"));
@@ -51,7 +51,7 @@ In version 3 we have simplified it to `Map<String, Object>` and call this object
 Common options are [streaming](streaming) and throwing exceptions.
 
 ```
-JxlsPoiTemplateFillerBuilder.instance()
+JxlsPoiTemplateFillerBuilder.newInstance()
     .withExceptionThrower()
     .withStreaming(JxlsStreaming.AUTO_DETECT)
     .withTemplate("filename.xlsx")

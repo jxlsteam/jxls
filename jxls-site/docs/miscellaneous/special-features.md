@@ -52,8 +52,8 @@ See also GroupSum Javadoc and GroupSumTest.
 ## National language support
 
 With `R{key}` in the Excel .xlsx template file, resource bundles can be accessed to realize multilingualism.
-This is the JXLS standard solution since 2.8.0. It is particularly necessary when using PivotTables.
-Usually this class is called before the actual JXLS processing in order to create
+This is the Jxls standard solution since 2.8.0. It is particularly necessary when using PivotTables.
+Usually this class is called before the actual Jxls processing in order to create
 a modified temporary template file from the given template file.
 With `R{key=defaultValue}`, a default value can be specified for the case that there is no value for the key.
 Otherwise key is the fallback value.
