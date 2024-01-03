@@ -1,7 +1,7 @@
 package org.jxls3;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -162,9 +162,9 @@ public class EachTest {
             w.selectSheet("Employees");
             assertEquals("Sascha", w.getCellValueAsString(4, 1));
             assertEquals("direction=RIGHT does not work", "H", w.getCellValueAsString(4, 8));
-            assertFalse(w.getColumnWidth(4) == w.getColumnWidth(5));
-            assertFalse(w.getColumnWidth(5) == w.getColumnWidth(6));
-            assertFalse(w.getRowHeight(2) == w.getRowHeight(3));
+            assertNotEquals(w.getColumnWidth(4), w.getColumnWidth(5));
+            assertNotEquals(w.getColumnWidth(5), w.getColumnWidth(6));
+            assertNotEquals(w.getRowHeight(2), w.getRowHeight(3));
         }
         
         // Test
