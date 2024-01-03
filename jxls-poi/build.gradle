@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':jxls')
     
-    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'org.apache.poi:poi-ooxml:5.2.2'
     implementation 'org.apache.commons:commons-compress:1.25.0'
     
     testImplementation 'org.apache.derby:derby:10.12.1.1'

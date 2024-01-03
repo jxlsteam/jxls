@@ -11,7 +11,7 @@
 	<description>Apache POI based Transformer implementation for Jxls library</description>
 
 	<properties>
-		<poi.version>5.2.5</poi.version>
+		<poi.version>5.2.2</poi.version>
 	</properties>
 
 	<dependencies>
