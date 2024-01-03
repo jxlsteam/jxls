@@ -28,7 +28,9 @@ want to use a JSR223 compatible expression language specified by `lang`.
 Expressions in cells are inside `${` and `}`. Call `withExpressionNotation(begin, end)` if you want to change those Strings.
 Example:
 
-    builder.withExpressionNotation("LBRACELBRACE", "}}")
+```
+builder.withExpressionNotation("{{", "}}")
+```
 
 ## Logging
 
@@ -37,7 +39,9 @@ Example:
 Use `JxlsPoiTemplateFillerBuilder#withExceptionThrower()` (or `withLogger(new PoiExceptionThrower())`)
 if you want exceptions to be thrown. debug messages won't be output. info and warn messages will be output to syserr.
 
-    withLogger(new YourLogger())
+```
+withLogger(new YourLogger())
+```
 
 Or implement your own exception handling and logging using the JxlsLogger interface. You could subclass PoiExceptionLogger
 and throw an exception in the error methods. In the debug, info and warn methods you could call your preferred logging framework.
