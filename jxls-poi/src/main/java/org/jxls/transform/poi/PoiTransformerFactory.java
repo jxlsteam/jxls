@@ -64,7 +64,7 @@ public class PoiTransformerFactory implements JxlsTransformerFactory {
         return sheetNames;
     }
 
-    private static boolean isStreamingEnabled(Sheet sheet) {
+    public static boolean isStreamingEnabled(Sheet sheet) {
         for (Comment comment : sheet.getCellComments().values()) {
             String text = comment.getString().getString();
             if (text.contains("sheetStreaming=\"true\"")) {
