@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ public class EachTest {
     
     private void check(JxlsStreaming streaming) {
         // Prepare
-        Map<String,Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         data.put("employees", Employee.generateSampleEmployeeData());
 
         // Test
@@ -214,5 +215,30 @@ public class EachTest {
                 assertEquals(i, w.getCellValueAsDouble(1 + i, 3), 0.5d);
             }
         }
+    }
+
+    @Ignore("Record support not implemented")
+    @Test
+    public void testRecord() throws ParseException {
+        // Prepare
+        Map<String, Object> data = new HashMap<>();
+        List<EmployeeRecord> employees = new ArrayList<>();
+        employees.add(new EmployeeRecord("Walter", new SimpleDateFormat("yyyy-MMM-dd", Locale.US).parse("1970-Jul-10"), 3600d));
+        data.put("employees", employees);
+
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
+        
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet("Employees");
+            assertEquals("Walter", w.getCellValueAsString(2, 1)); // A2 
+            assertEquals("1970-07-10T00:00", w.getCellValueAsLocalDateTime(2, 2).toString()); 
+            assertEquals(3600d, w.getCellValueAsDouble(2, 3), 0.005d);
+        }
+    }
+    
+    public static record EmployeeRecord(String name, Date birthDate, double payment) {
     }
 }
