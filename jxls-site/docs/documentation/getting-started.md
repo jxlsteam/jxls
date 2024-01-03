@@ -1,12 +1,14 @@
 ---
 sidebar_position: 1
 ---
+import siteConfig from '/docusaurus.config.js';
 
 # Getting started guide
 
 Let's assume that we want to output an employee list as an Microsoft Excel report.
 
 ## POJO
+
 The employees are available as a POJO class and there is some code for retrieving the employee list:
 
 ```
@@ -64,15 +66,17 @@ Add Jxls as a Maven dependency to your project:
 <dependency>
     <groupId>org.jxls</groupId>
     <artifactId>jxls-poi</artifactId>
-    <version>{{version}}</version>
+    <version>version</version>
 </dependency>
 ```
 
 Or add Jxls as a Gradle dependency to your project:
 
 ```
-implementation 'org.jxls:jxls-poi:{{version}}'
+implementation 'org.jxls:jxls-poi:version'
 ```
+
+Please replace version with {siteConfig.customFields.jxls_version}
 
 ## Code for report creation
 

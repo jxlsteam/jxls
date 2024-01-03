@@ -26,6 +26,8 @@ transformation and also attach an input Excel template and an output Excel file 
 
 Also in the description please mention which Jxls version you used to reproduce the issue and if you use Microsoft Excel (recommended) or another program.
 
+Please use [Discussions](https://github.com/jxlsteam/jxls/discussions) for your questions.
+
 ## Eclipse
 
 1. Clone repository.

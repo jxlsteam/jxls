@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 ---
+import siteConfig from '/docusaurus.config.js';
 
 # Expressions
 
@@ -15,7 +16,7 @@ Jxls supports these expression languages:
 Other expression languages could be integrated by implementing ExpressionEvaluatorFactory and ExpressionEvaluator.
 And using the builder method withExpressionEvaluatorFactory().
 
-## JEXL TODO-var jexl_version
+## JEXL {siteConfig.customFields.jexl_version}
 
 See [homepage](https://commons.apache.org/proper/commons-jexl/index.html) and especially the
 [JEXL syntax reference](https://commons.apache.org/proper/commons-jexl/reference/syntax.html).

@@ -43,6 +43,11 @@ Or implement your own exception handling and logging using the JxlsLogger interf
 and throw an exception in the error methods. In the debug, info and warn methods you could call your preferred logging framework.
 In the future we will print JxlsLogger implementations for common logging frameworks on our homepage.
 
+Here are ready to use logging framework adapters. More can be contributed by the community.
+
+- [SLF4J](logger/slf4j)
+- [Tinylog](logger/tinylog)
+
 ## Formula processor
 
 The Jxls formula processor is responsible for extending cell references in Excel formulas.

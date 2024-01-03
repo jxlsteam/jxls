@@ -31,7 +31,7 @@ JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template).buildAndFill(d
 
 Default is direction="DOWN" and rows will be created. Using direction="RIGHT" columns will be created.
 
-<small>You can also set your own cellRefGenerator for special cases instead, but this is not described further.</small>
+You can also set your own cellRefGenerator for special cases instead, but this is not described further.
 
 ```
 jx:each(items="e.departments" var="d" lastCell="D2" direction="RIGHT")
