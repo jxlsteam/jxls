@@ -16,6 +16,7 @@ import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.ContextImpl;
+import org.jxls.common.RunVarAccess;
 import org.jxls.transform.ExpressionEvaluatorContext;
 import org.jxls.transform.Transformer;
 
@@ -84,7 +85,7 @@ public class JxlsTemplateFiller {
     protected void processAreas(Map<String, Object> data) {
         areas = options.getAreaBuilder().build(transformer, options.isClearTemplateCells());
         
-        context = createContext(createExpressionEvaluatorContext(), data);
+        context = createContext(createExpressionEvaluatorContext(), data, options.getRunVarAccess());
         context.setUpdateCellDataArea(options.isUpdateCellDataArea());
         options.getNeedsPublicContextList().forEach(ee -> ee.setPublicContext(context));
         
@@ -95,8 +96,8 @@ public class JxlsTemplateFiller {
         }
     }
 
-    protected Context createContext(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> data) {
-        return new ContextImpl(expressionEvaluatorContext, data);
+    protected Context createContext(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> data, RunVarAccess runVarAccess) {
+        return new ContextImpl(expressionEvaluatorContext, data, runVarAccess);
     }
 
     protected ExpressionEvaluatorContext createExpressionEvaluatorContext() {

@@ -82,7 +82,7 @@ public class IssueSxssfTransformerTest {
             areas = options.getAreaBuilder().build(transformer, true);
             for (Area area : areas) {
                 CellRef ref = new CellRef("Result", 0, 0);
-                area.applyAt(ref, new ContextImpl(null, data));
+                area.applyAt(ref, new ContextImpl(null, data, null));
             }
         }
     }

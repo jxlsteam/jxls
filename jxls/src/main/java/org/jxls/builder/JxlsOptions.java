@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jxls.command.Command;
 import org.jxls.common.NeedsPublicContext;
+import org.jxls.common.RunVarAccess;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
@@ -30,6 +31,7 @@ public class JxlsOptions {
     private final JxlsStreaming streaming;
     private final List<NeedsPublicContext> needsContextList;
     private final List<PreWriteAction> preWriteActions;
+    private final RunVarAccess runVarAccess;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
@@ -37,7 +39,7 @@ public class JxlsOptions {
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
             JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList,
-            List<PreWriteAction> preWriteActions) {
+            List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -56,6 +58,7 @@ public class JxlsOptions {
         this.streaming = streaming;
         this.needsContextList = needsContextList;
         this.preWriteActions = preWriteActions;
+        this.runVarAccess = runVarAccess;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -128,5 +131,9 @@ public class JxlsOptions {
 
     public List<PreWriteAction> getPreWriteActions() {
         return preWriteActions;
+    }
+
+    public RunVarAccess getRunVarAccess() {
+        return runVarAccess;
     }
 }

@@ -15,6 +15,7 @@ import org.jxls.transform.ExpressionEvaluatorContext;
 public class ContextImpl implements Context {
     private final ExpressionEvaluatorContext expressionEvaluatorContext;
     private final Map<String, Object> varMap;
+    private final RunVarAccess runVarAccess;
     /** old name: formulaProcessingRequired */
     private boolean updateCellDataArea = true;
     private boolean ignoreSourceCellStyle = false;
@@ -24,12 +25,18 @@ public class ContextImpl implements Context {
      * Should only be used for Jxls internal testcases
      */
     public ContextImpl() {
-        this(null, new HashMap<String, Object>());
+        this(null, new HashMap<String, Object>(), null);
     }
 
-    public ContextImpl(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> varMap) {
+    /**
+     * @param expressionEvaluatorContext null for default
+     * @param varMap data map
+     * @param runVarAccess null for default
+     */
+    public ContextImpl(ExpressionEvaluatorContext expressionEvaluatorContext, Map<String, Object> varMap, RunVarAccess runVarAccess) {
         this.expressionEvaluatorContext = expressionEvaluatorContext == null ? new ExpressionEvaluatorContext(new ExpressionEvaluatorFactoryJexlImpl(), null, null) : expressionEvaluatorContext;
         this.varMap = varMap;
+        this.runVarAccess = runVarAccess == null ? (name, map) -> getVar(name) : runVarAccess;
     }
     
     @Override
@@ -69,7 +76,7 @@ public class ContextImpl implements Context {
 
     @Override
     public Object getRunVar(String name) {
-        return getVar(name);
+        return runVarAccess.getRunVar(name, varMap);
     }
 
     @Override
