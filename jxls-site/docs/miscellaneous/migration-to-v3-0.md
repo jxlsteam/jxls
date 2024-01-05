@@ -14,7 +14,7 @@ v3 - with a better XML technology.)
 
 We ended up removing Logback entirely. We used version 3 for further extensive revisions, while the core remained unchanged.
 
-**Slf4j** has also been removed and replaced with the **JxlsLogger interface**.
+**SLF4J** has also been removed and replaced with the **JxlsLogger interface**.
 
 The **new builder API** replaces **JxlsHelper**. All options can now be set in the builder with a Fluent API.
 This now makes it possible to create reports with completely different options in parallel.
@@ -50,7 +50,7 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 
 **Replacements**
 
-- JxlsLogger replaces Slf4j logging
+- JxlsLogger replaces SLF4J logging (but see our SLF4J page for an adapter class)
 - new builder API replaces JxlsHelper
 - JxlsTransformerFactory replaces TransformerFactory (and other static createTransformer() methods)
 - Map&lt;String, Object> replaces Context
@@ -64,9 +64,9 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 
 ## What have to be changed in your code?
 
-**tl;dr:** use Map&lt;String, Object> instead of Context and use JxlsPoiTemplateFillerBuilder instead of JxlsHelper.
+**TL;DR:** use Map&lt;String, Object> instead of Context and use JxlsPoiTemplateFillerBuilder instead of JxlsHelper.
 
-I had to switch to Jxls 3 myself and here are these tips from the experience I had:
+I had to switch to Jxls 3 myself and here are these tips from the **experience** I had:
 
 - Before switching to version 3, you should centralize the Jxls calls if you have not already done so. We also recommend writing a unit test for (almost) every report. We do it like this.
 - Instead of using `JxlsHelper.getInstance()` use `JxlsPoiTemplateFillerBuilder.newInstance()`. (See [builder options](../builder) documentation)
@@ -80,6 +80,8 @@ I had to switch to Jxls 3 myself and here are these tips from the experience I h
 - If you want to execute code before `transformer.write()` you can call `builder.withPreWriteAction((transformer, publicContext) -> ...)`
 - If you want to get the Excel report as byte[] you could write this: `builder.buildAndFill(data)` and get a byte[]
 - If you want a strict non-silent expression evaluator do this: `builder.withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(true));` and also do this: `builder.withLogger(new PoiExceptionThrower())` for getting exceptions if something went wrong. Old Jxls 2 code was like this for that: `transformer.getTransformationConfig().setExpressionEvaluator(new JexlExpressionEvaluator(false, true)); transformer.setExceptionHandler(new PoiExceptionThrower());`
+- The central expression evaluator is now also used by jx:each/select. If you have the central expression evaluator set to nonsilent-strict, Jxls 3 may now throw EvaluationExceptions. The expressions then need to be corrected.
+- If you want to use SLF4J then see our builder/logger/SLF4J page for a ready to use adapter class.
 - If you called `context.getConfig().setIsFormulaProcessingRequired(false);` you must now call `builder.withUpdateCellDataArea(false)`
 - The old option evaluateFormulas is now called recalculateFormulasBeforeSaving and can be set with the builder.
 - The old option fullFormulaRecalculationOnOpening is now called recalculateFormulasOnOpening and can be set with the builder.

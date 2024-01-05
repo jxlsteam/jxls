@@ -23,6 +23,39 @@ The cache can be cleared by invoking `JexlExpressionEvaluatorNoThreadLocal.clear
 Use `withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJSR223Impl(lang))` if you
 want to use a JSR223 compatible expression language specified by `lang`.
 
+### Factory options
+
+The ExpressionEvaluatorFactory classes for JEXL have three constructors and up to three arguments:
+
+- no argument: non strict, silent, UNRESTRICTED mode (Backwards compatibility, default)
+- strict (typically true): silent:=!strict, strict, UNRESTRICTED
+- arguments silent, strict, permissions (recommended)
+
+**silent**
+
+Sets whether the engine will throw JexlException during evaluation when an error is triggered.
+When not silent, the engine throws an exception when the evaluation triggers an exception or an error. *(from JEXL Javadoc)*
+
+**strict**
+
+Sets whether the engine considers unknown variables, methods, functions and constructors as errors or
+evaluates them as null. When not strict, operators or functions using null operands return null on evaluation. When
+strict, those raise exceptions. It is recommended to use strict=true. *(from JEXL Javadoc)*
+
+**permissions**
+
+This is an important topic and new in JEXL 3.3 / Jxls 3.0.
+
+Use JxlsJexlPermissions.UNRESTRICTED for backward compatibility. JEXL expressions can then access everything!
+Even [hacks](https://stackoverflow.com/a/53989523/19904503) like `${''.class.forName('any class').staticMethod()}` will be possible!
+
+Use JxlsJexlPermissions.RESTRICTED as opposite. Only values in the given data map will be accessible.
+
+Or use `new JxlsJexlPermissions(...src)` where src can be packages or class names that are allowed to be used.
+See interface JexlPermissions for details.
+
+If a class is not accessible JEXL will treat them as they do not exist. Error messages are not that helpful.
+
 ## Expression notations
 
 Expressions in cells are inside `${` and `}`. Call `withExpressionNotation(begin, end)` if you want to change those Strings.
@@ -34,10 +67,19 @@ builder.withExpressionNotation("{{", "}}")
 
 ## Logging
 
+The `JxlsLogger` interface is the middleman between Jxls and a logger.
 `PoiExceptionLogger` is the default logger if you use JxlsPoiTemplateFillerBuilder.
-
 Use `JxlsPoiTemplateFillerBuilder#withExceptionThrower()` (or `withLogger(new PoiExceptionThrower())`)
-if you want exceptions to be thrown. debug messages won't be output. info and warn messages will be output to syserr.
+if you want exceptions to be thrown.
+
+|method|PoiExceptionLogger|PoiExceptionThrower|
+|---|---|---|
+|error|syserr|JxlsException|
+|warn|syserr|syserr|
+|info|sysout|sysout|
+|debug|no output|no output|
+|handle...Exception|warn or error|JxlsException|
+|handle...|info|info|
 
 ```
 withLogger(new YourLogger())
@@ -45,8 +87,6 @@ withLogger(new YourLogger())
 
 Or implement your own exception handling and logging using the JxlsLogger interface. You could subclass PoiExceptionLogger
 and throw an exception in the error methods. In the debug, info and warn methods you could call your preferred logging framework.
-In the future we will print JxlsLogger implementations for common logging frameworks on our homepage.
-
 Here are ready to use logging framework adapters. More can be contributed by the community.
 
 - [SLF4J](logger/slf4j)
@@ -202,6 +242,11 @@ and calling `needsPublicContext(object)`.
 If you want to carry out an action before calling `Transformer.write()`, you can do this
 with `withPreWriteActions((transformer, context) -> ...)` (PreWriteAction interface).
 One use case could be performing POI operations, e.g. for grouping.
+
+## Run var access
+
+If you want to change the way how running variables are accessed, call `withRunVarAccess((name, data) -> your code)`.
+The PublicContext.getRunVar() method is especially used to save loop variables. However, it is often the case that there is no entry for the key at all. If the map implementation reacts allergically to non-existent keys, you can change the behavior with withRunVarAccess().
 
 ## Template
 
