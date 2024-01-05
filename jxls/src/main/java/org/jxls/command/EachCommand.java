@@ -341,8 +341,8 @@ public class EachCommand extends AbstractCommand {
                 runVar.put(obj, Integer.valueOf(currentIndex));
                 if (selectEvaluator.isConditionTrue(context)) {
                     filteredList.add(obj);
+                    currentIndex++;
                 }
-                currentIndex++;
             }
         }
         return filteredList;
