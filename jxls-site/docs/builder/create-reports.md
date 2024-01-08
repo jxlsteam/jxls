@@ -48,15 +48,21 @@ In version 3 we have simplified it to `Map<String, Object>` and call this object
 
 ## Common options
 
-Common options are [streaming](streaming) and throwing exceptions.
+Common options are [streaming](streaming) and throwing exceptions. And it's recommended to use [permissions](../builder#factory-options).
 
 ```
 JxlsPoiTemplateFillerBuilder.newInstance()
     .withExceptionThrower()
+    .withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(
+        false, true, JxlsJexlPermissions.RESTRICTED))
     .withStreaming(JxlsStreaming.AUTO_DETECT)
     .withTemplate("filename.xlsx")
     .buildAndFill(dataMap, new JxlsOutputFile(new File("report.xlsx")));
 ```
+
+If you want to use SLF4J for logging you must replace `withExceptionThrower()` by `withLogger(new Slf4jJxlsLogger())`
+and copy the class from the [SLF4J](logger/slf4j) page.
+
 
 ## Real world production scenario
 
