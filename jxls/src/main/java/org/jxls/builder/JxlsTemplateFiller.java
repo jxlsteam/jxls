@@ -33,7 +33,15 @@ public class JxlsTemplateFiller {
         this.template = template;
     }
 
+    /**
+     * Creates Excel report using the given data map and writes it to the given output.
+     * @param data not null
+     * @param output not null
+     */
     public void fill(Map<String, Object> data, JxlsOutput output) {
+        if (data == null || output == null) {
+            throw new IllegalArgumentException();
+        }
         try (OutputStream outputStream = output.getOutputStream()) {
             createTransformer(outputStream);
             configureTransformer();

@@ -12,6 +12,9 @@ import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.PreWriteAction;
 
+/**
+ * Internal transport object for delivering the builder options to the template filler
+ */
 public class JxlsOptions {
     private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     private final String expressionNotationBegin;

@@ -10,5 +10,10 @@ import org.jxls.transform.Transformer;
  */
 public interface AreaBuilder {
 
+    /**
+     * @param transformer -
+     * @param clearTemplateCells false: template cells will not be cleared if the expression can not be evaluated
+     * @return areas
+     */
     List<Area> build(Transformer transformer, boolean clearTemplateCells);
 }
