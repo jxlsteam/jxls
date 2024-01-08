@@ -127,21 +127,6 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <!-- The gmavenplus plugin is used to compile Groovy code. To learn
-                    more about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.13.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compileTests</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
