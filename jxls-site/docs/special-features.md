@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Special features
 
 ## Parameterized formulas
@@ -13,7 +9,7 @@ must be enclosed in `${` and `}`
 symbols. For example `$[SUM(E4) * ${bonus}]`. Here we use bonus context variable in the formula. During the processFormulas()
 Jxls will substitute all the variables with values from the context.
 
-![Parameterized formulas](../img/par.png)
+![Parameterized formulas](img/par.png)
 
 ## Jointed cell references
 
@@ -42,9 +38,9 @@ data.put("Gbig", big);
 builder.needsPublicContext(big);
 ```
 
-![template](../img/groupsum-1.png)
+![template](img/groupsum-1.png)
 
-![result](../img/groupsum-2.png)
+![result](img/groupsum-2.png)
 
 There is another variant with additional filtering. When using expressions, setTransformationConfig() must be called.
 See also GroupSum Javadoc and GroupSumTest.
@@ -123,7 +119,7 @@ Enable the pivot table option 'Refresh when opening file'. Then replace the data
 ## SimpleExporter
 
 You can export a list of objects into Excel with a single line of code by using SimpleExporter class.
-This is achieved by using a special built-in template containing the [jx:grid command](../commands/grid).
+This is achieved by using a special built-in template containing the [jx:grid command](grid.html).
 
 Just create a SimpleExporter instance and run its `gridExport` method:
 

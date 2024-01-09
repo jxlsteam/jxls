@@ -1,8 +1,3 @@
----
-sidebar_position: 1
----
-import siteConfig from '/docusaurus.config.js';
-
 # Getting started guide
 
 Let's assume that we want to output an employee list as an Microsoft Excel report.
@@ -29,7 +24,7 @@ If you want to reuse code from us see Employee.java and Employee#generateSampleE
 The advantage of Jxls is that reports do not have to be programmed. Instead templates will be used.
 We now create such a template. Please only use Microsoft Excel for this. Create a new Excel file template.xlsx with this content:
 
-![template](../img/each-1-blank.png)
+![template](img/each-1-blank.png)
 
 If you want to reuse a template from us see EachTest.xlsx in our Github repository.
 
@@ -66,17 +61,15 @@ Add Jxls as a Maven dependency to your project:
 <dependency>
     <groupId>org.jxls</groupId>
     <artifactId>jxls-poi</artifactId>
-    <version>version</version>
+    <version>{{version}}</version>
 </dependency>
 ```
 
 Or add Jxls as a Gradle dependency to your project:
 
 ```
-implementation 'org.jxls:jxls-poi:version'
+implementation 'org.jxls:jxls-poi:{{version}}'
 ```
-
-Please replace version with {siteConfig.customFields.jxls_version}
 
 ## Code for report creation
 
@@ -93,6 +86,6 @@ JxlsPoiTemplateFillerBuilder.newInstance()
 
 Run the code and you will see something like that in report.xlsx:
 
-![result](../img/each-2.png)
+![result](img/each-2.png)
 
 And that's it!

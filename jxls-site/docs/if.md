@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # If
 
 Use the jx:if command for showing/hiding cells based on a condition expression. It's like if or if+else in Java.
@@ -10,9 +6,9 @@ Use the jx:if command for showing/hiding cells based on a condition expression. 
 jx:if(condition="e.payment<2000" lastCell="C2" areas=["A2:C2","A3:C3"])
 ```
 
-![template](../img/if-1.png)
+![template](img/if-1.png)
 
-![result](../img/if-2.png)
+![result](img/if-2.png)
 
 `condition`: show area if expression result is true otherwise hide if area;
 show else area if expression result is not true otherwise hide else area.
@@ -35,6 +31,6 @@ But anyway, here's a jx:if example of how to do it without an else area:
 jx:if(condition="e.payment<2000" lastCell="C2")
 ```
 
-![template](../img/if-3.png)
+![template](img/if-3.png)
 
-![result](../img/if-4.png)
+![result](img/if-4.png)

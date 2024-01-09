@@ -1,8 +1,3 @@
----
-sidebar_position: 2
-title: Options
----
-
 # Builder options
 
 JxlsTemplateFillerBuilder is the starting point for creating Jxls reports (since version 3).
@@ -47,12 +42,8 @@ strict, those raise exceptions. It is recommended to use strict=true. *(from JEX
 This is an important topic and new in JEXL 3.3 / Jxls 3.0.
 
 Use JxlsJexlPermissions.UNRESTRICTED for backward compatibility.
-
-:::danger
-
 JEXL expressions can then access everything!
 Even [hacks](https://stackoverflow.com/a/53989523/19904503) like `${''.class.forName('any class').staticMethod()}` will be possible!
-:::
 
 Use JxlsJexlPermissions.RESTRICTED as opposite. Only scalar values in the given data map will be accessible.
 
@@ -67,7 +58,7 @@ Expressions in cells are inside `${` and `}`. Call `withExpressionNotation(begin
 Example:
 
 ```
-builder.withExpressionNotation("{{", "}}")
+builder.withExpressionNotation("LBRACELBRACE", "}}")
 ```
 
 ## Logging
@@ -94,8 +85,8 @@ Or implement your own exception handling and logging using the JxlsLogger interf
 and throw an exception in the error methods. In the debug, info and warn methods you could call your preferred logging framework.
 Here are ready to use logging framework adapters. More can be contributed by the community.
 
-- [SLF4J](logger/slf4j)
-- [Tinylog](logger/tinylog)
+- [SLF4J](slf4j.html)
+- [Tinylog](tinylog.html)
 
 ## Formula processor
 
@@ -121,11 +112,11 @@ this functionality to save some memory. This can be done by calling `withUpdateC
 
 ## Ignoring column/row properties
 
-![template](../img/rowcol-props-template.png)
+![template](img/rowcol-props-template.png)
 
 Using the above template the output will look nice by default:
 
-![nice](../img/rowcol-props-nice.png)
+![nice](img/rowcol-props-nice.png)
 
 If you want to switch off that Jxls changes the column or row properties use
 
@@ -136,7 +127,7 @@ withIgnoreRowProps(false)
 
 and the result will loook like this:
 
-![bad](../img/rowcol-props-bad.png)
+![bad](img/rowcol-props-bad.png)
 
 ## Recalculate formulas
 
@@ -198,7 +189,7 @@ builder.withAreaBuilder((transformer, ctc) -> {
 Use `withCommand(commandName, commandObject)` for adding your own custom commands to Jxls. Imagine you extend EachCommand
 as MyEachCommand then you must call `withCommand(EachCommand.COMMAND_NAME, new MyEachCommand())` so you can use it.
 
-See also [Commands included](../commands).
+See also [Commands included](commands.html).
 
 ## Clear template cells
 
@@ -234,7 +225,7 @@ withTransformerFactory(new PoiTransformerFactory() {
 
 ## Streaming
 
-See [Streaming](streaming)
+See [Streaming](streaming.html)
 
 ## Needs PublicContext
 

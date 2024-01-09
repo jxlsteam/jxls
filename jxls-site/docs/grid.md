@@ -1,7 +1,3 @@
----
-sidebar_position: 4
----
-
 # Grid
 
 The jx:grid command is useful for generating a dynamic grid with a header area and a data rows area.
@@ -10,11 +6,11 @@ The jx:grid command is useful for generating a dynamic grid with a header area a
 jx:grid(headers="headers" data="items" areas=["A3:A3","A4:A4"] formatCells="BigDecimal:C1,Date:D1" lastCell="A4")
 ```
 
-![template](../img/grid-1.png)
+![template](img/grid-1.png)
 
 So you see the jx:grid need only a `${header}` and a `${cell}`.
 
-![result](../img/grid-2.png)
+![result](img/grid-2.png)
 
 `headers`: expression where the result can be an array or an Iterable. Result null would create a grid with 0 columns.
 The array/Iterable item will be put as a value to the data map using the var name "header". It's usually a String. See example 4.

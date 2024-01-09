@@ -1,8 +1,3 @@
----
-sidebar_position: 3
-title: Migration
----
-
 # Migration from version 2.x to 3.0 guide
 
 ## Why version 3.0?
@@ -30,7 +25,7 @@ Another design goal was the possibility of exchanging classes.
 
 A new strategy is that it should be possible to add new commands without having to change the Transformer.
 
-The **documentation** has been completely rewritten and our website has a new responsive design.
+The **documentation** has been completely rewritten and our website has a new design.
 
 In addition to the "note lastCell" command syntax from version 2, we have a new alternative "note marker" syntax in the pipeline. See MarkerAreaBuilder.
 
@@ -70,7 +65,7 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 I had to switch to Jxls 3 myself and here are these tips from the **experience** I had:
 
 - Before switching to version 3, you should centralize the Jxls calls if you have not already done so. We also recommend writing a unit test for (almost) every report. We do it like this.
-- Instead of using `JxlsHelper.getInstance()` use `JxlsPoiTemplateFillerBuilder.newInstance()`. (See [builder options](../builder) documentation)
+- Instead of using `JxlsHelper.getInstance()` use `JxlsPoiTemplateFillerBuilder.newInstance()`. (See [builder options](builder.html) documentation)
 - Instead of Context Use Map&lt;String, Object> (called "data").
 - You could use MapDelegator&lt;String, Object> as base class if you need special Map behavior. Just overwrite one or some methods.
 - Call Map.put() instead of Context.putVar(). If you have many calls like this you can create your own HashMap implementation with a putVar() method.

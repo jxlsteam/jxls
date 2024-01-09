@@ -1,4 +1,5 @@
 # Tinylog
+
 ## Version 1
 
 ```

@@ -1,13 +1,9 @@
----
-sidebar_position: 1
----
-
 # Create reports
 
 An Excel report is generated from
 
-- Jxls [options](../builder),
-- the Jxls [template](../documentation/template) and
+- Jxls [options](builder.html),
+- the Jxls [template](template.html) and
 - data.
 
 Since version 3, the options are put together with the new JxlsTemplateFillerBuilder with a fluent API.
@@ -48,7 +44,7 @@ In version 3 we have simplified it to `Map<String, Object>` and call this object
 
 ## Common options
 
-Common options are [streaming](streaming) and throwing exceptions. And it's recommended to use [permissions](../builder#factory-options).
+Common options are [streaming](streaming.html) and throwing exceptions. And it's recommended to use [permissions](builder.html#factory-options).
 
 ```
 JxlsPoiTemplateFillerBuilder.newInstance()
@@ -61,7 +57,7 @@ JxlsPoiTemplateFillerBuilder.newInstance()
 ```
 
 If you want to use SLF4J for logging you must replace `withExceptionThrower()` by `withLogger(new Slf4jJxlsLogger())`
-and copy the class from the [SLF4J](logger/slf4j) page.
+and copy the class from the [SLF4J](slf4j.html) page.
 
 
 ## Real world production scenario

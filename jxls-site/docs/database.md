@@ -1,11 +1,7 @@
----
-sidebar_position: 1
----
-
 # Database access
 
 Jxls allows you to use SQL queries directly in the Excel template to produce a collection 
-that can be processed by the [jx:each command](../commands/each).
+that can be processed by the [jx:each command](each.html).
 The idea is to use an utility class that executes the SQL statement and converts the result set into a list of objects.
 Jxls ships with `DatabaseAccess` class which can be used for this purpose.  
 

@@ -1,8 +1,3 @@
----
-sidebar_position: 3
----
-import siteConfig from '/docusaurus.config.js';
-
 # Expressions
 
 Expressions in cells are inside `${...}`. Everything inside is evaluated by an Expression Evaluator.
@@ -16,7 +11,7 @@ Jxls supports these expression languages:
 Other expression languages could be integrated by implementing ExpressionEvaluatorFactory and ExpressionEvaluator.
 And using the builder method withExpressionEvaluatorFactory().
 
-## JEXL {siteConfig.customFields.jexl_version}
+## JEXL {{jexl_version}}
 
 See [homepage](https://commons.apache.org/proper/commons-jexl/index.html) and especially the
 [JEXL syntax reference](https://commons.apache.org/proper/commons-jexl/reference/syntax.html).

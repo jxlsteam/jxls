@@ -1,7 +1,3 @@
----
-sidebar_position: 5
----
-
 # Streaming
 
 This topic is only relevant for Apache POI and the .xlsx file format.
@@ -33,7 +29,7 @@ It has to be exactly this text. You cannot comment out this text, instead you ha
 the jx:area command. sheetStreaming is not an official command property. It's just a flag inside the template to turn on streaming.
 This has the advantage that you can switch on streaming in the template, i.e. you don't have to do it in the code.
 
-![sheetStreaming="true"](../img/sheetstreaming.png)
+![sheetStreaming="true"](img/sheetstreaming.png)
 
 AUTO_DETECT is a very useful option in production. Simple data lists that can have many rows can be produced quickly using
 `sheetStreaming="true"`. While sheets with complex formulas still work because streaming is not used here (no `sheetStreaming="true"`).
@@ -63,4 +59,4 @@ Use withOptions(...) for setting further streaming options. See JxlsStreaming an
 
 ## See also
 
-- [Optimizations](optimizations)
+- [Optimizations](optimizations.html)

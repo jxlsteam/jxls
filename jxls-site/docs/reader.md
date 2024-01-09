@@ -1,8 +1,3 @@
----
-sidebar_position: 4
-title: Reader
----
-
 # Jxls Reader
 
 Jxls provides [jxls-reader](https://bitbucket.org/leonate/jxls-reader/) module to read XLS files and populate Java beans with spreadsheet data.

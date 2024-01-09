@@ -1,7 +1,3 @@
----
-sidebar_position: 6
----
-
 # Source code
 
 Jxls source code is available on Github at https://github.com/jxlsteam/jxls.

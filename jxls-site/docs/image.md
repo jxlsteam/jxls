@@ -1,7 +1,3 @@
----
-sidebar_position: 7
----
-
 # Image
 
 Use this command for adding an image to a sheet.
