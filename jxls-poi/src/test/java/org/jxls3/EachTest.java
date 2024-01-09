@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,9 +189,7 @@ public class EachTest {
         
     	public EmployeeWithDepartments(String name, String birthDate, double payment, String ...departments) throws ParseException {
         	super(name, dateFormat.parse(birthDate), payment, 0d);
-        	for (String i : departments) {
-        		this.departments.add(i);
-        	}
+    		this.departments.addAll(Arrays.asList(departments));
         }
 
 		public List<String> getDepartments() {
