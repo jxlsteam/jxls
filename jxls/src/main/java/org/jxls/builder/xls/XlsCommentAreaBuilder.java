@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.jxls.area.Area;
 import org.jxls.area.CommandData;
 import org.jxls.area.XlsArea;
+import org.jxls.builder.CommandMappings;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.command.GridCommand;
@@ -82,7 +83,7 @@ import org.jxls.util.LiteralsExtractor;
  *
  * @author Leonid Vysochyn
  */
-public class XlsCommentAreaBuilder extends AbstractAreaBuilder {
+public class XlsCommentAreaBuilder extends AbstractAreaBuilder implements CommandMappings {
     public static final String COMMAND_PREFIX = "jx:";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
@@ -111,29 +112,33 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder {
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     private static final String AREAS_ATTR_REGEX = "areas\\s*=\\s*\\[[^]]*]";
     private static final Pattern AREAS_ATTR_REGEX_PATTERN = Pattern.compile(AREAS_ATTR_REGEX);
-    private static Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
     private static final String LAST_CELL_ATTR_NAME = "lastCell";
     private static final String regexSimpleCellRef = "[a-zA-Z]+[0-9]+";
     private static final String regexAreaRef = AbstractFormulaProcessor.regexCellRef + ":" + regexSimpleCellRef;
     private static final Pattern regexAreaRefPattern = Pattern.compile(regexAreaRef);
 
-    static {
-        commandMap.put(EachCommand.COMMAND_NAME, EachCommand.class);
-        commandMap.put(IfCommand.COMMAND_NAME, IfCommand.class);
-        commandMap.put(AreaCommand.COMMAND_NAME, AreaCommand.class);
-        commandMap.put(GridCommand.COMMAND_NAME, GridCommand.class);
-        commandMap.put(UpdateCellCommand.COMMAND_NAME, UpdateCellCommand.class);
+    private final Map<String, Class<? extends Command>> commandMap = new ConcurrentHashMap<>();
+
+    public XlsCommentAreaBuilder() {
+        addCommandMapping(EachCommand.COMMAND_NAME, EachCommand.class);
+        addCommandMapping(IfCommand.COMMAND_NAME, IfCommand.class);
+        addCommandMapping(AreaCommand.COMMAND_NAME, AreaCommand.class);
+        addCommandMapping(GridCommand.COMMAND_NAME, GridCommand.class);
+        addCommandMapping(UpdateCellCommand.COMMAND_NAME, UpdateCellCommand.class);
     }
 
-    public static void addCommandMapping(String commandName, Class<? extends Command> clazz) {
-        commandMap.put(commandName, clazz);
+    @Override
+    public void addCommandMapping(String commandName, Class<? extends Command> commandClass) {
+        commandMap.put(commandName, commandClass);
     }
 
-	public static void removeCommandMapping(String commandName) {
+    @Override
+	public void removeCommandMapping(String commandName) {
 		commandMap.remove(commandName);
 	}
 	
-	public static Class<? extends Command> getCommandClass(String commandName) {
+    @Override
+	public Class<? extends Command> getCommandClass(String commandName) {
 		return commandMap.get(commandName);
 	}
     
@@ -220,7 +225,7 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder {
     }
 
     private CommandData createCommandData(CellData cellData, String commandName, Map<String, String> attrMap, JxlsLogger logger) {
-        Class<? extends Command> clazz = commandMap.get(commandName);
+        Class<? extends Command> clazz = getCommandClass(commandName);
         if (clazz == null) {
             throw new JxlsCommentException("Failed to find Command class mapped to command name '" + commandName + "'");
         }

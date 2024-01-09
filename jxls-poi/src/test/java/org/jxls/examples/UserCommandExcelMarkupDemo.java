@@ -11,7 +11,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
@@ -32,8 +31,8 @@ public class UserCommandExcelMarkupDemo {
         try (InputStream is = UserCommandExcelMarkupDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
                 Transformer transformer = Jxls3Tester.createTransformer(is, os);
-                AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-                XlsCommentAreaBuilder.addCommandMapping("groupRow", GroupRowCommand.class);
+                XlsCommentAreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+                areaBuilder.addCommandMapping("groupRow", GroupRowCommand.class);
                 List<Area> xlsAreaList = areaBuilder.build(transformer, true);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new ContextImpl();

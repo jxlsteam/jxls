@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.jxls.area.Area;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
 import org.jxls.common.CellRef;
@@ -26,7 +24,6 @@ public class JxlsTemplateFiller {
     protected Transformer transformer;
     protected List<Area> areas;
     private Context context;
-	private final Map<String, Class<? extends Command>> rem = new HashMap<>();
 	
     protected JxlsTemplateFiller(JxlsOptions options, InputStream template) {
         this.options = options;
@@ -55,26 +52,13 @@ public class JxlsTemplateFiller {
             context = null;
             areas = null;
             transformer = null;
-            restoreCommands();
         }
     }
 
 	private void installCommands() {
-		options.getCommands().forEach((k, v) -> {
-			rem.put(k, XlsCommentAreaBuilder.getCommandClass(k));
-			XlsCommentAreaBuilder.addCommandMapping(k, v); // for the future we don't want it static
-		});
-	}
-
-	private void restoreCommands() {
-		rem.forEach((k, v) -> {
-			if (v == null) {
-				XlsCommentAreaBuilder.removeCommandMapping(k);
-			} else {
-				XlsCommentAreaBuilder.addCommandMapping(k, v);
-			}
-		});
-		rem.clear();
+	    if (options.getAreaBuilder() instanceof CommandMappings cm) {
+    		options.getCommands().forEach((k, v) -> cm.addCommandMapping(k, v));
+	    }
 	}
 
     protected void createTransformer(OutputStream outputStream) {
