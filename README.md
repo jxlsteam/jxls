@@ -18,18 +18,18 @@ Jxls uses a special markup in Excel templates to define output formatting and da
 <dependency>
     <groupId>org.jxls</groupId>
     <artifactId>jxls-poi</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.0-beta1</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```
-implementation 'org.jxls:jxls-poi:3.0.0'
+implementation 'org.jxls:jxls-poi:3.0.0-beta1'
 ```
 
-See [Getting started guide](http://jxls.sourceforge.net/docs/documentation/getting-started).
+See [Getting started guide](http://jxls.sourceforge.net/getting-started.html).
 
 ## Contributing
 
-See [Contributing guide](https://jxls.sourceforge.net/docs/sourcecode).
+See [Contributing guide](https://jxls.sourceforge.net/sourcecode.html).
