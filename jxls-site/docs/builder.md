@@ -42,8 +42,8 @@ strict, those raise exceptions. It is recommended to use strict=true. *(from JEX
 This is an important topic and new in JEXL 3.3 / Jxls 3.0.
 
 Use JxlsJexlPermissions.UNRESTRICTED for backward compatibility.
-JEXL expressions can then access everything!
-Even [hacks](https://stackoverflow.com/a/53989523/19904503) like `${''.class.forName('any class').staticMethod()}` will be possible!
+<span style="color: #e00;">JEXL expressions can then access everything!
+Even [hacks](https://stackoverflow.com/a/53989523/19904503) like `${''.class.forName('any class').staticMethod()}` will be possible!</span>
 
 Use JxlsJexlPermissions.RESTRICTED as opposite. Only scalar values in the given data map will be accessible.
 

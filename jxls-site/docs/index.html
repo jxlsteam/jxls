@@ -46,7 +46,7 @@
     </div>
   </header>
 
-  <div class="container-lg" style="margin-top: 2em; margin-bottom: 2em;">
+  <div class="container" style="margin-top: 2em; margin-bottom: 2em;">
     <div class="row">
       <div class="col-lg-4">
         <div class="feature">
@@ -60,14 +60,14 @@
         <div class="feature">
           <h3>Are you new here?</h3>
           <p>Welcome.<br>Jxls is <a href="https://github.com/jxlsteam/jxls?tab=Apache-2.0-1-ov-file#readme"
-              target="_blank">open source</a>.<br>The <a href="docs/documentation/getting-started">Getting
+              target="_blank">open source</a>.<br>The <a href="getting-started.html">Getting
               started guide</a> is for you.</p>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="feature">
           <h3>Do you come from version 2.x?</h3>
-          <p>Read the <a href="docs/miscellaneous/migration-to-v3-0">Migration guide</a>.</p>
+          <p>Read the <a href="migration-to-v3-0.html">Migration guide</a>.</p>
         </div>
       </div>
       <div class="col-lg-4">
@@ -80,13 +80,28 @@
       <div class="col-lg-4">
         <div class="feature">
           <h3>Do you want to contribute?</h3>
-          <p>See the <a href="docs/sourcecode">Contribution guide</a>.</p>
+          <p>See the <a href="sourcecode.html">Contribution guide</a>.</p>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="feature">
           <h3>Latest version</h3>
-          <p>3.0.0</p>
+          <p>{{version}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="row d-block d-sm-none">
+      <div class="col-lg-4">
+        <div class="feature">
+        <h3>Documentation content</h3>
+        {{each m in toc}}
+            {{if m.isSection}}
+                {{if not m.isEmpty}}<br/><small>{{m.title}}</small>{{/if}}
+            {{else}}
+                <a href="{{m.link}}" class="menulink">{{m.title}}</a>
+            {{/if}}
+            <br/>
+        {{/each}}
         </div>
       </div>
     </div>
