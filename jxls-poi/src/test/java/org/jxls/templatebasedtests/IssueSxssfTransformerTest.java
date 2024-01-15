@@ -1,27 +1,24 @@
 package org.jxls.templatebasedtests;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Assert;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.builder.JxlsOptions;
+import org.jxls.builder.JxlsStreaming;
+import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.transform.poi.PoiContext;
-import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.common.ContextImpl;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Test for issue 153
@@ -30,43 +27,34 @@ import org.jxls.transform.poi.PoiTransformer;
  * cause: commit 5354beaf
  */
 public class IssueSxssfTransformerTest {
-
+    
     @Test
     public void test() throws IOException {
-        // Test
-        final String output = "target/" + getClass().getSimpleName() + "_output.xlsx";
-        try (InputStream is = getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx")) {
-            try (OutputStream os = new FileOutputStream(output)) {
-                final Workbook workbook = WorkbookFactory.create(is);
-                final int activeSheetIndex = workbook.getActiveSheetIndex();
-                PoiTransformer transformer = PoiTransformer.createSxssfTransformer(workbook, 1000, true);
-                final List<Area> excelAreas = new XlsCommentAreaBuilder(transformer).build();
-                for (final Area excelArea : excelAreas) {
-                    processArea(excelArea);
-                }
-                workbook.setForceFormulaRecalculation(true);
-                workbook.setActiveSheet(activeSheetIndex);
-                SXSSFWorkbook workbook2 = (SXSSFWorkbook) transformer.getWorkbook();
-                workbook2.write(os);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        JxlsPoiTemplateFillerBuilder builder = new JxlsPoiTemplateFillerBuilder() {
+            @Override
+            public JxlsTemplateFiller build() {
+                return new MyJxlsTemplateFiller(getOptions(), template);
             }
-        }
-        
-        // Verify
-        try (TestWorkbook w = new TestWorkbook(new File(output))) {
-            w.selectSheet(1);
-            Assert.assertEquals("Manager:", w.getCellValueAsString(3, 1)); // A3
-        }
-    }
+        };
+        tester.test(prepareContext().toMap(), builder
+            .withExceptionThrower()
+            .withRecalculateFormulasOnOpening(true)
+            .withStreaming(JxlsStreaming.STREAMING_ON.withOptions(1000, true, false))
+            .withTemplate(IssueSxssfTransformerTest.class.getResourceAsStream(getClass().getSimpleName() + ".xlsx"))
+        );
 
-    private void processArea(Area area) {
-        Context context = prepareContext();
-        final CellRef ref = new CellRef("Result", 0, 0);
-        area.applyAt(ref, context);
+        // Verify
+        try (TestWorkbook w = tester.getWorkbook()) {
+            w.selectSheet(1);
+            assertEquals("Manager:", w.getCellValueAsString(3, 1)); // A3
+            assertEquals("ABC", w.getCellValueAsString(3, 2)); // B3
+        }
     }
 
     private Context prepareContext() {
-        final Context context = new PoiContext();
-        context.getConfig().setIsFormulaProcessingRequired(false);
+        final Context context = new ContextImpl();
+        context.setUpdateCellDataArea(false);
 
         ArrayList<Map<String,String>> mapArrayList = new ArrayList<>();
         mapArrayList.add(Collections.singletonMap("entity", "ABC"));
@@ -81,5 +69,21 @@ public class IssueSxssfTransformerTest {
         context.putVar("departmentsName", mapArrayList);
         context.putVar("departmentsOrgName", mapOrgArrayList);
         return context;
+    }
+    
+    public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
+        
+        protected MyJxlsTemplateFiller(JxlsOptions options, InputStream template) {
+            super(options, template);
+        }
+
+        @Override
+        protected void processAreas(Map<String, Object> data) {
+            areas = options.getAreaBuilder().build(transformer, true);
+            for (Area area : areas) {
+                CellRef ref = new CellRef("Result", 0, 0);
+                area.applyAt(ref, new ContextImpl(null, data, null));
+            }
+        }
     }
 }

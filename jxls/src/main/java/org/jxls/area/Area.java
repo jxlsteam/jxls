@@ -8,7 +8,6 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
-import org.jxls.common.cellshift.CellShiftStrategy;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.transform.Transformer;
 
@@ -29,19 +28,11 @@ public interface Area {
 
     List<CommandData> getCommandDataList();
 
-    CellShiftStrategy getCellShiftStrategy();
-
-    void setCellShiftStrategy(CellShiftStrategy cellShiftStrategy);
-
-    FormulaProcessor getFormulaProcessor();
-
-    void setFormulaProcessor(FormulaProcessor formulaProcessor);
-
     void addCommand(AreaRef ref, Command command);
 
     Transformer getTransformer();
     
-    void processFormulas();
+    void processFormulas(FormulaProcessor formulaProcessor);
     
     void addAreaListener(AreaListener listener);
     
@@ -54,4 +45,6 @@ public interface Area {
     Command getParentCommand();
     
     void setParentCommand(Command command);
+    
+    void clearCells();
 }

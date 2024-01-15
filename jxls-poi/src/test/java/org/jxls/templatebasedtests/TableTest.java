@@ -1,18 +1,15 @@
 package org.jxls.templatebasedtests;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.builder.JxlsStreaming;
 import org.jxls.common.Context;
-import org.jxls.transform.Transformer;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.transform.poi.SelectSheetsForStreamingPoiTransformer;
+import org.jxls.common.ContextImpl;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 // TODO MW: missing assertions (can file be opened? record size okay? speed okay?)
 public class TableTest {
@@ -58,27 +55,13 @@ public class TableTest {
     private void checkTableWithStreaming(int max) {
         Context context = createContextWithTestData(max);
         
-        TransformerChecker useStreamingTransformer = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer pTransformer) {
-                PoiTransformer poiTr = (PoiTransformer) pTransformer;
-                Workbook workbook = poiTr.getWorkbook();
-                SelectSheetsForStreamingPoiTransformer transformer = new SelectSheetsForStreamingPoiTransformer(workbook);
-                transformer.setOutputStream(poiTr.getOutputStream());
-                Set<String> streamedSheets = new HashSet<String>();
-                streamedSheets.add("table");
-                transformer.setDataSheetsToUseStreaming(streamedSheets);
-                return transformer;
-            }
-        };
-        
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.createTransformerAndProcessTemplate(context, useStreamingTransformer);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance().withStreaming(JxlsStreaming.AUTO_DETECT));
     }
 
     private Context createContextWithTestData(int max) {
-        List<TableTestObject> list = new ArrayList<TableTestObject>();
-        List<TableTestObject> list20 = new ArrayList<TableTestObject>();
+        List<TableTestObject> list = new ArrayList<>();
+        List<TableTestObject> list20 = new ArrayList<>();
         for (int i = 1; i <= max; i++) {
             TableTestObject a = new TableTestObject("name-" + i, "address-" + i);
             list.add(a);
@@ -86,7 +69,7 @@ public class TableTest {
                 list20.add(a);
             }
         }
-        Context ctx = new Context();
+        Context ctx = new ContextImpl();
         ctx.putVar("list", list);
         ctx.putVar("list20", list20); // a short list for the 2nd sheet; always without streaming
         return ctx;

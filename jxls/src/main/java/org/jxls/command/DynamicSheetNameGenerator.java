@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.expression.ExpressionEvaluator;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
 
 /**
@@ -14,23 +14,25 @@ import org.jxls.transform.SafeSheetNameBuilder;
 public class DynamicSheetNameGenerator implements CellRefGenerator {
     private final String sheetNameExpression;
     private final CellRef startCellRef;
-    private final ExpressionEvaluator expressionEvaluator;
-    private final Set<String> usedSheetNames = new HashSet<String>(); // only used if there's no SafeSheetNameBuilder
+    private final Set<String> usedSheetNames = new HashSet<>(); // only used if there's no SafeSheetNameBuilder
 
-    public DynamicSheetNameGenerator(String sheetNameExpression, CellRef startCellRef, ExpressionEvaluator expressionEvaluator) {
+    public DynamicSheetNameGenerator(String sheetNameExpression, CellRef startCellRef) {
         this.sheetNameExpression = sheetNameExpression;
         this.startCellRef = startCellRef;
-        this.expressionEvaluator = expressionEvaluator;
     }
 
     @Override
-    public CellRef generateCellRef(int index, Context context) {
-        String sheetName = (String) expressionEvaluator.evaluate(sheetNameExpression, context.toMap());
+    public CellRef generateCellRef(int index, Context context, JxlsLogger logger) {
+        Object r = context.evaluate(sheetNameExpression);
+        if (!(r instanceof String)) {
+            return null;
+        }
+        String sheetName = (String) r;
         boolean safeName = false;
-        Object builder = context.getVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME);
-        if (builder instanceof SafeSheetNameBuilder) {
+        Object builder = RunVar.getRunVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, context);
+        if (builder instanceof SafeSheetNameBuilder sBuilder) {
             // The SafeSheetNameBuilder builds a valid and unique sheetName. This is the new style.
-            sheetName = ((SafeSheetNameBuilder) builder).createSafeSheetName(sheetName, index);
+            sheetName = sBuilder.createSafeSheetName(sheetName, index, logger);
             safeName = true;
         }
         if (sheetName == null) {

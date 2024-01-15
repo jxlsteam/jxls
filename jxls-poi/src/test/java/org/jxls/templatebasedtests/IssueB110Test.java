@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Conditional formatting copying issue
@@ -25,7 +26,7 @@ public class IssueB110Test {
         items.add(new Item("X", 1, 2));
         items.add(new Item("Y", 3, 4));
         items.add(new Item("Z", 5, 6));
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("items", items);
 
         // Test

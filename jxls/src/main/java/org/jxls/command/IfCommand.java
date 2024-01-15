@@ -4,8 +4,8 @@ import org.jxls.area.Area;
 import org.jxls.area.XlsArea;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
 import org.jxls.common.Size;
-import org.jxls.util.Util;
 
 /**
  * Implements if-else logic
@@ -80,8 +80,7 @@ public class IfCommand extends AbstractCommand {
     @Override
     public Command addArea(Area area) {
         if (areaList.size() >= 2) {
-            throw new IllegalArgumentException(
-                    "Cannot add any more areas to this IfCommand. You can add only 1 area for 'if' part and 1 area for 'else' part");
+            throw new JxlsException("Cannot add any more areas to this IfCommand. You can add only 1 area for 'if' part and 1 area for 'else' part");
         }
         if (areaList.isEmpty()) {
             ifArea = area;
@@ -93,8 +92,7 @@ public class IfCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
-        Boolean conditionResult = Util.isConditionTrue(getTransformationConfig().getExpressionEvaluator(), condition, context);
-        if (conditionResult.booleanValue()) {
+        if (context.isConditionTrue(condition)) {
             return ifArea.applyAt(cellRef, context);
         } else {
             return elseArea.applyAt(cellRef, context);

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Wrong cell ref replacement
@@ -26,7 +27,7 @@ public class IssueB122Test {
         persons.add(new Person(40, "Stefan"));
         persons.add(new Person(45, "Marcus"));
         persons.add(new Person(49, "Thomas"));
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("persons", persons);
 
         // Test
@@ -40,7 +41,7 @@ public class IssueB122Test {
             assertEquals(50d, w.getCellValueAsDouble(4, 39), 0.1d); // column AM
             int row = 12;
             for (Person person : persons) {
-                assertEquals(Double.valueOf(person.getMerkmal()), w.getCellValueAsDouble(row++, 39), 0.1d);
+                assertEquals(person.getMerkmal().doubleValue(), w.getCellValueAsDouble(row++, 39), 0.1d);
             }
         }
     }

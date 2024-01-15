@@ -2,22 +2,19 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
-import org.jxls.common.Context;
 import org.jxls.entity.Employee;
 import org.jxls.functions.BigDecimalSummarizerBuilder;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
-import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Group sum test
@@ -36,10 +33,9 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         maps.add(createEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
         maps.add(createEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
-        Context context = new Context();
-        context.putVar("details", maps);
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
-        check(context);
+        Map<String, Object> data = new HashMap<>();
+        data.put("details", maps);
+        check(data, new GroupSum<>(new DoubleSummarizerBuilder()));
     }
 
     private Map<String, Object> createEmployee(String department, String name, String job, String city, double salary) {
@@ -61,27 +57,28 @@ public class GroupSumTest {
         beans.add(newEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         beans.add(newEmployee("03 Finance department", "Nadine", "Leader", "Mönchengladbach", 90000));
         beans.add(newEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
-        Context context = new Context();
-        context.putVar("details", beans);
-        context.putVar("G", new GroupSum<BigDecimal>(context, new BigDecimalSummarizerBuilder()));
-        check(context);
+        Map<String, Object> data = new HashMap<>();
+        data.put("details", beans);
+        check(data, new GroupSum<>(new BigDecimalSummarizerBuilder()));
     }
     
     private Employee newEmployee(String department, String name, String job, String city, double salary) {
         return new Employee(name, null, salary, 0, department);
     }
     
-    private void check(Context context) {
+    private void check(Map<String, Object> data, GroupSum<?> groupSum) {
+        data.put("G", groupSum);
+        
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsPublicContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Group sums");
-            assertEquals("1st group sum is wrong! (Main department) E5\n", Double.valueOf(170000d), w.getCellValueAsDouble(5, 5));
-            assertEquals("2nd group sum is wrong! (Finance department) E10\n", Double.valueOf(130000d), w.getCellValueAsDouble(10, 5));
-            assertEquals("Total sum (calculated by G.sum) in cell E12 is wrong!\n", Double.valueOf(300000d), w.getCellValueAsDouble(12, 5));
+            assertEquals("1st group sum is wrong! (Main department) E5\n", 170000d, w.getCellValueAsDouble(5, 5), 0.005d);
+            assertEquals("2nd group sum is wrong! (Finance department) E10\n", 130000d, w.getCellValueAsDouble(10, 5), 0.005d);
+            assertEquals("Total sum (calculated by G.sum) in cell E12 is wrong!\n", 300000d, w.getCellValueAsDouble(12, 5), 0.005d);
         }
     }
     
@@ -93,26 +90,20 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Dagmar", "Assistent", "Geldern", 32000));
         maps.add(createEmployee("01 Main department", "Claudia", "Assistent", "Issum", 30000));
         maps.add(createEmployee("01 Main department", "Draci the dragon", "Mascot", "Wetten", -1));
-        Context context = new Context();
-        context.putVar("details", maps);
-        GroupSum<Double> groupSum = new GroupSum<Double>(context, new DoubleSummarizerBuilder());
-        context.putVar("G", groupSum);
+        Map<String, Object> data = new HashMap<>();
+        data.put("details", maps);
+        GroupSum<Double> groupSum = new GroupSum<>(new DoubleSummarizerBuilder());
+        data.put("G", groupSum);
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "filterCondition");
-        tester.createTransformerAndProcessTemplate(context, new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                groupSum.setTransformationConfig(transformer.getTransformationConfig());
-                return transformer;
-            }
-        });
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "filterCondition");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance().needsPublicContext(groupSum));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("Group sums");
-            assertEquals("wrong Geldern sum (E8)\n", Double.valueOf(140000 + 32000), w.getCellValueAsDouble(8, 5));
-            assertEquals("wrong outside Geldern sum (E9)\n", Double.valueOf(30000), w.getCellValueAsDouble(9, 5));
+            assertEquals("wrong Geldern sum (E8)\n", 140000 + 32000, w.getCellValueAsDouble(8, 5), 0.005d);
+            assertEquals("wrong outside Geldern sum (E9)\n", 30000, w.getCellValueAsDouble(9, 5), 0.005d);
         }
     }
 }

@@ -14,6 +14,9 @@ import org.jxls.common.JxlsException;
 public class CannotOpenWorkbookException extends JxlsException {
     private static final long serialVersionUID = -3618771481378341600L;
 
+    public CannotOpenWorkbookException() {
+    }
+    
     public CannotOpenWorkbookException(Throwable e) {
         super(e);
     }

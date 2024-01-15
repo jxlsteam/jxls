@@ -1,6 +1,7 @@
 package org.jxls.transform;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -8,9 +9,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ImageType;
 import org.jxls.common.Size;
-import org.jxls.common.ExceptionHandler;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * Decorator pattern for Transformer, in particular write() can be extended overriding beforeWrite()
@@ -26,21 +26,21 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void setTransformationConfig(TransformationConfig transformationConfig) {
-        transformer.setTransformationConfig(transformationConfig);
-    }
-
-    @Override
-    public TransformationConfig getTransformationConfig() {
-        return transformer.getTransformationConfig();
-    }
-
-    @Override
     public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight) {
         transformer.transform(srcCellRef, targetCellRef, context, updateRowHeight);
     }
 
-    protected void beforeWrite() {
+    @Override
+    public void setOutputStream(OutputStream outputStream) {
+        transformer.setOutputStream(outputStream);
+    }
+
+    @Override
+	public void writeButNotCloseStream() throws IOException {
+	    transformer.writeButNotCloseStream();
+	}
+
+	protected void beforeWrite() {
     }
     
     @Override
@@ -95,11 +95,6 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
-        transformer.addImage(areaRef, imageBytes, imageType);
-    }
-
-    @Override
     public boolean deleteSheet(String sheetName) {
         return transformer.deleteSheet(sheetName);
     }
@@ -117,16 +112,6 @@ public class TransformerDelegator implements Transformer {
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
         transformer.adjustTableSize(ref, size);
-    }
-
-    @Override
-    public void mergeCells(CellRef ref, int rows, int cols) {
-        transformer.mergeCells(ref, rows, cols);
-    }
-
-    @Override
-    public void writeButNotCloseStream() throws IOException {
-        transformer.writeButNotCloseStream();
     }
 
     @Override
@@ -155,17 +140,22 @@ public class TransformerDelegator implements Transformer {
     }
 
     @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
-        transformer.addImage(areaRef, imageBytes, imageType, scaleX, scaleY);
-    }
-    
-    @Override
-    public ExceptionHandler getExceptionHandler() {
-        return transformer.getExceptionHandler();
+	public void setLogger(JxlsLogger logger) {
+        transformer.setLogger(logger);
     }
 
     @Override
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        transformer.setExceptionHandler(exceptionHandler);
+    public JxlsLogger getLogger() {
+        return transformer.getLogger();
     }
+
+    @Override
+	public void setIgnoreColumnProps(boolean ignoreColumnProps) {
+		transformer.setIgnoreColumnProps(ignoreColumnProps);
+	}
+
+	@Override
+	public void setIgnoreRowProps(boolean ignoreRowProps) {
+		transformer.setIgnoreRowProps(ignoreRowProps);
+	}
 }

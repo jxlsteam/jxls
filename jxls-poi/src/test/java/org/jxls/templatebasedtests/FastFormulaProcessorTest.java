@@ -16,11 +16,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jxls.EnglishTestRule;
 import org.jxls.JxlsTester;
+import org.jxls.builder.JxlsStreaming;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
+import org.jxls.common.PoiExceptionThrower;
 import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.jxls.transform.poi.PoiTransformer;
+import org.jxls.transform.poi.PoiTransformerFactory;
 import org.mockito.ArgumentCaptor;
 
 /**
@@ -37,7 +39,7 @@ public class FastFormulaProcessorTest {
         Transformer transformer;
         try (InputStream is = JxlsTester.openInputStream(getClass(), false)) {
             try (OutputStream os = new ByteArrayOutputStream()) {
-                transformer = spy(PoiTransformer.createTransformer(is, os)); // uses Mockito
+                transformer = spy(new PoiTransformerFactory().create(is, os, JxlsStreaming.STREAMING_OFF, new PoiExceptionThrower()));
             }
         }
 

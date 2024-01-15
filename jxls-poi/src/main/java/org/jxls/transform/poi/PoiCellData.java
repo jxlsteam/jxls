@@ -22,10 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.JxlsException;
-import org.jxls.util.Util;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Cell data wrapper for POI cell
@@ -33,8 +30,6 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class PoiCellData extends org.jxls.common.CellData {
-    private static Logger logger = LoggerFactory.getLogger(PoiCellData.class);
-
     private PoiRowData poiRowData;
     private RichTextString richTextString;
     private CellStyle cellStyle;
@@ -106,7 +101,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cellType = CellType.STRING;
                 break;
             case BOOLEAN:
-                cellValue = cell.getBooleanCellValue();
+                cellValue = Boolean.valueOf(cell.getBooleanCellValue());
                 cellType = CellType.BOOLEAN;
                 break;
             case NUMERIC:
@@ -118,7 +113,7 @@ public class PoiCellData extends org.jxls.common.CellData {
                 cellType = CellType.FORMULA;
                 break;
             case ERROR:
-                cellValue = cell.getErrorCellValue();
+                cellValue = Byte.valueOf(cell.getErrorCellValue());
                 cellType = CellType.ERROR;
                 break;
             case BLANK:
@@ -135,7 +130,7 @@ public class PoiCellData extends org.jxls.common.CellData {
             cellValue = cell.getDateCellValue();
             cellType = CellType.DATE;
         } else {
-            cellValue = cell.getNumericCellValue();
+            cellValue = Double.valueOf(cell.getNumericCellValue());
             cellType = CellType.NUMBER;
         }
     }
@@ -146,15 +141,15 @@ public class PoiCellData extends org.jxls.common.CellData {
 
     public void writeToCell(Cell cell, Context context, PoiTransformer transformer) {
         evaluate(context);
-        if (evaluationResult instanceof WritableCellValue) {
+        if (evaluationResult instanceof WritableCellValue e) {
             cell.setCellStyle(cellStyle);
-            ((WritableCellValue) evaluationResult).writeToCell(cell, context);
+            e.writeToCell(cell, context);
         } else {
             updateCellGeneralInfo(cell);
             updateCellContents(cell);
             CellStyle targetCellStyle = cellStyle;
-            if (context.getConfig().isIgnoreSourceCellStyle()) {
-                CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, context.getConfig().getCellStyleMap(), transformer);
+            if (context.isIgnoreSourceCellStyle()) {
+                CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, context.getCellStyleMap(), transformer);
                 if (dataFormatCellStyle != null) {
                     targetCellStyle = dataFormatCellStyle;
                 }
@@ -195,7 +190,8 @@ public class PoiCellData extends org.jxls.common.CellData {
                 updateStringCellContents(cell);
                 break;
             case BOOLEAN:
-                cell.setCellValue((Boolean) evaluationResult);
+                Boolean tf = (Boolean) evaluationResult;
+                cell.setCellValue(tf.booleanValue());
                 break;
             case DATE:
                 cell.setCellValue((Date) evaluationResult);
@@ -222,10 +218,11 @@ public class PoiCellData extends org.jxls.common.CellData {
                 updateFormulaCellContents(cell);
                 break;
             case ERROR:
-                cell.setCellErrorValue((Byte) evaluationResult);
+                Byte b = (Byte) evaluationResult;
+                cell.setCellErrorValue(b.byteValue());
                 break;
             case BLANK:
-                cell.setBlank(); // Modified as setCellType is deprecated
+                cell.setBlank();
                 break;
         }
     }
@@ -244,7 +241,7 @@ public class PoiCellData extends org.jxls.common.CellData {
 
     private void updateFormulaCellContents(Cell cell) {
         try {
-            if (Util.formulaContainsJointedCellRef((String) evaluationResult)) {
+            if (formulaContainsJointedCellRef((String) evaluationResult)) {
                 cell.setCellValue((String) evaluationResult);
             } else {
                 cell.setCellFormula((String) evaluationResult);
@@ -253,20 +250,20 @@ public class PoiCellData extends org.jxls.common.CellData {
         } catch (FormulaParseException e) {
             try {
                 String formulaString = evaluationResult.toString();
-                logger.error("Failed to set cell formula " + formulaString + " for cell " + this.toString(), e);
+                getTransformer().getLogger().warn(e, "Failed to set cell formula " + formulaString + " for cell " + this.toString());
                 // Not required as setCellValue will set the cellType to STRING
                 // cell.setCellType(org.apache.poi.ss.usermodel.CellType.STRING);
                 cell.setCellValue(formulaString);
             } catch (Exception ex) {
-                logger.warn("Failed to convert formula to string for cell " + this.toString());
+                getTransformer().getLogger().error(ex, "Failed to convert formula to string for cell " + this.toString());
             }
         }
     }
 
     // protected so any user can change this piece of code
     protected void clearCellValue(org.apache.poi.ss.usermodel.Cell poiCell) {
-        if (poiCell instanceof XSSFCell) {
-            CTCell cell = ((XSSFCell) poiCell).getCTCell(); // POI internal access, but there's no other way
+        if (poiCell instanceof XSSFCell xcell) {
+            CTCell cell = xcell.getCTCell(); // POI internal access, but there's no other way
             // Now do the XSSFCell.setFormula code that was done before POI commit https://github.com/apache/poi/commit/1253a29
             // After setting the formula in attribute f we clear the value attribute v if set. This causes a recalculation
             // and prevents wrong formula results.

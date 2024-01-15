@@ -1,23 +1,19 @@
 package org.jxls.functions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.jxls.common.Context;
+import org.jxls.command.RunVar;
 import org.jxls.common.JxlsException;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.expression.JexlExpressionEvaluator;
-import org.jxls.transform.TransformationConfig;
-import org.jxls.util.Util;
+import org.jxls.common.NeedsPublicContext;
+import org.jxls.common.PublicContext;
 
 /**
  * Group sum
  * <p>The sum function for calculation a group sum takes two arguments: the collection as JEXL expression (or its name as a String)
  * and the name (as String) of the attribute. The attribute can be a object property or a Map entry. The value type T can be of any
  * type and is implemented by a generic SummarizerBuilder.</p>
- * <p>Call setTransformationConfig() if you want to use the methods with filter condition parameter.</p>
  * 
  * <h2>Example</h2>
  * <p>Add an instance of this class e.g. with name "G" to your Context.</p>
@@ -25,15 +21,18 @@ import org.jxls.util.Util;
  * <p>Above the 2nd argument is a JEXL expression. The collection name as String is also possible:</p>
  * <pre>${G.sum("salary", "employees.items")}</pre>
  */
-public class GroupSum<T> {
-    private final Context context;
+public class GroupSum<T> implements NeedsPublicContext {
+    private PublicContext context;
     private final SummarizerBuilder<T> sumBuilder;
-    private TransformationConfig transformationConfig;
     private String objectVarName = "i";
     
-    public GroupSum(Context context, SummarizerBuilder<T> sumBuilder) {
-        this.context = context;
+    public GroupSum(SummarizerBuilder<T> sumBuilder) {
         this.sumBuilder = sumBuilder;
+    }
+
+    @Override
+    public void setPublicContext(PublicContext context) {
+        this.context = context;
     }
     
     /**
@@ -54,20 +53,12 @@ public class GroupSum<T> {
      * @param collection the collection; inside Excel file it's a JEXL expression
      * @return sum of type T
      */
-    public T sum(String fieldName, Collection<Object> collection) {
+    public T sum(String fieldName, Iterable<Object> collection) {
         Summarizer<T> sum = sumBuilder.build();
         for (Object i : collection) {
             sum.add(getValue(i, fieldName));
         }
         return sum.getSum();
-    }
-
-    public TransformationConfig getTransformationConfig() {
-        return transformationConfig;
-    }
-
-    public void setTransformationConfig(TransformationConfig transformationConfig) {
-        this.transformationConfig = transformationConfig;
     }
 
     public String getObjectVarName() {
@@ -82,33 +73,23 @@ public class GroupSum<T> {
         return sum(fieldName, getItems(expression), filter);
     }
     
-    public T sum(String fieldName, Collection<Object> collection, String filter) {
-        if (transformationConfig == null) {
-            throw new JxlsException("Please set GroupSum.transformationConfig!");
-        }
-        ExpressionEvaluator expressionEvaluator = transformationConfig.getExpressionEvaluator();
+    public T sum(String fieldName, Iterable<Object> collection, String filter) {
         Summarizer<T> sum = sumBuilder.build();
-        Object oldValue = context.getRunVar(objectVarName);
-        for (Object i : collection) {
-            Object value = getValue(i, fieldName);
-            context.putVar(objectVarName, i);
-            if (Util.isConditionTrue(expressionEvaluator, filter, context) == Boolean.TRUE) {
-                sum.add(value);
+        try (RunVar runVar = new RunVar(objectVarName, context)) {
+            for (Object object : collection) {
+                runVar.put(object);
+                if (context.isConditionTrue(filter)) {
+                    sum.add(getValue(object, fieldName));
+                }
             }
-        }
-        if (oldValue != null) {
-            context.putVar(objectVarName, oldValue);
-        } else {
-            context.removeVar(objectVarName);
         }
         return sum.getSum();
     }
 
     private Object getValue(Object i, String fieldName) {
-        if (i instanceof Map) {
-            Map<?,?> map = (Map<?,?>) i;
+        if (i instanceof Map<?,?> map) {
             if (!map.containsKey(fieldName)) {
-                throw new RuntimeException("Attribute " + fieldName + " does not exist in collection element!");
+                throw new JxlsException("Attribute " + fieldName + " does not exist in collection element!");
             }
             return map.get(fieldName);
         } else {
@@ -120,18 +101,17 @@ public class GroupSum<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Collection<Object> getItems(String expression) {
+    private Iterable<Object> getItems(String expression) {
         Object result = getValue(expression);
         if (result == null) {
             throw new NullPointerException("\"" + expression + "\" is null!");
-        } else if (!(result instanceof Collection)) {
-            throw new ClassCastException(expression + " is not a Collection!");
+        } else if (!(result instanceof Iterable)) {
+            throw new ClassCastException(expression + " is not an Iterable!");
         }
-        return (Collection<Object>) result;
+        return (Iterable<Object>) result;
     }
 
     private Object getValue(String expression) {
-        return new JexlExpressionEvaluator(expression).evaluate(context.toMap());
+        return context.evaluate(expression);
     }
 }

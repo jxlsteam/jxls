@@ -9,13 +9,14 @@ import java.util.Locale;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 
 public class GroupingDemo {
 
     @Test
     public void test() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", _generateSampleEmployeeData());
         
         JxlsTester tester = JxlsTester.xlsx(getClass());

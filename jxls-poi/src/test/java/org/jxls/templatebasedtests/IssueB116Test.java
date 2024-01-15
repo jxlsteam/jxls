@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Formula handling issues (formula external to any jx:area)
@@ -84,7 +85,7 @@ public class IssueB116Test {
     }
 
     private Context getContext() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("vars", Arrays.asList(1.234, 5.678, 3.1234, 8.9090, 12.34567));
         return context;
     }

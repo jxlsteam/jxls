@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.functions.DoubleSummarizerBuilder;
 import org.jxls.functions.GroupSum;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Simplified real world testcase for nested sums
@@ -28,7 +31,7 @@ public class NestedSumsTest {
     @Test
     public void nestedSums() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<Map<String, Object>> testData = getTestData();
         testData.get(2).put("class2", "Liegenschaften");
         context.putVar("list", testData);
@@ -41,20 +44,20 @@ public class NestedSumsTest {
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
 
-            assertEquals("Wrong amount in D25!\n", Double.valueOf(123d), w.getCellValueAsDouble(25, 4));
+            assertEquals("Wrong amount in D25!\n", 123d, w.getCellValueAsDouble(25, 4), 0.005d);
 
-            assertEquals("Wrong group sum in D9!\n", Double.valueOf(1000d), w.getCellValueAsDouble(9, 4));
-            assertEquals("Wrong group sum in D15!\n", Double.valueOf(700d), w.getCellValueAsDouble(15, 4));
-            assertEquals("Wrong sum in D16!\n", Double.valueOf(1700d), w.getCellValueAsDouble(16, 4));
+            assertEquals("Wrong group sum in D9!\n", 1000d, w.getCellValueAsDouble(9, 4), 0.005d);
+            assertEquals("Wrong group sum in D15!\n", 700d, w.getCellValueAsDouble(15, 4), 0.005d);
+            assertEquals("Wrong sum in D16!\n", 1700d, w.getCellValueAsDouble(16, 4), 0.005d);
             
-            assertEquals("Wrong group sum in D23!\n", Double.valueOf(600d), w.getCellValueAsDouble(23, 4));
-            assertEquals("Wrong group sum in D26!\n", Double.valueOf(123d), w.getCellValueAsDouble(26, 4));
-            assertEquals("Wrong sum in D27!\n", Double.valueOf(723d), w.getCellValueAsDouble(27, 4));
+            assertEquals("Wrong group sum in D23!\n", 600d, w.getCellValueAsDouble(23, 4), 0.005d);
+            assertEquals("Wrong group sum in D26!\n", 123d, w.getCellValueAsDouble(26, 4), 0.005d);
+            assertEquals("Wrong sum in D27!\n", 723d, w.getCellValueAsDouble(27, 4), 0.005d);
             
-            assertEquals("Wrong group sum in D32!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(32, 4));
-            assertEquals("Wrong sum in D33!\n", Double.valueOf(0.31d), w.getCellValueAsDouble(33, 4));
+            assertEquals("Wrong group sum in D32!\n", 0.31d, w.getCellValueAsDouble(32, 4), 0.005d);
+            assertEquals("Wrong sum in D33!\n", 0.31d, w.getCellValueAsDouble(33, 4), 0.005d);
             
-            assertEquals("Wrong grand total! (D35)\n", Double.valueOf(2423.31d), w.getCellValueAsDouble(35, 4));
+            assertEquals("Wrong grand total! (D35)\n", 2423.31d, w.getCellValueAsDouble(35, 4), 0.005d);
         }
     }
 
@@ -65,24 +68,24 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf() {
         // Prepare
-        Context context = new Context();
+        Map<String, Object> data = new HashMap<>();
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
-        context.putVar("list", getTestData());
+        data.put("G", new GroupSum<>(new DoubleSummarizerBuilder()));
+        data.put("list", getTestData());
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf");
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "nestedSums_withIf");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(5, 4));
-            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(15, 4));
-            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(16, 4));
-            assertEquals(Double.valueOf(0.31d), w.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf(2423.31), w.getCellValueAsDouble(21, 4));
+            assertEquals(1700d, w.getCellValueAsDouble(5, 4), 0.005d);
+            assertEquals( 600d, w.getCellValueAsDouble(12, 4), 0.005d);
+            assertEquals( 123d, w.getCellValueAsDouble(15, 4), 0.005d);
+            assertEquals( 723d, w.getCellValueAsDouble(16, 4), 0.005d);
+            assertEquals(0.31d, w.getCellValueAsDouble(19, 4), 0.005d);
+            assertEquals(2423.31d, w.getCellValueAsDouble(21, 4), 0.005d);
         }
     }
 
@@ -100,22 +103,22 @@ public class NestedSumsTest {
     @Test
     public void nestedSums_withIf2() {
         // Prepare
-        Context context = new Context();
-        context.putVar("G", new GroupSum<Double>(context, new DoubleSummarizerBuilder()));
-        context.putVar("list", getTestData());
+        Map<String, Object> data = new HashMap<>();
+        data.put("G", new GroupSum<>(new DoubleSummarizerBuilder()));
+        data.put("list", getTestData());
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass(), "nestedSums_withIf2");
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "nestedSums_withIf2");
+        tester.test(data, JxlsPoiTemplateFillerBuilder.newInstance());
 
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
             w.selectSheet("nestedsums");
-            assertEquals(Double.valueOf(1700d), w.getCellValueAsDouble(12, 4));
-            assertEquals(Double.valueOf( 600d), w.getCellValueAsDouble(19, 4));
-            assertEquals(Double.valueOf( 123d), w.getCellValueAsDouble(22, 4));
-            assertEquals(Double.valueOf( 723d), w.getCellValueAsDouble(23, 4));
-            assertEquals(Double.valueOf(2423.31d), w.getCellValueAsDouble(29, 4));
+            assertEquals(1700d, w.getCellValueAsDouble(12, 4), 0.005d);
+            assertEquals( 600d, w.getCellValueAsDouble(19, 4), 0.005d);
+            assertEquals( 123d, w.getCellValueAsDouble(22, 4), 0.005d);
+            assertEquals( 723d, w.getCellValueAsDouble(23, 4), 0.005d);
+            assertEquals(2423.31d, w.getCellValueAsDouble(29, 4), 0.005d);
         }
     }
     

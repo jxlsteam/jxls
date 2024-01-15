@@ -13,12 +13,9 @@ A top-level XLS Area is an area which does not have a parent area (it is not nes
 Constructing XLS Area
 ---------------------
 
-There are 3 ways to build XLS Area
+There are 2 ways to build XLS Area
 
 * Using Excel markup
-
-* Using XML configuration
-
 * Using Java API
 
 Let's describe each of these methods in detail
@@ -69,37 +66,6 @@ First you are constructing *AreaBuilder* instance by instantiating *XlsCommentAr
 And the second step is to invoke `areaBuilder.build()` method to construct a list of *Area* objects from the template.
 
 After you get a list of top-level areas you can then use them for Excel transformation.
-
-### XML Configuration to build XLS Area
-
-If you prefer to define XLS Area with XML markup here is how you can do this.
-
-First you have to create an XML configuration defining your area.
-
-As an example let's consider a simple XML configuration from the [Object Collection output with XML Builder](../samples/object_collection_xmlbuilder.html)
-
-    <xls>
-        <area ref="Template!A1:D4">
-            <each items="employees" var="employee" ref="Template!A4:D4">
-                <area ref="Template!A4:D4"/>
-            </each>
-        </area>
-    </xls>
-
-The root element is `xls`. Then you can list a number of `area` elements defining each of the top-level areas.
-
- Here we have a single top-level area `A1:D4` at `Template` sheet.
-
-    <area ref="Template!A1:D4">
-
-Inside the area we define associated commands using a special element for a specific command. In this case we are defining
-`each command` with `each` xml element. The area associated with the `each command` is indicated  with `ref` attribute.
-
-    <each items="employees" var="employee" ref="Template!A4:D4">
-
-Inside the `each command` we have a nested area parameter as
-
-    <area ref="Template!A4:D4"/>
 
 ### Java API to build XLS Area
 

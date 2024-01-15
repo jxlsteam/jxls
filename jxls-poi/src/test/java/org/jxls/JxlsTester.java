@@ -8,10 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.Transformer;
-import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.JxlsHelper;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Template based test classes use this class for processing the template.
@@ -23,7 +23,6 @@ public class JxlsTester implements AutoCloseable {
     private boolean useFastFormulaProcessor = false;
     /** evaluating formulas turned on by default because in testcases we want to verify the output files */
     private boolean evaluateFormulas = true;
-    private boolean fullFormulaRecalculationOnOpening = false;
 
     /**
      * Use this constructor if you really need to change the Excel template filename (reasons can be: different templates in one testclass;
@@ -73,42 +72,20 @@ public class JxlsTester implements AutoCloseable {
      * @param context context for processing template
      */
     public void processTemplate(Context context) {
-        try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
-            try (OutputStream os = new FileOutputStream(out)) {
-                JxlsHelper jxls = JxlsHelper.getInstance();
-                if (useFastFormulaProcessor) {
-                    jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
-                }
-                jxls.setEvaluateFormulas(evaluateFormulas);
-                jxls.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
-                jxls.processTemplate(is, os, context);
-            }
-        } catch (IOException e) { // Testcase does not need not catch IOException.
-            throw new RuntimeException(e);
-        }
+        builder().buildAndFill(context.toMap(), out);
+    }
+    
+    public void fill(JxlsPoiTemplateFillerBuilder builder, Context context) {
+        builder.buildAndFill(context.toMap(), out);
     }
 
-    /**
-     * Call this method if you need to access the transformer instance.
-     * @param context context for processing template
-     * @param transformerChecker object for checking the transformer
-     */
-    public void createTransformerAndProcessTemplate(Context context, TransformerChecker transformerChecker) {
-        try (InputStream is = testclass.getResourceAsStream(excelTemplateFilename)) {
-            try (OutputStream os = new FileOutputStream(out)) {
-                Transformer transformer = PoiTransformer.createTransformer(is, os);
-                transformer = transformerChecker.checkTransformer(transformer);
-                JxlsHelper jxls = JxlsHelper.getInstance();
-                if (useFastFormulaProcessor) {
-                    jxls.setUseFastFormulaProcessor(useFastFormulaProcessor);
-                }
-                jxls.setEvaluateFormulas(evaluateFormulas);
-                jxls.setFullFormulaRecalculationOnOpening(fullFormulaRecalculationOnOpening);
-                jxls.processTemplate(context, transformer);
-            }
-        } catch (IOException e) { // Testcase does not need not catch IOException.
-            throw new RuntimeException(e);
+    public JxlsPoiTemplateFillerBuilder builder() {
+        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance()
+                .withTemplate(testclass.getResourceAsStream(excelTemplateFilename));
+        if (useFastFormulaProcessor) {
+            builder.withFastFormulaProcessor();
         }
+        return builder.withRecalculateFormulasBeforeSaving(evaluateFormulas);
     }
     
     // [Java 8] Uses can be changed to use of lambda
@@ -171,15 +148,6 @@ public class JxlsTester implements AutoCloseable {
         return this;
     }
 
-    public boolean isFullFormulaRecalculationOnOpening() {
-        return fullFormulaRecalculationOnOpening;
-    }
-
-    public JxlsTester setFullFormulaRecalculationOnOpening(boolean fullFormulaRecalculationOnOpening) {
-        this.fullFormulaRecalculationOnOpening = fullFormulaRecalculationOnOpening;
-        return this;
-    }
-
     public boolean isUseFastFormulaProcessor() {
         return useFastFormulaProcessor;
     }
@@ -193,7 +161,7 @@ public class JxlsTester implements AutoCloseable {
     }
     
     public static void quickProcessXlsTemplate(Class<?> testcase) {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", Employee.generateSampleEmployeeData());
 
         JxlsTester tester = JxlsTester.xls(testcase);

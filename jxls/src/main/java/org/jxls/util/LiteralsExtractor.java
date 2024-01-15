@@ -76,28 +76,27 @@ public class LiteralsExtractor {
             switch (symbol) {
                 case '"':
                 case '\'':
-                    if (!quotationsStack.empty() && quotationsStack.peek() == symbol) {
+                    if (!quotationsStack.empty() && quotationsStack.peek().charValue() == symbol) {
                         quotationsStack.pop();
                     } else {
-                        quotationsStack.push(symbol);
+                        quotationsStack.push(Character.valueOf(symbol));
                     }
                     break;
                 case '(':
                     if (quotationsStack.empty()) {
-                        bracketsStack.push(symbol);
+                        bracketsStack.push(Character.valueOf(symbol));
                     }
                     break;
                 case ')':
                     if (quotationsStack.empty()) {
-                        if (bracketsStack.peek() == '(') {
+                        if (bracketsStack.peek().charValue() == '(') {
                             bracketsStack.pop();
                             if (bracketsStack.empty()) {
                                 return cmd + symbol;
                             }
                         } else {
                             // no opening, but closing !!
-                            String errorMessage = "Got closing ) but no opening of it. Pos: " + text.substring(0, i);
-                            throw new IllegalArgumentException(errorMessage);
+                            throw new IllegalArgumentException("Got ')' but not '(' of it. Pos: " + text.substring(0, i));
                         }
                     }
                     break;

@@ -1,6 +1,7 @@
 package org.jxls.transform;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -8,9 +9,8 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ImageType;
 import org.jxls.common.Size;
-import org.jxls.common.ExceptionHandler;
+import org.jxls.logging.JxlsLogger;
 
 /**
  * Defines interface methods for Excel operations
@@ -19,12 +19,10 @@ import org.jxls.common.ExceptionHandler;
  */
 public interface Transformer {
 
-    void setTransformationConfig(TransformationConfig transformationConfig);
-
-    TransformationConfig getTransformationConfig();
-
     void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeight);
 
+    void setOutputStream(OutputStream outputStream);
+    
     /***
      * Writes Excel workbook to output stream but not close the stream
      * designed to use with ZipOutputStream or other OutputStream
@@ -66,10 +64,6 @@ public interface Transformer {
 
     List<CellData> getCommentedCells();
 
-    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType);
-
-    void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY);
-
     boolean deleteSheet(String sheetName);
 
     void setHidden(String sheetName, boolean hidden);
@@ -77,8 +71,6 @@ public interface Transformer {
     void updateRowHeight(String srcSheetName, int srcRowNum, String targetSheetName, int targetRowNum);
 
     void adjustTableSize(CellRef ref, Size size);
-
-    void mergeCells(CellRef ref, int rows, int cols);
 
     /**
      * This property is used to recalculate all formulas before saving the workbook.
@@ -126,14 +118,18 @@ public interface Transformer {
      * @return true if the transformer can process cells only in a single pass
      */
     boolean isForwardOnly();
-    
-    /**
-     * @return not null
-     */
-    ExceptionHandler getExceptionHandler();
 
     /**
-     * @param exceptionHandler not null
+     * @return never null
      */
-    void setExceptionHandler(ExceptionHandler exceptionHandler);
+    JxlsLogger getLogger();
+    
+    /**
+     * @param logger not null
+     */
+    void setLogger(JxlsLogger logger);
+    
+    void setIgnoreColumnProps(boolean ignoreColumnProps);
+    
+    void setIgnoreRowProps(boolean ignoreRowProps);
 }

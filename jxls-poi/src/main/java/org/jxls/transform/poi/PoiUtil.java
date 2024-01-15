@@ -83,6 +83,8 @@ public class PoiUtil {
         for (String commentLine : commentLines) {
             if ((commentLine != null) && XlsCommentAreaBuilder.isCommandString(commentLine.trim())) {
                 return true;
+            } else if (commentLine.trim().endsWith(">") || commentLine.trim().startsWith("<")) {
+            	return true;
             }
         }
         return false;

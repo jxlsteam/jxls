@@ -14,12 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jxls.area.XlsArea;
-import org.jxls.expression.ExpressionEvaluator;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.builder.xls.JxlsCommentException;
+import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.formula.AbstractFormulaProcessor;
 import org.jxls.transform.Transformer;
-import org.jxls.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents an Excel cell data holder and cell value evaluator
@@ -31,7 +29,7 @@ public class CellData {
     private static final String USER_FORMULA_SUFFIX = "]";
     private static final String ATTR_PREFIX = "(";
     private static final String ATTR_SUFFIX = ")";
-    public static final String JX_PARAMS_PREFIX = "jx:params";
+    public static final String JX_PARAMS_PREFIX = XlsCommentAreaBuilder.COMMAND_PREFIX + "params";
     /*
      * In addition to normal (straight) single and double quotes, this regex
      * includes the following commonly occurring quote-like characters (some
@@ -54,7 +52,6 @@ public class CellData {
     private static final Pattern ATTR_REGEX_PATTERN = Pattern.compile(ATTR_REGEX);
     private static final String FORMULA_STRATEGY_PARAM = "formulaStrategy";
     private static final String DEFAULT_VALUE = "defaultValue";
-    private static Logger logger = LoggerFactory.getLogger(CellData.class);
 
     public enum CellType {
         STRING, NUMBER, BOOLEAN, DATE, LOCAL_DATE, LOCAL_TIME, LOCAL_DATETIME, ZONED_DATETIME, INSTANT, FORMULA, BLANK, ERROR
@@ -75,7 +72,7 @@ public class CellData {
     private FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
     private String defaultValue;
     protected XlsArea area;
-    private List<CellRef> targetPos = new ArrayList<CellRef>();
+    private List<CellRef> targetPos = new ArrayList<>();
     private List<AreaRef> targetParentAreaRef = new ArrayList<>();
     private Transformer transformer;
 
@@ -137,10 +134,6 @@ public class CellData {
 
     public void setEvaluationResult(Object evaluationResult) {
         this.evaluationResult = evaluationResult;
-    }
-
-    private ExpressionEvaluator getExpressionEvaluator() {
-        return transformer.getTransformationConfig().getExpressionEvaluator();
     }
 
     public FormulaStrategy getFormulaStrategy() {
@@ -220,7 +213,17 @@ public class CellData {
     }
 
     public boolean isJointedFormulaCell() {
-        return isParameterizedFormulaCell() && Util.formulaContainsJointedCellRef(cellValue.toString());
+        return isParameterizedFormulaCell() && formulaContainsJointedCellRef(cellValue.toString());
+    }
+    
+    /**
+     * Checks if the formula contains jointed cell references
+     * Jointed references have format U_(cell1, cell2) e.g. $[SUM(U_(F8,F13))]
+     * @param formula string
+     * @return true if the formula contains jointed cell references
+     */
+    protected boolean formulaContainsJointedCellRef(String formula) {
+        return AbstractFormulaProcessor.regexJointedCellRefPattern.matcher(formula).find();
     }
 
     public boolean addTargetPos(CellRef cellRef) {
@@ -277,41 +280,13 @@ public class CellData {
         return str.startsWith(USER_FORMULA_PREFIX) && str.endsWith(USER_FORMULA_SUFFIX);
     }
     
-    private void evaluate(String strValue, Context context) {
-        StringBuffer sb = new StringBuffer();
-        TransformationConfig transformationConfig = transformer.getTransformationConfig();
-        int beginExpressionLength = transformationConfig.getExpressionNotationBegin().length();
-        int endExpressionLength = transformationConfig.getExpressionNotationEnd().length();
-        Matcher exprMatcher = transformationConfig.getExpressionNotationPattern().matcher(strValue);
-        ExpressionEvaluator evaluator = getExpressionEvaluator();
-        String matchedString;
-        String expression;
-        Object lastMatchEvalResult = null;
-        int matchCount = 0;
-        int endOffset = 0;
-        while (exprMatcher.find()) {
-            endOffset = exprMatcher.end();
-            matchCount++;
-            matchedString = exprMatcher.group();
-            expression = matchedString.substring(beginExpressionLength, matchedString.length() - endExpressionLength);
-            lastMatchEvalResult = evaluator.evaluate(expression, context.toMap());
-            exprMatcher.appendReplacement(sb,
-                    Matcher.quoteReplacement(lastMatchEvalResult != null ? lastMatchEvalResult.toString() : ""));
-        }
-        String lastStringResult = lastMatchEvalResult != null ? lastMatchEvalResult.toString() : "";
-        boolean isAppendTail = matchCount == 1 && endOffset < strValue.length();
-        if (matchCount > 1 || isAppendTail) {
-            exprMatcher.appendTail(sb);
-            evaluationResult = sb.toString();
-        } else if (matchCount == 1) {
-            if (sb.length() > lastStringResult.length()) {
-                evaluationResult = sb.toString();
-            } else {
-                evaluationResult = lastMatchEvalResult;
+    private void evaluate(String expression, Context context) {
+        EvaluationResult er = context._evaluateRawExpression(expression);
+        if (er != null) {
+            evaluationResult = er.getResult();
+            if (er.isSetTargetCellType()) {
                 setTargetCellType();
             }
-        } else if (matchCount == 0) {
-            evaluationResult = strValue;
         }
     }
 
@@ -346,10 +321,8 @@ public class CellData {
     protected void processJxlsParams(String cellComment) {
         int nameEndIndex = cellComment.indexOf(ATTR_PREFIX, JX_PARAMS_PREFIX.length());
         if (nameEndIndex < 0) {
-            String errMsg = "Failed to parse jxls params [" + cellComment + "] at " + cellRef.getCellName()
-                    + ". Expected '" + ATTR_PREFIX + "' symbol.";
-            logger.error(errMsg);
-            throw new IllegalStateException(errMsg);
+            throw new JxlsCommentException("Failed to parse jxls params '" + cellComment + "' at " + cellRef.getCellName()
+                    + ". Expected '" + ATTR_PREFIX + "' symbol.");
         }
         attrMap = buildAttrMap(cellComment, nameEndIndex);
         if (attrMap.containsKey(FORMULA_STRATEGY_PARAM)) {
@@ -363,17 +336,15 @@ public class CellData {
     private Map<String, String> buildAttrMap(String paramsLine, int nameEndIndex) {
         int paramsEndIndex = paramsLine.lastIndexOf(ATTR_SUFFIX);
         if (paramsEndIndex < 0) {
-            String errMsg = "Failed to parse params line [" + paramsLine + "] at " + cellRef.getCellName()
-                    + ". Expected '" + ATTR_SUFFIX + "' symbol.";
-            logger.error(errMsg);
-            throw new IllegalArgumentException(errMsg);
+            throw new JxlsCommentException("Failed to parse params line '" + paramsLine + "' at " + cellRef.getCellName()
+                    + ". Expected '" + ATTR_SUFFIX + "' symbol.");
         }
         String attrString = paramsLine.substring(nameEndIndex + 1, paramsEndIndex).trim();
         return parseCommandAttributes(attrString);
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {
-        Map<String, String> attrMap = new LinkedHashMap<String, String>();
+        Map<String, String> attrMap = new LinkedHashMap<>();
         Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
         while (attrMatcher.find()) {
             String attrData = attrMatcher.group();

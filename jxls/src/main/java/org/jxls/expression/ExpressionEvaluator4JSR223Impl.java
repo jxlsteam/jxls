@@ -24,7 +24,7 @@ public class ExpressionEvaluator4JSR223Impl implements ExpressionEvaluator {
         Map<String, Object> context;
     }
 
-    private static final ThreadLocal<BindingCacheHolder> threadLocalCache = new ThreadLocal<BindingCacheHolder>() {
+    private static final ThreadLocal<BindingCacheHolder> threadLocalCache = new ThreadLocal<>() {
         
         @Override
         protected BindingCacheHolder initialValue() {
@@ -49,6 +49,7 @@ public class ExpressionEvaluator4JSR223Impl implements ExpressionEvaluator {
             return scriptEngine.eval(expression, holder.binding);
         } catch (ScriptException e) {
             throw new EvaluationException("Evaluate error on: " + expression, e);
+            // JxlsLogger not needed here.
         }
     }
 

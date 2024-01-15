@@ -3,7 +3,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-project</artifactId>
     <packaging>pom</packaging>
-    <version>2.14.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Small library for Excel generation based on XLS templates</description>
     <url>http://jxls.sf.net</url>
@@ -23,9 +23,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <surefire.version>3.0.0-M5</surefire.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <surefire.version>3.2.2</surefire.version>
     </properties>
 
     <scm>
@@ -43,38 +43,15 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
-                <version>5.8.2</version>
+                <version>5.10.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>4.3.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-core</artifactId>
-                <version>2.1-groovy-3.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>3.3.0</version>
+                <version>4.11.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -115,8 +92,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
@@ -151,21 +126,6 @@
                     <tagNameFormat>@{project.version}</tagNameFormat>
                     <goals>deploy</goals>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <!-- The gmavenplus plugin is used to compile Groovy code. To learn
-                    more about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.13.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compileTests</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Support for arrays in EachCommand
@@ -16,7 +17,7 @@ public class IssueB198Test {
     public void test() throws Exception {
         // Prepare
         String[] array = new String[] { "Arrays", "will", "work." };
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("myArray", array);
         
         // Test

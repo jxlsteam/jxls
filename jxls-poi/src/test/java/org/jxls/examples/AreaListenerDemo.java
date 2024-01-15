@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
+import org.jxls.Jxls3Tester;
 import org.jxls.area.XlsArea;
 import org.jxls.command.Command;
 import org.jxls.command.EachCommand;
@@ -21,31 +22,27 @@ import org.jxls.common.AreaListener;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
 import org.jxls.entity.Employee;
+import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.transform.poi.PoiTransformer;
-import org.jxls.util.TransformerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * @author Leonid Vysochyn Date: 2/16/12 5:39 PM
+ * @author Leonid Vysochyn
+ * @since 2/16/12
  */
 public class AreaListenerDemo {
-    private static final Logger logger = LoggerFactory.getLogger(AreaListenerDemo.class);
     private static final String template = "each_if_demo.xls";
     private static final String output = "target/listener_demo_output.xls";
 
     @Test
     public void test() throws IOException {
-        logger.info("Running Area Listener demo");
         List<Department> departments = Department.createDepartments();
-        logger.info("Opening input stream");
         try (InputStream is = EachIfCommandDemo.class.getResourceAsStream(template)) {
             try (OutputStream os = new FileOutputStream(output)) {
-                Transformer transformer = TransformerFactory.createTransformer(is, os);
-                logger.info("Creating area");
+                Transformer transformer = Jxls3Tester.createTransformer(is, os); 
                 XlsArea xlsArea = new XlsArea("Template!A1:G15", transformer);
                 XlsArea departmentArea = new XlsArea("Template!A2:G12", transformer);
                 EachCommand departmentEachCommand = new EachCommand("department", "departments", departmentArea);
@@ -59,26 +56,21 @@ public class AreaListenerDemo {
                 Command employeeEachCommand = new EachCommand("employee", "department.staff", employeeArea);
                 departmentArea.addCommand(new AreaRef("Template!A9:F9"), employeeEachCommand);
                 xlsArea.addCommand(new AreaRef("Template!A2:F12"), departmentEachCommand);
-                Context context = new Context();
+                Context context = new ContextImpl();
                 context.putVar("departments", departments);
-                logger.info("Applying at cell " + new CellRef("Down!A1"));
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
-                xlsArea.processFormulas();
-                logger.info("Setting EachCommand direction to Right");
+                StandardFormulaProcessor fp = new StandardFormulaProcessor();
+                xlsArea.processFormulas(fp);
                 departmentEachCommand.setDirection(EachCommand.Direction.RIGHT);
-                logger.info("Applying at cell " + new CellRef("Right!A1"));
                 xlsArea.reset();
                 xlsArea.applyAt(new CellRef("Right!A1"), context);
-                xlsArea.processFormulas();
-                logger.info("Complete");
+                xlsArea.processFormulas(fp);
                 transformer.write();
-                logger.info("written to file");
             }
         }
     }
 
     public static class SimpleAreaListener implements AreaListener {
-        private static final Logger logger = LoggerFactory.getLogger(SimpleAreaListener.class);
         private final CellRef bonusCell1 = new CellRef("Template!E9");
         private final CellRef bonusCell2 = new CellRef("Template!E18");
         private PoiTransformer transformer;
@@ -104,7 +96,6 @@ public class AreaListenerDemo {
             if (bonusCell1.equals(srcCell) || bonusCell2.equals(srcCell)) { // we are at employee bonus cell
                 Employee employee = (Employee) context.getVar("employee");
                 if (employee.getBonus().doubleValue() >= 0.2) { // highlight bonus when >= 20%
-                    logger.info("highlighting bonus for employee " + employee.getName());
                     highlightBonus(targetCell);
                 }
             }

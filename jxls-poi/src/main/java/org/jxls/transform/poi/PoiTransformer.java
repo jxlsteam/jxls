@@ -9,19 +9,12 @@ import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -33,17 +26,14 @@ import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
-import org.jxls.common.ExceptionHandler;
-import org.jxls.common.ImageType;
+import org.jxls.common.JxlsException;
 import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.RowData;
 import org.jxls.common.SheetData;
 import org.jxls.common.Size;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.AbstractTransformer;
-import org.jxls.util.CannotOpenWorkbookException;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * POI implementation of {@link org.jxls.transform.Transformer} interface
@@ -51,30 +41,12 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public class PoiTransformer extends AbstractTransformer {
-    public static final String POI_CONTEXT_KEY = "util";
-
-    private static Logger logger = LoggerFactory.getLogger(PoiTransformer.class);
-
     private Workbook workbook;
     private OutputStream outputStream;
     private InputStream inputStream;
     private final boolean isSXSSF;
-    private ExceptionHandler exceptionHandler = new PoiExceptionLogger();
+    private JxlsLogger logger = new PoiExceptionLogger();
     
-    /**
-     * The cell style is lost after the merge, the following operation restores the merged cell
-     * to the style of the first cell before the merge.
-     */
-    private CellStyle cellStyle;
-
-    /**
-     * No streaming
-     * @param workbook
-     */
-    private PoiTransformer(Workbook workbook) {
-        this(workbook, false);
-    }
-
     /**
      * @param workbook source workbook to transform
      * @param streaming false: without streaming, true: with streaming (with default parameter values)
@@ -95,8 +67,8 @@ public class PoiTransformer extends AbstractTransformer {
         isSXSSF = streaming;
         readCellData();
         if (isSXSSF) {
-            if (this.workbook instanceof XSSFWorkbook) {
-                this.workbook = new SXSSFWorkbook((XSSFWorkbook) this.workbook, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
+            if (this.workbook instanceof XSSFWorkbook xwb) {
+                this.workbook = new SXSSFWorkbook(xwb, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
             } else {
                 throw new IllegalArgumentException("Failed to create POI Transformer using SXSSF API as the input workbook is not XSSFWorkbook");
             }
@@ -109,82 +81,6 @@ public class PoiTransformer extends AbstractTransformer {
     
     public void setInputStream(InputStream is) {
         inputStream = is;
-    }
-
-    /**
-     * Creates transformer from an input stream template and output stream
-     * @param is input stream to read the Excel template file. Format can be XLSX (recommended) or XLS.
-     * @param os output stream to write the Excel file. Must be the same format.
-     * @return {@link PoiTransformer} instance
-     */
-    public static PoiTransformer createTransformer(InputStream is, OutputStream os) {
-        PoiTransformer transformer = createTransformer(is);
-        transformer.setOutputStream(os);
-        transformer.setInputStream(is);
-        return transformer;
-    }
-
-    /**
-     * Creates transformer instance for given input stream
-     * @param is input stream for the Excel template file. Format can be XLSX (recommended) or XLS.
-     * @return transformer instance reading the template from the passed input stream
-     * @throws CannotOpenWorkbookException if an error occurs during opening the Excel workbook
-     */
-    public static PoiTransformer createTransformer(InputStream is) {
-        Workbook workbook;
-        try {
-            workbook = WorkbookFactory.create(is);
-        } catch (Exception e) {
-            throw new CannotOpenWorkbookException(e);
-        }
-        return createTransformer(workbook);
-    }
-
-    /**
-     * Creates transformer instance from a {@link Workbook} instance
-     * @param workbook Excel template
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createTransformer(Workbook workbook) {
-        return new PoiTransformer(workbook);
-    }
-
-    /**
-     * Creates transformer for given workbook. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook) {
-        return createSxssfTransformer(workbook, SXSSFWorkbook.DEFAULT_WINDOW_SIZE, false);
-    }
-
-    /**
-     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles) {
-        return createSxssfTransformer(workbook, rowAccessWindowSize, compressTmpFiles, false);
-    }
-
-    /**
-     * Creates transformer for given workbook and streaming parameters. Streaming will be used.
-     * @param workbook Excel template. Format must be XLSX.
-     * @param rowAccessWindowSize -
-     * @param compressTmpFiles -
-     * @param useSharedStringsTable -
-     * @return transformer instance with the given workbook as template
-     */
-    public static PoiTransformer createSxssfTransformer(Workbook workbook, int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
-        return new PoiTransformer(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
-    }
-
-    public static Context createInitialContext() {
-        Context context = new Context();
-        context.putVar(POI_CONTEXT_KEY, new PoiUtil());
-        return context;
     }
 
     @Override
@@ -227,7 +123,7 @@ public class PoiTransformer extends AbstractTransformer {
         CellData cellData = getCellData(srcCellRef);
         if (cellData != null) {
             if (targetCellRef == null || targetCellRef.getSheetName() == null) {
-                logger.info("Target cellRef is null or has empty sheet name, cellRef=" + targetCellRef);
+                getLogger().info("targetCellRef is null or has empty sheet name, cellRef=" + targetCellRef);
                 return null; // do not transform
             }
         }
@@ -249,25 +145,28 @@ public class PoiTransformer extends AbstractTransformer {
         }
         try {
             // conditional formatting
-            destCell.setBlank();  // Modified as setCellType is deprecated
+            destCell.setBlank();
             ((PoiCellData) cellData).writeToCell(destCell, context, this);
             copyMergedRegions(cellData, targetCellRef);
         } catch (Exception e) {
-            getExceptionHandler().handleCellException(e, cellData.toString(), context.toMap().keySet().toString());
+            getLogger().handleCellException(e, cellData.toString(), context);
         }
     }
 
     @Override
-    public ExceptionHandler getExceptionHandler() {
-        return exceptionHandler;
+    public JxlsLogger getLogger() {
+        if (logger == null) {
+            throw new JxlsException("Transformer has no logger");
+        }
+        return logger;
     }
     
     @Override
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        if (exceptionHandler == null) {
-            throw new IllegalArgumentException();
+    public void setLogger(JxlsLogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("logger must not be null");
         }
-        this.exceptionHandler = exceptionHandler;
+        this.logger = logger;
     }
 
     @Override
@@ -355,7 +254,7 @@ public class PoiTransformer extends AbstractTransformer {
             poiCell.setCellFormula(formulaString);
             clearCellValue(poiCell);
         } catch (Exception e) {
-            getExceptionHandler().handleFormulaException(e, cellRef.getCellName(), formulaString);
+            getLogger().handleFormulaException(e, cellRef.getCellName(), formulaString);
         }
     }
     
@@ -389,7 +288,7 @@ public class PoiTransformer extends AbstractTransformer {
             }
             return;
         }
-        cell.setBlank();   // Modified as setCellType is deprecated
+        cell.setBlank();
         cell.setCellStyle(workbook.getCellStyleAt(0));
         if (cell.getCellComment() != null) {
             cell.removeCellComment();
@@ -411,7 +310,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     @Override
     public List<CellData> getCommentedCells() {
-        List<CellData> commentedCells = new ArrayList<CellData>();
+        List<CellData> commentedCells = new ArrayList<>();
         for (SheetData sheetData : sheetMap.values()) {
             for (RowData rowData : sheetData) {
                 if (rowData == null) continue;
@@ -424,44 +323,7 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
 
-    private void addImage(AreaRef areaRef, int imageIdx, Double scaleX, Double scaleY) {
-        boolean pictureResizeFlag = scaleX != null && scaleY != null;
-        CreationHelper helper = workbook.getCreationHelper();
-        Sheet sheet = workbook.getSheet(areaRef.getSheetName());
-        if (sheet == null) {
-            sheet = workbook.createSheet(areaRef.getSheetName());
-        }
-        Drawing<?> drawing = sheet.createDrawingPatriarch();
-        ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setCol1(areaRef.getFirstCellRef().getCol());
-        anchor.setRow1(areaRef.getFirstCellRef().getRow());
-        if (pictureResizeFlag) {
-            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
-            anchor.setCol2(-1);
-            anchor.setRow2(-1);
-        } else {
-            anchor.setCol2(areaRef.getLastCellRef().getCol());
-            anchor.setRow2(areaRef.getLastCellRef().getRow());
-        }
-        Picture picture = drawing.createPicture(anchor, imageIdx);
-        if (pictureResizeFlag) {
-            picture.resize(scaleX, scaleY);
-        }
-    }
-
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType, Double scaleX, Double scaleY) {
-        int poiPictureType = findPoiPictureTypeByImageType(imageType);
-        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
-        addImage(areaRef, pictureIdx, scaleX, scaleY);
-    }
-
-    @Override
-    public void addImage(AreaRef areaRef, byte[] imageBytes, ImageType imageType) {
-        int poiPictureType = findPoiPictureTypeByImageType(imageType);
-        int pictureIdx = workbook.addPicture(imageBytes, poiPictureType);
-        addImage(areaRef, pictureIdx, null, null);
-    }
+    
 
     @Override
     public void write() throws IOException {
@@ -473,7 +335,7 @@ public class PoiTransformer extends AbstractTransformer {
     @Override
     public void writeButNotCloseStream() throws IOException {
         if (outputStream == null) {
-            throw new IllegalStateException("Cannot write a workbook with an uninitialized output stream");
+            throw new IllegalStateException("Cannot write a workbook with an uninitialized output stream. Was Transformer.setOutputStream() called?");
         }
         if (workbook == null) {
             throw new IllegalStateException("Cannot write an uninitialized workbook");
@@ -495,40 +357,12 @@ public class PoiTransformer extends AbstractTransformer {
                 ((SXSSFWorkbook) workbook).dispose();
             }
         } catch (Exception e) {
-            logger.warn("Error disposing streamed workbook", e);
+            getLogger().warn(e, "Error disposing streamed workbook");
         }
-    }
-
-    private int findPoiPictureTypeByImageType(ImageType imageType) {
-        int poiType = -1;
-        if (imageType == null) {
-            throw new IllegalArgumentException("Image type is undefined");
-        }
-        switch (imageType) {
-            case PNG:
-                poiType = Workbook.PICTURE_TYPE_PNG;
-                break;
-            case JPEG:
-                poiType = Workbook.PICTURE_TYPE_JPEG;
-                break;
-            case EMF:
-                poiType = Workbook.PICTURE_TYPE_EMF;
-                break;
-            case WMF:
-                poiType = Workbook.PICTURE_TYPE_WMF;
-                break;
-            case DIB:
-                poiType = Workbook.PICTURE_TYPE_DIB;
-                break;
-            case PICT:
-                poiType = Workbook.PICTURE_TYPE_PICT;
-                break;
-        }
-        return poiType;
     }
 
     private List<CellData> readCommentsFromSheet(Sheet sheet, int rowNum) {
-        List<CellData> commentDataCells = new ArrayList<CellData>();
+        List<CellData> commentDataCells = new ArrayList<>();
         for (Entry<CellAddress, ? extends Comment> e : sheet.getCellComments().entrySet()) {
             if (e.getKey().getRow() == rowNum) {
                 Comment comment = e.getValue();
@@ -547,6 +381,7 @@ public class PoiTransformer extends AbstractTransformer {
         return outputStream;
     }
 
+    @Override
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
@@ -568,7 +403,7 @@ public class PoiTransformer extends AbstractTransformer {
             workbook.removeSheetAt(sheetIndex);
             return true;
         } else {
-            logger.warn("Failed to find '{}' worksheet in a sheet map. Skipping the deletion.", sheetName);
+            getLogger().warn("Failed to find sheet '" + sheetName + "' in sheet map. Skipping the deletion.");
             return false;
         }
     }
@@ -615,7 +450,7 @@ public class PoiTransformer extends AbstractTransformer {
         if (size.getHeight() > 0 && xwb != null) {
             XSSFSheet sheet = xwb.getSheet(ref.getSheetName());
             if (sheet == null) {
-                logger.error("Can not access sheet '{}'", ref.getSheetName());
+                getLogger().error("Can not access sheet '" + ref.getSheetName() + "'");
             } else {
                 for (XSSFTable table : sheet.getTables()) {
                     AreaRef areaRef = new AreaRef(table.getSheetName() + "!" + table.getCTTable().getRef());
@@ -625,40 +460,6 @@ public class PoiTransformer extends AbstractTransformer {
                         table.getCTTable().setRef(
                                 areaRef.getFirstCellRef().toString(true) + ":" + areaRef.getLastCellRef().toString(true));
                     }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void mergeCells(CellRef cellRef, int rows, int cols) {
-        Sheet sheet = getWorkbook().getSheet(cellRef.getSheetName());
-        CellRangeAddress region = new CellRangeAddress(
-                cellRef.getRow(),
-                cellRef.getRow() + rows - 1,
-                cellRef.getCol(),
-                cellRef.getCol() + cols - 1);
-        sheet.addMergedRegion(region);
-
-        try {
-            cellStyle = getCellStyle(cellRef);
-        } catch (Exception ignore) {
-        }
-        for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) {
-                row = sheet.createRow(i);
-            }
-            for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
-                Cell cell = row.getCell(j);
-                if (cell == null) {
-                    cell = row.createCell(j);
-                }
-                if (cellStyle == null) {
-                    cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
-                    cell.getCellStyle().setVerticalAlignment(VerticalAlignment.CENTER);
-                } else {
-                    cell.setCellStyle(cellStyle);
                 }
             }
         }

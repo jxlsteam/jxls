@@ -4,7 +4,7 @@ public class DoubleSummarizerBuilder implements SummarizerBuilder<Double> {
 
     @Override
     public Summarizer<Double> build() {
-        return new Summarizer<Double>() {
+        return new Summarizer<>() {
             private double sum = 0;
 
             @Override

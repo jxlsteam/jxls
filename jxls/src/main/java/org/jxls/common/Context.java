@@ -1,85 +1,29 @@
 package org.jxls.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.jxls.expression.ExpressionEvaluator;
+
 /**
- * Map bean context
- * 
- * @author Leonid Vysochyn
+ * Jxls context interface (Jxls internal class)
  */
-public class Context {
-    protected Map<String, Object> varMap = new HashMap<String, Object>();
-    private Config config = new Config();
+public interface Context extends PublicContext {
 
-    public Context() {
-    }
+    Map<String, Object> toMap();
 
-    public Context(Map<String, Object> varMap) {
-        for (Map.Entry<String, Object> entry : varMap.entrySet()) {
-            this.varMap.put(entry.getKey(), entry.getValue());
-        }
-    }
+    ExpressionEvaluator getExpressionEvaluator(String expression);
+    
+    EvaluationResult _evaluateRawExpression(String rawExpression);
 
-    public Map<String, Object> toMap() {
-        return varMap;
-    }
+    boolean isUpdateCellDataArea();
 
-    public Object getVar(String name) {
-        return varMap.get(name);
-    }
+    void setUpdateCellDataArea(boolean updateCellDataArea);
 
-    public Object getRunVar(String name) {
-        return getVar(name);
-    }
+    boolean isIgnoreSourceCellStyle();
 
-    public void putVar(String name, Object value) {
-        varMap.put(name, value);
-    }
+    void setIgnoreSourceCellStyle(boolean ignoreSourceCellStyle);
 
-    public void removeVar(String var) {
-        varMap.remove(var);
-    }
+    Map<String, String> getCellStyleMap();
 
-    public Config getConfig() {
-        return config;
-    }
-
-    @Override
-    public String toString() {
-        return "Context" + varMap;
-    }
-
-    /**
-     * Special config class to use in Area processing
-     */
-    public static class Config {
-        private boolean ignoreSourceCellStyle = false;
-        private Map<String, String> cellStyleMap = new HashMap<>();
-        private boolean isFormulaProcessingRequired = true;
-
-        public boolean isFormulaProcessingRequired() {
-            return isFormulaProcessingRequired;
-        }
-
-        public void setIsFormulaProcessingRequired(boolean isFormulaProcessingRequired) {
-            this.isFormulaProcessingRequired = isFormulaProcessingRequired;
-        }
-
-        public boolean isIgnoreSourceCellStyle() {
-            return ignoreSourceCellStyle;
-        }
-
-        public void setIgnoreSourceCellStyle(boolean ignoreSourceCellStyle) {
-            this.ignoreSourceCellStyle = ignoreSourceCellStyle;
-        }
-
-        public Map<String, String> getCellStyleMap() {
-            return cellStyleMap;
-        }
-
-        public void setCellStyleMap(Map<String, String> cellStyleMap) {
-            this.cellStyleMap = cellStyleMap;
-        }
-    }
+    void setCellStyleMap(Map<String, String> cellStyleMap);
 }

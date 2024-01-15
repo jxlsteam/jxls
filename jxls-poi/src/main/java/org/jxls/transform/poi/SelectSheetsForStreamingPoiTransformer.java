@@ -15,10 +15,23 @@ import org.jxls.common.Context;
  * You can use this PoiTransformer implementation to decide which worksheets use streaming.
  */
 public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
-    private Set<String> dataSheetsToUseStreaming = null;
-
+	protected Set<String> dataSheetsToUseStreaming = null;
+    protected boolean allSheets = false;
+    
     public SelectSheetsForStreamingPoiTransformer(Workbook workbook) {
         super(workbook, true);
+    }
+
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, boolean allSheets,
+            int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        super(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
+        this.allSheets = allSheets;
+    }
+
+    public SelectSheetsForStreamingPoiTransformer(Workbook workbook, Set<String> sheetNames,
+            int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        super(workbook, true, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
+        this.dataSheetsToUseStreaming = sheetNames;
     }
 
     public void setDataSheetsToUseStreaming(Set<String> sheetNames) {
@@ -36,8 +49,8 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
             destSheet = getWorkbook().createSheet(targetCellRef.getSheetName());
             PoiUtil.copySheetProperties(getWorkbook().getSheet(srcCellRef.getSheetName()), destSheet);
         }
-        boolean useStreamingForThisSheet = dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(targetCellRef.getSheetName());
-        if (!useStreamingForThisSheet && isStreaming()) { // 
+        boolean useStreamingForThisSheet = useStreaming(targetCellRef.getSheetName());
+        if (!useStreamingForThisSheet && isStreaming()) {
             // use "fat" data sheet for transformation
             destSheet = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
         }
@@ -59,6 +72,10 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
             }
         }
         transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
+    }
+    
+    protected boolean useStreaming(String sheetName) {
+    	return allSheets || (dataSheetsToUseStreaming != null && dataSheetsToUseStreaming.contains(sheetName));
     }
     
     @Override

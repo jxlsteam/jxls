@@ -8,14 +8,14 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.jxls.JxlsTester;
-import org.jxls.JxlsTester.TransformerChecker;
+import org.jxls.Jxls3Tester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.JxlsException;
-import org.jxls.common.PoiExceptionThrower;
-import org.jxls.expression.JexlExpressionEvaluator;
+import org.jxls.expression.ExpressionEvaluatorFactoryJexlImpl;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.SafeSheetNameBuilder;
-import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.unittests.PoiSafeSheetNameBuilderUnitTest;
 
 /**
@@ -30,11 +30,11 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
      */
     @Test
     public void testSafeSheetNameBuilder() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         final List<String> safeNames = new ArrayList<>();
         context.putVar(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new SafeSheetNameBuilder() {
             @Override
-            public String createSafeSheetName(String givenSheetName, int index) {
+            public String createSafeSheetName(String givenSheetName, int index, JxlsLogger logger) {
                 String ret = givenSheetName + " sheet";
                 safeNames.add(ret);
                 return ret;
@@ -44,8 +44,8 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
         
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
         
         assertEquals("Number of safeNames is wrong", 2, safeNames.size());
         assertEquals("Name of 1st sheet is wrong", "data sheet", safeNames.get(0));
@@ -57,13 +57,13 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
      */
     @Test
     public void testNoSafeSheetNameBuilder() throws IOException {
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<TestSheet> testSheets = getTestSheets();
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
         
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
     }
 
     /**
@@ -72,27 +72,18 @@ public class PoiSafeSheetNameBuilderTest extends AbstractMultiSheetTest {
     @Test
     public void testNoSafeSheetNameBuilder_invalidName() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         List<TestSheet> testSheets = getTestSheets();
         testSheets.get(0).setName("data["); // make name invalid
         context.putVar("sheets", testSheets);
         context.putVar("sheetnames", getSheetnames(testSheets));
-        TransformerChecker tc = new TransformerChecker() {
-            @Override
-            public Transformer checkTransformer(Transformer transformer) {
-                // strict non-silent mode for getting all errors
-                transformer.getTransformationConfig().setExpressionEvaluator(new JexlExpressionEvaluator(false, true));
-                
-                // throw exceptions instead of just logging them
-                transformer.setExceptionHandler(new PoiExceptionThrower());
-                return transformer;
-            }
-        };
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
         try {
-            tester.createTransformerAndProcessTemplate(context, tc);
+            tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance()
+                    .withExceptionThrower()
+                    .withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJexlImpl(true)));
             
             // Verify
             Assert.fail("JxlsException \"...'data['...\" expected!");

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * It should be examined here whether the simultaneous use of the jx:each attributes
@@ -27,7 +28,7 @@ public class Issue209Test {
         employees.add(createEmployee("Department B", "Doris", "Wetten"));
         employees.add(createEmployee("Department B", "Melanie", "Geldern"));
         employees.add(createEmployee("Department C", "Stefan", "Bruegge"));
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", employees);
         
         // Test
@@ -59,7 +60,7 @@ public class Issue209Test {
         employees.add(createEmployee("Department B", "Doris", "Wetten"));
         employees.add(createEmployee("Department B", "Melanie", "Geldern"));
         employees.add(createEmployee("Department C", "Stefan", "Bruegge"));
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("employees", employees);
         
         // Test

@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
-import org.jxls.builder.AreaBuilder;
-import org.jxls.builder.xls.XlsCommentAreaBuilder;
+import org.jxls.builder.JxlsOptions;
+import org.jxls.builder.JxlsTemplateFiller;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.common.Size;
 import org.jxls.entity.Employee;
-import org.jxls.transform.Transformer;
-import org.jxls.util.JxlsHelper;
+import org.jxls.formula.StandardFormulaProcessor;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Issue 147
@@ -30,20 +30,27 @@ import org.jxls.util.JxlsHelper;
  * target cell start, rather than original area start.
  */
 public class Issue147MultiResizingXlsAreasTest {
-    private final AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
-
+//    private final AreaBuilder areaBuilder = new XlsCommentAreaBuilder();
+    private Context context;
+    
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        context = new ContextImpl();
         context.putVar("employees", Employee.generateSampleEmployeeData());
         
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        try (InputStream is = tester.openInputStream(); OutputStream os = tester.openOutputStream()) {
-            Transformer transformer = JxlsHelper.getInstance().createTransformer(is, os);
-            processTemplate(context, transformer);
-        }
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        // install own MyJxlsTemplateFiller
+        JxlsPoiTemplateFillerBuilder builder = new JxlsPoiTemplateFillerBuilder() {
+            @Override
+            public JxlsTemplateFiller build() {
+                return new MyJxlsTemplateFiller(getOptions(), template);
+            }
+        };
+        tester.test(context.toMap(), builder
+                .withExceptionThrower()
+                .withTemplate(getClass().getResourceAsStream("Issue147MultiResizingXlsAreasTest.xlsx")));
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
@@ -57,20 +64,26 @@ public class Issue147MultiResizingXlsAreasTest {
             assertEquals(38 * 15, w.getRowHeight(21)); // Footer
         }
     }
+    
+    public class MyJxlsTemplateFiller extends JxlsTemplateFiller {
 
-    private void processTemplate(Context context, Transformer transformer) throws IOException {
-        areaBuilder.setTransformer(transformer);
-        List<Area> xlsAreaList = areaBuilder.build();
-        Size delta = Size.ZERO_SIZE;
-        for (Area xlsArea : xlsAreaList) {
-            CellRef targetCellRef = new CellRef(xlsArea.getStartCellRef().getSheetName(),
-                    xlsArea.getStartCellRef().getRow() + delta.getHeight(),
-                    xlsArea.getStartCellRef().getCol() + delta.getWidth());
-            Size startSize = xlsArea.getSize();
-            Size endSize = xlsArea.applyAt(targetCellRef, context);
-            delta = delta.add(endSize.minus(startSize));
-            xlsArea.processFormulas();
+        protected MyJxlsTemplateFiller(JxlsOptions options, InputStream template) {
+            super(options, template);
         }
-        transformer.write();
+        
+        @Override
+        protected void processAreas(Map<String, Object> data) {
+            areas = options.getAreaBuilder().build(transformer, true);
+            Size delta = Size.ZERO_SIZE;
+            for (Area area : areas) {
+                CellRef targetCellRef = new CellRef(area.getStartCellRef().getSheetName(),
+                        area.getStartCellRef().getRow() + delta.getHeight(),
+                        area.getStartCellRef().getCol() + delta.getWidth());
+                Size startSize = area.getSize();
+                Size endSize = area.applyAt(targetCellRef, context);
+                delta = delta.add(endSize.minus(startSize));
+                area.processFormulas(new StandardFormulaProcessor());
+            }
+        }
     }
 }

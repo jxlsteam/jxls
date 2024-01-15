@@ -3,28 +3,25 @@ package org.jxls.expression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * @author Leonid Vysochyn
  */
 public class JexlExpressionEvaluatorTest {
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void simple2VarExpression() {
         String expression = "2 * x + y";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
-        vars.put("y", 3);
+        vars.put("x", Integer.valueOf(2));
+        vars.put("y", Integer.valueOf(3));
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate(expression, vars);
         assertNotNull(result);
@@ -35,20 +32,23 @@ public class JexlExpressionEvaluatorTest {
     public void shouldThrowEvaluationExceptionWhenError() {
         String expression = "2 * x + y )";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
-        vars.put("y", 3);
+        vars.put("x", Integer.valueOf(2));
+        vars.put("y", Integer.valueOf(3));
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
-        thrown.expect(EvaluationException.class);
-        thrown.expectMessage(CoreMatchers.both(CoreMatchers.containsString("error")).and(CoreMatchers.containsString(expression)));
-        Object result = expressionEvaluator.evaluate( expression, vars );
-        assertNotNull( result );
+        try {
+            expressionEvaluator.evaluate( expression, vars );
+            fail("EvaluationException expected");
+        } catch (EvaluationException expected) {
+            assertTrue(expected.getMessage().contains("error"));
+            assertTrue(expected.getMessage().contains(expression));
+        }
     }
 
     @Test
     public void evaluateWhenVarIsNull() {
         String expression = "2*x + dummy.intValue";
         Map<String, Object> vars = new HashMap<>();
-        vars.put("x", 2);
+        vars.put("x", Integer.valueOf(2));
         vars.put("dummy", null);
         ExpressionEvaluator expressionEvaluator = new JexlExpressionEvaluator();
         Object result = expressionEvaluator.evaluate( expression , vars);

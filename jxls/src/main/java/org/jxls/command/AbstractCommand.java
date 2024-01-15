@@ -1,13 +1,15 @@
 package org.jxls.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jxls.area.Area;
-import org.jxls.transform.TransformationConfig;
+import org.jxls.common.Context;
+import org.jxls.common.JxlsException;
+import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.Transformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implements basic command methods and is a convenient base class for other commands
@@ -15,15 +17,14 @@ import org.slf4j.LoggerFactory;
  * @author Leonid Vysochyn
  */
 public abstract class AbstractCommand implements Command {
-    private Logger logger = LoggerFactory.getLogger(AbstractCommand.class);
-    List<Area> areaList = new ArrayList<Area>();
+    protected List<Area> areaList = new ArrayList<>();
     private String shiftMode;
     /**
      * Whether the image area is locked
      * Other commands will no longer execute in this area after locking
      * default true
      */
-    private Boolean lockRange = true;
+    private Boolean lockRange = Boolean.TRUE;
 
     @Override
     public Command addArea(Area area) {
@@ -34,20 +35,17 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void reset() {
-        for (Area area : areaList) {
-            area.reset();
-        }
+    	areaList.forEach(area -> area.reset());
     }
 
     @Override
     public void setShiftMode(String mode) {
-        if (mode != null) {
-            if (mode.equalsIgnoreCase(Command.INNER_SHIFT_MODE) || mode.equalsIgnoreCase(Command.ADJACENT_SHIFT_MODE)) {
-                shiftMode = mode;
-            } else {
-                logger.error("Cannot set cell shift mode to " + mode + " for command: " + getName());
-            }
-        }
+    	if (Command.INNER_SHIFT_MODE.equals(mode) || Command.ADJACENT_SHIFT_MODE.equals(mode)) {
+    		shiftMode = mode;
+    	} else {
+			throw new IllegalArgumentException("Use \"" + Command.INNER_SHIFT_MODE + "\" or \""
+					+ Command.ADJACENT_SHIFT_MODE + "\" for shiftMode.");
+    	}
     }
 
     @Override
@@ -67,7 +65,7 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void setLockRange(String isLock) {
-        if (isLock != null && !"".equals(isLock)) {
+        if (isLock != null && !isLock.isEmpty()) {
             this.lockRange = Boolean.valueOf(isLock);
         }
     }
@@ -77,13 +75,33 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected Transformer getTransformer() {
-        if (areaList.isEmpty()) {
-            return null;
+        return areaList.isEmpty() ? null : areaList.get(0).getTransformer();
+    }
+    
+    protected JxlsLogger getLogger() {
+        Transformer transformer = getTransformer();
+        if (transformer == null) {
+            throw new JxlsException("Command has no transformer and can not write to log");
         }
-        return areaList.get(0).getTransformer();
+        return transformer.getLogger();
     }
 
-    protected TransformationConfig getTransformationConfig() {
-        return getTransformer().getTransformationConfig();
+    /**
+     * Evaluates the passed collection name into an {@link Iterable} object
+     * @param collectionName -
+     * @param context -
+     * @return an iterable object from the {@link Context} under given name
+     */
+    protected Iterable<Object> transformToIterableObject(String collectionName, Context context) {
+        Object collectionObject = context.evaluate(collectionName);
+        if (collectionObject == null) {
+            return Collections.emptyList();
+        } else if (collectionObject instanceof Object[]) {
+            return Arrays.asList((Object[])/*cast is important*/ collectionObject);
+        } else if (collectionObject instanceof Iterable) {
+            Iterable<Object> iterable = (Iterable<Object>) collectionObject;
+            return iterable;
+        }
+        throw new JxlsException(collectionName + " expression is not an Iterable or an array");
     }
 }

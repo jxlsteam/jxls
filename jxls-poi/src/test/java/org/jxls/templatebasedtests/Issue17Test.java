@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Github issue 17: Image and multi sheet
@@ -15,7 +16,7 @@ public class Issue17Test {
     @Test
     public void test() throws Exception {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("sheets", getItems());
         
         // Test

@@ -24,7 +24,7 @@ The *If-Command*  has the following attributes
 Command building
 ----------------
 
-As with any Jxls command you can use Java API or Excel markup or XML configuration to define the *If-Command*
+As with any Jxls command you can use Java API or Excel markup to define the *If-Command*
 
 ### Java API usage
 
@@ -44,17 +44,3 @@ To create *If Command* with Excel markup you should use the following syntax in 
     jx:if(condition="employee.payment <= 2000", lastCell="F9", areas=["A9:F9","A18:F18"])
 
 Here `lastCell` attribute defines the last cell of the *If-Command* area.
-
-### XML markup
-
-To create *If-Command* with XML configuration you use the following markup
-
-    <area ref="Template!A9:F9">
-        <if condition="employee.payment &lt;= 2000" ref="Template!A9:F9">
-            <area ref="Template!A18:F18"/>
-            <area ref="Template!A9:F9"/>
-        </if>
-    </area>
-
-Here `ref` attribute defines the area to be associated with the *If-Command*.
-

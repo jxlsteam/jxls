@@ -1,11 +1,6 @@
 package org.jxls.templatebasedtests;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.jxls.JxlsTester;
-import org.jxls.TestWorkbook;
-import org.jxls.common.Context;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,7 +11,13 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.jxls.JxlsTester;
+import org.jxls.TestWorkbook;
+import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 public class JSR310Test {
 
@@ -31,7 +32,7 @@ public class JSR310Test {
     @BeforeClass
     public static void setUpClass() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("samples", Collections.singletonList(new Sample()));
 
         JxlsTester tester = JxlsTester.xlsx(JSR310Test.class);

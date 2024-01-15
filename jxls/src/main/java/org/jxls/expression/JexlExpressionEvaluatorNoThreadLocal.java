@@ -8,6 +8,7 @@ import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 /**
  * This is an implementation of {@link ExpressionEvaluator} without using {@link ThreadLocal}.
@@ -26,7 +27,20 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict) {
-        this.jexl = new JexlBuilder().silent(silent).strict(strict).create();
+        this(silent, strict, JxlsJexlPermissions.UNRESTRICTED);
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JxlsJexlPermissions permissions) {
+        this(silent, strict, permissions.getJexlPermissions());
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JexlPermissions jexlPermissions) {
+        this.jexl = new JexlBuilder().silent(silent).strict(strict).permissions(jexlPermissions).create();
+    }
+
+    public JexlExpressionEvaluatorNoThreadLocal(boolean silent, boolean strict, JxlsJexlPermissions permissions, String expression) {
+        this(silent, strict, permissions.getJexlPermissions());
+        jexlExpression = jexl.createExpression(expression);
     }
 
     public JexlExpressionEvaluatorNoThreadLocal(String expression) {
@@ -56,6 +70,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
+            // JxlsLogger not needed here.
         }
     }
 
@@ -66,6 +81,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e);
+            // JxlsLogger not needed here.
         }
     }
 
@@ -89,7 +105,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
     /**
      * Clear expression cache
      */
-    public void clear() {
+    public static void clear() {
         expressionMap.clear();
     }
 }

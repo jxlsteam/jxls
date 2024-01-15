@@ -72,7 +72,7 @@ public class CellRefUtil {
     static boolean needsDelimiting(String rawSheetName) {
         int len = rawSheetName.length();
         if (len < 1) {
-            throw new JxlsException("Zero length string is an invalid sheet name");
+            throw new IllegalArgumentException("rawSheetName must not be empty");
         }
         if (Character.isDigit(rawSheetName.charAt(0))) {
             // sheet name with digit in the first position always requires delimiting
@@ -209,7 +209,7 @@ public class CellRefUtil {
     public static boolean isRowWithnRange(String rowStr, int lastRowIndex) {
         int rowNum = Integer.parseInt(rowStr);
         if (rowNum < 0) {
-            throw new IllegalStateException("Invalid rowStr '" + rowStr + "'.");
+            throw new IllegalArgumentException("Value of rowStr must be 0 or greater.\n" + rowNum);
         }
         if (rowNum == 0) {
             // execution gets here because caller does first pass of discriminating
@@ -323,10 +323,10 @@ public class CellRefUtil {
         }
         int lastQuotePos = indexOfSheetNameDelimiter-1;
         if (reference.charAt(lastQuotePos) != SPECIAL_NAME_DELIMITER) {
-            throw new JxlsException("Mismatched quotes: (" + reference + ")");
+            throw new JxlsException("Mismatched quotes: " + reference);
         }
 
-        // TODO - refactor cell reference parsing logic to one place.
+        // T.O.D.O - refactor cell reference parsing logic to one place.
         // Current known incarnations:
         //   FormulaParser.GetName()
         //   CellReference.parseSheetName() (here)
@@ -347,7 +347,7 @@ public class CellRefUtil {
                 sb.append(ch);
                 continue;
             }
-            throw new JxlsException("Bad sheet name quote escaping: (" + reference + ")");
+            throw new JxlsException("Bad sheet name quote escaping: " + reference);
         }
         return sb.toString();
     }

@@ -9,8 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Testcase for issues 159 (insert image) and 178 (text underline issues)
@@ -21,15 +23,15 @@ public class IssueB159Test {
     @Test
     public void test() throws IOException {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         Map<String, Object> model = getModel();
         for (String key : model.keySet()) {
             context.putVar(key, model.get(key));
         }
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(model, JxlsPoiTemplateFillerBuilder.newInstance());
         
         // Verify
         // TODO I guess in the template file the image command in cell I9 must be extended with: lockRange=false
@@ -45,7 +47,7 @@ public class IssueB159Test {
         
         List<Integer> details = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            details.add(i);
+            details.add(Integer.valueOf(i));
         }
         model.put("details", details);
         

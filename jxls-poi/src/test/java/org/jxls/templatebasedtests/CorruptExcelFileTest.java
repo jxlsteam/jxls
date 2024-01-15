@@ -2,7 +2,7 @@ package org.jxls.templatebasedtests;
 
 import org.junit.Test;
 import org.jxls.JxlsTester;
-import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.util.CannotOpenWorkbookException;
 
 /**
@@ -19,7 +19,7 @@ public class CorruptExcelFileTest {
     @Test(expected = CannotOpenWorkbookException.class)
     public void test() throws Exception {
         try (JxlsTester tester = JxlsTester.xlsx(getClass())) {
-            tester.processTemplate(new Context());
+            tester.processTemplate(new ContextImpl());
         }
     }
 }

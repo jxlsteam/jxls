@@ -10,6 +10,7 @@ import org.jxls.command.CellDataUpdater;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.transform.poi.PoiCellData;
 
@@ -20,7 +21,7 @@ public class UpdateCellDemo {
 
     @Test
     public void test() throws ParseException, IOException {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("myCellUpdater", new MyCellUpdater());
         context.putVar("employees", Employee.generateSampleEmployeeData());
         

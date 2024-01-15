@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
-import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Issue with formatting of parts of text
@@ -18,7 +18,7 @@ public class IssueB107Test {
     public void test() throws IOException {
         // Test
         JxlsTester tester = JxlsTester.xls(getClass());
-        tester.processTemplate(new Context());
+        tester.processTemplate(new ContextImpl());
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

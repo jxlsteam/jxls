@@ -16,15 +16,16 @@ import org.apache.commons.jexl3.MapContext;
 public class JexlExpressionEvaluator implements ExpressionEvaluator {
     private final boolean silent;
     private final boolean strict;
+    private final JxlsJexlPermissions permissions;
     private JexlExpression jexlExpression;
     private JexlContext jexlContext;
-    private static ThreadLocal<Map<String, JexlEngine>> jexlThreadLocal = new ThreadLocal<Map<String, JexlEngine>>() {
+    private static ThreadLocal<Map<String, JexlEngine>> jexlThreadLocal = new ThreadLocal<>() {
         @Override
         protected Map<String, JexlEngine> initialValue() {
-            return new HashMap<String, JexlEngine>();
+            return new HashMap<>();
         }
     };
-    private static final ThreadLocal<Map<String, JexlExpression>> expressionMapThreadLocal = new ThreadLocal<Map<String, JexlExpression>>() {
+    private static final ThreadLocal<Map<String, JexlExpression>> expressionMapThreadLocal = new ThreadLocal<>() {
         @Override
         protected Map<String, JexlExpression> initialValue() {
             return new HashMap<>();
@@ -36,8 +37,18 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     }
 
     public JexlExpressionEvaluator(final boolean silent, final boolean strict) {
+        this(silent, strict, JxlsJexlPermissions.UNRESTRICTED);
+    }
+    
+    public JexlExpressionEvaluator(boolean silent, boolean strict, JxlsJexlPermissions permissions) {
         this.silent = silent;
         this.strict = strict;
+        this.permissions = permissions;
+    }
+
+    public JexlExpressionEvaluator(boolean silent, boolean strict, JxlsJexlPermissions permissions, String expression) {
+        this(silent, strict, permissions);
+        jexlExpression = getJexlEngine().createExpression(expression);
     }
 
     public JexlExpressionEvaluator(String expression) {
@@ -68,6 +79,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
+            // JxlsLogger not needed here.
         }
     }
 
@@ -78,6 +90,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + jexlExpression.getSourceText(), e);
+            // JxlsLogger not needed here.
         }
     }
 
@@ -96,14 +109,14 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
         Map<String, JexlEngine> map = jexlThreadLocal.get();
         JexlEngine ret = map.get(key);
         if (ret == null) {
-            ret = new JexlBuilder().silent(silent).strict(strict).create();
+            ret = new JexlBuilder().silent(silent).strict(strict).permissions(permissions.getJexlPermissions()).create();
             map.put(key, ret);
         }
         return ret;
     }
 
     private String key() {
-        return silent + "-" + strict;
+        return silent + "-" + strict + "-" + permissions.hashCode();
     }
 
     @Override
@@ -114,7 +127,8 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     /**
      * Clear expression cache for current thread
      */
-    public void clear() {
+    public static void clear() {
         expressionMapThreadLocal.get().clear();
+        jexlThreadLocal.get().clear();
     }
 }

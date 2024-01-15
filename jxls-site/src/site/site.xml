@@ -63,7 +63,6 @@
             <item name="Output Object Collection" href="samples/object_collection.html"/>
             <item name="Excel Formulas" href="samples/excel_formulas.html"/>
             <item name="Area Listener" href="samples/area_listener.html"/>
-            <item name="Output Collection with XML Builder" href="samples/object_collection_xmlbuilder.html"/>
             <item name="Multi Sheets Markup" href="samples/multi_sheet_markup_demo.html"/>
             <item name="Multi Sheets CellRefGenerator" href="samples/multi_sheet_demo.html"/>
             <item name="Grouping Sample" href="samples/grouping_example.html"/>

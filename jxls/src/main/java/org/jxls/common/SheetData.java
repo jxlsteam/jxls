@@ -14,7 +14,7 @@ import org.jxls.transform.Transformer;
 public class SheetData implements Iterable<RowData> {
     protected String sheetName;
     protected int[] columnWidth;
-    protected final List<RowData> rowDataList = new ArrayList<RowData>();
+    protected final List<RowData> rowDataList = new ArrayList<>();
     private Transformer transformer;
 
     public Transformer getTransformer() {

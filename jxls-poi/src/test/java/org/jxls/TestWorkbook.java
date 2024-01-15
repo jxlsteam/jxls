@@ -9,9 +9,11 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
+import org.apache.poi.ss.usermodel.SheetVisibility;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * Class that encapsulates POI for testing Excel file contents.
@@ -33,7 +35,13 @@ public class TestWorkbook implements AutoCloseable {
      * @param name exact visible name
      */
     public void selectSheet(String name) {
-        sheet = workbook.getSheet(name);
+		sheet = workbook.getSheet(name);
+		if (sheet == null) {
+			throw new IllegalArgumentException("Sheet \"" + name + "\" does not exist!");
+		} else if (sheet instanceof XSSFSheet x
+				&& !SheetVisibility.VISIBLE.equals(workbook.getSheetVisibility(workbook.getSheetIndex(name)))) {
+			throw new IllegalArgumentException("Sheet \"" + name + "\" is not visible!");
+		}
     }
 
     /**
@@ -100,14 +108,10 @@ public class TestWorkbook implements AutoCloseable {
      * Expects numeric cell and returns its double value.
      * @param row starts with 1
      * @param column 1 = A
-     * @return Double
+     * @return double
      */
-    public Double getCellValueAsDouble(int row, int column) {
-        try {
-            return sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue();
-        } catch (NullPointerException e) {
-            return null;
-        }
+    public double getCellValueAsDouble(int row, int column) {
+        return Double.valueOf(sheet.getRow(row - 1).getCell(column - 1).getNumericCellValue()).doubleValue();
     }
 
     /**
@@ -130,6 +134,10 @@ public class TestWorkbook implements AutoCloseable {
      */
     public short getRowHeight(int row) {
         return sheet.getRow(row - 1).getHeight();
+    }
+    
+    public int getColumnWidth(int column) {
+    	return sheet.getColumnWidth(column - 1);
     }
 
     public int getConditionalFormattingSize() {
@@ -161,7 +169,7 @@ public class TestWorkbook implements AutoCloseable {
     public boolean isForceFormulaRecalculation() {
         return workbook.getForceFormulaRecalculation();
     }
-
+    
     @Override
     public void close() {
         if (workbook != null) {

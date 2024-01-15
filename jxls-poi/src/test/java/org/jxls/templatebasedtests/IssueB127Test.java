@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Problem with formulas referencing cells in another worksheet containing special characters in name
@@ -20,12 +22,12 @@ public class IssueB127Test {
     public void test() throws IOException {
         // Prepare
         Collection<Integer> datas = Arrays.asList(1, 2, 3, 4);
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("datas", datas);
 
         // Test
-        JxlsTester tester = JxlsTester.xlsx(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {

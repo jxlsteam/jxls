@@ -1,10 +1,6 @@
 package org.jxls.templatebasedtests;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -13,8 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
-import org.jxls.util.JxlsHelper;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.jxls.util.JxlsNationalLanguageSupport;
 
 public class PivotTableTest {
@@ -25,7 +22,7 @@ public class PivotTableTest {
     @Test
     public void nls() throws Exception {
         // Prepare
-        final Context context = new Context();
+        final Context context = new ContextImpl();
         context.putVar("employees", getTestData());
         final Properties resourceBundle = new Properties();
         resourceBundle.put("name", "Name (EN)");
@@ -40,11 +37,7 @@ public class PivotTableTest {
         };
         File temp = nls.process(getClass().getResourceAsStream(getClass().getSimpleName() + ".xlsx")); // do preprocessing of template file
         File out = new File("target/" + getClass().getSimpleName() + "_output.xlsx");
-        try (InputStream is = new FileInputStream(temp)) {
-            try (OutputStream os = new FileOutputStream(out)) {
-                JxlsHelper.getInstance().processTemplate(is, os, context);
-            }
-        }
+        JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(temp).buildAndFill(context.toMap(), out);
         temp.delete();
         
         // Verify

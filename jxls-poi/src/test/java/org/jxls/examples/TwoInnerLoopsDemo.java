@@ -6,6 +6,7 @@ import java.text.ParseException;
 import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
 
 /**
@@ -15,7 +16,7 @@ public class TwoInnerLoopsDemo {
 
     @Test
     public void test() throws ParseException, IOException {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("departments", Department.createDepartments());
         
         JxlsTester tester = JxlsTester.xls(getClass());

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.jxls.JxlsTester;
 import org.jxls.TestWorkbook;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 
 /**
  * Tests if/else - each - if/else combination with an Excel file using Excel comments.
@@ -22,7 +23,7 @@ public class If01Test {
     @Test
     public void testEnglish() {
         // Prepare
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("lang", "en");
         context.putVar("list", getTestData());
 
@@ -47,7 +48,7 @@ public class If01Test {
     /** Tests the German version with many rows of type buy and sell. */
     @Test
     public void testGerman() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("lang", "de");
         context.putVar("list", getTestData());
 
@@ -72,7 +73,7 @@ public class If01Test {
     /** Tests empty list */
     @Test
     public void testEmpty() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("lang", "en");
         context.putVar("list", new ArrayList<Commodity>());
 
@@ -93,9 +94,9 @@ public class If01Test {
     /** Tests list with 1 row. */
     @Test
     public void test1row() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("lang", "en");
-        List<Commodity> testData = new ArrayList<Commodity>();
+        List<Commodity> testData = new ArrayList<>();
         testData.add(new Commodity("1 row", 10d, 100d, "buy"));
         context.putVar("list", testData);
 
@@ -128,8 +129,8 @@ public class If01Test {
 
         public Commodity(String subject, double price, double weight, String sellBuy) {
             put("subject", subject);
-            put("price", price);
-            put("weight", weight);
+            put("price", Double.valueOf(price));
+            put("weight", Double.valueOf(weight));
             put("sellBuy", sellBuy);
         }
     }

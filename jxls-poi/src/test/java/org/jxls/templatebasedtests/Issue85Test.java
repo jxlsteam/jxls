@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.jxls.JxlsTester;
-import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 
 /**
@@ -37,7 +37,7 @@ public class Issue85Test {
         }
     }
     
-    private static class ContextWithMyMap extends Context {
+    private static class ContextWithMyMap extends ContextImpl {
         private final Map<String, Object> myMap;
         
         public ContextWithMyMap(Map<String, Object> myMap) {

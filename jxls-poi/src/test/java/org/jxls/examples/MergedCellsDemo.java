@@ -1,9 +1,11 @@
 package org.jxls.examples;
 
 import org.junit.Test;
-import org.jxls.JxlsTester;
+import org.jxls.Jxls3Tester;
 import org.jxls.common.Context;
+import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 
 /**
  * Created by Leonid Vysochyn on 6/30/2015.
@@ -13,10 +15,10 @@ public class MergedCellsDemo  {
     
     @Test
     public void test() {
-        Context context = new Context();
+        Context context = new ContextImpl();
         context.putVar("departments", Department.createDepartments());
         
-        JxlsTester tester = JxlsTester.xls(getClass());
-        tester.processTemplate(context);
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        tester.test(context.toMap(), JxlsPoiTemplateFillerBuilder.newInstance());
     }
 }
