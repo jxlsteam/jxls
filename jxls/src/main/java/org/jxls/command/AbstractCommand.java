@@ -17,7 +17,7 @@ import org.jxls.transform.Transformer;
  * @author Leonid Vysochyn
  */
 public abstract class AbstractCommand implements Command {
-    protected List<Area> areaList = new ArrayList<Area>();
+    protected List<Area> areaList = new ArrayList<>();
     private String shiftMode;
     /**
      * Whether the image area is locked

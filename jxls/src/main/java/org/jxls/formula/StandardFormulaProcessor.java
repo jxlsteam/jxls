@@ -93,7 +93,7 @@ public class StandardFormulaProcessor extends AbstractFormulaProcessor {
             Collections.sort(targetCellRefList);
             fpc.isFormulaJointedCellRefsEmpty = false;
             Map.Entry<CellRef, List<CellRef>> cellRefMapEntryParam =
-                    new AbstractMap.SimpleImmutableEntry<CellRef, List<CellRef>>(null, targetCellRefList);
+                    new AbstractMap.SimpleImmutableEntry<>(null, targetCellRefList);
             List<CellRef> replacementCells = findFormulaCellRefReplacements(
                     fpc.transformer, targetFormulaCellRef, formulaSourceAreaRef,
                     formulaTargetAreaRef, cellRefMapEntryParam);

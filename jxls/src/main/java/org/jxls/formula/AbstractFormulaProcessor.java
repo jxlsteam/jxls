@@ -68,7 +68,7 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
         // for each jointed cell ref build a list of cells into which individual cell names were transformed to
         for (String jointedCellRef : jointedCellRefs) {
             List<String> nestedCellRefs = getCellRefsFromJointedCellRef(jointedCellRef);
-            List<CellRef> jointedCellRefList = new ArrayList<CellRef>();
+            List<CellRef> jointedCellRefList = new ArrayList<>();
             for (String cellRef : nestedCellRefs) {
                 CellRef pos = new CellRef(cellRef);
                 if (pos.getSheetName() == null) {
@@ -115,7 +115,7 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
     }
 
     private static List<String> getStringPartsByPattern(String str, Pattern pattern) {
-        List<String> cellRefs = new ArrayList<String>();
+        List<String> cellRefs = new ArrayList<>();
         if (str != null) {
             Matcher cellRefMatcher = pattern.matcher(str);
             while (cellRefMatcher.find()) {
@@ -224,17 +224,17 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
      * @return a list of cell reference groups
      */
     protected List<List<CellRef>> groupByColRange(List<CellRef> cellRefList) {
-        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        List<List<CellRef>> rangeList = new ArrayList<>();
         if (cellRefList == null || cellRefList.size() == 0) {
             return rangeList;
         }
-        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        List<CellRef> cellRefListCopy = new ArrayList<>(cellRefList);
         Collections.sort(cellRefListCopy, new CellRefColPrecedenceComparator());
 
         String sheetName = cellRefListCopy.get(0).getSheetName();
         int row = cellRefListCopy.get(0).getRow();
         int col = cellRefListCopy.get(0).getCol();
-        List<CellRef> currentRange = new ArrayList<CellRef>();
+        List<CellRef> currentRange = new ArrayList<>();
         currentRange.add(cellRefListCopy.get(0));
         boolean rangeComplete = false;
         for (int i = 1; i < cellRefListCopy.size(); i++) {
@@ -255,7 +255,7 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
             col = cellRef.getCol();
             if (rangeComplete) {
                 rangeList.add(currentRange);
-                currentRange = new ArrayList<CellRef>();
+                currentRange = new ArrayList<>();
                 currentRange.add(cellRef);
                 rangeComplete = false;
             }
@@ -270,17 +270,17 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
      * @return -
      */
     protected List<List<CellRef>> groupByRowRange(List<CellRef> cellRefList) {
-        List<List<CellRef>> rangeList = new ArrayList<List<CellRef>>();
+        List<List<CellRef>> rangeList = new ArrayList<>();
         if (cellRefList == null || cellRefList.size() == 0) {
             return rangeList;
         }
-        List<CellRef> cellRefListCopy = new ArrayList<CellRef>(cellRefList);
+        List<CellRef> cellRefListCopy = new ArrayList<>(cellRefList);
         Collections.sort(cellRefListCopy, new CellRefRowPrecedenceComparator());
 
         String sheetName = cellRefListCopy.get(0).getSheetName();
         int row = cellRefListCopy.get(0).getRow();
         int col = cellRefListCopy.get(0).getCol();
-        List<CellRef> currentRange = new ArrayList<CellRef>();
+        List<CellRef> currentRange = new ArrayList<>();
         currentRange.add(cellRefListCopy.get(0));
         boolean rangeComplete = false;
         for (int i = 1; i < cellRefListCopy.size(); i++) {
@@ -301,7 +301,7 @@ public abstract class AbstractFormulaProcessor implements FormulaProcessor {
             col = cellRef.getCol();
             if (rangeComplete) {
                 rangeList.add(currentRange);
-                currentRange = new ArrayList<CellRef>();
+                currentRange = new ArrayList<>();
                 currentRange.add(cellRef);
                 rangeComplete = false;
             }

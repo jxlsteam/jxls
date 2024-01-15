@@ -28,13 +28,13 @@ import org.jxls.transform.Transformer;
 public class XlsArea implements Area {
     public static final XlsArea EMPTY_AREA = new XlsArea(new CellRef(null, 0, 0), Size.ZERO_SIZE);
 
-    private List<CommandData> commandDataList = new ArrayList<CommandData>();
+    private List<CommandData> commandDataList = new ArrayList<>();
     private Transformer transformer;
     private Command parentCommand;
     private CellRange cellRange;
     private CellRef startCellRef;
     private Size size;
-    private List<AreaListener> areaListeners = new ArrayList<AreaListener>();
+    private List<AreaListener> areaListeners = new ArrayList<>();
     private boolean cellsCleared = false;
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
     private final CellShiftStrategy adjacentCellShiftStrategy = new AdjacentCellShiftStrategy();
@@ -58,7 +58,7 @@ public class XlsArea implements Area {
     public XlsArea(CellRef startCellRef, Size size, List<CommandData> commandDataList, Transformer transformer) {
         this.startCellRef = startCellRef;
         this.size = size;
-        this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<CommandData>();
+        this.commandDataList = commandDataList != null ? commandDataList : new ArrayList<>();
         this.transformer = transformer;
     }
 
@@ -568,7 +568,7 @@ public class XlsArea implements Area {
 
     @Override
     public List<Command> findCommandByName(String name) {
-        List<Command> commands = new ArrayList<Command>();
+        List<Command> commands = new ArrayList<>();
         for (CommandData commandData : commandDataList) {
             if (name != null && name.equals(commandData.getCommand().getName())) {
                 commands.add(commandData.getCommand());

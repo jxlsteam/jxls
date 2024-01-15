@@ -32,7 +32,7 @@ public abstract class AbstractTransformer implements Transformer {
         if (cellData != null) {
             return cellData.getTargetPos();
         } else {
-            return new ArrayList<CellRef>();
+            return new ArrayList<>();
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractTransformer implements Transformer {
 
     @Override
     public Set<CellData> getFormulaCells() {
-        Set<CellData> formulaCells = new HashSet<CellData>();
+        Set<CellData> formulaCells = new HashSet<>();
         for (SheetData sheetData : sheetMap.values()) {
             for (int i = 0; i < sheetData.getNumberOfRows(); i++) {
                 RowData rowData = sheetData.getRowData(i);

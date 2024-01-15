@@ -72,7 +72,7 @@ public class CellData {
     private FormulaStrategy formulaStrategy = FormulaStrategy.DEFAULT;
     private String defaultValue;
     protected XlsArea area;
-    private List<CellRef> targetPos = new ArrayList<CellRef>();
+    private List<CellRef> targetPos = new ArrayList<>();
     private List<AreaRef> targetParentAreaRef = new ArrayList<>();
     private Transformer transformer;
 
@@ -344,7 +344,7 @@ public class CellData {
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {
-        Map<String, String> attrMap = new LinkedHashMap<String, String>();
+        Map<String, String> attrMap = new LinkedHashMap<>();
         Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
         while (attrMatcher.find()) {
             String attrData = attrMatcher.group();

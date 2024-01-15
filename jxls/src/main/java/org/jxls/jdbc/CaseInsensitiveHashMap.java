@@ -36,7 +36,7 @@ public class CaseInsensitiveHashMap extends LinkedHashMap<String, Object> {
      * <li>query the map with the actual key</li>
      * </ul>
      */
-    private final Map<String, String> lowerCaseMap = new HashMap<String, String>();
+    private final Map<String, String> lowerCaseMap = new HashMap<>();
 
     /**
      * Required for serialization support.

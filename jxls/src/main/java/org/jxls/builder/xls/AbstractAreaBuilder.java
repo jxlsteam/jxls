@@ -23,9 +23,9 @@ public abstract class AbstractAreaBuilder implements AreaBuilder {
      */
     @Override
     public List<Area> build(Transformer transformer, boolean clearTemplateCells) {
-        List<CommandData> allCommands = new ArrayList<CommandData>();
-        List<Area> allAreas = new ArrayList<Area>();
-        List<Area> userAreas = new ArrayList<Area>();
+        List<CommandData> allCommands = new ArrayList<>();
+        List<Area> allAreas = new ArrayList<>();
+        List<Area> userAreas = new ArrayList<>();
         transformer.getCommentedCells().forEach(d -> {
             List<CommandData> commandDatas = buildCommands(transformer, d, d.getCellComment());
             processCommandData(commandDatas, allCommands, allAreas, userAreas, transformer);
@@ -56,7 +56,7 @@ public abstract class AbstractAreaBuilder implements AreaBuilder {
             AreaRef commandAreaRef = commandData.getAreaRef();
             List<Area> commandAreas = commandData.getCommand().getAreaList();
             Area minArea = null;
-            List<Area> minAreas = new ArrayList<Area>();
+            List<Area> minAreas = new ArrayList<>();
             for (Area area : allAreas) {
                 if (commandAreas.contains(area) || !area.getAreaRef().contains(commandAreaRef)) continue;
                 boolean belongsToNextCommand = false;

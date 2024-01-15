@@ -14,7 +14,7 @@ import org.jxls.transform.SafeSheetNameBuilder;
 public class DynamicSheetNameGenerator implements CellRefGenerator {
     private final String sheetNameExpression;
     private final CellRef startCellRef;
-    private final Set<String> usedSheetNames = new HashSet<String>(); // only used if there's no SafeSheetNameBuilder
+    private final Set<String> usedSheetNames = new HashSet<>(); // only used if there's no SafeSheetNameBuilder
 
     public DynamicSheetNameGenerator(String sheetNameExpression, CellRef startCellRef) {
         this.sheetNameExpression = sheetNameExpression;

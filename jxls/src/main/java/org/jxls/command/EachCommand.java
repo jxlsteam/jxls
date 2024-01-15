@@ -438,7 +438,7 @@ public class EachCommand extends AbstractCommand {
      * @return a collection of group data objects
      */
     static Collection<GroupData> groupIterable(Iterable<?> iterable, String groupProperty, String groupOrder, String var, JxlsLogger logger) {
-        Collection<GroupData> result = new ArrayList<GroupData>();
+        Collection<GroupData> result = new ArrayList<>();
         if (iterable == null) {
             return result;
         }

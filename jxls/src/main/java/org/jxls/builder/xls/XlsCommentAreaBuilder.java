@@ -144,7 +144,7 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder implements Comman
     
     @Override
     protected List<CommandData> buildCommands(Transformer transformer, CellData cellData, String text) {
-        List<CommandData> commandDatas = new ArrayList<CommandData>();
+        List<CommandData> commandDatas = new ArrayList<>();
         List<String> commentLines;
         if (MULTI_LINE_SQL_FEATURE) {
             commentLines = new LiteralsExtractor().extract(text);
@@ -188,7 +188,7 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder implements Comman
     }
 
     private List<Area> buildAreas(Transformer transformer, CellData cellData, String commandLine) {
-        List<Area> areas = new ArrayList<Area>();
+        List<Area> areas = new ArrayList<>();
         Matcher areasAttrMatcher = AREAS_ATTR_REGEX_PATTERN.matcher(commandLine);
         if (areasAttrMatcher.find()) {
             String areasAttr = areasAttrMatcher.group();
@@ -202,7 +202,7 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder implements Comman
     }
 
     private List<AreaRef> extractAreaRefs(CellData cellData, String areasAttr) {
-        List<AreaRef> areaRefs = new ArrayList<AreaRef>();
+        List<AreaRef> areaRefs = new ArrayList<>();
         Matcher areaRefMatcher = regexAreaRefPattern.matcher(areasAttr);
         while (areaRefMatcher.find()) {
             String areaRefName = areaRefMatcher.group();
@@ -253,7 +253,7 @@ public class XlsCommentAreaBuilder extends AbstractAreaBuilder implements Comman
     }
 
     private Map<String, String> parseCommandAttributes(String attrString) {
-        Map<String, String> attrMap = new LinkedHashMap<String, String>();
+        Map<String, String> attrMap = new LinkedHashMap<>();
         Matcher attrMatcher = ATTR_REGEX_PATTERN.matcher(attrString);
         while (attrMatcher.find()) {
             String attrData = attrMatcher.group();
