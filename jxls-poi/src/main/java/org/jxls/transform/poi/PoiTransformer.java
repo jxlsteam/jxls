@@ -310,7 +310,7 @@ public class PoiTransformer extends AbstractTransformer {
 
     @Override
     public List<CellData> getCommentedCells() {
-        List<CellData> commentedCells = new ArrayList<CellData>();
+        List<CellData> commentedCells = new ArrayList<>();
         for (SheetData sheetData : sheetMap.values()) {
             for (RowData rowData : sheetData) {
                 if (rowData == null) continue;
@@ -362,7 +362,7 @@ public class PoiTransformer extends AbstractTransformer {
     }
 
     private List<CellData> readCommentsFromSheet(Sheet sheet, int rowNum) {
-        List<CellData> commentDataCells = new ArrayList<CellData>();
+        List<CellData> commentDataCells = new ArrayList<>();
         for (Entry<CellAddress, ? extends Comment> e : sheet.getCellComments().entrySet()) {
             if (e.getKey().getRow() == rowNum) {
                 Comment comment = e.getValue();

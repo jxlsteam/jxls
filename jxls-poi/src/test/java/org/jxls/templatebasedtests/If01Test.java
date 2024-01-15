@@ -96,7 +96,7 @@ public class If01Test {
     public void test1row() {
         Context context = new ContextImpl();
         context.putVar("lang", "en");
-        List<Commodity> testData = new ArrayList<Commodity>();
+        List<Commodity> testData = new ArrayList<>();
         testData.add(new Commodity("1 row", 10d, 100d, "buy"));
         context.putVar("list", testData);
 

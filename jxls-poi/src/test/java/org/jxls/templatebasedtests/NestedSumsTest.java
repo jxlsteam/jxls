@@ -70,7 +70,7 @@ public class NestedSumsTest {
         // Prepare
         Map<String, Object> data = new HashMap<>();
         // We need to calculate the group sum for the part where the children are omitted by the jx:if.
-        data.put("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
+        data.put("G", new GroupSum<>(new DoubleSummarizerBuilder()));
         data.put("list", getTestData());
         
         // Test
@@ -104,7 +104,7 @@ public class NestedSumsTest {
     public void nestedSums_withIf2() {
         // Prepare
         Map<String, Object> data = new HashMap<>();
-        data.put("G", new GroupSum<Double>(new DoubleSummarizerBuilder()));
+        data.put("G", new GroupSum<>(new DoubleSummarizerBuilder()));
         data.put("list", getTestData());
 
         // Test

@@ -60,8 +60,8 @@ public class TableTest {
     }
 
     private Context createContextWithTestData(int max) {
-        List<TableTestObject> list = new ArrayList<TableTestObject>();
-        List<TableTestObject> list20 = new ArrayList<TableTestObject>();
+        List<TableTestObject> list = new ArrayList<>();
+        List<TableTestObject> list20 = new ArrayList<>();
         for (int i = 1; i <= max; i++) {
             TableTestObject a = new TableTestObject("name-" + i, "address-" + i);
             list.add(a);

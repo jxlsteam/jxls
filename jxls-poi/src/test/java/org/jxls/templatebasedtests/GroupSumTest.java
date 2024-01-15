@@ -2,7 +2,6 @@ package org.jxls.templatebasedtests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +35,7 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
         Map<String, Object> data = new HashMap<>();
         data.put("details", maps);
-        check(data, new GroupSum<Double>(new DoubleSummarizerBuilder()));
+        check(data, new GroupSum<>(new DoubleSummarizerBuilder()));
     }
 
     private Map<String, Object> createEmployee(String department, String name, String job, String city, double salary) {
@@ -60,7 +59,7 @@ public class GroupSumTest {
         beans.add(newEmployee("01 Main department", "Sven", "Mayor", "Veert", 140000));
         Map<String, Object> data = new HashMap<>();
         data.put("details", beans);
-        check(data, new GroupSum<BigDecimal>(new BigDecimalSummarizerBuilder()));
+        check(data, new GroupSum<>(new BigDecimalSummarizerBuilder()));
     }
     
     private Employee newEmployee(String department, String name, String job, String city, double salary) {
@@ -93,7 +92,7 @@ public class GroupSumTest {
         maps.add(createEmployee("01 Main department", "Draci the dragon", "Mascot", "Wetten", -1));
         Map<String, Object> data = new HashMap<>();
         data.put("details", maps);
-        GroupSum<Double> groupSum = new GroupSum<Double>(new DoubleSummarizerBuilder());
+        GroupSum<Double> groupSum = new GroupSum<>(new DoubleSummarizerBuilder());
         data.put("G", groupSum);
         
         // Test
