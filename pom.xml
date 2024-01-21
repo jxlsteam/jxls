@@ -3,7 +3,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-project</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0-beta1</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Small library for Excel generation based on XLS templates</description>
     <url>http://jxls.sf.net</url>
