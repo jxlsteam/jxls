@@ -107,15 +107,8 @@ public class PoiTransformer extends AbstractTransformer {
         if (cellData == null) {
             return;
         }
-        Sheet destSheet = workbook.getSheet(targetCellRef.getSheetName());
-        if (destSheet == null) {
-            destSheet = workbook.createSheet(targetCellRef.getSheetName());
-            PoiUtil.copySheetProperties(workbook.getSheet(srcCellRef.getSheetName()), destSheet);
-        }
-        Row destRow = destSheet.getRow(targetCellRef.getRow());
-        if (destRow == null) {
-            destRow = destSheet.createRow(targetCellRef.getRow());
-        }
+        Sheet destSheet = getSheet(srcCellRef, targetCellRef);
+        Row destRow = getRow(srcCellRef, targetCellRef, destSheet);
         transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
     }
     
@@ -128,6 +121,23 @@ public class PoiTransformer extends AbstractTransformer {
             }
         }
         return cellData;
+    }
+    
+    protected Sheet getSheet(CellRef srcCellRef, CellRef targetCellRef) {
+        Sheet sheet = workbook.getSheet(targetCellRef.getSheetName());
+        if (sheet == null) {
+            sheet = workbook.createSheet(targetCellRef.getSheetName());
+            PoiUtil.copySheetProperties(workbook.getSheet(srcCellRef.getSheetName()), sheet);
+        }
+        return sheet;
+    }
+    
+    protected Row getRow(CellRef srcCellRef, CellRef targetCellRef, Sheet sheet) {
+        Row row = sheet.getRow(targetCellRef.getRow());
+        if (row == null) {
+            row = sheet.createRow(targetCellRef.getRow());
+        }
+        return row;
     }
 
     protected void transformCell(CellRef srcCellRef, CellRef targetCellRef, Context context,
