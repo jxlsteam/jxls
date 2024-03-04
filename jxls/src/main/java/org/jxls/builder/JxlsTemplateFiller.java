@@ -68,6 +68,7 @@ public class JxlsTemplateFiller {
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
     	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
+    	transformer.setSheetCreater(options.getSheetCreater());
     }
 
     /**

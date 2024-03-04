@@ -22,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jxls.builder.SheetCreater;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -46,7 +47,8 @@ public class PoiTransformer extends AbstractTransformer {
     private InputStream inputStream;
     private final boolean isSXSSF;
     private JxlsLogger logger = new PoiExceptionLogger();
-    
+    private SheetCreater sheetCreater;
+
     /**
      * @param workbook source workbook to transform
      * @param streaming false: without streaming, true: with streaming (with default parameter values)
@@ -124,10 +126,13 @@ public class PoiTransformer extends AbstractTransformer {
     }
     
     protected Sheet getSheet(CellRef srcCellRef, CellRef targetCellRef) {
-        Sheet sheet = workbook.getSheet(targetCellRef.getSheetName());
+        String targetSheetName = targetCellRef.getSheetName();
+        Sheet sheet = workbook.getSheet(targetSheetName);
         if (sheet == null) {
-            sheet = workbook.createSheet(targetCellRef.getSheetName());
-            PoiUtil.copySheetProperties(workbook.getSheet(srcCellRef.getSheetName()), sheet);
+            if (sheetCreater == null) {
+                throw new JxlsException("Can not create sheet!");
+            }
+            sheet = (Sheet) sheetCreater.createSheet(workbook, srcCellRef.getSheetName(), targetSheetName);
         }
         return sheet;
     }
@@ -473,5 +478,10 @@ public class PoiTransformer extends AbstractTransformer {
                 }
             }
         }
+    }
+
+    @Override
+    public void setSheetCreater(SheetCreater sheetCreater) {
+        this.sheetCreater = sheetCreater;
     }
 }
