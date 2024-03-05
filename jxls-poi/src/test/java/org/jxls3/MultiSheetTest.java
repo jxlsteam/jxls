@@ -52,8 +52,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been deleted
 				w.selectSheet("template");
@@ -73,8 +73,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been hidden
 				w.selectSheet("template");
@@ -97,11 +97,11 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "Oleg");
-            verifySheet(w, "Neil");
-            verifySheet(w, "Maria");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "Oleg");
+            verifySheet2(w, "Neil");
+            verifySheet2(w, "Maria");
+            verifySheet2(w, "John");
         }
 	}
 
@@ -128,5 +128,10 @@ public class MultiSheetTest {
         assertEquals(3d, sheet.getMargin(Sheet.BottomMargin) * inch, 0.05d);
         assertTrue(sheet.getPrintSetup().getNoColor());
         assertEquals("1:1", sheet.getRepeatingRows().formatAsString()); // "$1:$1" in the Excel GUI
+	}
+
+	private void verifySheet2(TestWorkbook w, String name) {
+        w.selectSheet(name);
+        assertEquals(name, w.getCellValueAsString(2, 2));
 	}
 }
