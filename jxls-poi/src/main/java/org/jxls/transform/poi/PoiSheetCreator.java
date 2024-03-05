@@ -6,9 +6,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jxls.builder.SheetCreater;
+import org.jxls.builder.SheetCreator;
 
-public class PoiSheetCreater implements SheetCreater {
+public class PoiSheetCreator implements SheetCreator {
     private boolean cloneSheet = true;
     
     /**

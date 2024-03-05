@@ -35,7 +35,7 @@ public class JxlsOptions {
     private final List<NeedsPublicContext> needsContextList;
     private final List<PreWriteAction> preWriteActions;
     private final RunVarAccess runVarAccess;
-    private final SheetCreater sheetCreater;
+    private final SheetCreator sheetCreator;
     
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
@@ -43,7 +43,7 @@ public class JxlsOptions {
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
             JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList,
-            List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess, SheetCreater sheetCreater) {
+            List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess, SheetCreator sheetCreator) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -63,7 +63,7 @@ public class JxlsOptions {
         this.needsContextList = needsContextList;
         this.preWriteActions = preWriteActions;
         this.runVarAccess = runVarAccess;
-        this.sheetCreater = sheetCreater;
+        this.sheetCreator = sheetCreator;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -142,7 +142,7 @@ public class JxlsOptions {
         return runVarAccess;
     }
 
-    public SheetCreater getSheetCreater() {
-        return sheetCreater;
+    public SheetCreator getSheetCreator() {
+        return sheetCreator;
     }
 }

@@ -61,7 +61,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected final List<NeedsPublicContext> needsContextList = new ArrayList<>();
     protected final List<PreWriteAction> preWriteActions = new ArrayList<>();
     protected RunVarAccess runVarAccess;
-    private SheetCreater sheetCreater;
+    private SheetCreator sheetCreator;
 
     /**
      * @return new builder instance
@@ -122,7 +122,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
                 logger, formulaProcessor, updateCellDataArea, ignoreColumnProps, ignoreRowProps,
                 recalculateFormulasBeforeSaving, recalculateFormulasOnOpening, keepTemplateSheet,
                 areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList,
-                preWriteActions, runVarAccess, sheetCreater);
+                preWriteActions, runVarAccess, sheetCreator);
     }
 
     /**
@@ -364,13 +364,13 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
         return (SELF) this;
     }
     
-    public SELF withSheetCreater(SheetCreater sheetCreater) {
-        this.sheetCreater = sheetCreater;
+    public SELF withSheetCreator(SheetCreator sheetCreator) {
+        this.sheetCreator = sheetCreator;
         return (SELF) this;
     }
     
-    public SheetCreater getSheetCreater() {
-        return sheetCreater;
+    public SheetCreator getSheetCreator() {
+        return sheetCreator;
     }
 
     /**

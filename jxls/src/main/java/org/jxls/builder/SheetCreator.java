@@ -1,6 +1,6 @@
 package org.jxls.builder;
 
-public interface SheetCreater {
+public interface SheetCreator {
 
     /**
      * Creates a new sheet as a copy of the given source sheet.

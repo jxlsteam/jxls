@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
-import org.jxls.builder.SheetCreater;
+import org.jxls.builder.SheetCreator;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -134,5 +134,5 @@ public interface Transformer {
     
     void setIgnoreRowProps(boolean ignoreRowProps);
     
-    void setSheetCreater(SheetCreater sheetCreater);
+    void setSheetCreator(SheetCreator sheetCreator);
 }
