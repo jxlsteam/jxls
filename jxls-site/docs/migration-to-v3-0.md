@@ -57,6 +57,7 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 - ASC_ignoreCase, DESC_ignoreCase options new for jx:each/orderBy and jx:each/groupOrder
 - Activate streaming for a sheet using `sheetStreaming="true"` in a note (see JxlsStreaming.AUTO_DETECT)
 - new builder options e.g. pre write actions
+- multisheet: cloneSheet() introduced (could be a breaking change), see builder method withSheetCreator()
 
 ## What have to be changed in your code?
 

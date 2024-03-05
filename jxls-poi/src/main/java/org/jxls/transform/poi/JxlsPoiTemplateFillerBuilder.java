@@ -13,6 +13,7 @@ public class JxlsPoiTemplateFillerBuilder extends JxlsTemplateFillerBuilder<Jxls
         withTransformerFactory(new PoiTransformerFactory());
         withCommand(ImageCommand.COMMAND_NAME, ImageCommand.class);
         withCommand(MergeCellsCommand.COMMAND_NAME, MergeCellsCommand.class);
+        withSheetCreator(new PoiSheetCreator());
     }
     
     public static JxlsPoiTemplateFillerBuilder newInstance() {

@@ -55,12 +55,6 @@ public class JxlsTemplateFiller {
         }
     }
 
-	private void installCommands() {
-	    if (options.getAreaBuilder() instanceof CommandMappings cm) {
-    		options.getCommands().forEach((k, v) -> cm.addCommandMapping(k, v));
-	    }
-	}
-
     protected void createTransformer(OutputStream outputStream) {
         transformer = options.getTransformerFactory().create(template, outputStream, options.getStreaming(), options.getLogger());
     }
@@ -68,6 +62,13 @@ public class JxlsTemplateFiller {
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
     	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
+    	transformer.setSheetCreator(options.getSheetCreator());
+    }
+
+    private void installCommands() {
+        if (options.getAreaBuilder() instanceof CommandMappings cm) {
+            options.getCommands().forEach((k, v) -> cm.addCommandMapping(k, v));
+        }
     }
 
     /**

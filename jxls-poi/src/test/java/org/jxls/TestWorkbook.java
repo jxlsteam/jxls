@@ -34,7 +34,7 @@ public class TestWorkbook implements AutoCloseable {
      * Following operations operate on the given sheet
      * @param name exact visible name
      */
-    public void selectSheet(String name) {
+    public Sheet selectSheet(String name) {
 		sheet = workbook.getSheet(name);
 		if (sheet == null) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" does not exist!");
@@ -42,6 +42,7 @@ public class TestWorkbook implements AutoCloseable {
 				&& !SheetVisibility.VISIBLE.equals(workbook.getSheetVisibility(workbook.getSheetIndex(name)))) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" is not visible!");
 		}
+		return sheet;
     }
 
     /**

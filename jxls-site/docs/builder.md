@@ -244,6 +244,15 @@ One use case could be performing POI operations, e.g. for grouping.
 If you want to change the way how running variables are accessed, call `withRunVarAccess((name, data) -> your code)`.
 The PublicContext.getRunVar() method is especially used to save loop variables. However, it is often the case that there is no entry for the key at all. If the map implementation reacts allergically to non-existent keys, you can change the behavior with withRunVarAccess().
 
+## Sheet creator
+
+Since version 3.0 we use a new SheetCreator interface for creating sheets in multisheet scenarios.
+The implementation PoiSheetCreator uses the method `XSSFWorkbook.cloneSheet()` which makes a deep copy of the origin sheet.
+Using `((PoiSheetCreator) getSheetCreator()).setCloneSheet(false)` you can deactivate this new behavior
+and use createSheet() instead. But the page setup is also copied. Since version 3.0 more properties are copied.
+Use `withSheetCreator(new ...)` for setting your own SheetCreator implementation.
+
+
 ## Template
 
 With the above options you can create a builder ready to go for creating an Excel report. What you still need is a template and data.
