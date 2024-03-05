@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.HeaderFooter;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFHeaderFooterProperties;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jxls.builder.SheetCreator;
@@ -68,6 +69,8 @@ public class PoiSheetCreator implements SheetCreator {
         dest.setMargin(Sheet.RightMargin, src.getMargin(Sheet.RightMargin));
         dest.setMargin(Sheet.TopMargin, src.getMargin(Sheet.TopMargin));
         dest.setMargin(Sheet.BottomMargin, src.getMargin(Sheet.BottomMargin));
+        dest.setMargin(Sheet.HeaderMargin, src.getMargin(Sheet.HeaderMargin));
+        dest.setMargin(Sheet.FooterMargin, src.getMargin(Sheet.FooterMargin));
         dest.setPrintGridlines(src.isPrintGridlines());
         dest.setRowSumsBelow(src.getRowSumsBelow());
         dest.setRowSumsRight(src.getRowSumsRight());
@@ -83,16 +86,18 @@ public class PoiSheetCreator implements SheetCreator {
         copyHeaderOrFooter(src.getHeader(), dest.getHeader());
         copyHeaderOrFooter(src.getFooter(), dest.getFooter());
         if (src instanceof XSSFSheet xs && dest instanceof XSSFSheet xd) {
-            xd.getHeaderFooterProperties().setDifferentOddEven(xs.getHeaderFooterProperties().getDifferentOddEven());
-            xd.getHeaderFooterProperties().setDifferentFirst(xs.getHeaderFooterProperties().getDifferentFirst());
-            xd.getHeaderFooterProperties().setAlignWithMargins(xs.getHeaderFooterProperties().getAlignWithMargins());
-            xd.getHeaderFooterProperties().setScaleWithDoc(xs.getHeaderFooterProperties().getScaleWithDoc());
-            if (xs.getHeaderFooterProperties().getDifferentOddEven()) {
+            XSSFHeaderFooterProperties hfs = xs.getHeaderFooterProperties();
+            XSSFHeaderFooterProperties hfd = xd.getHeaderFooterProperties();
+            if (hfs.getDifferentOddEven()) {
                 copyHeaderOrFooter(xs.getEvenHeader(), xd.getEvenHeader());
                 copyHeaderOrFooter(xs.getEvenFooter(), xd.getEvenFooter());
                 copyHeaderOrFooter(xs.getOddHeader(), xd.getOddHeader());
                 copyHeaderOrFooter(xs.getOddFooter(), xd.getOddFooter());
             }
+            hfd.setDifferentOddEven(hfs.getDifferentOddEven());
+            hfd.setDifferentFirst(hfs.getDifferentFirst());
+            hfd.setAlignWithMargins(hfs.getAlignWithMargins());
+            hfd.setScaleWithDoc(hfs.getScaleWithDoc());
         }
         dest.setZoom(100);
     }
