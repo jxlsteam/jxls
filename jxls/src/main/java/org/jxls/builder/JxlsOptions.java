@@ -9,6 +9,7 @@ import org.jxls.common.RunVarAccess;
 import org.jxls.expression.ExpressionEvaluatorFactory;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
+import org.jxls.transform.ExpressionEvaluatorContextFactory;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.PreWriteAction;
 
@@ -16,6 +17,7 @@ import org.jxls.transform.PreWriteAction;
  * Internal transport object for delivering the builder options to the template filler
  */
 public class JxlsOptions {
+    private final ExpressionEvaluatorContextFactory expressionEvaluatorContextFactory;
     private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
     private final String expressionNotationBegin;
     private final String expressionNotationEnd;
@@ -36,13 +38,15 @@ public class JxlsOptions {
     private final List<PreWriteAction> preWriteActions;
     private final RunVarAccess runVarAccess;
 
-    public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
+    public JxlsOptions(ExpressionEvaluatorContextFactory expressionEvaluatorContextFactory,
+            ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
             boolean ignoreColumnProps, boolean ignoreRowProps, boolean recalculateFormulasBeforeSaving,
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
             JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList,
             List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess) {
+        this.expressionEvaluatorContextFactory = expressionEvaluatorContextFactory;
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -62,6 +66,10 @@ public class JxlsOptions {
         this.needsContextList = needsContextList;
         this.preWriteActions = preWriteActions;
         this.runVarAccess = runVarAccess;
+    }
+
+    public ExpressionEvaluatorContextFactory getExpressionEvaluatorContextFactory() {
+        return expressionEvaluatorContextFactory;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {

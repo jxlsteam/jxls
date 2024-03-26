@@ -12,11 +12,11 @@ import org.jxls.expression.ExpressionEvaluatorFactory;
 public class ExpressionEvaluatorContext {
     private static final String EXPRESSION_PART = "(.+?)";
 
-    private final ExpressionEvaluatorFactory expressionEvaluatorFactory;
-    private final String expressionNotationBegin;
-    private final String expressionNotationEnd;
+    protected final ExpressionEvaluatorFactory expressionEvaluatorFactory;
+    protected final String expressionNotationBegin;
+    protected final String expressionNotationEnd;
     private final Pattern expressionNotationPattern;
-    private ExpressionEvaluator expressionEvaluator = null;
+    protected ExpressionEvaluator expressionEvaluator = null;
 
     /**
      * @param expressionEvaluatorFactory often new ExpressionEvaluatorFactoryJexlImpl()
