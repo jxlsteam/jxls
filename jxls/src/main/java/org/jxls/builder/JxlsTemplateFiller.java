@@ -93,7 +93,7 @@ public class JxlsTemplateFiller {
     }
 
     protected ExpressionEvaluatorContext createExpressionEvaluatorContext() {
-        return new ExpressionEvaluatorContext(
+        return options.getExpressionEvaluatorContextFactory().build(
                 options.getExpressionEvaluatorFactory(),
                 options.getExpressionNotationBegin(),
                 options.getExpressionNotationEnd());

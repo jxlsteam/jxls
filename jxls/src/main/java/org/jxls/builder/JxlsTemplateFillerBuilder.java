@@ -23,6 +23,8 @@ import org.jxls.formula.FastFormulaProcessor;
 import org.jxls.formula.FormulaProcessor;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
+import org.jxls.transform.ExpressionEvaluatorContext;
+import org.jxls.transform.ExpressionEvaluatorContextFactory;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.PreWriteAction;
 import org.jxls.util.CannotOpenWorkbookException;
@@ -34,6 +36,7 @@ import org.jxls.util.CannotOpenWorkbookException;
  * You must call withTransformerFactory() and withTemplate().
  */
 public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SELF>> {
+    protected ExpressionEvaluatorContextFactory expressionEvaluatorContextFactory = (f, b, e) -> new ExpressionEvaluatorContext(f, b, e);
     private ExpressionEvaluatorFactory expressionEvaluatorFactory = new ExpressionEvaluatorFactoryJexlImpl();
     public static final String DEFAULT_EXPRESSION_BEGIN = "${";
     public static final String DEFAULT_EXPRESSION_END = "}";
@@ -117,11 +120,26 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
      * @return JxlsOptions
      */
     public JxlsOptions getOptions() {
-        return new JxlsOptions(expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
+        return new JxlsOptions(expressionEvaluatorContextFactory, expressionEvaluatorFactory, expressionNotationBegin, expressionNotationEnd,
                 logger, formulaProcessor, updateCellDataArea, ignoreColumnProps, ignoreRowProps,
                 recalculateFormulasBeforeSaving, recalculateFormulasOnOpening, keepTemplateSheet,
                 areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList,
                 preWriteActions, runVarAccess);
+    }
+    
+    /**
+     * Use this method for defining your own factory for building the ExpressionEvaluatorContext instance.
+     * This is typically used for exchanging the ExpressionEvaluatorContext.evaluateRawExpression() method.
+     * 
+     * @param expressionEvaluatorContextFactory not null
+     * @return this
+     */
+    public SELF withExpressionEvaluatorContextFactory(ExpressionEvaluatorContextFactory expressionEvaluatorContextFactory) {
+        if (expressionEvaluatorContextFactory == null) {
+            throw new IllegalArgumentException("expressionEvaluatorContextFactory must not be null");
+        }
+        this.expressionEvaluatorContextFactory = expressionEvaluatorContextFactory;
+        return (SELF) this;
     }
 
     /**
