@@ -19,6 +19,8 @@ List<Employee> employees = ...
 
 If you want to reuse code from us see Employee.java and Employee#generateSampleEmployeeData() in our Github repository.
 
+Instead of a POJO it is also possible to use a `Map<String, Object>` or a Apache Commons BeanUtils DynaBean.
+
 ## Template
 
 The advantage of Jxls is that reports do not have to be programmed. Instead templates will be used.
