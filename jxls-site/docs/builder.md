@@ -61,6 +61,20 @@ Example:
 builder.withExpressionNotation("LBRACELBRACE", "}}")
 ```
 
+## Expression evaluator context factory
+
+If you need your own ${..} expressions inside the Jxls ${..} expressions you could use ExpressionEvaluatorContextQ.
+This class ignores ${..} expressions inside Jxls ${..} expressions that are inside double quotes. Example:
+`${services.format("${street} ${houseNo}")}`
+
+`services.format("${street} ${houseNo}")` is the expression that will be given to JEXL.
+`${street}` and `${houseNo}` will be evaluated by your code inside services.format()
+(where "services" is an object you put to the Jxls data map).
+
+```
+builder.withExpressionEvaluatorContextFactory((f, b, e) -> new ExpressionEvaluatorContextQ(f, b, e))
+```
+
 ## Logging
 
 The `JxlsLogger` interface is the middleman between Jxls and a logger.
