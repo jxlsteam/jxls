@@ -1,5 +1,8 @@
 # Release Notes
 
+## v3.1.0
+- [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
+
 ## v3.0.0
 - Java 17
 - see [migration guide](migration-to-v3-0.html)
