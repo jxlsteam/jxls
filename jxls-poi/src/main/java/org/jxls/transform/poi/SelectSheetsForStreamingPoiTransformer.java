@@ -7,9 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
-import org.jxls.common.Context;
 
 /**
  * You can use this PoiTransformer implementation to decide which worksheets use streaming.
@@ -39,39 +37,26 @@ public class SelectSheetsForStreamingPoiTransformer extends PoiTransformer {
     }
 
     @Override
-    public void transform(CellRef srcCellRef, CellRef targetCellRef, Context context, boolean updateRowHeightFlag) {
-        CellData cellData = isTransformable(srcCellRef, targetCellRef);
-        if (cellData == null) {
-            return;
-        }
-        Sheet destSheet = getWorkbook().getSheet(targetCellRef.getSheetName());
-        if (destSheet == null) {
-            destSheet = getWorkbook().createSheet(targetCellRef.getSheetName());
-            PoiUtil.copySheetProperties(getWorkbook().getSheet(srcCellRef.getSheetName()), destSheet);
-        }
+    protected Row getRow(CellRef srcCellRef, CellRef targetCellRef, Sheet sheet) {
         boolean useStreamingForThisSheet = useStreaming(targetCellRef.getSheetName());
         if (!useStreamingForThisSheet && isStreaming()) {
             // use "fat" data sheet for transformation
-            destSheet = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
+            sheet = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
         }
-        Row destRow = destSheet.getRow(targetCellRef.getRow());
-        if (destRow == null) {
+        Row row = sheet.getRow(targetCellRef.getRow());
+        if (row == null) {
             if (useStreamingForThisSheet && isStreaming()) { 
                 XSSFSheet _sh = ((SXSSFWorkbook) getWorkbook()).getXSSFWorkbook().getSheet(targetCellRef.getSheetName());
                 if (_sh.getPhysicalNumberOfRows() > 0 && targetCellRef.getRow() <= _sh.getLastRowNum()) {
-                    destRow = _sh.getRow(targetCellRef.getRow());
-                    destSheet = _sh;
-                    if (destRow == null) {
-                        destRow = destSheet.createRow(targetCellRef.getRow());
-                    }
-                } else {
-                    destRow = destSheet.createRow(targetCellRef.getRow());
+                    row = _sh.getRow(targetCellRef.getRow());
+                    sheet = _sh;
                 }
-            } else {
-                destRow = destSheet.createRow(targetCellRef.getRow());
+            }
+            if (row == null) { // yes, check again for null!
+                row = sheet.createRow(targetCellRef.getRow());
             }
         }
-        transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
+        return row;
     }
     
     protected boolean useStreaming(String sheetName) {

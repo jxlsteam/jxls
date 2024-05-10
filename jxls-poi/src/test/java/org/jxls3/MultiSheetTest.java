@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
@@ -50,8 +52,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been deleted
 				w.selectSheet("template");
@@ -71,8 +73,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been hidden
 				w.selectSheet("template");
@@ -95,11 +97,11 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "Oleg");
-            verifySheet(w, "Neil");
-            verifySheet(w, "Maria");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "Oleg");
+            verifySheet2(w, "Neil");
+            verifySheet2(w, "Maria");
+            verifySheet2(w, "John");
         }
 	}
 
@@ -112,7 +114,24 @@ public class MultiSheetTest {
 	}
 
 	private void verifySheet(TestWorkbook w, String name) {
+        Sheet sheet = w.selectSheet(name);
+        assertEquals(name, w.getCellValueAsString(2, 2));
+
+        // verify some page settings
+        assertFalse(((XSSFSheet) sheet).getHeaderFooterProperties().getDifferentOddEven());
+        assertEquals("", sheet.getHeader().getRight());
+        assertEquals("A", sheet.getFooter().getLeft());
+        final double inch = 2.54d;
+        assertEquals(3d, sheet.getMargin(Sheet.LeftMargin) * inch, 0.05d); // 3 in the German Excel GUI
+        assertEquals(3d, sheet.getMargin(Sheet.RightMargin) * inch, 0.05d);
+        assertEquals(3d, sheet.getMargin(Sheet.TopMargin) * inch, 0.05d);
+        assertEquals(3d, sheet.getMargin(Sheet.BottomMargin) * inch, 0.05d);
+        assertTrue(sheet.getPrintSetup().getNoColor());
+        assertEquals("1:1", sheet.getRepeatingRows().formatAsString()); // "$1:$1" in the Excel GUI
+	}
+
+	private void verifySheet2(TestWorkbook w, String name) {
         w.selectSheet(name);
-        assertEquals(name, w.getCellValueAsString(2, 2)); 
+        assertEquals(name, w.getCellValueAsString(2, 2));
 	}
 }
