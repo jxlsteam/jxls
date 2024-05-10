@@ -23,8 +23,11 @@ import org.jxls.util.CellRefUtil;
  */
 public abstract class AbstractFormulaProcessor implements FormulaProcessor {
     protected static final String regexJointedLookBehind = "(?<!U_\\([^)]{0,100})";
-    public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+|(?<!\\d)[a-zA-Z]+[0-9]+|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)";
-    private static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
+    public static final String regexCellRef = "([a-zA-Z_]+[a-zA-Z0-9_]*![a-zA-Z]+[0-9]+" // sheet + cell syntax
+            + "|[a-zA-Z_]+[a-zA-Z0-9_]*\\[[a-zA-Z0-9 _]+\\]" // table syntax (#240)
+            + "|(?<!\\d)[a-zA-Z]+[0-9]+" // cell syntax
+            + "|'[^?\\\\/:'*]+'![a-zA-Z]+[0-9]+)"; // 'sheet name' + cell syntax
+    public static final String regexCellRefExcludingJointed = regexJointedLookBehind + regexCellRef;
     private static final Pattern regexCellRefExcludingJointedPattern = Pattern.compile(regexCellRefExcludingJointed);
     private static final Pattern regexCellRefPattern = Pattern.compile(regexCellRef);
     private static final String regexJointedCellRef = "U_\\([^\\)]+\\)";

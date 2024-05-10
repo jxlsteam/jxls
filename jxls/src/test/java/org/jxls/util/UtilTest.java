@@ -39,7 +39,7 @@ public class UtilTest {
         assertEquals(sheetsNameOfMultiSheetTemplate, singletonList("areaWithMultiSheetOutput"));
     }
     
-// #240 not part of v2.13.0    @Test
+    @Test
     public void test_getFormulaCellRefs_tableSyntax() {
         // Test
         String table = "_tabu";
@@ -51,7 +51,7 @@ public class UtilTest {
         assertEquals("_tabu[ 1 column b]", formulaCellRefs.get(0));
     }
 
-// #240 not part of v2.13.0    @Test
+    @Test
     public void test_getFormulaCellRefs_tableSyntax2() {
         // Test
         String formula = "FUNC(one[AB CD],two[123], -1, three[c])";
