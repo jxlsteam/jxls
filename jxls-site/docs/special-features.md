@@ -138,3 +138,10 @@ Where
 `outputStream` an OutputStream to write the final Excel      
 
 Call registerGridTemplate() for registering your own custom template. The template must contain the jx:grid command.
+
+There's an alternative method if you need more control over the data map (e.g. for adding more data vars in case of
+using a custom template).
+
+```
+new SimpleExporter().gridExport(data, propertyNames, outputStream);
+```

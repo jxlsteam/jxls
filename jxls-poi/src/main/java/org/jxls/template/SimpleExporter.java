@@ -26,7 +26,32 @@ public class SimpleExporter {
         templateBytes = ImageCommand.toByteArray(inputStream);
     }
 
+    /**
+     * This is the main method of the SimpleExporter.
+     * @param headers a collection of headers
+     * @param dataObjects a collection of data objects
+     * @param objectProps a comma-separated list of object property names
+     * @param outputStream an OutputStream to write the final Excel file
+     */
     public void gridExport(Iterable<?> headers, Iterable<?> dataObjects, String objectProps, OutputStream outputStream) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("headers", headers);
+        data.put("data", dataObjects);
+        gridExport(data, objectProps, outputStream);
+    }
+
+    /**
+     * #315
+     * @param data a data map that should contain a collection of headers named "headers" and a collection
+     * of data objects called "data"
+     * @param objectProps a comma-separated list of object property names
+     * @param outputStream an OutputStream to write the final Excel file
+     */
+    public void gridExport(Map<String, Object> data, String objectProps, OutputStream outputStream) {
+        getBuilder(objectProps).buildAndFill(data, () -> outputStream);
+    }
+
+    protected JxlsPoiTemplateFillerBuilder getBuilder(String objectProps) {
         if (templateBytes == null) {
             InputStream is = SimpleExporter.class.getResourceAsStream(GRID_TEMPLATE_XLS);
             try {
@@ -34,17 +59,15 @@ public class SimpleExporter {
             } catch (IOException e) {
                 throw new JxlsException("Failed to read default template file " + GRID_TEMPLATE_XLS, e);
             }
-    	}    	
-        Map<String, Object> data = new HashMap<>();
-        data.put("headers", headers);
-        data.put("data", dataObjects);
-    	JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(new ByteArrayInputStream(templateBytes))
-    	    .withAreaBuilder((transformer, ctc) -> {
-    	        List<Area> areas = new XlsCommentAreaBuilder().build(transformer, ctc);
-    	        GridCommand gridCommand = (GridCommand) areas.get(0).getCommandDataList().get(0).getCommand();
-    	        gridCommand.setProps(objectProps);
-    	        return areas;
-    	    })
-    	    .buildAndFill(data, () -> outputStream);
+        }       
+        return JxlsPoiTemplateFillerBuilder.newInstance()
+                .withTemplate(new ByteArrayInputStream(templateBytes))
+                .withAreaBuilder((transformer, ctc) -> {
+                    // Setting objectProps to jx:grid
+                    List<Area> areas = new XlsCommentAreaBuilder().build(transformer, ctc);
+                    GridCommand gridCommand = (GridCommand) areas.get(0).getCommandDataList().get(0).getCommand();
+                    gridCommand.setProps(objectProps);
+                    return areas;
+                });
     }
 }

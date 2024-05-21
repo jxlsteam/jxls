@@ -1,6 +1,7 @@
 # Release Notes
 
 ## v3.1.0
+- [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 
 ## v3.0.0
