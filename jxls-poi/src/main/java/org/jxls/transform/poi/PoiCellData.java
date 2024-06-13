@@ -146,7 +146,18 @@ public class PoiCellData extends org.jxls.common.CellData {
             e.writeToCell(cell, context);
         } else {
             updateCellGeneralInfo(cell);
+            
+            ValueWithCellAccess valueWithCellAccess = null;
+            if (evaluationResult instanceof ValueWithCellAccess) {
+                valueWithCellAccess = (ValueWithCellAccess) evaluationResult;
+                evaluationResult = valueWithCellAccess.getValue();
+                valueWithCellAccess.applyBefore(cell);
+            }
             updateCellContents(cell);
+            if (valueWithCellAccess != null) {
+                valueWithCellAccess.applyAfter(cell);
+            }
+            
             CellStyle targetCellStyle = cellStyle;
             if (context.isIgnoreSourceCellStyle()) {
                 CellStyle dataFormatCellStyle = findCellStyle(evaluationResult, context.getCellStyleMap(), transformer);
