@@ -1,6 +1,7 @@
 package org.jxls.transform.poi;
 
 import org.apache.poi.ss.usermodel.HeaderFooter;
+import org.apache.poi.ss.usermodel.PageMargin;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -65,12 +66,12 @@ public class PoiSheetCreator implements SheetCreator {
         dest.setFitToPage(src.getFitToPage());
         dest.setForceFormulaRecalculation(src.getForceFormulaRecalculation());
         dest.setHorizontallyCenter(src.getHorizontallyCenter());
-        dest.setMargin(Sheet.LeftMargin, src.getMargin(Sheet.LeftMargin));
-        dest.setMargin(Sheet.RightMargin, src.getMargin(Sheet.RightMargin));
-        dest.setMargin(Sheet.TopMargin, src.getMargin(Sheet.TopMargin));
-        dest.setMargin(Sheet.BottomMargin, src.getMargin(Sheet.BottomMargin));
-        dest.setMargin(Sheet.HeaderMargin, src.getMargin(Sheet.HeaderMargin));
-        dest.setMargin(Sheet.FooterMargin, src.getMargin(Sheet.FooterMargin));
+        dest.setMargin(PageMargin.LEFT, src.getMargin(PageMargin.LEFT));
+        dest.setMargin(PageMargin.RIGHT, src.getMargin(PageMargin.RIGHT));
+        dest.setMargin(PageMargin.TOP, src.getMargin(PageMargin.TOP));
+        dest.setMargin(PageMargin.BOTTOM, src.getMargin(PageMargin.BOTTOM));
+        dest.setMargin(PageMargin.HEADER, src.getMargin(PageMargin.HEADER));
+        dest.setMargin(PageMargin.FOOTER, src.getMargin(PageMargin.FOOTER));
         dest.setPrintGridlines(src.isPrintGridlines());
         dest.setRowSumsBelow(src.getRowSumsBelow());
         dest.setRowSumsRight(src.getRowSumsRight());

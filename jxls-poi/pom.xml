@@ -11,7 +11,7 @@
 	<description>Apache POI based Transformer implementation for Jxls library</description>
 
 	<properties>
-		<poi.version>5.2.2</poi.version>
+		<poi.version>5.2.4</poi.version>
 	</properties>
 
 	<dependencies>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.25.0</version>
+            <version>1.26.0</version>
 			<scope>runtime</scope>
         </dependency>
         <dependency>
