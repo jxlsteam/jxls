@@ -3,7 +3,7 @@ package org.jxls.functions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils2.PropertyUtils;
 import org.jxls.command.RunVar;
 import org.jxls.common.JxlsException;
 import org.jxls.common.NeedsPublicContext;
