@@ -21,7 +21,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.impl.CTRowImpl;
  * </p>
  *
  * @see https://stackoverflow.com/a/48789397/5116356
- * @since 3.2.2
+ * @since 3.1.0
  */
 public class AutoRowHeightCommand extends AbstractCommand {
     public static final String COMMAND_NAME = "autoRowHeight";
