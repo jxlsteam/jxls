@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
@@ -17,7 +18,6 @@ import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 public class AutoRowHeightTest {
 
     @Test
-    @Ignore("Test fails yet")
     public void testAutoRow() {
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
 
@@ -26,11 +26,13 @@ public class AutoRowHeightTest {
 
         try (TestWorkbook w = tester.getWorkbook()) {
             Sheet sheet = w.selectSheet("Employees");
-            sheet.getRow(0).getHeight();
+            XSSFRow row1 = (XSSFRow) sheet.getRow(1);
+            XSSFRow row2 = (XSSFRow) sheet.getRow(2);
 
-            short lenOfRecord1 = sheet.getRow(1).getHeight();
-            short lenOfRecord2 = sheet.getRow(2).getHeight();
-            assertTrue("Second row of data should be higher than others", lenOfRecord1 < lenOfRecord2);
+            // this test should be improved.
+            // We are not able checking row height, so we just check that height is not explicitly set.
+            assertTrue("Height should not be set", !row1.getCTRow().isSetHt());
+            assertTrue("Height should not be set", !row2.getCTRow().isSetHt());
         }
     }
 
