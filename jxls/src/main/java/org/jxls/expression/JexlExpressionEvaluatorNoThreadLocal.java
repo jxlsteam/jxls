@@ -19,7 +19,7 @@ import org.apache.commons.jexl3.introspection.JexlPermissions;
 public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator {
     private static final Map<String, JexlExpression> expressionMap = new HashMap<>();
     private JexlExpression jexlExpression;
-    private JexlContext jexlContext;
+    private JexlContextFactory jexlContextFactory = context -> new MapContext(context);
     private JexlEngine jexl;
 
     public JexlExpressionEvaluatorNoThreadLocal() {
@@ -48,26 +48,16 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
         jexlExpression = jexl.createExpression(expression);
     }
 
-    public JexlExpressionEvaluatorNoThreadLocal(Map<String, Object> context) {
-        this();
-        jexlContext = new MapContext(context);
-    }
-
-    public JexlExpressionEvaluatorNoThreadLocal(JexlContext jexlContext) {
-        this();
-        this.jexlContext = jexlContext;
-    }
-
     @Override
     public Object evaluate(String expression, Map<String, Object> context) {
-        JexlContext jexlContext = new MapContext(context);
+        JexlContext jexlContext = jexlContextFactory.create(context);
         try {
-            JexlExpression jexlExpression = expressionMap.get(expression);
-            if (jexlExpression == null) {
-                jexlExpression = jexl.createExpression(expression);
-                expressionMap.put(expression, jexlExpression);
+            JexlExpression aJexlExpression = expressionMap.get(expression);
+            if (aJexlExpression == null) {
+                aJexlExpression = jexl.createExpression(expression);
+                expressionMap.put(expression, aJexlExpression);
             }
-            return jexlExpression.evaluate(jexlContext);
+            return aJexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
             throw new EvaluationException("An error occurred when evaluating expression " + expression, e);
             // JxlsLogger not needed here.
@@ -76,7 +66,7 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
 
     @Override
     public Object evaluate(Map<String, Object> context) {
-        jexlContext = new MapContext(context);
+        JexlContext jexlContext = jexlContextFactory.create(context);
         try {
             return jexlExpression.evaluate(jexlContext);
         } catch (Exception e) {
@@ -107,5 +97,13 @@ public class JexlExpressionEvaluatorNoThreadLocal implements ExpressionEvaluator
      */
     public static void clear() {
         expressionMap.clear();
+    }
+
+    public JexlContextFactory getJexlContextFactory() {
+        return jexlContextFactory;
+    }
+
+    public void setJexlContextFactory(JexlContextFactory jexlContextFactory) {
+        this.jexlContextFactory = jexlContextFactory;
     }
 }
