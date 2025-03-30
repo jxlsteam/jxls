@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.SheetVisibility;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -124,6 +125,14 @@ public class TestWorkbook implements AutoCloseable {
     public LocalDateTime getCellValueAsLocalDateTime(int row, int column) {
         try {
             return sheet.getRow(row - 1).getCell(column - 1).getLocalDateTimeCellValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    public String getCellComment(int row, int column) {
+        try {
+            return sheet.getCellComment(new CellAddress(row - 1, column - 1)).getString().getString();
         } catch (NullPointerException e) {
             return null;
         }
