@@ -3,6 +3,7 @@
 ## v3.1.0
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
+- [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 
 ## v3.0.0

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -409,6 +410,18 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     		throw new JxlsException("Template file does not exist: " + templateFile.getAbsolutePath());
     	}
         return withTemplate(new FileInputStream(templateFile));
+    }
+
+    /**
+     * @param templateFile Excel template file
+     * @return this
+     * @throws FileNotFoundException
+     */
+    public SELF withTemplate(Path templateFile) throws FileNotFoundException {
+    	if (templateFile == null) {
+    		throw new IllegalArgumentException("templateFile must not be null");
+    	}
+    	return withTemplate(templateFile.toFile());
     }
 
     /**
