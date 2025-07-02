@@ -1,6 +1,7 @@
 # Release Notes
 
 ## v3.1.0
+- [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
