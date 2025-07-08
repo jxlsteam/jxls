@@ -103,7 +103,7 @@ public class JxlsTemplateFiller {
     protected void preWrite() {
         transformer.setEvaluateFormulas(options.isRecalculateFormulasBeforeSaving());
         transformer.setFullFormulaRecalculationOnOpening(options.isRecalculateFormulasOnOpening());
-		Consumer<String> action;
+		Consumer<String> action = null;
 		switch (options.getKeepTemplateSheet()) {
 		case DELETE:
 			action = sheetName -> transformer.deleteSheet(sheetName);
@@ -111,10 +111,12 @@ public class JxlsTemplateFiller {
 		case HIDE:
 			action = sheetName -> transformer.setHidden(sheetName, true);
 			break;
-		default:
-			return;
+		default: // KEEP
+			break;
 		}
-		getSheetsNameOfMultiSheetTemplate(areas).stream().forEach(action);
+		if (action != null) {
+			getSheetsNameOfMultiSheetTemplate(areas).forEach(action);
+		}
 		options.getPreWriteActions().forEach(preWriteAction -> preWriteAction.preWrite(transformer, context));
     }
 
