@@ -337,9 +337,6 @@ public class PoiTransformer extends AbstractTransformer {
         return commentedCells;
     }
 
-
-    
-
     @Override
     public void write() throws IOException {
         writeButNotCloseStream();

@@ -2,6 +2,7 @@
 
 ## v3.1.0
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
+- [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
 - [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
