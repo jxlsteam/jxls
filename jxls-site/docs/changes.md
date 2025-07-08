@@ -1,6 +1,7 @@
 # Release Notes
 
 ## v3.1.0
+- [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
