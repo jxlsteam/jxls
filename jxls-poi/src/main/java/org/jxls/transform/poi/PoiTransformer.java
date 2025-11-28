@@ -364,9 +364,10 @@ public class PoiTransformer extends AbstractTransformer {
     @Override
     public void dispose() {
         // Note that SXSSF allocates temporary files that you must always clean up explicitly, by calling the dispose method. ( http://poi.apache.org/components/spreadsheet/how-to.html#sxssf )
+        // Since we use POI 5.5.0 we must call close().
         try {
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook) workbook).dispose();
+                ((SXSSFWorkbook) workbook).close();
             }
         } catch (Exception e) {
             getLogger().warn(e, "Error disposing streamed workbook");

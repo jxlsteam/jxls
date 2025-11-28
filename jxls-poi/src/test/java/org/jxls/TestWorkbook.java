@@ -38,7 +38,7 @@ public class TestWorkbook implements AutoCloseable {
 		sheet = workbook.getSheet(name);
 		if (sheet == null) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" does not exist!");
-		} else if (sheet instanceof XSSFSheet x
+		} else if (sheet instanceof XSSFSheet
 				&& !SheetVisibility.VISIBLE.equals(workbook.getSheetVisibility(workbook.getSheetIndex(name)))) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" is not visible!");
 		}
