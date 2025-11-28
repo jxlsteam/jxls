@@ -10,7 +10,7 @@
 "Params" params
 "Image" image
 "Merge cells" merge-cells
-"Automatic row height" auto-row-height
+"Auto row height" auto-row-height
 
 "Expressions"
 "Expressions" expressions
