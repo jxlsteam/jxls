@@ -15,7 +15,8 @@ import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.jdbc.DatabaseAccess;
 
-// TODO need help to update to newer Derby version
+// Derby version 10.16.1.1 is the highest possible version for Java 17.
+// TODO Derby is retired.
 public class SqlDemo {
     public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     public static final String CONNECTION_URL = "jdbc:derby:memory:testDB;create=true";
