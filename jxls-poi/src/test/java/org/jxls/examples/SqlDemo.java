@@ -15,10 +15,9 @@ import org.jxls.common.ContextImpl;
 import org.jxls.entity.Employee;
 import org.jxls.jdbc.DatabaseAccess;
 
-// TODO need help to update to newer Derby version
 public class SqlDemo {
-    public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    public static final String CONNECTION_URL = "jdbc:derby:memory:testDB;create=true";
+    public static final String DRIVER = "org.h2.Driver";
+    public static final String CONNECTION_URL = "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1";
 
     @Test
     public void test() throws ClassNotFoundException, SQLException {
@@ -32,9 +31,7 @@ public class SqlDemo {
     }
     
     private Connection openConnection() throws ClassNotFoundException, SQLException {
-        Class.forName(DRIVER);
         Connection conn = DriverManager.getConnection(CONNECTION_URL);
-        
         try (Statement stmt = conn.createStatement()) {
             String createTableSlq = "CREATE TABLE employee (" +
                     "id INT NOT NULL, " +

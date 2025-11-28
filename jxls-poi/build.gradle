@@ -1,10 +1,10 @@
 dependencies {
     implementation project(':jxls')
     
-    implementation 'org.apache.poi:poi-ooxml:5.2.2'
-    implementation 'org.apache.commons:commons-compress:1.25.0'
+    implementation 'org.apache.poi:poi-ooxml:5.5.0'
+    implementation 'org.apache.commons:commons-compress:1.28.0'
     
-    testImplementation 'org.apache.derby:derby:10.12.1.1'
+    testImplementation 'com.h2database:h2:2.4.240'
 }
 
 eclipse.classpath.file {
