@@ -20,7 +20,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.impl.CTRowImpl;
  * This is obtained setting row height to -1.
  * </p>
  *
- * @see https://stackoverflow.com/a/48789397/5116356
+ * see https://stackoverflow.com/a/48789397/5116356
  * @since 3.1.0
  */
 public class AutoRowHeightCommand extends AbstractCommand {
@@ -56,9 +56,8 @@ public class AutoRowHeightCommand extends AbstractCommand {
     }
 
     /**
-     * Workaround for dyDescent attribute
-     * 
-     * @see https://stackoverflow.com/a/53782199/5116356
+     * Workaround for dyDescent attribute.
+     * See https://stackoverflow.com/a/53782199/5116356
      */
     private void removeDyDescentAttr(Row row) {
         try {
