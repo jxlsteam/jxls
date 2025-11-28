@@ -42,4 +42,4 @@ its lastCell attribute defines the lower right corner of the worksheet area used
 - **[jx:params](params.html)** is a special command for setting a parameter.
 - **[jx:image](image.html)** is for adding an image to the sheet.
 - **[jx:mergeCells](merge-cells.html)** is for combining cells to one new cell.
-- **[jx:autoRowHeight](auto-row-height.html)** is for combining cells to one new cell.
+- **[jx:autoRowHeight](auto-row-height.html)** sets the row height according to the content.

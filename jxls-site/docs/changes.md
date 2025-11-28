@@ -5,6 +5,8 @@
 - [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
 - [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
+- [#344 Automatic row height feature](https://github.com/jxlsteam/jxls/issues/344) new jx:autoRowHeight command
+  *- contribution by [luca-vercelli](https://github.com/luca-vercelli)*
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
