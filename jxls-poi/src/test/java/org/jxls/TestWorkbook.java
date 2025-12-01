@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.SheetVisibility;
@@ -169,6 +170,15 @@ public class TestWorkbook implements AutoCloseable {
     
     public boolean isForceFormulaRecalculation() {
         return workbook.getForceFormulaRecalculation();
+    }
+    
+    public String getHyperlink(int row, int column) {
+        try {
+            Hyperlink link = sheet.getRow(row - 1).getCell(column - 1).getHyperlink();
+            return link.getLabel() + "=" + link.getAddress();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
     
     @Override
