@@ -11,6 +11,7 @@
 "Image" image
 "Merge cells" merge-cells
 "Auto row height" auto-row-height
+"Link" link
 
 "Expressions"
 "Expressions" expressions
