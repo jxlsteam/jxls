@@ -12,6 +12,8 @@ tickets:
 - [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
 - [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
+- [#352 ArrayIndexOutOfBoundsException in clearCells()](https://github.com/jxlsteam/jxls/issues/352)
+  *- contribution by [nicholas-byrne](https://github.com/nicholas-byrne)*
 - [#344 Automatic row height feature](https://github.com/jxlsteam/jxls/issues/344) new jx:autoRowHeight command
   *- contribution by [luca-vercelli](https://github.com/luca-vercelli)*
 - [#322 POI 5.5.0, commons-compress 1.28.0, JEXL 3.6.0](https://github.com/jxlsteam/jxls/issues/322) and changed Derby based SQL testcase to H2 DB
