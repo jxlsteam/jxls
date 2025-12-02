@@ -21,7 +21,7 @@ tickets:
 - [#322 POI 5.5.0, commons-compress 1.28.0, JEXL 3.6.0](https://github.com/jxlsteam/jxls/issues/322) and changed Derby based SQL testcase to H2 DB
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
-- [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242)
+- [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242) (see Builder Options > Sheet creator)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
 
