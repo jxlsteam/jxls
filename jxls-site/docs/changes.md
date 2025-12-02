@@ -8,6 +8,7 @@ highlights:
 tickets:
 
 - [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
+- [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
 - [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
 - [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
