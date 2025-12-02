@@ -5,6 +5,7 @@ highlights:
 
 - POI 5.5
 
+
 tickets:
 
 - [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
@@ -20,6 +21,7 @@ tickets:
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
+- [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
 
 ## v3.0.0
 - Java 17

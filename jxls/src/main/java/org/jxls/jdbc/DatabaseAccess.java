@@ -23,12 +23,18 @@ import org.jxls.common.JxlsException;
  */
 public class DatabaseAccess {
     private final Connection conn;
+    private final Integer fetchSize;
 
     public DatabaseAccess(Connection connection) {
+        this(connection, null);
+    }
+    
+    public DatabaseAccess(Connection connection, Integer fetchSize) {
         if (connection == null) {
             throw new IllegalArgumentException("connection must not be null");
         }
         conn = connection;
+        this.fetchSize = fetchSize;
     }
 
     public List<Map<String, Object>> query(final String sql, Object... params) {
@@ -36,6 +42,9 @@ public class DatabaseAccess {
             throw new IllegalArgumentException("SQL statement must not be null");
         }
         try (PreparedStatement stmt = conn.prepareStatement(sql.replace(XlsCommentAreaBuilder.LINE_SEPARATOR, System.lineSeparator()))) {
+            if (fetchSize != null) {
+                stmt.setFetchSize(fetchSize.intValue());
+            }
             fillStatement(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
                 return handle(rs);
