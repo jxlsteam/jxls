@@ -157,7 +157,7 @@ data.put(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
 You can use your own implementation using the SafeSheetNameBuilder interface.
 If the number of sheetNames and items do not match see example code in PoiSafeSheetNameBuilderUnitTest.testNotEnoughSheetNames()
-for modifying PoiSafeSheetNameBuilder.
+for modifying PoiSafeSheetNameBuilder. If you don't use PoiSafeSheetNameBuilder an error will be reported if there are duplicate sheet names.
 
 Instead of returning a String list the multisheet attribute can also rely on the iteration object and holds an expression for getting
 the sheet name.
