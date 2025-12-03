@@ -246,12 +246,11 @@ The PublicContext.getRunVar() method is especially used to save loop variables. 
 
 ## Sheet creator
 
-Since version 3.0 we use a new SheetCreator interface for creating sheets in multisheet scenarios.
+Since version 3.1 we use a new SheetCreator interface for creating sheets in multisheet scenarios.
 The implementation PoiSheetCreator uses the method `XSSFWorkbook.cloneSheet()` which makes a deep copy of the origin sheet.
 Using `((PoiSheetCreator) getSheetCreator()).setCloneSheet(false)` you can deactivate this new behavior
-and use createSheet() instead. But the page setup is also copied. Since version 3.0 more properties are copied.
+and use createSheet() instead. But the page setup is also copied. Since version 3.1 more properties are copied.
 Use `withSheetCreator(new ...)` for setting your own SheetCreator implementation.
-
 
 ## Template
 
