@@ -23,3 +23,5 @@ data.put("image", imageBytes);
 ```
 
 jx:image is part of jxls-poi and is only available if you use JxlsPoiTemplateFillerBuilder or add the ImageCommand using withCommand().
+
+This command is a community contribution.
