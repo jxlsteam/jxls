@@ -1,18 +1,9 @@
 package org.jxls.command;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
 import org.jxls.common.Size;
-import org.jxls.transform.poi.PoiTransformer;
 
 /**
  * <p>Merge cells</p>
@@ -29,18 +20,15 @@ import org.jxls.transform.poi.PoiTransformer;
  * @author lnk
  * @since 2.6.0
  */
-public class MergeCellsCommand extends AbstractCommand {
+public class MergeCellsCommand extends AbstractMergeCellsCommand {
     public static final String COMMAND_NAME = "mergeCells";
 
     /** Number of columns combined */
     private String cols;
-    /** Number of rows combined */
-    private String rows;
     /** Minimum number of columns to merge */
     private String minCols;
     /** Minimum number of rows to merge */
     private String minRows;
-    private Area area;
 
     @Override
     public String getName() {
@@ -53,14 +41,6 @@ public class MergeCellsCommand extends AbstractCommand {
 
     public void setCols(String cols) {
         this.cols = cols;
-    }
-
-    public String getRows() {
-        return rows;
-    }
-
-    public void setRows(String rows) {
-        this.rows = rows;
     }
 
     public String getMinCols() {
@@ -80,72 +60,18 @@ public class MergeCellsCommand extends AbstractCommand {
     }
 
     @Override
-    public Command addArea(Area area) {
-        if (super.getAreaList().size() >= 1) {
-            throw new IllegalArgumentException("You can only add 1 area to 'mergeCells' command!");
-        }
-        this.area = area;
-        return super.addArea(area);
-    }
-
-    @Override
     public Size applyAt(CellRef cellRef, Context context) {
-        int rows = getVal(this.rows, context);
-        int cols = getVal(this.cols, context);
-        rows = Math.max(getVal(this.minRows, context), rows);
-        cols = Math.max(getVal(this.minCols, context), cols);
+        Area area = getArea();
+        int rows = evaluate(getRows(), cellRef, context);
+        int cols = evaluate(this.cols, cellRef, context);
+        rows = Math.max(evaluate(this.minRows, cellRef, context), rows);
+        cols = Math.max(evaluate(this.minCols, cellRef, context), cols);
         rows = rows > 0 ? rows : area.getSize().getHeight();
         cols = cols > 0 ? cols : area.getSize().getWidth();
         if (rows > 1 || cols > 1) {
-            mergeCells(((PoiTransformer) getTransformer()).getWorkbook(), cellRef, rows, cols);
+            mergeCells(cellRef, rows, cols);
         }
         area.applyAt(cellRef, context);
         return new Size(cols, rows);
-    }
-
-    private int getVal(String expression, Context context) {
-        if (expression != null && expression.trim().length() > 0) {
-            Object obj = context.evaluate(expression);
-            try {
-                return Integer.parseInt(obj.toString());
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Expression: " + expression + " failed to resolve");
-            }
-        }
-        return 0;
-    }
-    
-    private void mergeCells(Workbook workbook, CellRef cellRef, int rows, int cols) {
-        Sheet sheet = workbook.getSheet(cellRef.getSheetName());
-        CellRangeAddress region = new CellRangeAddress(
-                cellRef.getRow(),
-                cellRef.getRow() + rows - 1,
-                cellRef.getCol(),
-                cellRef.getCol() + cols - 1);
-        sheet.addMergedRegion(region);
-
-        CellStyle cellStyle = null;
-		try {
-            cellStyle = ((PoiTransformer) getTransformer()).getCellStyle(cellRef);
-        } catch (Exception ignore) {
-        }
-        for (int i = region.getFirstRow(); i <= region.getLastRow(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null) {
-                row = sheet.createRow(i);
-            }
-            for (int j = region.getFirstColumn(); j <= region.getLastColumn(); j++) {
-                Cell cell = row.getCell(j);
-                if (cell == null) {
-                    cell = row.createCell(j);
-                }
-                if (cellStyle == null) {
-                    cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
-                    cell.getCellStyle().setVerticalAlignment(VerticalAlignment.CENTER);
-                } else {
-                    cell.setCellStyle(cellStyle);
-                }
-            }
-        }
     }
 }
