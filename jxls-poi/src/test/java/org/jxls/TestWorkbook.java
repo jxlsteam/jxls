@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.Hyperlink;
@@ -179,6 +181,16 @@ public class TestWorkbook implements AutoCloseable {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+    
+    public String getMergedCells() {
+        TreeSet<String> ret = new TreeSet<>();
+        int numMergedRegions = sheet.getNumMergedRegions();
+        for (int i = 0; i < numMergedRegions; i++) {
+            CellRangeAddress mergedRegion = sheet.getMergedRegion(i);
+            ret.add(mergedRegion.formatAsString());
+        }
+        return ret.stream().collect(Collectors.joining(","));
     }
     
     @Override

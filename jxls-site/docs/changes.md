@@ -8,7 +8,8 @@ highlights:
 
 tickets:
 
-- [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
+- [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377)
+  *- contribution by [kingwtd](https://github.com/kingwtd)*
 - [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
 - [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
@@ -16,12 +17,14 @@ tickets:
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#352 ArrayIndexOutOfBoundsException in clearCells()](https://github.com/jxlsteam/jxls/issues/352)
   *- contribution by [nicholas-byrne](https://github.com/nicholas-byrne)*
-- [#344 Automatic row height feature](https://github.com/jxlsteam/jxls/issues/344) new jx:autoRowHeight command
+- [#344 New automatic row height command](https://github.com/jxlsteam/jxls/issues/344)
   *- contribution by [luca-vercelli](https://github.com/luca-vercelli)*
 - [#322 POI 5.5.0, commons-compress 1.28.0, JEXL 3.6.0](https://github.com/jxlsteam/jxls/issues/322) and changed Derby based SQL testcase to H2 DB
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
+- [#195 New area column merge command](https://github.com/jxlsteam/jxls/issues/195)
+  *- contribution by [mannixsuo](https://github.com/mannixsuo)*
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
 
 ## v3.0.0
