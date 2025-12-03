@@ -9,3 +9,5 @@ jx:autoRowHeight(lastCell="A2")
 `lastCell`: area end
 
 jx:autoRowHeight is part of jxls-poi and is only available if you use JxlsPoiTemplateFillerBuilder or add the AutoRowHeightCommand using withCommand().
+
+This command is a community contribution.
