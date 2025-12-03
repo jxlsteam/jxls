@@ -19,3 +19,5 @@ jx:link(href="https://jxls.sourceforge.net" label="Jxls" lastCell="A2")
 The attributes href, label, type and color can be expressions or values.
 
 jx:link is part of jxls-poi and is only available if you use JxlsPoiTemplateFillerBuilder or add the LinkCommand using withCommand().
+
+This command is a community contribution.
