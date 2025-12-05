@@ -3,11 +3,12 @@
 ## v3.1.0
 highlights:
 
-- POI 5.5
+- POI 5.5.1
 
 
 tickets:
 
+- [#394 POI 5.5.1](https://github.com/jxlsteam/jxls/pull/394)
 - [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
 - [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
@@ -24,6 +25,7 @@ tickets:
 - [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242) (see Builder Options > Sheet creator)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
+- see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
 ## v3.0.0
 - Java 17
