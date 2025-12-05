@@ -233,7 +233,17 @@ Sometimes objects (e.g. custom functions) need the PublicContext, e.g. for expre
 You get this by implementing the NeedsPublicContext interface
 and calling `needsPublicContext(object)`.
 
-## Pre write actions
+## Pre- and post-processing
+Use template preprocessors for early extra processing and pre write actions for late extra processing.
+You can add multiple processors.
+
+### Template preprocessors
+
+Since 3.1.0. If you want to carry out an action after the template has been opened and before the Transformator has been created,
+you can do this with `withTemplatePreprocessor((template, s, l) -> ...)` (TemplateProcessor interface).
+One use case is ensuring CellStyle General: `JxlsPoiTemplateFillerBuilder.newInstance().withCellStyleGeneralEnsurer()`.
+
+### Pre write actions
 
 If you want to carry out an action before calling `Transformer.write()`, you can do this
 with `withPreWriteActions((transformer, context) -> ...)` (PreWriteAction interface).
