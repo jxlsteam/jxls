@@ -242,6 +242,7 @@ You can add multiple processors.
 Since 3.1.0. If you want to carry out an action after the template has been opened and before the Transformator has been created,
 you can do this with `withTemplatePreprocessor((template, s, l) -> ...)` (TemplateProcessor interface).
 One use case is ensuring CellStyle General: `JxlsPoiTemplateFillerBuilder.newInstance().withCellStyleGeneralEnsurer()`.
+See [Find missing CellStyle General unit test](csge.html).
 
 ### Pre write actions
 

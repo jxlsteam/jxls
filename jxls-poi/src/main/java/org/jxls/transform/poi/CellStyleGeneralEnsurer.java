@@ -42,15 +42,16 @@ public class CellStyleGeneralEnsurer implements TemplateProcessor {
         }
         String content = cell.getStringCellValue();
         if (content != null && content.contains("${")) { // process only Jxls relevant cells
-            fix(cell);
+            fix(cell, content);
         }
     }
 
     /**
      * Overwrite method if you just want to collect the errors for an unit test.
      * @param cell has missing cell style 'General'
+     * @param content cell content
      */
-    protected void fix(XSSFCell cell) {
+    protected void fix(XSSFCell cell, String content) {
         cell.setCellStyle(cell.getRow().getSheet().getWorkbook().getCellStyleAt(0));
     }
 }
