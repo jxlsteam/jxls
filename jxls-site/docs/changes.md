@@ -25,6 +25,7 @@ tickets:
 - [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242) (see Builder Options > Sheet creator)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
+- see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
 ## v3.0.0
 - Java 17
