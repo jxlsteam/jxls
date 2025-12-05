@@ -56,7 +56,8 @@ public class JxlsTemplateFiller {
     }
 
     protected void createTransformer(OutputStream outputStream) {
-        transformer = options.getTransformerFactory().create(template, outputStream, options.getStreaming(), options.getLogger());
+        transformer = options.getTransformerFactory().create(template, outputStream,
+                options.getStreaming(), options.getTemplatePreprocessors(), options.getLogger());
     }
 
     protected void configureTransformer() {

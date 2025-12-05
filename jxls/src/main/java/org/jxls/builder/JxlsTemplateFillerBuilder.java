@@ -26,6 +26,7 @@ import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.PreWriteAction;
+import org.jxls.transform.TemplateProcessor;
 import org.jxls.util.CannotOpenWorkbookException;
 
 /**
@@ -63,6 +64,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     protected final List<PreWriteAction> preWriteActions = new ArrayList<>();
     protected RunVarAccess runVarAccess;
     private SheetCreator sheetCreator;
+    protected final List<TemplateProcessor> templatePreprocessors = new ArrayList<>();
 
     /**
      * @return new builder instance
@@ -123,7 +125,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
                 logger, formulaProcessor, updateCellDataArea, ignoreColumnProps, ignoreRowProps,
                 recalculateFormulasBeforeSaving, recalculateFormulasOnOpening, keepTemplateSheet,
                 areaBuilder, commands, clearTemplateCells, transformerFactory, streaming, needsContextList,
-                preWriteActions, runVarAccess, sheetCreator);
+                preWriteActions, runVarAccess, sheetCreator, templatePreprocessors);
     }
 
     /**
@@ -332,6 +334,7 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     /**
      * If you are adding an object to the data map which needs <code>PublicContext</code> access, implement the NeedsPublicContext interface
      * and call this method.
+     * Subsequent calls to this method will add to the collection.
      * @param needsPublicContext your class which implements NeedsPublicContext for getting the PublicContext instance during report creation
      * @return this
      */
@@ -344,6 +347,20 @@ public class JxlsTemplateFillerBuilder<SELF extends JxlsTemplateFillerBuilder<SE
     }
     
     /**
+     * Subsequent calls to this method will add to the collection.
+     * @param templatePreprocessor code to be executed after template is opened and before Transformer is instantiated
+     * @return this
+     */
+    public SELF withTemplatePreprocessor(TemplateProcessor templatePreprocessor) {
+        if (templatePreprocessor == null) {
+            throw new IllegalArgumentException("preWriteAction must not be null");
+        }
+        templatePreprocessors.add(templatePreprocessor);
+        return (SELF) this;
+    }
+
+    /**
+     * Subsequent calls to this method will add to the collection.
      * @param preWriteAction code to be executed before transformer.write() is executed 
      * @return this
      */

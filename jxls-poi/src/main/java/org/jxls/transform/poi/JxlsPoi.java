@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.jxls.builder.JxlsStreaming;
@@ -34,6 +35,7 @@ public class JxlsPoi {
      * @return PoiTransformer
      */
     public static PoiTransformer createSimple(InputStream template) {
-        return (PoiTransformer) new PoiTransformerFactory().create(template, new ByteArrayOutputStream(), JxlsStreaming.STREAMING_OFF, new PoiExceptionLogger());
+        return (PoiTransformer) new PoiTransformerFactory().create(template, new ByteArrayOutputStream(),
+                    JxlsStreaming.STREAMING_OFF, List.of(), new PoiExceptionLogger());
     }
 }

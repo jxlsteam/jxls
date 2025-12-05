@@ -3,6 +3,7 @@ package org.jxls.transform.poi;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Comment;
@@ -12,14 +13,17 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jxls.builder.JxlsStreaming;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
+import org.jxls.transform.TemplateProcessor;
 import org.jxls.transform.Transformer;
 import org.jxls.util.CannotOpenWorkbookException;
 
 public class PoiTransformerFactory implements JxlsTransformerFactory {
 
     @Override
-    public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming, JxlsLogger logger) {
+    public Transformer create(InputStream template, OutputStream outputStream, JxlsStreaming streaming,
+            List<TemplateProcessor> templatePreprocessors, JxlsLogger logger) {
         Workbook workbook = openWorkbook(template);
+        templatePreprocessors.forEach(tp -> tp.process(workbook, streaming, logger));
         Transformer transformer = createTransformer(workbook, streaming);
         transformer.setLogger(logger);
         transformer.setOutputStream(outputStream);
