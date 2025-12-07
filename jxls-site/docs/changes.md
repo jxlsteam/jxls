@@ -3,13 +3,14 @@
 ## v3.1.0
 highlights:
 
-- POI 5.5
+- POI 5.5.1
 
 
 tickets:
 
 - [#396 POI bug 66679 compensation](https://github.com/jxlsteam/jxls/issues/396) activate with withCellStyleGeneralEnsurer(),
   also new: template preprocessing
+- [#394 POI 5.5.1](https://github.com/jxlsteam/jxls/pull/394)
 - [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
 - [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
@@ -18,14 +19,17 @@ tickets:
 - [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
 - [#352 ArrayIndexOutOfBoundsException in clearCells()](https://github.com/jxlsteam/jxls/issues/352)
   *- contribution by [nicholas-byrne](https://github.com/nicholas-byrne)*
-- [#344 Automatic row height feature](https://github.com/jxlsteam/jxls/issues/344) new jx:autoRowHeight command
+- [#344 New automatic row height command](https://github.com/jxlsteam/jxls/issues/344)
   *- contribution by [luca-vercelli](https://github.com/luca-vercelli)*
 - [#322 POI 5.5.0, commons-compress 1.28.0, JEXL 3.6.0](https://github.com/jxlsteam/jxls/issues/322) and changed Derby based SQL testcase to H2 DB
 - [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
 - [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242) (see Builder Options > Sheet creator)
 - [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
+- [#195 New area column merge command](https://github.com/jxlsteam/jxls/issues/195)
+  *- contribution by [mannixsuo](https://github.com/mannixsuo)*
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
+- see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
 ## v3.0.0
 - Java 17

@@ -11,7 +11,7 @@
 	<description>Apache POI based Transformer implementation for Jxls library</description>
 
 	<properties>
-		<poi.version>5.5.0</poi.version>
+		<poi.version>5.5.1</poi.version>
 	</properties>
 
 	<dependencies>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.5</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
