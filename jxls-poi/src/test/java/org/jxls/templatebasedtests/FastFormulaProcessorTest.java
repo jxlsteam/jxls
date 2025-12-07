@@ -39,7 +39,7 @@ public class FastFormulaProcessorTest {
         Transformer transformer;
         try (InputStream is = JxlsTester.openInputStream(getClass(), false)) {
             try (OutputStream os = new ByteArrayOutputStream()) {
-                transformer = spy(new PoiTransformerFactory().create(is, os, JxlsStreaming.STREAMING_OFF, new PoiExceptionThrower()));
+                transformer = spy(new PoiTransformerFactory().create(is, os, JxlsStreaming.STREAMING_OFF, List.of(), new PoiExceptionThrower()));
             }
         }
 

@@ -132,6 +132,10 @@ public class TestWorkbook implements AutoCloseable {
         }
     }
 
+    public String getCellDataFormat(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getCellStyle().getDataFormatString();
+    }
+
     /**
      * @param row starts with 1
      * @return row height in Twips

@@ -30,4 +30,9 @@ public class JxlsPoiTemplateFillerBuilder extends JxlsTemplateFillerBuilder<Jxls
         withLogger(new PoiExceptionThrower());
         return this;
     }
+
+    public JxlsPoiTemplateFillerBuilder withCellStyleGeneralEnsurer() {
+        withTemplatePreprocessor(new CellStyleGeneralEnsurer());
+        return this;
+    }
 }
