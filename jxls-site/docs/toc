@@ -10,6 +10,7 @@
 "Params" params
 "Image" image
 "Merge cells" merge-cells
+"Area column merge" area-column-merge
 "Auto row height" auto-row-height
 "Link" link
 
