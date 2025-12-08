@@ -4,7 +4,6 @@ import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.command.AreaColumnMergeCommand;
 import org.jxls.command.AutoRowHeightCommand;
 import org.jxls.command.ImageCommand;
-import org.jxls.command.LinkCommand;
 import org.jxls.command.MergeCellsCommand;
 import org.jxls.common.PoiExceptionLogger;
 import org.jxls.common.PoiExceptionThrower;
@@ -15,7 +14,6 @@ public class JxlsPoiTemplateFillerBuilder extends JxlsTemplateFillerBuilder<Jxls
         withLogger(new PoiExceptionLogger());
         withTransformerFactory(new PoiTransformerFactory());
         withCommand(ImageCommand.COMMAND_NAME, ImageCommand.class);
-        withCommand(LinkCommand.COMMAND_NAME, LinkCommand.class);
         withCommand(MergeCellsCommand.COMMAND_NAME, MergeCellsCommand.class);
         withCommand(AutoRowHeightCommand.COMMAND_NAME, AutoRowHeightCommand.class);
         withCommand(AreaColumnMergeCommand.COMMAND_NAME, AreaColumnMergeCommand.class);

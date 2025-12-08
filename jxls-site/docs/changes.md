@@ -10,8 +10,8 @@ tickets:
 
 - [#396 POI bug 66679 compensation](https://github.com/jxlsteam/jxls/issues/396) activate with withCellStyleGeneralEnsurer(),
   also new: template preprocessing
+- [#395 Hyperlink](https://github.com/jxlsteam/jxls/issues/395)
 - [#394 POI 5.5.1](https://github.com/jxlsteam/jxls/pull/394)
-- [#377 Add link command](https://github.com/jxlsteam/jxls/pull/377) *- contribution by [kingwtd](https://github.com/kingwtd)*
 - [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
 - [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
 - [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
