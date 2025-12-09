@@ -8,6 +8,7 @@ highlights:
 
 tickets:
 
+- [#402 more complex direction=RIGHT demo](https://github.com/jxlsteam/jxls/pull/402)
 - [#396 POI bug 66679 compensation](https://github.com/jxlsteam/jxls/issues/396) activate with withCellStyleGeneralEnsurer(),
   also new: template preprocessing
 - [#394 POI 5.5.1](https://github.com/jxlsteam/jxls/pull/394)
