@@ -1,5 +1,6 @@
 # Image
-
+ <!-- K=Image command -->
+ 
 Use this command for adding an image to a sheet.
 
 ```

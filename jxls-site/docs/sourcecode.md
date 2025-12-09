@@ -1,8 +1,8 @@
-# Source code
+# Source code <!-- ** -->
 
 Jxls source code is available on Github at https://github.com/jxlsteam/jxls.
 
-## Contributing
+## Contributing <!-- ** -->
 
 1. Create an issue.
 2. Fork the Github repository.
@@ -24,14 +24,14 @@ Also in the description please mention which Jxls version you used to reproduce 
 
 Please use [Discussions](https://github.com/jxlsteam/jxls/discussions) for your questions.
 
-## Eclipse
+## Eclipse <!-- ** -->
 
 1. Clone repository.
 2. File > Import > Existing Maven projects
 3. Choose parent folder of your Jxls repo folder.
 4. Projects will be imported as nested projects.
 
-## Codestyle
+## Codestyle <!-- ** -->
 
 - Java 17 syntax (starting from Jxls 3.0.0)
 - No wildcards in `import` lines.
@@ -40,7 +40,8 @@ Please use [Discussions](https://github.com/jxlsteam/jxls/discussions) for your 
 - Use @Override annotation.
 - Test case class name must end with 'Test'.
 
-## Writing template based testcases
+## Writing template based testcases <!-- K=Writing testcases -->
+<!-- K=Jxls3Tester -->
 
 Use **Jxls3Tester** for writing a template based testcase. The template file must have the name of the test class and must be in
 the same package in source folder 'src/test/resources'

@@ -1,4 +1,4 @@
-# Each
+# Each <!-- ** -->
 
 The jx:each command is primarily for creating rows. (More abilities are described later on this page.)
 
@@ -24,7 +24,7 @@ JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template)
 
 `lastCell`: area end
 
-## direction
+## direction <!-- ** -->
 
 Default is direction="DOWN" and rows will be created. Using direction="RIGHT" columns will be created.
 
@@ -42,7 +42,7 @@ In the template the employees list uses direction="DOWN" by default and e.depart
 
 [a more complex demo](right.html) | [BY_COLUMN](params.html)
 
-## varIndex
+## varIndex <!-- ** -->
 
 Use attribute varIndex for specifing a variable name that will hold the 0 based iteration index.
 
@@ -54,7 +54,7 @@ jx:each(items="employees" var="e" varIndex="index" lastCell="C2")
 
 ![result](img/each-varindex-2.png)
 
-## orderBy
+## orderBy <!-- ** -->
 
 The orderBy attribute holds a list of property names for sorting the items.
 You should prepend the var name + "." before each property name.
@@ -74,7 +74,7 @@ name is the first sorting criterion (ASC), payment is the second sorting criteri
 
 You should prefer sorting the items with your Java code. Use orderBy if you don't want to change your codebase.
 
-## select
+## select <!-- ** -->
 
 Only items where the select condition will be true will be part of the output. Prepend var name + "." to property names.
 
@@ -88,7 +88,7 @@ jx:each(items="employees" var="e" select="e.payment > 2000" lastCell="C2")
 
 jx:each with select is like jx:each + jx:if.
 
-## groupBy, groupOrder
+## groupBy, groupOrder <!-- ** -->
 
 Specify var name + "." + property name in attribute `groupBy` for grouping the items.
 You *must* also specify ASC, DESC, ASC_ignoreCase or DESC_ignoreCase in attribute `groupOrder`. You can only use ASC_ignoreCase
@@ -131,7 +131,7 @@ jx:each(items="employees" var="g" select="g.payment<2500" groupBy="salaryGroup" 
 
 ![result](img/each-groupby-select-2.png)
 
-## multisheet
+## multisheet <!-- ** -->
 
 Use the multisheet attribute for creating multiple sheets dynamically. The multisheet expression returns a String list of sheet names.
 The (sheetNames) list must have as many entries as there are (employees) items. The number of sheets is controlled by the items attribute.
@@ -174,7 +174,7 @@ e.name will call Employee#getName()
 
 ![result](img/each-multisheet-3.png)
 
-## Table support
+## Table support <!-- ** -->
 
 jx:each (only with direction=DOWN) supports tables. The table height will be automatically adjusted.
 

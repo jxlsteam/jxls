@@ -1,4 +1,4 @@
-# Auto row height
+# Auto row height <!-- ** -->
 
 Use this command for automatically fit height of rows to content.
 

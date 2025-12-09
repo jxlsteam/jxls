@@ -1,4 +1,4 @@
-# Grid
+# Grid <!-- ** -->
 
 The jx:grid command is useful for generating a dynamic grid with a header area and a data rows area.
 

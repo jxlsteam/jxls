@@ -1,4 +1,4 @@
-# Direction RIGHT
+# Direction RIGHT <!-- ** -->
 
 Imagine a report with dynamic columns. In this example one column per region (see DirectionRightTest.java/.xlsx).
 With region name and HQ in the header and sum in the footer.

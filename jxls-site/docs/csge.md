@@ -1,4 +1,4 @@
-# Find missing CellStyle General unit test
+# Find missing CellStyle General unit test <!-- ** -->
 
 If you don't want to auto-fix the missing CellStyle General bug (using `withCellStyleGeneralEnsurer()`),
 you could just use a unit test for finding all cells which have missing CellStyle General.

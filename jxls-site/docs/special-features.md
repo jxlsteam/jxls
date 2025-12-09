@@ -1,6 +1,6 @@
-# Special features
+# Special features <!-- ** -->
 
-## Parameterized formulas
+## Parameterized formulas <!-- ** -->
 
 Parameterized formula allows you to use context variables in the formula.
 
@@ -11,7 +11,7 @@ Jxls will substitute all the variables with values from the context.
 
 ![Parameterized formulas](img/par.png)
 
-## Jointed cell references
+## Jointed cell references <!-- ** -->
 
 If your formula refers to cells from different areas which should be combined into a single range or cell sequence you may use so
 called jointed cell reference notation combined with the parameterized formulas e.g.
@@ -22,7 +22,7 @@ $[SUM(U_(F8,F13))]
 
 Note U_() notation which will tells Jxls to use both cells F8 and F13 and combine the target cells into a single cell sequence or range if possible.
 
-## Group sum
+## Group sum <!-- ** -->
 
 Jxls ships a GroupSum class. Add it to the data map to use its sum() method.
 The first argument is the property name for the sum formation.
@@ -45,7 +45,7 @@ builder.needsPublicContext(big);
 There is another variant with additional filtering. When using expressions, setTransformationConfig() must be called.
 See also GroupSum Javadoc and GroupSumTest.
 
-## National language support
+## National language support <!-- ** -->
 
 With `R{key}` in the Excel .xlsx template file, resource bundles can be accessed to realize multilingualism.
 This is the Jxls standard solution since 2.8.0. It is particularly necessary when using PivotTables.
@@ -55,7 +55,7 @@ With `R{key=defaultValue}`, a default value can be specified for the case that t
 Otherwise key is the fallback value.
 The notation can be adjusted using setStart, setEnd and setDefaultValueDelimiter.
 
-## Shift mode
+## Shift mode <!-- ** -->
 
 Command has a shiftMode property. You can set it to "inner" (default) or "adjacent".
 
@@ -65,12 +65,12 @@ located below the shifted cell in the column X.
 
 AdjacentCellShiftStrategy shifts not only cells impacted by shifting area but also the adjacent area cells.
 
-## Lock range
+## Lock range <!-- ** -->
 
 Set setLockRange(Boolean.TRUE) to a command
 and other commands will no longer execute in this area after locking.
 
-## AreaListener
+## AreaListener <!-- ** -->
 
 Area listeners can be used to perform an additional area processing in response to area transformation events.
 For example you may want to highlight some rows or cells depending on the data.
@@ -110,13 +110,13 @@ withAreaBuilder(new XlsCommentAreaBuilder() {
 }));
 ```
 
-## Pivot table
+## Pivot table <!-- ** -->
 
 If you want to create a pivot table (also called a crosstab), first create a Sheet A with data.
 Then create the pivot table on Sheet B using normal Excel tools.
 Enable the pivot table option 'Refresh when opening file'. Then replace the data in Sheet A again with the jx:each command.
 
-## SimpleExporter
+## SimpleExporter <!-- ** -->
 
 You can export a list of objects into Excel with a single line of code by using SimpleExporter class.
 This is achieved by using a special built-in template containing the [jx:grid command](grid.html).

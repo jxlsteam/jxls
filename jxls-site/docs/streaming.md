@@ -1,4 +1,4 @@
-# Streaming
+# Streaming <!-- ** -->
 
 This topic is only relevant for Apache POI and the .xlsx file format.
 
@@ -22,7 +22,7 @@ Default is streaming off.
 
 `withStreaming(JxlsStreaming.STREAMING_ON)` activates streaming for all sheets.
 
-## AUTO_DETECT
+## AUTO_DETECT <!-- ** -->
 
 `withStreaming(JxlsStreaming.AUTO_DETECT)` activates streaming for all sheets that have a note containing `sheetStreaming="true"`.
 It has to be exactly this text. You cannot comment out this text, instead you have to delete it. This text is typically placed in cell A1 inside

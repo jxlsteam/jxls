@@ -1,6 +1,6 @@
-# Release Notes
+# Release Notes <!-- ** -->
 
-## v3.1.0
+## v3.1.0 <!-- ** -->
 highlights:
 
 - POI 5.5.1
@@ -32,7 +32,7 @@ tickets:
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
 - see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
-## v3.0.0
+## v3.0.0 <!-- ** -->
 - Java 17
 - see [migration guide](migration-to-v3-0.html)
 - new website, cover photo by Domagoj Ćosić
