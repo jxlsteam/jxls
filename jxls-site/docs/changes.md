@@ -29,6 +29,7 @@ tickets:
 - [#195 New area column merge command](https://github.com/jxlsteam/jxls/issues/195)
   *- contribution by [mannixsuo](https://github.com/mannixsuo)*
 - [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
+- [#46 Data validation (drop down) not displayed in generated fields when using EachCommand (jx:each)](https://github.com/jxlsteam/jxls/issues/46)
 - see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
 ## v3.0.0
