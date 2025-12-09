@@ -40,6 +40,8 @@ In the template the employees list uses direction="DOWN" by default and e.depart
 
 ![result](img/each-right-2.png)
 
+[a more complex demo](right.html) | [BY_COLUMN](params.html)
+
 ## varIndex
 
 Use attribute varIndex for specifing a variable name that will hold the 0 based iteration index.
