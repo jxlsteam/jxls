@@ -34,10 +34,23 @@ public class PoiUtil {
         cell.setCellComment(comment);
     }
 
-    public WritableCellValue hyperlink(String address, String link, String linkTypeString) {
-        return new WritableHyperlink(address, link, linkTypeString);
+    /**
+     * Not called by code. Called from expression in Excel cell.
+     * @param address -
+     * @param title -
+     * @param linkTypeString see WritableHyperlink constants
+     * @return WritableHyperlink
+     */
+    public WritableCellValue hyperlink(String address, String title, String linkTypeString) {
+        return new WritableHyperlink(address, title, linkTypeString);
     }
 
+    /**
+     * Not called by code. Called from expression in Excel cell.
+     * @param address -
+     * @param title -
+     * @return WritableHyperlink
+     */
     public WritableCellValue hyperlink(String address, String title) {
         return new WritableHyperlink(address, title);
     }
