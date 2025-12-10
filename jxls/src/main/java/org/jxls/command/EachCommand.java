@@ -326,6 +326,7 @@ public class EachCommand extends AbstractCommand {
         if (direction == Direction.DOWN) {
             getTransformer().adjustTableSize(cellRef, size);
         }
+        getTransformer().dataValidation(area, size, direction);
         return size;
     }
     

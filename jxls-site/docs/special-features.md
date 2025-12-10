@@ -22,6 +22,43 @@ $[SUM(U_(F8,F13))]
 
 Note U_() notation which will tells Jxls to use both cells F8 and F13 and combine the target cells into a single cell sequence or range if possible.
 
+## Hyperlink <!-- ** -->
+<!-- K=Link -->
+<!-- K=PoiUtil -->
+<!-- K=util -->
+<!-- K=WritableCellValue -->
+<!-- K=EMAIL -->
+
+You must add a PoiUtil instance to the data map.
+
+```
+data.put("util", new PoiUtil());
+data.put("address", "https://jxls.sf.net");
+data.put("title", "Jxls homepage");
+```
+
+Enter call of hyperlink method in an Excel cell:
+
+```
+${util.hyperlink(address, title)}
+```
+
+and format cell with e.g. blue color and underline. You can also jump to another cell:
+
+```
+${util.hyperlink("Sheet2!B5", title, "DOCUMENT")}
+```
+
+For sending an email write:
+
+```
+${util.hyperlink("mailto:" + mailAddress, recipient, "EMAIL")}
+```
+
+The two PoiUtil.hyperlink() methods are implementend using WritableHyperlink via the WritableCellValue technique.
+If an evaluation result returns a WritableCellValue, Jxls delegates the cell-writing control to the WritableCellValue
+implementation.
+
 ## Group sum <!-- ** -->
 
 Jxls ships a GroupSum class. Add it to the data map to use its sum() method.

@@ -181,3 +181,15 @@ jx:each (only with direction=DOWN) supports tables. The table height will be aut
 ![template](img/each-table-1.png)
 
 ![result](img/each-table-2.png)
+
+## Data validation
+
+Data validation drop downs will be supported since Jxls 3.1.
+Set `PoiDataValidations.FEATURE_TOGGLE` to false for switching this new feature off.
+The list entries must be defined inline or on the _same_ sheet.
+
+### How to configure data validations?
+Select data > data tools > data validations. Allow: list. Enter comma separated source values. Ensure that there is an
+error message. Screenshot of German Excel:
+
+![data validation](img/datavalidation_de.png)
