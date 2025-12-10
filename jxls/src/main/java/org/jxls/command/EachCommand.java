@@ -48,7 +48,12 @@ public class EachCommand extends AbstractCommand {
     private String items;
     private String var;
     private String varIndex;
-    public enum Direction {RIGHT, DOWN}
+    public enum Direction {
+        /** Dynamic columns. See also jx:params(formulaStrategy="BY_COLUMN") */
+        RIGHT,
+        /** Dynamic rows (default) */
+        DOWN;
+    }
     private Direction direction = Direction.DOWN;
     private String select;
     private String groupBy;

@@ -1,4 +1,4 @@
-# Update cell
+# Update cell <!-- ** -->
 
 Update cell allows you to customize the processing for a particular cell using this interface:
 

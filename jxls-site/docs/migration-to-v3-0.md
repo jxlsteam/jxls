@@ -1,4 +1,5 @@
 # Migration from version 2.x to 3.0 guide
+<!-- K=Migration guide -->
 
 ## Why version 3.0?
 
@@ -53,6 +54,7 @@ You can stay with 2.14.0 *for a while*. If there are important bug fixes, we wil
 - JdbcHelper was renamed to DatabaseAccess.
 
 **New Features**
+ <!-- K=New features in Jxls 3.0.0 -->
 
 - ASC_ignoreCase, DESC_ignoreCase options new for jx:each/orderBy and jx:each/groupOrder
 - Activate streaming for a sheet using `sheetStreaming="true"` in a note (see JxlsStreaming.AUTO_DETECT)

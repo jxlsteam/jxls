@@ -1,6 +1,6 @@
-# Release Notes
+# Release Notes <!-- ** -->
 
-## v3.1.0
+## v3.1.0 <!-- ** -->
 highlights:
 
 - POI 5.5.1
@@ -8,6 +8,7 @@ highlights:
 
 tickets:
 
+- [#402 more complex direction=RIGHT demo](https://github.com/jxlsteam/jxls/pull/402)
 - [#396 POI bug 66679 compensation](https://github.com/jxlsteam/jxls/issues/396) activate with withCellStyleGeneralEnsurer(),
   also new: template preprocessing
 - [#395 Hyperlink](https://github.com/jxlsteam/jxls/issues/395)
@@ -32,7 +33,7 @@ tickets:
 - [#46 Data validation (drop down) not displayed in generated fields when using EachCommand (jx:each)](https://github.com/jxlsteam/jxls/issues/46)
 - see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
-## v3.0.0
+## v3.0.0 <!-- ** -->
 - Java 17
 - see [migration guide](migration-to-v3-0.html)
 - new website, cover photo by Domagoj Ćosić

@@ -1,4 +1,4 @@
-# Builder options
+# Builder options <!-- ** -->
 
 JxlsTemplateFillerBuilder is the starting point for creating Jxls reports (since version 3).
 Jxls<u>Poi</u>TemplateFillerBuilder is the subclass in the jxls-poi project. It comes with a ready-configured
@@ -6,7 +6,7 @@ PoiTransformerFactory for creating the PoiTransformer.
 
 Below is a list of all builder options.
 
-## Expression evaluator
+## Expression evaluator <!-- ** -->
 
 The default expression evaluator is `JexlExpressionEvaluator`. This evaluator caches engine and expressions in its thread.
 This cache can be cleared by invoking `JexlExpressionEvaluator.clear()`.
@@ -18,7 +18,7 @@ The cache can be cleared by invoking `JexlExpressionEvaluatorNoThreadLocal.clear
 Use `withExpressionEvaluatorFactory(new ExpressionEvaluatorFactoryJSR223Impl(lang))` if you
 want to use a JSR223 compatible expression language specified by `lang`.
 
-### Factory options
+### Factory options <!-- ** -->
 
 The ExpressionEvaluatorFactory classes for JEXL have three constructors and up to three arguments:
 
@@ -52,7 +52,7 @@ See interface JexlPermissions for details.
 
 If a class is not accessible JEXL will treat them as they do not exist. Error messages are not that helpful.
 
-## Expression notations
+## Expression notations <!-- ** -->
 
 Expressions in cells are inside `${` and `}`. Call `withExpressionNotation(begin, end)` if you want to change those Strings.
 Example:
@@ -61,7 +61,7 @@ Example:
 builder.withExpressionNotation("LBRACELBRACE", "}}")
 ```
 
-## Logging
+## Logging <!-- ** -->
 
 The `JxlsLogger` interface is the middleman between Jxls and a logger.
 `PoiExceptionLogger` is the default logger if you use JxlsPoiTemplateFillerBuilder.
@@ -88,7 +88,7 @@ Here are ready to use logging framework adapters. More can be contributed by the
 - [SLF4J](slf4j.html)
 - [Tinylog](tinylog.html)
 
-## Formula processor
+## Formula processor <!-- ** -->
 
 The Jxls formula processor is responsible for extending cell references in Excel formulas.
 
@@ -104,13 +104,13 @@ if many reports are to be generated based on a simple template.
 Use `withFormulaProcessor(null)` if you want to disable formula processing. This makes only sense if the template
 has no formulas that need to be extended by Jxls and you need the processing speed.
 
-## Cell reference tracking
+## Cell reference tracking <!-- ** -->
 
 While performing an area transformation Jxls keeps track of all the processed cells so that it knows what are the target cells
 for each particular source cell. If you do not have or do not need to process the formulas then it makes sense to disable
 this functionality to save some memory. This can be done by calling `withUpdateCellDataArea(false)`.
 
-## Ignoring column/row properties
+## Ignoring column/row properties <!-- ** -->
 
 ![template](img/rowcol-props-template.png)
 
@@ -129,7 +129,7 @@ and the result will loook like this:
 
 ![bad](img/rowcol-props-bad.png)
 
-## Recalculate formulas
+## Recalculate formulas <!-- ** -->
 
 Jxls let POI recalculate all formulas before saving. Use `withRecalculateFormulasBeforeSaving(false)` to turn this off.
 
@@ -144,14 +144,14 @@ withRecalculateFormulasBeforeSaving(false)
 withRecalculateFormulasOnOpening(true)
 ```
 
-## Keep template sheet
+## Keep template sheet <!-- ** -->
 
 If you use the multisheet feature the template sheet will be deleted by default (DELETE).
 Use `withKeepTemplateSheet(KeepTemplateSheet.KEEP)` for keeping the template sheet.
 Or use the HIDE option for hiding the template sheet.
 See also the jx:each/multisheet documentation.
 
-## Area builder
+## Area builder <!-- ** -->
 
 Jxls uses by default the XlsCommentAreaBuilder. This class defines the command classes and defines the command syntax.
 Implement the `AreaBuilder` interface and use `withAreaBuilder(...)` to change this.
@@ -184,19 +184,19 @@ builder.withAreaBuilder((transformer, ctc) -> {
 ```
 
 
-## Commands
+## Commands <!-- ** -->
 
 Use `withCommand(commandName, commandObject)` for adding your own custom commands to Jxls. Imagine you extend EachCommand
 as MyEachCommand then you must call `withCommand(EachCommand.COMMAND_NAME, new MyEachCommand())` so you can use it.
 
 See also [Commands included](commands.html).
 
-## Clear template cells
+## Clear template cells <!-- ** -->
 
 By default Jxls clears cells where the expression cannot be evaluated. Use `withClearTemplateCells(false)` for not clearing
 those cells.
 
-## Transformer
+## Transformer <!-- ** -->
 
 A Transformer class contains the central logic of Jxls.
 
@@ -223,39 +223,39 @@ withTransformerFactory(new PoiTransformerFactory() {
 }
 ```
 
-## Streaming
+## Streaming <!-- ** -->
 
 See [Streaming](streaming.html)
 
-## Needs PublicContext
+## Needs PublicContext <!-- ** -->
 
 Sometimes objects (e.g. custom functions) need the PublicContext, e.g. for expression evaluations.
 You get this by implementing the NeedsPublicContext interface
 and calling `needsPublicContext(object)`.
 
-## Pre- and post-processing
+## Pre- and post-processing <!-- ** -->
 Use template preprocessors for early extra processing and pre write actions for late extra processing.
 You can add multiple processors.
 
-### Template preprocessors
+### Template preprocessors <!-- ** -->
 
 Since 3.1.0. If you want to carry out an action after the template has been opened and before the Transformator has been created,
 you can do this with `withTemplatePreprocessor((template, s, l) -> ...)` (TemplateProcessor interface).
 One use case is ensuring CellStyle General: `JxlsPoiTemplateFillerBuilder.newInstance().withCellStyleGeneralEnsurer()`.
 See [Find missing CellStyle General unit test](csge.html).
 
-### Pre write actions
+### Pre write actions <!-- ** -->
 
 If you want to carry out an action before calling `Transformer.write()`, you can do this
 with `withPreWriteActions((transformer, context) -> ...)` (PreWriteAction interface).
 One use case could be performing POI operations, e.g. for grouping.
 
-## Run var access
+## Run var access <!-- ** -->
 
 If you want to change the way how running variables are accessed, call `withRunVarAccess((name, data) -> your code)`.
 The PublicContext.getRunVar() method is especially used to save loop variables. However, it is often the case that there is no entry for the key at all. If the map implementation reacts allergically to non-existent keys, you can change the behavior with withRunVarAccess().
 
-## Sheet creator
+## Sheet creator <!-- ** -->
 
 Since version 3.1 we use a new SheetCreator interface for creating sheets in multisheet scenarios.
 The implementation PoiSheetCreator uses the method `XSSFWorkbook.cloneSheet()` which makes a deep copy of the origin sheet.
@@ -263,7 +263,7 @@ Using `((PoiSheetCreator) getSheetCreator()).setCloneSheet(false)` you can deact
 and use createSheet() instead. But the page setup is also copied. Since version 3.1 more properties are copied.
 Use `withSheetCreator(new ...)` for setting your own SheetCreator implementation.
 
-## Template
+## Template <!-- ** -->
 
 With the above options you can create a builder ready to go for creating an Excel report. What you still need is a template and data.
 Use one of these methods to specify the template file:
@@ -275,7 +275,7 @@ withTemplate(File templateFile)
 withTemplate(String templateFileName)
 ```
 
-## Output
+## Output <!-- ** -->
 
 After setting above builder options and the template you will receive a JxlsTemplateFiller by calling the build() method.
 Call fill() on that object to create an Excel report. fill() has two arguments:

@@ -1,4 +1,4 @@
-# Area column merge
+# Area column merge <!-- ** -->
 
 ```
 jx:areaColumnMerge(rows="" lastCell="C2")

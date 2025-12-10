@@ -1,4 +1,6 @@
-# Database access
+# Database access <!-- ** -->
+<!-- K=JDBC -->
+<!-- K=SQL -->
 
 Jxls allows you to use SQL queries directly in the Excel template to produce a collection 
 that can be processed by the [jx:each command](each.html).

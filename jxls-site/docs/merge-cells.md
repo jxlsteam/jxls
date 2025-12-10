@@ -1,4 +1,4 @@
-# Merge cells
+# Merge cells <!-- ** -->
 
 ```
 jx:mergeCells(cols="" rows="" minCols="" minRows="" lastCell="C2")

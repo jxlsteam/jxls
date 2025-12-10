@@ -1,6 +1,6 @@
-# Commands
+# Commands <!-- ** -->
 
-## Syntax
+## Syntax <!-- ** -->
 
 Commands are written as Excel notes. You create a note by right-clicking > New Note. A note usually contains
 the author on the first line. This is followed by commands line by line, with commands at the beginning
@@ -24,7 +24,7 @@ Some write it like this, which is also fine:
 jx:each(items="employees", var="e", lastCell="C2")
 ```
 
-## lastCell
+## lastCell <!-- ** -->
 
 Each command refers to a cell area. The cell area starts at the cell that has the note (top left corner) and
 ends at the cell specified in the lastCell attribute (bottom right corner).

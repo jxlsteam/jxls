@@ -2,7 +2,7 @@
 
 Let's assume that we want to output an employee list as an Microsoft Excel report.
 
-## POJO
+## POJO <!-- ** -->
 
 The employees are available as a POJO class and there is some code for retrieving the employee list:
 
@@ -21,7 +21,7 @@ If you want to reuse code from us see Employee.java and Employee#generateSampleE
 
 Instead of a POJO it is also possible to use a `Map<String, Object>` or a Apache Commons BeanUtils DynaBean.
 
-## Template
+## Template <!-- ** -->
 
 The advantage of Jxls is that reports do not have to be programmed. Instead templates will be used.
 We now create such a template. Please only use Microsoft Excel for this. Create a new Excel file template.xlsx with this content:
@@ -56,6 +56,7 @@ What you don't see in the screenshot that there is also formatting. Column B is 
 And then row A is bold and has cell style General.
 
 ## Add jxls-poi.jar
+ <!-- K=jxls-poi.jar -->
 
 Add Jxls as a Maven dependency to your project:
 
@@ -74,6 +75,7 @@ implementation 'org.jxls:jxls-poi:{{version}}'
 ```
 
 ## Code for report creation
+ <!-- K=Report creation -->
 
 Create a Java class with a main() method and these Java lines:
 

@@ -1,4 +1,4 @@
-# Create reports
+# Create reports <!-- ** -->
 
 An Excel report is generated from
 
@@ -31,7 +31,7 @@ JxlsPoiTemplateFillerBuilder.newInstance()
     .buildAndFill(dataMap, new File("report.xlsx"));
 ```
 
-## Data
+## Data <!-- ** -->
 
 The data is passed to Jxls as a single `Map<String, Object>` object.
 A map value can be a scalar, an Iterable, an array or an *object*.
@@ -42,7 +42,7 @@ Jxls must be able to add entries to the map and remove entries from the map.
 In version 2 Jxls used a class called Context that held a `Map<String, Object>`.
 In version 3 we have simplified it to `Map<String, Object>` and call this object 'data map'.
 
-## Common options
+## Common options <!-- ** -->
 
 Common options are [streaming](streaming.html) and throwing exceptions. And it's recommended to use [permissions](builder.html#factory-options).
 
@@ -60,7 +60,7 @@ If you want to use SLF4J for logging you must replace `withExceptionThrower()` b
 and copy the class from the [SLF4J](slf4j.html) page.
 
 
-## Real world production scenario
+## Real world production scenario <!-- ** -->
 
 In real world production scenario you want to have a stable codebase. You can't deliver every day. It should be possible just to change
 a template file. So it's a philosophy to have as much as possible inside the template files.
