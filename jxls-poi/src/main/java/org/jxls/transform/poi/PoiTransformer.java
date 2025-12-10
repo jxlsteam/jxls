@@ -22,7 +22,9 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jxls.area.Area;
 import org.jxls.builder.SheetCreator;
+import org.jxls.command.EachCommand.Direction;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -478,6 +480,22 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
+    @Override
+    public void dataValidation(Area area, Size size, Direction direction) {
+        if (!PoiDataValidations.FEATURE_TOGGLE) {
+            return;
+        }
+        Workbook w = getXSSFWorkbook();
+        if (w != null) {
+            Sheet sheet = workbook.getSheet(area.getStartCellRef().getSheetName());
+            if (sheet == null) {
+                logger.error("Can not access sheet '" + area.getStartCellRef().getSheetName() + "'");
+            } else {
+                new PoiDataValidations().dataValidation(area, size, direction, sheet, getLogger());
+            }
+        }
+    }
+    
     @Override
     public void setSheetCreator(SheetCreator sheetCreator) {
         this.sheetCreator = sheetCreator;

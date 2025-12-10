@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.jxls.area.Area;
 import org.jxls.builder.SheetCreator;
+import org.jxls.command.EachCommand.Direction;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -113,6 +115,11 @@ public class TransformerDelegator implements Transformer {
     @Override
     public void adjustTableSize(CellRef ref, Size size) {
         transformer.adjustTableSize(ref, size);
+    }
+
+    @Override
+    public void dataValidation(Area area, Size size, Direction direction) {
+        transformer.dataValidation(area, size, direction);
     }
 
     @Override
