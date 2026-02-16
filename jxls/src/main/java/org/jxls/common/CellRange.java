@@ -90,7 +90,7 @@ public class CellRange {
      * @param endRow end row of the block
      * @param col column of the block
      * @param colShift number of columns to shift
-     * @param updateColHeights whether to update rowWidths array
+     * @param updateRowWidths whether to update rowWidths array
      */ 
     public void shiftCellsWithRowBlock(int startRow, int endRow, int col, int colShift, boolean updateRowWidths) {
         for (int i = 0; i < height; i++) {

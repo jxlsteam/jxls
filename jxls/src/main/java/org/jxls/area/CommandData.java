@@ -106,8 +106,6 @@ public class CommandData {
      *
      * @param startCol 
      * @param endCol
-     * @param relativeStartCol
-     * @param relativeEndCol
      * @return
      */
     public int calcMinBlankLines(int startCol, int endCol) {
