@@ -65,7 +65,7 @@ public interface Command {
      *   <li>"inner" defining the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} to use</li>
      *   <li>"adjacent" defining the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy} to use</li>
      *   <li>null value means the default strategy will be used ({@link org.jxls.common.cellshift.InnerCellShiftStrategy})</li>
-     * </ul
+     * </ul>
      * @return cell shifting mode ("inner" or "adjacent")
      */
     String getShiftMode();
