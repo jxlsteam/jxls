@@ -1,5 +1,7 @@
 # Release Notes
 
+- [#259 Merged cells are split](https://github.com/jxlsteam/jxls/issues/259)
+
 ## v3.0.0
 - Java 17
 - see [migration guide](migration-to-v3-0.html)
