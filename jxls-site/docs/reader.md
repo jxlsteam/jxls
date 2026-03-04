@@ -20,7 +20,7 @@ The latest Jxls Reader module was released to Central Maven repository and to us
 <dependency>
     <groupId>org.jxls</groupId>
     <artifactId>jxls-reader</artifactId>
-    <version>TODO-var jxlsReaderVersion</version>
+    <version>2.1.0</version>
 </dependency> 
 ```
 
