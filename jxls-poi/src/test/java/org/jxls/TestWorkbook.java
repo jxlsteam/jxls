@@ -250,4 +250,11 @@ public class TestWorkbook implements AutoCloseable {
             }
         }
     }
+
+    /**
+     * @return all merged cell regions of current sheet
+     */
+    public List<CellRangeAddress> getMergedRegions() {
+        return sheet.getMergedRegions();
+    }
 }

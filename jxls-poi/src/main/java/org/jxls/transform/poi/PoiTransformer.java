@@ -194,9 +194,14 @@ public class PoiTransformer extends AbstractTransformer {
 
     private void removeMergedRegions(AreaRef areaRef) {
         Sheet destSheet = workbook.getSheet(areaRef.getSheetName());
+        CellRangeAddress areaRange = CellRangeAddress.valueOf(areaRef.toString());
         int numMergedRegions = destSheet.getNumMergedRegions();
         for (int i = numMergedRegions; i > 0; i--) {
-            destSheet.removeMergedRegion(i - 1);
+            CellRangeAddress mergedRegion = destSheet.getMergedRegion(i - 1);
+            if (areaRange.isInRange(mergedRegion.getFirstRow(), mergedRegion.getFirstColumn())
+                    && areaRange.isInRange(mergedRegion.getLastRow(), mergedRegion.getLastColumn())){
+                destSheet.removeMergedRegion(i - 1);
+            }
         }
     }
 
