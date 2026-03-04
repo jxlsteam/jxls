@@ -5,7 +5,6 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -35,46 +34,25 @@ public class PoiUtil {
         cell.setCellComment(comment);
     }
 
-    public WritableCellValue hyperlink(String address, String link, String linkTypeString) {
-        return new WritableHyperlink(address, link, linkTypeString);
+    /**
+     * Not called by code. Called from expression in Excel cell.
+     * @param address -
+     * @param title -
+     * @param linkTypeString see WritableHyperlink constants
+     * @return WritableHyperlink
+     */
+    public WritableCellValue hyperlink(String address, String title, String linkTypeString) {
+        return new WritableHyperlink(address, title, linkTypeString);
     }
 
+    /**
+     * Not called by code. Called from expression in Excel cell.
+     * @param address -
+     * @param title -
+     * @return WritableHyperlink
+     */
     public WritableCellValue hyperlink(String address, String title) {
         return new WritableHyperlink(address, title);
-    }
-
-    public static void copySheetProperties(Sheet src, Sheet dest) {
-        dest.setAutobreaks(src.getAutobreaks());
-        dest.setDisplayGridlines(src.isDisplayGridlines());
-        dest.setVerticallyCenter(src.getVerticallyCenter());
-        dest.setFitToPage(src.getFitToPage());
-        dest.setForceFormulaRecalculation(src.getForceFormulaRecalculation());
-        dest.setRowSumsRight(src.getRowSumsRight());
-        dest.setRowSumsBelow(src.getRowSumsBelow());
-        copyPrintSetup(src, dest);
-    }
-
-    private static void copyPrintSetup(Sheet src, Sheet dest) {
-        PrintSetup srcPrintSetup = src.getPrintSetup();
-        PrintSetup destPrintSetup = dest.getPrintSetup();
-        destPrintSetup.setCopies(srcPrintSetup.getCopies());
-        destPrintSetup.setDraft(srcPrintSetup.getDraft());
-        destPrintSetup.setFitHeight(srcPrintSetup.getFitHeight());
-        destPrintSetup.setFitWidth(srcPrintSetup.getFitWidth());
-        destPrintSetup.setFooterMargin(srcPrintSetup.getFooterMargin());
-        destPrintSetup.setHeaderMargin(srcPrintSetup.getHeaderMargin());
-        destPrintSetup.setHResolution(srcPrintSetup.getHResolution());
-        destPrintSetup.setLandscape(srcPrintSetup.getLandscape());
-        destPrintSetup.setLeftToRight(srcPrintSetup.getLeftToRight());
-        destPrintSetup.setNoColor(srcPrintSetup.getNoColor());
-        destPrintSetup.setNoOrientation(srcPrintSetup.getNoOrientation());
-        destPrintSetup.setNotes(srcPrintSetup.getNotes());
-        destPrintSetup.setPageStart(srcPrintSetup.getPageStart());
-        destPrintSetup.setPaperSize(srcPrintSetup.getPaperSize());
-        destPrintSetup.setScale(srcPrintSetup.getScale());
-        destPrintSetup.setUsePage(srcPrintSetup.getUsePage());
-        destPrintSetup.setValidSettings(srcPrintSetup.getValidSettings());
-        destPrintSetup.setVResolution(srcPrintSetup.getVResolution());
     }
 
     public static boolean isJxComment(String cellComment) {

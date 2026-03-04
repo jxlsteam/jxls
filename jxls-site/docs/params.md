@@ -1,9 +1,10 @@
 # Params
+<!-- K=jx:params -->
 
 Params is a special command. It has no own command class, has no lastCell attribute and applies only to one cell.
 Params knows two attributes: defaultValue and formulaStrategy.
 
-## defaultValue
+## defaultValue <!-- ** -->
 
 If the cells participating in a formula calculation are removed during processing then the formula value can become undefined or corrupted.
 To avoid this situation starting from version 2.2.8 Jxls sets such formula to "=0".
@@ -16,7 +17,9 @@ jx:params(defaultValue="1")
 This sets the default formula value to 1.
 
 ## formulaStrategy
-
+<!-- K=formulaStrategy=BY_COLUMN -->
+<!-- K=BY_COLUMN -->
+ 
 ```
 jx:params(formulaStrategy="BY_COLUMN")
 ```

@@ -10,6 +10,8 @@
 "Params" params
 "Image" image
 "Merge cells" merge-cells
+"Area column merge" area-column-merge
+"Auto row height" auto-row-height
 
 "Expressions"
 "Expressions" expressions
@@ -32,3 +34,4 @@
 ""
 "Source code" sourcecode
 "Release notes" changes
+"Index" features

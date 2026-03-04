@@ -5,6 +5,9 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.jxls.area.Area;
+import org.jxls.builder.SheetCreator;
+import org.jxls.command.EachCommand.Direction;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -72,6 +75,8 @@ public interface Transformer {
 
     void adjustTableSize(CellRef ref, Size size);
 
+    void dataValidation(Area area, Size size, Direction direction);
+
     /**
      * This property is used to recalculate all formulas before saving the workbook.
      * This property is set to true if you don't open the file with MS Excel and just read it (e.g. with a unit test).
@@ -132,4 +137,6 @@ public interface Transformer {
     void setIgnoreColumnProps(boolean ignoreColumnProps);
     
     void setIgnoreRowProps(boolean ignoreRowProps);
+    
+    void setSheetCreator(SheetCreator sheetCreator);
 }

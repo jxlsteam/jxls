@@ -11,6 +11,7 @@ import org.jxls.formula.FormulaProcessor;
 import org.jxls.logging.JxlsLogger;
 import org.jxls.transform.JxlsTransformerFactory;
 import org.jxls.transform.PreWriteAction;
+import org.jxls.transform.TemplateProcessor;
 
 /**
  * Internal transport object for delivering the builder options to the template filler
@@ -35,6 +36,8 @@ public class JxlsOptions {
     private final List<NeedsPublicContext> needsContextList;
     private final List<PreWriteAction> preWriteActions;
     private final RunVarAccess runVarAccess;
+    private final SheetCreator sheetCreator;
+    private final List<TemplateProcessor> templatePreprocessors;
 
     public JxlsOptions(ExpressionEvaluatorFactory expressionEvaluatorFactory, String expressionNotationBegin,
             String expressionNotationEnd, JxlsLogger logger, FormulaProcessor formulaProcessor, boolean updateCellDataArea,
@@ -42,7 +45,8 @@ public class JxlsOptions {
             boolean recalculateFormulasOnOpening, KeepTemplateSheet keepTemplateSheet, AreaBuilder areaBuilder,
             Map<String, Class<? extends Command>> commands, boolean clearTemplateCells,
             JxlsTransformerFactory transformerFactory, JxlsStreaming streaming, List<NeedsPublicContext> needsContextList,
-            List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess) {
+            List<PreWriteAction> preWriteActions, RunVarAccess runVarAccess, SheetCreator sheetCreator,
+            List<TemplateProcessor> templatePreprocessors) {
         this.expressionEvaluatorFactory = expressionEvaluatorFactory;
         this.expressionNotationBegin = expressionNotationBegin;
         this.expressionNotationEnd = expressionNotationEnd;
@@ -62,6 +66,8 @@ public class JxlsOptions {
         this.needsContextList = needsContextList;
         this.preWriteActions = preWriteActions;
         this.runVarAccess = runVarAccess;
+        this.sheetCreator = sheetCreator;
+        this.templatePreprocessors = templatePreprocessors;
     }
 
     public ExpressionEvaluatorFactory getExpressionEvaluatorFactory() {
@@ -138,5 +144,13 @@ public class JxlsOptions {
 
     public RunVarAccess getRunVarAccess() {
         return runVarAccess;
+    }
+
+    public SheetCreator getSheetCreator() {
+        return sheetCreator;
+    }
+
+    public List<TemplateProcessor> getTemplatePreprocessors() {
+        return templatePreprocessors;
     }
 }

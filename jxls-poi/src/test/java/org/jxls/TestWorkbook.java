@@ -5,8 +5,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.usermodel.SheetVisibility;
@@ -34,14 +39,15 @@ public class TestWorkbook implements AutoCloseable {
      * Following operations operate on the given sheet
      * @param name exact visible name
      */
-    public void selectSheet(String name) {
+    public Sheet selectSheet(String name) {
 		sheet = workbook.getSheet(name);
 		if (sheet == null) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" does not exist!");
-		} else if (sheet instanceof XSSFSheet x
+		} else if (sheet instanceof XSSFSheet
 				&& !SheetVisibility.VISIBLE.equals(workbook.getSheetVisibility(workbook.getSheetIndex(name)))) {
 			throw new IllegalArgumentException("Sheet \"" + name + "\" is not visible!");
 		}
+		return sheet;
     }
 
     /**
@@ -128,6 +134,10 @@ public class TestWorkbook implements AutoCloseable {
         }
     }
 
+    public String getCellDataFormat(int row, int column) {
+        return sheet.getRow(row - 1).getCell(column - 1).getCellStyle().getDataFormatString();
+    }
+
     /**
      * @param row starts with 1
      * @return row height in Twips
@@ -168,6 +178,66 @@ public class TestWorkbook implements AutoCloseable {
     
     public boolean isForceFormulaRecalculation() {
         return workbook.getForceFormulaRecalculation();
+    }
+    
+    public String getHyperlink(int row, int column) {
+        try {
+            Hyperlink link = sheet.getRow(row - 1).getCell(column - 1).getHyperlink();
+            return link.getLabel() + "=" + link.getAddress();
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+    
+    public String getMergedCells() {
+        TreeSet<String> ret = new TreeSet<>();
+        int numMergedRegions = sheet.getNumMergedRegions();
+        for (int i = 0; i < numMergedRegions; i++) {
+            CellRangeAddress mergedRegion = sheet.getMergedRegion(i);
+            ret.add(mergedRegion.formatAsString());
+        }
+        return ret.stream().collect(Collectors.joining(","));
+    }
+    
+    public String getDataValidations() {
+        StringBuilder sb = new StringBuilder();
+        List<? extends DataValidation> validations = sheet.getDataValidations();
+        for (int i = 0; i < validations.size(); i++) {
+            DataValidation dv = validations.get(i);
+            for (CellRangeAddress region : dv.getRegions().getCellRangeAddresses()) {
+                sb.append(region.formatAsString()).append("|");
+            }
+            DataValidationConstraint constraint = dv.getValidationConstraint();
+            sb.append(getValidationTypeLabel(constraint.getValidationType())).append("|");
+            if (constraint.getFormula1() != null) {
+                sb.append("F1=").append(constraint.getFormula1()).append("|");
+            }
+            if (constraint.getFormula2() != null) {
+                sb.append("F2=").append(constraint.getFormula2()).append("|");
+            }
+            sb.append("LZE=").append(dv.getEmptyCellAllowed()).append("|");
+            sb.append("DA=").append(dv.getSuppressDropDownArrow());
+            String e = "|E=[" + dv.getErrorBoxTitle() + "]" + dv.getErrorBoxText();
+            if (!"|E=[null]null".equals(e) && !"|E=[]".equals(e)) {
+                sb.append(e);
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private String getValidationTypeLabel(int type) {
+        return switch (type) {
+            case DataValidationConstraint.ValidationType.LIST -> "LIST";
+            case DataValidationConstraint.ValidationType.ANY -> "ANY";
+            case DataValidationConstraint.ValidationType.DECIMAL -> "DECIMAL";
+            case DataValidationConstraint.ValidationType.INTEGER -> "INTEGER";
+            case DataValidationConstraint.ValidationType.DATE -> "DATE";
+            case DataValidationConstraint.ValidationType.TIME -> "TIME";
+            case DataValidationConstraint.ValidationType.TEXT_LENGTH -> "TEXT_LENGTH";
+            case DataValidationConstraint.ValidationType.FORMULA -> "FORMULA";
+            default -> "UNKNOWN (" + type + ")";
+        };
     }
     
     @Override

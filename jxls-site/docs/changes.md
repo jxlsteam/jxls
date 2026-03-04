@@ -1,8 +1,40 @@
-# Release Notes
+# Release Notes <!-- ** -->
 
+## v3.1.0 <!-- ** -->
+highlights:
+
+- POI 5.5.1
+
+
+tickets:
+
+- [#402 more complex direction=RIGHT demo](https://github.com/jxlsteam/jxls/pull/402)
+- [#396 POI bug 66679 compensation](https://github.com/jxlsteam/jxls/issues/396) activate with withCellStyleGeneralEnsurer(),
+  also new: template preprocessing
+- [#395 Hyperlink](https://github.com/jxlsteam/jxls/issues/395)
+- [#394 POI 5.5.1](https://github.com/jxlsteam/jxls/pull/394)
+- [#375 Same multisheet sheet name and template sheet name results in removed sheet without any error](https://github.com/jxlsteam/jxls/issues/375)
+- [#371 commons-beanutils 1.11.0](https://github.com/jxlsteam/jxls/issues/371)
+- [#366 PreWriteActions are ignored if KeepTemplateSheet is set to KEEP](https://github.com/jxlsteam/jxls/issues/366)
+- [#360 Support for int[], long[] and double[] in EachCommand](https://github.com/jxlsteam/jxls/issues/360)
+- [#355 JexlContextFactory](https://github.com/jxlsteam/jxls/issues/355): call a top level function in a JEXL expression
+- [#352 ArrayIndexOutOfBoundsException in clearCells()](https://github.com/jxlsteam/jxls/issues/352)
+  *- contribution by [nicholas-byrne](https://github.com/nicholas-byrne)*
+- [#344 New automatic row height command](https://github.com/jxlsteam/jxls/issues/344)
+  *- contribution by [luca-vercelli](https://github.com/luca-vercelli)*
+- [#322 POI 5.5.0, commons-compress 1.28.0, JEXL 3.6.0](https://github.com/jxlsteam/jxls/issues/322) and changed Derby based SQL testcase to H2 DB
+- [#315 Pass data map to SimpleExporter](https://github.com/jxlsteam/jxls/issues/315)
+- [#302 Support for java.nio.file.Path](https://github.com/jxlsteam/jxls/issues/302)
 - [#259 Merged cells are split](https://github.com/jxlsteam/jxls/issues/259)
+- [#242 Support footer and header](https://github.com/jxlsteam/jxls/issues/242) (see Builder Options > Sheet creator)
+- [#240 Table syntax support for AbstractFormulaProcessor.getFormulaCellRefs()](https://github.com/jxlsteam/jxls/issues/240)
+- [#195 New area column merge command](https://github.com/jxlsteam/jxls/issues/195)
+  *- contribution by [mannixsuo](https://github.com/mannixsuo)*
+- [#63 Set fetch size for DatabaseAccess](https://github.com/jxlsteam/jxls/issues/63)
+- [#46 Data validation (drop down) not displayed in generated fields when using EachCommand (jx:each)](https://github.com/jxlsteam/jxls/issues/46)
+- see test notes in [#242](https://github.com/jxlsteam/jxls/issues/242) and [#394](https://github.com/jxlsteam/jxls/pull/394)
 
-## v3.0.0
+## v3.0.0 <!-- ** -->
 - Java 17
 - see [migration guide](migration-to-v3-0.html)
 - new website, cover photo by Domagoj Ćosić

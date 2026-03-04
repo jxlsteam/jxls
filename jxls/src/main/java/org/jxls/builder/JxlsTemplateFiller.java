@@ -55,19 +55,21 @@ public class JxlsTemplateFiller {
         }
     }
 
-	private void installCommands() {
-	    if (options.getAreaBuilder() instanceof CommandMappings cm) {
-    		options.getCommands().forEach((k, v) -> cm.addCommandMapping(k, v));
-	    }
-	}
-
     protected void createTransformer(OutputStream outputStream) {
-        transformer = options.getTransformerFactory().create(template, outputStream, options.getStreaming(), options.getLogger());
+        transformer = options.getTransformerFactory().create(template, outputStream,
+                options.getStreaming(), options.getTemplatePreprocessors(), options.getLogger());
     }
 
     protected void configureTransformer() {
     	transformer.setIgnoreColumnProps(options.isIgnoreColumnProps());
     	transformer.setIgnoreRowProps(options.isIgnoreRowProps());
+    	transformer.setSheetCreator(options.getSheetCreator());
+    }
+
+    private void installCommands() {
+        if (options.getAreaBuilder() instanceof CommandMappings cm) {
+            options.getCommands().forEach((k, v) -> cm.addCommandMapping(k, v));
+        }
     }
 
     /**
@@ -102,7 +104,7 @@ public class JxlsTemplateFiller {
     protected void preWrite() {
         transformer.setEvaluateFormulas(options.isRecalculateFormulasBeforeSaving());
         transformer.setFullFormulaRecalculationOnOpening(options.isRecalculateFormulasOnOpening());
-		Consumer<String> action;
+		Consumer<String> action = null;
 		switch (options.getKeepTemplateSheet()) {
 		case DELETE:
 			action = sheetName -> transformer.deleteSheet(sheetName);
@@ -110,10 +112,12 @@ public class JxlsTemplateFiller {
 		case HIDE:
 			action = sheetName -> transformer.setHidden(sheetName, true);
 			break;
-		default:
-			return;
+		default: // KEEP
+			break;
 		}
-		getSheetsNameOfMultiSheetTemplate(areas).stream().forEach(action);
+		if (action != null) {
+			getSheetsNameOfMultiSheetTemplate(areas).forEach(action);
+		}
 		options.getPreWriteActions().forEach(preWriteAction -> preWriteAction.preWrite(transformer, context));
     }
 

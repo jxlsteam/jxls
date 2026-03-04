@@ -96,6 +96,12 @@ public abstract class AbstractCommand implements Command {
         Object collectionObject = context.evaluate(collectionName);
         if (collectionObject == null) {
             return Collections.emptyList();
+        } else if (collectionObject instanceof int[] arr) {
+        	return Arrays.stream(arr).boxed().map(i -> (Object) i).toList();
+        } else if (collectionObject instanceof long[] arr) {
+        	return Arrays.stream(arr).boxed().map(i -> (Object) i).toList();
+        } else if (collectionObject instanceof double[] arr) {
+        	return Arrays.stream(arr).boxed().map(i -> (Object) i).toList();
         } else if (collectionObject instanceof Object[]) {
             return Arrays.asList((Object[])/*cast is important*/ collectionObject);
         } else if (collectionObject instanceof Iterable) {

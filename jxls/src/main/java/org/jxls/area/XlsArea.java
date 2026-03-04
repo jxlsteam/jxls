@@ -228,7 +228,7 @@ public class XlsArea implements Area {
                 int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
                 int initialEndRow = initialStartRow + initialSize.getHeight() - 1;
                 int initialStartCol = initialStartCellRef.getCol() - startCellRef.getCol();
-                int initialEndCol = initialStartCellRef.getCol() + initialSize.getWidth() - 1;
+                int initialEndCol = initialStartCol + initialSize.getWidth() - 1;
                 cellRange.clearCells(initialStartCol, initialEndCol, initialStartRow, initialEndRow);
             }
         }

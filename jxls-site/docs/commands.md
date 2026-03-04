@@ -1,6 +1,6 @@
-# Commands
+# Commands <!-- ** -->
 
-## Syntax
+## Syntax <!-- ** -->
 
 Commands are written as Excel notes. You create a note by right-clicking > New Note. A note usually contains
 the author on the first line. This is followed by commands line by line, with commands at the beginning
@@ -24,7 +24,7 @@ Some write it like this, which is also fine:
 jx:each(items="employees", var="e", lastCell="C2")
 ```
 
-## lastCell
+## lastCell <!-- ** -->
 
 Each command refers to a cell area. The cell area starts at the cell that has the note (top left corner) and
 ends at the cell specified in the lastCell attribute (bottom right corner).
@@ -41,4 +41,5 @@ its lastCell attribute defines the lower right corner of the worksheet area used
 - **[jx:updateCell](update-cell.html)** can be used for applying individual processing instructions for modifying a cell area.
 - **[jx:params](params.html)** is a special command for setting a parameter.
 - **[jx:image](image.html)** is for adding an image to the sheet.
-- **[jx:mergeCells](merge-cells.html)** is for combining cells to one new cell.
+- **[jx:mergeCells](merge-cells.html)** and **[jx:areaColumnMerge](area-column-merge.html)** are for combining cells to one new cell.
+- **[jx:autoRowHeight](auto-row-height.html)** sets the row height according to the content.

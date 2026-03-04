@@ -1,13 +1,16 @@
 package org.jxls.examples;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
+import org.jxls.TestWorkbook;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -18,6 +21,7 @@ import org.jxls.common.ContextImpl;
 import org.jxls.entity.Department;
 import org.jxls.formula.StandardFormulaProcessor;
 import org.jxls.transform.Transformer;
+import org.jxls.transform.poi.PoiUtil;
 
 /**
  * @author Leonid Vysochyn
@@ -36,6 +40,7 @@ public class XlsCommentBuilderDemo {
                 List<Area> xlsAreaList = areaBuilder.build(transformer, false);
                 Area xlsArea = xlsAreaList.get(0);
                 Context context = new ContextImpl();
+                context.putVar("util", new PoiUtil());
                 context.putVar("departments", departments);
                 xlsArea.applyAt(new CellRef("Down!A1"), context);
                 StandardFormulaProcessor fp = new StandardFormulaProcessor();
@@ -47,6 +52,12 @@ public class XlsCommentBuilderDemo {
                 xlsArea.processFormulas(fp);
                 transformer.write();
             }
+        }
+        
+        // Verify hyperlink
+        try (TestWorkbook w = new TestWorkbook(new File(output))) {
+            w.selectSheet("Down");
+            Assert.assertEquals("http://jxls.sf.net=http://jxls.sf.net", w.getHyperlink(5, 2));
         }
     }
 }

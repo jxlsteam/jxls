@@ -58,6 +58,7 @@ public class WritableHyperlink implements WritableCellValue {
         Hyperlink hyperlink = createHelper.createHyperlink(linkType);
         hyperlink.setAddress(address);
         cell.setHyperlink(hyperlink);
+        hyperlink.setLabel(title); // after setHyperlink() !
         cell.setCellValue(title);
         if (linkStyle == null) {
             linkStyle = cell.getCellStyle();

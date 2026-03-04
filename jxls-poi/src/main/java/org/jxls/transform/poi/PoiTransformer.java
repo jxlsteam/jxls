@@ -22,6 +22,9 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jxls.area.Area;
+import org.jxls.builder.SheetCreator;
+import org.jxls.command.EachCommand.Direction;
 import org.jxls.common.AreaRef;
 import org.jxls.common.CellData;
 import org.jxls.common.CellRef;
@@ -46,7 +49,8 @@ public class PoiTransformer extends AbstractTransformer {
     private InputStream inputStream;
     private final boolean isSXSSF;
     private JxlsLogger logger = new PoiExceptionLogger();
-    
+    private SheetCreator sheetCreator;
+
     /**
      * @param workbook source workbook to transform
      * @param streaming false: without streaming, true: with streaming (with default parameter values)
@@ -107,15 +111,8 @@ public class PoiTransformer extends AbstractTransformer {
         if (cellData == null) {
             return;
         }
-        Sheet destSheet = workbook.getSheet(targetCellRef.getSheetName());
-        if (destSheet == null) {
-            destSheet = workbook.createSheet(targetCellRef.getSheetName());
-            PoiUtil.copySheetProperties(workbook.getSheet(srcCellRef.getSheetName()), destSheet);
-        }
-        Row destRow = destSheet.getRow(targetCellRef.getRow());
-        if (destRow == null) {
-            destRow = destSheet.createRow(targetCellRef.getRow());
-        }
+        Sheet destSheet = getSheet(srcCellRef, targetCellRef);
+        Row destRow = getRow(srcCellRef, targetCellRef, destSheet);
         transformCell(srcCellRef, targetCellRef, context, updateRowHeightFlag, cellData, destSheet, destRow);
     }
     
@@ -128,6 +125,26 @@ public class PoiTransformer extends AbstractTransformer {
             }
         }
         return cellData;
+    }
+    
+    protected Sheet getSheet(CellRef srcCellRef, CellRef targetCellRef) {
+        String targetSheetName = targetCellRef.getSheetName();
+        Sheet sheet = workbook.getSheet(targetSheetName);
+        if (sheet == null) {
+            if (sheetCreator == null) {
+                throw new JxlsException("Can not create sheet!");
+            }
+            sheet = (Sheet) sheetCreator.createSheet(workbook, srcCellRef.getSheetName(), targetSheetName);
+        }
+        return sheet;
+    }
+    
+    protected Row getRow(CellRef srcCellRef, CellRef targetCellRef, Sheet sheet) {
+        Row row = sheet.getRow(targetCellRef.getRow());
+        if (row == null) {
+            row = sheet.createRow(targetCellRef.getRow());
+        }
+        return row;
     }
 
     protected void transformCell(CellRef srcCellRef, CellRef targetCellRef, Context context,
@@ -327,9 +344,6 @@ public class PoiTransformer extends AbstractTransformer {
         return commentedCells;
     }
 
-
-    
-
     @Override
     public void write() throws IOException {
         writeButNotCloseStream();
@@ -357,9 +371,10 @@ public class PoiTransformer extends AbstractTransformer {
     @Override
     public void dispose() {
         // Note that SXSSF allocates temporary files that you must always clean up explicitly, by calling the dispose method. ( http://poi.apache.org/components/spreadsheet/how-to.html#sxssf )
+        // Since we use POI 5.5.0 we must call close().
         try {
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook) workbook).dispose();
+                ((SXSSFWorkbook) workbook).close();
             }
         } catch (Exception e) {
             getLogger().warn(e, "Error disposing streamed workbook");
@@ -468,5 +483,26 @@ public class PoiTransformer extends AbstractTransformer {
                 }
             }
         }
+    }
+
+    @Override
+    public void dataValidation(Area area, Size size, Direction direction) {
+        if (!PoiDataValidations.FEATURE_TOGGLE) {
+            return;
+        }
+        Workbook w = getXSSFWorkbook();
+        if (w != null) {
+            Sheet sheet = workbook.getSheet(area.getStartCellRef().getSheetName());
+            if (sheet == null) {
+                logger.error("Can not access sheet '" + area.getStartCellRef().getSheetName() + "'");
+            } else {
+                new PoiDataValidations().dataValidation(area, size, direction, sheet, getLogger());
+            }
+        }
+    }
+    
+    @Override
+    public void setSheetCreator(SheetCreator sheetCreator) {
+        this.sheetCreator = sheetCreator;
     }
 }

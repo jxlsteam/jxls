@@ -1,4 +1,6 @@
-# Database access
+# Database access <!-- ** -->
+<!-- K=JDBC -->
+<!-- K=SQL -->
 
 Jxls allows you to use SQL queries directly in the Excel template to produce a collection 
 that can be processed by the [jx:each command](each.html).
@@ -9,6 +11,7 @@ Jxls ships with `DatabaseAccess` class which can be used for this purpose.
 
 To execute SQL queries in the template you can put an instance of *DatabaseAccess* class into the data map.    
 *DatabaseAccess* object can be constructed by passing JDBC Connection instance to its constructor.
+You can also specify the fetch size as a 2nd argument.
 
 ```
 Connection conn = ... // get JDBC connection

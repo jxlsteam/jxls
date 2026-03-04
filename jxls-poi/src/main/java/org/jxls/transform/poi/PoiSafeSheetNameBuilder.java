@@ -29,7 +29,7 @@ public class PoiSafeSheetNameBuilder implements SafeSheetNameBuilder {
             serialNumber++;
         }
         if (!givenSheetName.equals(newName)) {
-            logger.handleSheetNameChange(givenSheetName, sheetName);
+            logger.handleSheetNameChange(givenSheetName, newName);
         }
         usedSheetNames.add(newName);
         return newName;

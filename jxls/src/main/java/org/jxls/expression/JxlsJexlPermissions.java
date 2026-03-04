@@ -32,7 +32,7 @@ public class JxlsJexlPermissions {
         return o instanceof JxlsJexlPermissions p && p.id == id;
     }
     
-    JexlPermissions getJexlPermissions() {
+    public JexlPermissions getJexlPermissions() {
         return jexlPermissions;
     }
 }

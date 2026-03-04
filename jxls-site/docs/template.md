@@ -1,4 +1,4 @@
-# How to write a Jxls Excel template
+# How to write a Jxls Excel template <!-- ** -->
 
 With Jxls you can easily create Excel reports because you also create the report template with Excel.
 Such a template consists of notes that contain commands and cells that contain expressions.

@@ -8,13 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.PageMargin;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jxls.Jxls3Tester;
 import org.jxls.TestWorkbook;
 import org.jxls.builder.KeepTemplateSheet;
+import org.jxls.command.SheetNameGenerator;
+import org.jxls.common.PoiExceptionLogger;
 import org.jxls.entity.Employee;
+import org.jxls.transform.SafeSheetNameBuilder;
 import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
+import org.jxls.transform.poi.PoiSafeSheetNameBuilder;
 
 public class MultiSheetTest {
 	
@@ -50,8 +57,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been deleted
 				w.selectSheet("template");
@@ -71,8 +78,8 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "John");
             try {
             	// check if sheet "template" has been hidden
 				w.selectSheet("template");
@@ -95,11 +102,11 @@ public class MultiSheetTest {
         
         // Verify
         try (TestWorkbook w = tester.getWorkbook()) {
-            verifySheet(w, "Elsa");
-            verifySheet(w, "Oleg");
-            verifySheet(w, "Neil");
-            verifySheet(w, "Maria");
-            verifySheet(w, "John");
+            verifySheet2(w, "Elsa");
+            verifySheet2(w, "Oleg");
+            verifySheet2(w, "Neil");
+            verifySheet2(w, "Maria");
+            verifySheet2(w, "John");
         }
 	}
 
@@ -107,12 +114,97 @@ public class MultiSheetTest {
 		Map<String, Object> data = new HashMap<>();
         List<Employee> employees = Employee.generateSampleEmployeeData();
 		data.put("employees", employees);
-        data.put("sheetNames", employees.stream().map(i -> i.getName()).toList());
+        data.put("sheetNames", employees.stream().map(Employee::getName).toList());
 		return data;
 	}
 
 	private void verifySheet(TestWorkbook w, String name) {
-        w.selectSheet(name);
-        assertEquals(name, w.getCellValueAsString(2, 2)); 
+        Sheet sheet = w.selectSheet(name);
+        assertEquals(name, w.getCellValueAsString(2, 2));
+
+        // verify some page settings
+        assertFalse(((XSSFSheet) sheet).getHeaderFooterProperties().getDifferentOddEven());
+        assertEquals("", sheet.getHeader().getRight());
+        assertEquals("A", sheet.getFooter().getLeft());
+        final double inch = 2.54d;
+        assertEquals(3d, sheet.getMargin(PageMargin.LEFT) * inch, 0.05d); // 3 in the German Excel GUI
+        assertEquals(3d, sheet.getMargin(PageMargin.RIGHT) * inch, 0.05d);
+        assertEquals(3d, sheet.getMargin(PageMargin.TOP) * inch, 0.05d);
+        assertEquals(3d, sheet.getMargin(PageMargin.BOTTOM) * inch, 0.05d);
+        assertTrue(sheet.getPrintSetup().getNoColor());
+        assertEquals("1:1", sheet.getRepeatingRows().formatAsString()); // "$1:$1" in the Excel GUI
 	}
+
+	private void verifySheet2(TestWorkbook w, String name) {
+        w.selectSheet(name);
+        assertEquals(name, w.getCellValueAsString(2, 2));
+	}
+
+    @Test
+    public void duplicateSheetNames_withPoiSafeSheetNameBuilder() {
+        // Prepare
+        Map<String, Object> data = new HashMap<>();
+        List<Employee> employees = data2(data);
+        data.put(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
+        
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        int o[] = { 0 };
+        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withLogger(new PoiExceptionLogger() {
+            @Override
+            public void handleSheetNameChange(String invalidSheetName, String newSheetName) {
+                if ((employees.get(1).getName() + "(1)").equals(newSheetName)) {
+                    o[0]++;
+                }
+                super.handleSheetNameChange(invalidSheetName, newSheetName);
+            }
+        });
+        tester.test(data, builder);
+
+        // Verify
+        Assert.assertEquals("Did not find duplicate sheet name!", 1, o[0]);
+    }
+
+    @Test
+    public void duplicateSheetNames_withoutPoiSafeSheetNameBuilder() {
+        // Prepare
+        Map<String, Object> data = new HashMap<>();
+        List<Employee> employees = data2(data);
+        // The developer makes the mistake that there is no PoiSafeSheetNameBuilder instance in the data map.
+        // Expectation of issue #375: Jxls should report an error.
+        
+        // Test
+        Jxls3Tester tester = Jxls3Tester.xlsx(getClass());
+        int o[] = { 0 };
+        JxlsPoiTemplateFillerBuilder builder = JxlsPoiTemplateFillerBuilder.newInstance().withLogger(new PoiExceptionLogger() {
+            @Override
+            public void handleSheetNameChange(String invalidSheetName, String newSheetName) {
+                Assert.fail("handleSheetNameChange() must not be called");
+            }
+            
+            @Override
+            public void error(String msg) {
+                if ((SheetNameGenerator.ERR_MSG + employees.get(1).getName()).equals(msg)) {
+                    o[0] += 100;
+                }
+                super.error(msg);
+            }
+        });
+        tester.test(data, builder);
+
+        // Verify
+        Assert.assertEquals("Did not report duplicate sheet name error!", 100, o[0]);
+    }
+
+    private List<Employee> data2(Map<String, Object> data) {
+        List<Employee> employees = Employee.generateSampleEmployeeData();
+        while (employees.size() > 2) {
+            employees.remove(employees.size() - 1);
+        }
+        Assert.assertEquals(2, employees.size());
+        employees.get(1).setName(employees.get(0).getName()); // make duplicate names
+        data.put("employees", employees);
+        data.put("sheetNames", employees.stream().map(Employee::getName).toList());
+        return employees;
+    }
 }

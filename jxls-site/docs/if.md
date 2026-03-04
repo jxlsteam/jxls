@@ -1,4 +1,5 @@
 # If
+<!-- K=If command -->
 
 Use the jx:if command for showing/hiding cells based on a condition expression. It's like if or if+else in Java.
 

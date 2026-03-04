@@ -1,4 +1,4 @@
-# Each
+# Each <!-- ** -->
 
 The jx:each command is primarily for creating rows. (More abilities are described later on this page.)
 
@@ -24,7 +24,7 @@ JxlsPoiTemplateFillerBuilder.newInstance().withTemplate(template)
 
 `lastCell`: area end
 
-## direction
+## direction <!-- ** -->
 
 Default is direction="DOWN" and rows will be created. Using direction="RIGHT" columns will be created.
 
@@ -40,7 +40,9 @@ In the template the employees list uses direction="DOWN" by default and e.depart
 
 ![result](img/each-right-2.png)
 
-## varIndex
+[a more complex demo](right.html) | [BY_COLUMN](params.html)
+
+## varIndex <!-- ** -->
 
 Use attribute varIndex for specifing a variable name that will hold the 0 based iteration index.
 
@@ -52,7 +54,7 @@ jx:each(items="employees" var="e" varIndex="index" lastCell="C2")
 
 ![result](img/each-varindex-2.png)
 
-## orderBy
+## orderBy <!-- ** -->
 
 The orderBy attribute holds a list of property names for sorting the items.
 You should prepend the var name + "." before each property name.
@@ -72,7 +74,7 @@ name is the first sorting criterion (ASC), payment is the second sorting criteri
 
 You should prefer sorting the items with your Java code. Use orderBy if you don't want to change your codebase.
 
-## select
+## select <!-- ** -->
 
 Only items where the select condition will be true will be part of the output. Prepend var name + "." to property names.
 
@@ -86,7 +88,7 @@ jx:each(items="employees" var="e" select="e.payment > 2000" lastCell="C2")
 
 jx:each with select is like jx:each + jx:if.
 
-## groupBy, groupOrder
+## groupBy, groupOrder <!-- ** -->
 
 Specify var name + "." + property name in attribute `groupBy` for grouping the items.
 You *must* also specify ASC, DESC, ASC_ignoreCase or DESC_ignoreCase in attribute `groupOrder`. You can only use ASC_ignoreCase
@@ -129,7 +131,7 @@ jx:each(items="employees" var="g" select="g.payment<2500" groupBy="salaryGroup" 
 
 ![result](img/each-groupby-select-2.png)
 
-## multisheet
+## multisheet <!-- ** -->
 
 Use the multisheet attribute for creating multiple sheets dynamically. The multisheet expression returns a String list of sheet names.
 The (sheetNames) list must have as many entries as there are (employees) items. The number of sheets is controlled by the items attribute.
@@ -157,7 +159,7 @@ data.put(SafeSheetNameBuilder.CONTEXT_VAR_NAME, new PoiSafeSheetNameBuilder());
 
 You can use your own implementation using the SafeSheetNameBuilder interface.
 If the number of sheetNames and items do not match see example code in PoiSafeSheetNameBuilderUnitTest.testNotEnoughSheetNames()
-for modifying PoiSafeSheetNameBuilder.
+for modifying PoiSafeSheetNameBuilder. If you don't use PoiSafeSheetNameBuilder an error will be reported if there are duplicate sheet names.
 
 Instead of returning a String list the multisheet attribute can also rely on the iteration object and holds an expression for getting
 the sheet name.
@@ -172,10 +174,22 @@ e.name will call Employee#getName()
 
 ![result](img/each-multisheet-3.png)
 
-## Table support
+## Table support <!-- ** -->
 
 jx:each (only with direction=DOWN) supports tables. The table height will be automatically adjusted.
 
 ![template](img/each-table-1.png)
 
 ![result](img/each-table-2.png)
+
+## Data validation
+
+Data validation drop downs will be supported since Jxls 3.1.
+Set `PoiDataValidations.FEATURE_TOGGLE` to false for switching this new feature off.
+The list entries must be defined inline or on the _same_ sheet.
+
+### How to configure data validations?
+Select data > data tools > data validations. Allow: list. Enter comma separated source values. Ensure that there is an
+error message. Screenshot of German Excel:
+
+![data validation](img/datavalidation_de.png)
