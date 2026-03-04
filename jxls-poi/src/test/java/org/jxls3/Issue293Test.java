@@ -17,7 +17,6 @@ public class Issue293Test {
      * and slower.
      */
     @Test
-    @org.junit.Ignore
     public void slow() {
         List<Map<String, String>> mapList = new ArrayList<>();
         for (int i = 0; i < COUNT; i++) {
@@ -33,7 +32,10 @@ public class Issue293Test {
         map.put("rowList", mapList);
         
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "slow");
+        long start = System.currentTimeMillis();
         tester.test(map, JxlsPoiTemplateFillerBuilder.newInstance());
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("[Issue293Test.slow] COUNT=" + COUNT + ", elapsed=" + elapsed + " ms");
     }
 
     /**
@@ -55,6 +57,9 @@ public class Issue293Test {
         map.put("rowList", mapList);
 
         Jxls3Tester tester = Jxls3Tester.xlsx(getClass(), "fast");
+        long start = System.currentTimeMillis();
         tester.test(map, JxlsPoiTemplateFillerBuilder.newInstance());
+        long elapsed = System.currentTimeMillis() - start;
+        System.out.println("[Issue293Test.fast] COUNT=" + COUNT + ", elapsed=" + elapsed + " ms");
     }
 }
