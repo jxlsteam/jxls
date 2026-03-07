@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,6 +52,9 @@ public class PoiTransformer extends AbstractTransformer {
     private final boolean isSXSSF;
     private JxlsLogger logger = new PoiExceptionLogger();
     private SheetCreator sheetCreator;
+    // Index for fast lookup of merged regions on destination sheets.
+    // Key: "sheetName!row,col" of the first cell of the merged region. Value: the merged region.
+    private final Map<String, CellRangeAddress> mergedRegionIndex = new HashMap<>();
 
     /**
      * @param workbook source workbook to transform
@@ -201,6 +206,7 @@ public class PoiTransformer extends AbstractTransformer {
             if (areaRange.isInRange(mergedRegion.getFirstRow(), mergedRegion.getFirstColumn())
                     && areaRange.isInRange(mergedRegion.getLastRow(), mergedRegion.getLastColumn())){
                 destSheet.removeMergedRegion(i - 1);
+                mergedRegionIndex.remove(mergedRegionKey(areaRef.getSheetName(), mergedRegion.getFirstRow(), mergedRegion.getFirstColumn()));
             }
         }
     }
@@ -224,6 +230,10 @@ public class PoiTransformer extends AbstractTransformer {
         }
     }
 
+    private static String mergedRegionKey(String sheetName, int row, int col) {
+        return sheetName + "!" + row + "," + col;
+    }
+
     protected final void copyMergedRegions(CellData sourceCellData, CellRef destCell) {
         if (sourceCellData.getSheetName() == null) {
             throw new IllegalArgumentException("Sheet name is null in copyMergedRegions");
@@ -237,22 +247,53 @@ public class PoiTransformer extends AbstractTransformer {
             }
         }
         if (cellMergedRegion != null) {
-            findAndRemoveExistingCellRegion(destCell);
+            // Only remove an existing region if we previously added one at this exact position.
+            // This avoids the expensive O(n) scan of all POI merged regions on the sheet.
+            String destKey = mergedRegionKey(destCell.getSheetName(), destCell.getRow(), destCell.getCol());
+            CellRangeAddress existing = mergedRegionIndex.remove(destKey);
+            if (existing != null) {
+                removeMergedRegionFromSheet(workbook.getSheet(destCell.getSheetName()), existing);
+            }
+            CellRangeAddress newMergedRegion = new CellRangeAddress(destCell.getRow(), destCell.getRow() + cellMergedRegion.getLastRow() - cellMergedRegion.getFirstRow(),
+                    destCell.getCol(), destCell.getCol() + cellMergedRegion.getLastColumn() - cellMergedRegion.getFirstColumn());
             Sheet destSheet = workbook.getSheet(destCell.getSheetName());
-            destSheet.addMergedRegion(new CellRangeAddress(destCell.getRow(), destCell.getRow() + cellMergedRegion.getLastRow() - cellMergedRegion.getFirstRow(),
-                    destCell.getCol(), destCell.getCol() + cellMergedRegion.getLastColumn() - cellMergedRegion.getFirstColumn()));
+            destSheet.addMergedRegion(newMergedRegion);
+            mergedRegionIndex.put(destKey, newMergedRegion);
         }
     }
 
     protected final void findAndRemoveExistingCellRegion(CellRef cellRef) {
         Sheet destSheet = workbook.getSheet(cellRef.getSheetName());
+        if (destSheet == null) return;
+        // Fast path: check the in-memory index for regions added by this transformer
+        // whose first cell matches the given cell.
+        String firstCellKey = mergedRegionKey(cellRef.getSheetName(), cellRef.getRow(), cellRef.getCol());
+        CellRangeAddress indexed = mergedRegionIndex.remove(firstCellKey);
+        if (indexed != null) {
+            removeMergedRegionFromSheet(destSheet, indexed);
+            return;
+        }
+        // Fallback: scan POI's merged region list for any region containing this cell.
+        // This handles pre-existing template regions not tracked in the index.
         int numMergedRegions = destSheet.getNumMergedRegions();
         for (int i = 0; i < numMergedRegions; i++) {
             CellRangeAddress mergedRegion = destSheet.getMergedRegion(i);
-            if (mergedRegion.getFirstRow() <= cellRef.getRow() && mergedRegion.getLastRow() >= cellRef.getRow() &&
-                    mergedRegion.getFirstColumn() <= cellRef.getCol() && mergedRegion.getLastColumn() >= cellRef.getCol()) {
+            if (mergedRegion.getFirstRow() <= cellRef.getRow() && mergedRegion.getLastRow() >= cellRef.getRow()
+                    && mergedRegion.getFirstColumn() <= cellRef.getCol() && mergedRegion.getLastColumn() >= cellRef.getCol()) {
                 destSheet.removeMergedRegion(i);
-                break;
+                return;
+            }
+        }
+    }
+
+    private void removeMergedRegionFromSheet(Sheet destSheet, CellRangeAddress target) {
+        int numMergedRegions = destSheet.getNumMergedRegions();
+        for (int i = 0; i < numMergedRegions; i++) {
+            CellRangeAddress mergedRegion = destSheet.getMergedRegion(i);
+            if (mergedRegion.getFirstRow() == target.getFirstRow() && mergedRegion.getLastRow() == target.getLastRow()
+                    && mergedRegion.getFirstColumn() == target.getFirstColumn() && mergedRegion.getLastColumn() == target.getLastColumn()) {
+                destSheet.removeMergedRegion(i);
+                return;
             }
         }
     }
