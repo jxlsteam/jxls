@@ -3,7 +3,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-project</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Small library for Excel generation based on XLS templates</description>
     <url>http://jxls.sf.net</url>
@@ -15,8 +15,7 @@
     </licenses>
     <developers>
         <developer>
-            <name>Leonid Vysochyn</name>
-            <email>leonate@gmail.com</email>
+            <name>Leo Vysochyn</name>
         </developer>
     </developers>
 
@@ -171,7 +170,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <nexusUrl>https://ossrh-staging-api.central.sonatype.com</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
@@ -227,7 +226,7 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
