@@ -1,5 +1,6 @@
 package org.jxls;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.Assert;
+import org.jxls.builder.JxlsOutputByteArray;
 import org.jxls.builder.JxlsTemplateFillerBuilder;
 import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.CannotOpenWorkbookException;
@@ -41,11 +43,23 @@ public class Jxls3Tester {
         Assert.assertNotNull("Template not found: " + excelTemplateFilename, template);
         builder.withTemplate(template).buildAndFill(data, out);
     }
-    
+
+    public byte[] testAndReturn(Map<String, Object> data, JxlsTemplateFillerBuilder<?> builder) {
+        InputStream template = testclass.getResourceAsStream(excelTemplateFilename);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Assert.assertNotNull("Template not found: " + excelTemplateFilename, template);
+        builder.withTemplate(template).buildAndFill(data, new JxlsOutputByteArray(outputStream));
+        return outputStream.toByteArray();
+    }
+
     public TestWorkbook getWorkbook() {
         return new TestWorkbook(out);
     }
-    
+
+    public TestWorkbook getWorkbook(byte[] workbookFile) {
+        return new TestWorkbook(workbookFile);
+    }
+
     public static PoiTransformer createTransformer(InputStream is, OutputStream os) {
         try {
             Workbook workbook = WorkbookFactory.create(is);

@@ -1,5 +1,6 @@
 package org.jxls;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Class that encapsulates POI for testing Excel file contents.
@@ -30,6 +32,14 @@ public class TestWorkbook implements AutoCloseable {
     public TestWorkbook(File file) {
         try {
             workbook = WorkbookFactory.create(file, null, true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TestWorkbook(byte[] file) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(file);) {
+            workbook = new XSSFWorkbook(bais);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
