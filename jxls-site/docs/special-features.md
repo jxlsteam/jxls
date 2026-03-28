@@ -59,6 +59,17 @@ The two PoiUtil.hyperlink() methods are implementend using WritableHyperlink via
 If an evaluation result returns a WritableCellValue, Jxls delegates the cell-writing control to the WritableCellValue
 implementation.
 
+### Another use case for WritableCellValue
+
+A **null-safe rounding** function. Add an object to the data map: `data.put("f", new MyFunctions());`
+
+In `MyFunctions`, there is the method `roundDown(Double value, int scale)`, which returns a `WritableCellValue` implementation.
+
+This sets the cell to blank if value=null or sets the formula to `ROUNDDOWN(%s,%d)`.
+This ensures the original number remains visible to the reader.
+
+Use in Excel cell: `${f.roundDown(myVar,2)}`
+
 ## Group sum <!-- ** -->
 
 Jxls ships a GroupSum class. Add it to the data map to use its sum() method.
