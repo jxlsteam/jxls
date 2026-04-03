@@ -73,7 +73,7 @@ task codeCoverageReport(type: JacocoReport) {
     }
 
     reports {
-      xml.enabled true
+      xml.required = true
     }
 }
 
