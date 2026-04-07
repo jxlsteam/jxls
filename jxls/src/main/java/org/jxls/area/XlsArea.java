@@ -31,9 +31,9 @@ public class XlsArea implements Area {
     private List<CommandData> commandDataList = new ArrayList<>();
     private Transformer transformer;
     private Command parentCommand;
-    private CellRange cellRange;
-    private CellRef startCellRef;
-    private Size size;
+    private CellRange cellRange;  // range of cells in the area, with transformations
+    private CellRef startCellRef;   // top left cell of the area (without transformations)
+    private Size size; // size of the area, without transformations
     private List<AreaListener> areaListeners = new ArrayList<>();
     private boolean cellsCleared = false;
     private final CellShiftStrategy innerCellShiftStrategy = new InnerCellShiftStrategy();
@@ -116,6 +116,10 @@ public class XlsArea implements Area {
         );
     }
 
+    /**
+     * Initialize cellRange to the area given by startCellRef and size.
+     * Exclude cells that are locked by some commands.
+     */
     private void createCellRange() {
         cellRange = new CellRange(startCellRef, size.getWidth(), size.getHeight());
         for (CommandData commandData : commandDataList) {
@@ -156,6 +160,16 @@ public class XlsArea implements Area {
         return finalSize;
     }
 
+    /**
+     * Process a single command in the area.
+     *
+     * @param commandData processed command
+     * @param i position of processed Command in commandDataList
+     * @param cellRef cell reference where the command must be applied (was passed to applyAt)
+     * @param lastProcessedRow last row that was processed by previous commands
+     * @param context
+     * @return updated lastProcessedRow
+     */
     private int processCommand(CommandData commandData, int i, CellRef cellRef, int lastProcessedRow, Context context) {
         cellRange.resetChangeMatrix();
         String shiftMode = commandData.getCommand().getShiftMode();
@@ -184,20 +198,38 @@ public class XlsArea implements Area {
         return lastProcessedRow;
     }
 
+    /**
+     * Process height change of the area, caused by a single command.
+     * All arguments are 0-based and relative to this area.
+     *
+     * @param i position of processed Command in commandDataList
+     * @param commandStartCellRef top-left cell of the command
+     * @param startCol Start column of the command, relative to this area
+     * @param endCol End column of command, relative to this area
+     * @param endRow End row of command, relative to this area
+     * @param heightChange Number of cells to shift. May be positive or negative.
+     */
     private void processHeightChange(int i, CellRef commandStartCellRef, int startCol, int endCol, int endRow, int heightChange) {
         cellRange.shiftCellsWithColBlock(startCol, endCol, endRow, heightChange, true);
         Set<CommandData> commandsToShift = findCommandsForVerticalShift(
                 commandDataList.subList(i + 1, commandDataList.size()), startCol, endCol, endRow, heightChange);
         for (CommandData commandDataToShift : commandsToShift) {
+            
+            int realHeightChange = heightChange > 0 ?
+                Math.max(heightChange - commandDataToShift.getTmpMinBlankLines(), 0) :
+                heightChange;
+            commandDataToShift.setTmpMinBlankLines(0);
+            
             CellRef commandDataStartCellRef = commandDataToShift.getStartCellRef();
             int relativeRow = commandDataStartCellRef.getRow() - startCellRef.getRow();
             int relativeStartCol = commandDataStartCellRef.getCol() - startCellRef.getCol();
             int relativeEndCol = relativeStartCol + commandDataToShift.getSize().getWidth() - 1;
             cellRange.shiftCellsWithColBlock(relativeStartCol, relativeEndCol,
-                    relativeRow + commandDataToShift.getSize().getHeight() - 1, heightChange, false);
+                    relativeRow + commandDataToShift.getSize().getHeight() - 1, realHeightChange, false);
             commandDataToShift.setStartCellRef(new CellRef(commandStartCellRef.getSheetName(),
-                    commandDataStartCellRef.getRow() + heightChange, commandDataStartCellRef.getCol()));
-            if (heightChange < 0) {
+                    commandDataStartCellRef.getRow() + realHeightChange, commandDataStartCellRef.getCol()));
+            commandDataToShift.addBlankLines(realHeightChange, startCol, endCol);
+            if (realHeightChange < 0) {
                 CellRef initialStartCellRef = commandDataToShift.getSourceStartCellRef();
                 Size initialSize = commandDataToShift.getSourceSize();
                 int initialStartRow = initialStartCellRef.getRow() - startCellRef.getRow();
@@ -209,6 +241,16 @@ public class XlsArea implements Area {
         }
     }
 
+    /**
+     * Process width change of the area, caused by a single command.
+     *
+     * @param i position of processed Command in commandDataList
+     * @param commandStartCellRef top-left cell of the command
+     * @param startRow Start row of the command, relative to this area
+     * @param endRow End row of command, relative to this area
+     * @param endCol End column of command, relative to this area
+     * @param widthChange Number of cells to shift. May be positive or negative.
+     */
     private void processWidthChange(int i, CellRef commandStartCellRef, int startRow, int endRow, int endCol, int widthChange) {
         cellRange.shiftCellsWithRowBlock(startRow, endRow, endCol, widthChange, true);
         Set<CommandData> commandsToShift = findCommandsForHorizontalShift(
@@ -234,6 +276,10 @@ public class XlsArea implements Area {
         }
     }
 
+    /**
+     * Apply transformer to all cells in range, then mark them as "transformed".
+     * Fire before/after tranform events.
+     */
     private void transformStaticCells(CellRef cellRef, Context context, AreaRef commandsArea) {
         int relativeStartRow = commandsArea.getFirstCellRef().getRow();
         int relativeStartCol = commandsArea.getFirstCellRef().getCol() + 1;
@@ -283,6 +329,11 @@ public class XlsArea implements Area {
         return result;
     }
 
+    /**
+     * Search for "high" commands overlapping the area (startCol, endCol, startRow, endRow).<br/>
+     * Return false if there exists a command whose columns are enterely in the area
+     * and whose rows are party inside, partly outside.
+     */
     private boolean isNoHighCommandsInArea(List<CommandData> commandList, int startCol, int endCol, int startRow, int endRow) {
         for (CommandData commandData : commandList) {
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
@@ -316,7 +367,13 @@ public class XlsArea implements Area {
                     if ((relativeStartCol >= startCol && relativeStartCol <= endCol)
                             || (relativeEndCol >= startCol && relativeEndCol <= endCol)
                             || (startCol >= relativeStartCol && startCol <= relativeEndCol)) {
-                        isShiftingNeeded = true;
+                                
+                        // check if already shifted by previous commands
+                        int minBlankLines = commandData.calcMinBlankLines(Math.max(startCol, relativeStartCol), Math.min(endCol, relativeEndCol));
+                        if (minBlankLines < heightChange) {
+                            commandData.setTmpMinBlankLines(minBlankLines);
+                            isShiftingNeeded = true;
+                        }
                     }
                 } else {
                     if (relativeStartCol >= startCol && relativeEndCol <= endCol && isNoWideCommandsInArea(commandList, startCol, endCol, shiftingRow + 1, relativeRow - 1)) {
@@ -338,6 +395,11 @@ public class XlsArea implements Area {
         return result;
     }
 
+    /**
+     * Search for "wide" commands overlapping the area (startCol, endCol, startRow, endRow).<br/>
+     * Return false if there exists a command whose rows are enterely in the area
+     * and whose columns are party inside, partly outside.
+     */
     private boolean isNoWideCommandsInArea(List<CommandData> commandList, int startCol, int endCol, int startRow, int endRow) {
         for (CommandData commandData : commandList) {
             CellRef commandDataStartCellRef = commandData.getStartCellRef();
@@ -378,6 +440,14 @@ public class XlsArea implements Area {
         }
     }
 
+    /**
+     * Apply trasformer to all cells in the upper part of the area, above all its
+     * commands.
+     *
+     * @return an area contained within one of the upper-left-most and one of the
+     *         lower-most corners
+     *         (is this correct? I suspect this was not the intended result)
+     */
     private AreaRef transformTopStaticArea(CellRef cellRef, Context context) {
         CellRef topLeftCommandCell = findRelativeTopCommandCellRef();
         CellRef bottomRightCommandCell = findRelativeBottomCommandCellRef();
@@ -394,6 +464,10 @@ public class XlsArea implements Area {
         return new AreaRef(topLeftCommandCell, bottomRightCommandCell);
     }
 
+    /**
+     * Apply transformer to a single cell, then mark it as "transformed".
+     * Fire before/after tranform events.
+     */
     private void transformStaticCell(CellRef cellRef, Context context, int row, int col) {
         String sheetName = startCellRef.getSheetName();
         int startRow = startCellRef.getRow();
@@ -431,6 +505,11 @@ public class XlsArea implements Area {
         }
     }
 
+    /**
+     * Within the area, pick one command whise upper-left corner is (one of) the most upper-left.
+     * Order of commands is worth.
+     * @return a CellRef relative to this area coordinates.
+     */
     private CellRef findRelativeTopCommandCellRef() {
         int topCommandRow = startCellRef.getRow() + size.getHeight();
         int topCommandCol = startCellRef.getCol() + size.getWidth();
@@ -443,6 +522,14 @@ public class XlsArea implements Area {
         return new CellRef(topCommandRow - startCellRef.getRow(), topCommandCol - startCellRef.getCol());
     }
 
+    /**
+     * Within the area, pick one command whose lower edge is (one of) the lowest.
+     * Order of commands is worth.
+     * 
+     * FIXME: why not looking at column/width here?
+     *
+     * @return a CellRef relative to this area coordinates, corresponding to lower-right corner of command
+     */
     private CellRef findRelativeBottomCommandCellRef() {
         int bottomCommandRow = startCellRef.getRow();
         int bottomCommandCol = startCellRef.getCol();
@@ -483,6 +570,10 @@ public class XlsArea implements Area {
         cellsCleared = true;
     }
 
+    /**
+     * Apply transformer to all cells in range, then mark them as "transformed".
+     * Fire before/after tranform events.
+     */
     private void transformStaticCells(CellRef cellRef, Context context,
                                       int relativeStartRow, int relativeStartCol,
                                       int relativeEndRow, int relativeEndCol) {

@@ -50,8 +50,8 @@ public interface Command {
 
     /**
      * Defines the {@link org.jxls.common.cellshift.CellShiftStrategy} to use
-     * when shifting the cells for the command while transforming an area
-     * The mode value "inner" sets the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} (default)
+     * when shifting the cells for the command while transforming an area.
+     * The mode value "inner" sets the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} (default).
      * The mode value "adjacent" sets the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy}
      * @param mode cell shifting mode with possible values "inner" or "adjacent"
      */
@@ -59,11 +59,13 @@ public interface Command {
 
     /**
      * Returns the cell shifting mode defining
-     * the {@link org.jxls.common.cellshift.CellShiftStrategy} to use for the command
+     * the {@link org.jxls.common.cellshift.CellShiftStrategy} to use for the command.
      * Possible values are
-     *      "inner" defining the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} to use
-     *      "adjacent" defining the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy} to use
-     *      null value means the default strategy will be used ({@link org.jxls.common.cellshift.InnerCellShiftStrategy})
+     * <ul>
+     *   <li>"inner" defining the {@link org.jxls.common.cellshift.InnerCellShiftStrategy} to use</li>
+     *   <li>"adjacent" defining the {@link org.jxls.common.cellshift.AdjacentCellShiftStrategy} to use</li>
+     *   <li>null value means the default strategy will be used ({@link org.jxls.common.cellshift.InnerCellShiftStrategy})</li>
+     * </ul>
      * @return cell shifting mode ("inner" or "adjacent")
      */
     String getShiftMode();
@@ -75,7 +77,7 @@ public interface Command {
     void setLockRange(String isLock);
 
     /**
-     * Whether the command area is locked
+     * Whether the command area is locked.
      * Other commands will no longer execute in this area after locking
      * @return true or false (default true)
      */
