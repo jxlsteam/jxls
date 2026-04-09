@@ -196,7 +196,7 @@ public class PoiTransformer extends AbstractTransformer {
         return workbook;
     }
 
-    private void readCellData() {
+    protected void readCellData() {
         int numberOfSheets = workbook.getNumberOfSheets();
         for (int i = 0; i < numberOfSheets; i++) {
             Sheet sheet = workbook.getSheetAt(i);
