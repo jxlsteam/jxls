@@ -2,7 +2,9 @@
 
 ## v3.2.0 <!-- ** -->
 
-- [#379 commons-beanutils2 2.0.0-M2, commons-collections 4.5.0](https://github.com/jxlsteam/jxls/pull/379)
+- [#414 Fix Gradle build compatibility with Java 21](https://github.com/jxlsteam/jxls/pull/414)
+- [#411 Documentation update: Another use case for WritableCellValue](https://github.com/jxlsteam/jxls/pull/411)
+- [#379 commons-beanutils2 2.0.0-M2, commons-collections 4.5.0](https://github.com/jxlsteam/jxls/issues/379)
 
 ## v3.1.0 <!-- ** -->
 highlights:
