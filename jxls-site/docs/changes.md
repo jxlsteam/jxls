@@ -1,5 +1,9 @@
 # Release Notes <!-- ** -->
 
+## v3.2.0 <!-- ** -->
+
+- [#379 commons-beanutils2 2.0.0-M2, commons-collections 4.5.0](https://github.com/jxlsteam/jxls/pull/379)
+
 ## v3.1.0 <!-- ** -->
 highlights:
 
