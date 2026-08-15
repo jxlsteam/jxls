@@ -2,7 +2,7 @@ dependencies {
     api('org.apache.commons:commons-jexl3:3.6.2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
-    api('commons-beanutils:commons-beanutils:1.11.0') {
+    api('org.apache.commons:commons-beanutils2:2.0.0-M2') {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
 }

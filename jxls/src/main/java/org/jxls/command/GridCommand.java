@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils2.PropertyUtils;
 import org.jxls.area.Area;
 import org.jxls.common.CellRef;
 import org.jxls.common.Context;
