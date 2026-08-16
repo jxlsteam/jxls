@@ -5,7 +5,7 @@
     <groupId>org.jxls</groupId>
     <artifactId>jxls-site</artifactId>
     <packaging>jar</packaging>
-    <version>3.1.0</version>
+    <version>3.2.0</version>
     <name>JXLS</name>
     <url>http://jxls.sf.net/</url>
 
