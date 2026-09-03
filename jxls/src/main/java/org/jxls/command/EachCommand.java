@@ -304,7 +304,7 @@ public class EachCommand extends AbstractCommand {
         Iterable<?> itemsCollection = null;
         try {
             itemsCollection = transformToIterableObject(items, context);
-            orderCollection(itemsCollection);
+            itemsCollection = orderCollection(itemsCollection);
         } catch (Exception e) {
             getLogger().handleEvaluationException(e, cellRef.toString(), items);
             itemsCollection = Collections.emptyList();
@@ -330,12 +330,29 @@ public class EachCommand extends AbstractCommand {
         return size;
     }
     
-    private void orderCollection(Iterable<?> itemsCollection) {
+    private Iterable<?> orderCollection(Iterable<?> itemsCollection) {
         if (itemsCollection instanceof List<?> itemsList && orderBy != null && !orderBy.trim().isEmpty()) {
             List<String> orderByProps = Arrays.asList(orderBy.split(","))
                     .stream().map(f -> removeVarPrefix(f, var)).collect(Collectors.toList());
-            itemsList.sort(new OrderByComparator<>(orderByProps));
+            OrderByComparator<Object> comparator = new OrderByComparator<>(orderByProps);
+            if (isKnownImmutableList(itemsList)) {
+                List<Object> mutableCopy = new ArrayList<>(itemsList);
+                mutableCopy.sort(comparator);
+                return mutableCopy;
+            } else {
+                @SuppressWarnings("unchecked")
+                List<Object> mutableList = (List<Object>) itemsList;
+                mutableList.sort(comparator);
+            }
         }
+        return itemsCollection;
+    }
+
+    private static boolean isKnownImmutableList(List<?> list) {
+        String className = list.getClass().getName();
+        return className.startsWith("java.util.ImmutableCollections$")
+                || className.startsWith("java.util.Collections$Unmodifiable")
+                || className.equals("java.util.Collections$SingletonList");
     }
 
     private Iterable<?> filter(Context context, Iterable<?> itemsCollection, String selectExpression) {
