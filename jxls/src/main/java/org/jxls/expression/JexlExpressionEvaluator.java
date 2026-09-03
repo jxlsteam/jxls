@@ -99,7 +99,10 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
         Map<String, JexlEngine> map = jexlThreadLocal.get();
         JexlEngine ret = map.get(key);
         if (ret == null) {
-            ret = new JexlBuilder().silent(silent).strict(strict).permissions(permissions.getJexlPermissions()).create();
+            ret = new JexlBuilder().silent(silent).strict(strict)
+                    .permissions(permissions.getJexlPermissions())
+                    .strategy(new RecordAwareStrategy())
+                    .create();
             map.put(key, ret);
         }
         return ret;
