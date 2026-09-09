@@ -13,6 +13,7 @@ import org.jxls.common.Size;
  * [, rows="Number of rows combined"]
  * [, minCols="Minimum number of columns to merge"]
  * [, minRows="Minimum number of rows to merge"]
+ * [, condition="Condition expression to determine whether to merge"]
  * )</pre>
  * <p>Note: this command can only be used on cells that have not been merged. An exception will occur if the scope of
  * the merged cell exists for the merged cell</p>
@@ -31,6 +32,8 @@ public class MergeCellsCommand extends AbstractCommand {
     private String minCols;
     /** Minimum number of rows to merge */
     private String minRows;
+    /** Condition to determine whether to merge */
+    private String condition;
     private Area area;
 
     @Override
@@ -70,6 +73,14 @@ public class MergeCellsCommand extends AbstractCommand {
         this.minRows = minRows;
     }
 
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
     @Override
     public Command addArea(Area area) {
         if (super.getAreaList().size() >= 1) {
@@ -81,6 +92,13 @@ public class MergeCellsCommand extends AbstractCommand {
 
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
+        if (condition != null && !condition.trim().isEmpty()) {
+            Boolean conditionResult = org.jxls.util.Util.isConditionTrue(
+                    getTransformationConfig().getExpressionEvaluator(), condition, context);
+            if (!conditionResult.booleanValue()) {
+                return area.applyAt(cellRef, context);
+            }
+        }
         int rows = getVal(this.rows, context);
         int cols = getVal(this.cols, context);
         rows = Math.max(getVal(this.minRows, context), rows);

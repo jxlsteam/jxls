@@ -18,10 +18,14 @@ lastCell="Merge cell ranges"<br/>
 [, rows="Number of rows combined"]<br/>
 [, minCols="Minimum number of columns to merge"]<br/>
 [, minRows="Minimum number of rows to merge"]<br/>
+[, condition="Condition expression to determine whether to merge"]<br/>
 )</pre>
 
 Note: This command can only be used on cells that have not been merged. An exception will occur if the scope of
 the merged cell exists for the merged cell.
+
+If `condition` is set and evaluates to false, the area is still processed but cells are **not** merged.
+If `condition` is omitted or evaluates to true, merge behaves as before.
 
 
 Transformer Support Note
