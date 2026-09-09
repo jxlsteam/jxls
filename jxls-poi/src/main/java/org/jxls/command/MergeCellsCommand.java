@@ -13,6 +13,7 @@ import org.jxls.common.Size;
  * [, rows="Number of rows combined"]
  * [, minCols="Minimum number of columns to merge"]
  * [, minRows="Minimum number of rows to merge"]
+ * [, condition="Condition expression to determine whether to merge"]
  * )</pre>
  * <p>Note: this command can only be used on cells that have not been merged. An exception will occur if the scope of
  * the merged cell exists for the merged cell</p>
@@ -29,6 +30,8 @@ public class MergeCellsCommand extends AbstractMergeCellsCommand {
     private String minCols;
     /** Minimum number of rows to merge */
     private String minRows;
+    /** Condition to determine whether to merge */
+    private String condition;
 
     @Override
     public String getName() {
@@ -59,9 +62,20 @@ public class MergeCellsCommand extends AbstractMergeCellsCommand {
         this.minRows = minRows;
     }
 
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
     @Override
     public Size applyAt(CellRef cellRef, Context context) {
         Area area = getArea();
+        if (condition != null && !condition.isBlank() && !context.isConditionTrue(condition)) {
+            return area.applyAt(cellRef, context);
+        }
         int rows = evaluate(getRows(), cellRef, context);
         int cols = evaluate(this.cols, cellRef, context);
         rows = Math.max(evaluate(this.minRows, cellRef, context), rows);

@@ -1,5 +1,9 @@
 # Release Notes <!-- ** -->
 
+## Next <!-- ** -->
+
+- [#427 Add optional condition parameter to jx:mergeCells](https://github.com/jxlsteam/jxls/issues/427)
+
 ## v3.2.0 <!-- ** -->
 
 - [#414 Fix Gradle build compatibility with Java 21](https://github.com/jxlsteam/jxls/pull/414)
