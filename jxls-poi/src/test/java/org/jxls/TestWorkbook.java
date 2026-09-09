@@ -162,6 +162,26 @@ public class TestWorkbook implements AutoCloseable {
         return workbook.getForceFormulaRecalculation();
     }
 
+    /**
+     * @return all merged cell regions of current sheet as a comma-separated string (sorted)
+     */
+    public String getMergedCells() {
+        java.util.TreeSet<String> ret = new java.util.TreeSet<>();
+        int numMergedRegions = sheet.getNumMergedRegions();
+        for (int i = 0; i < numMergedRegions; i++) {
+            CellRangeAddress mergedRegion = sheet.getMergedRegion(i);
+            ret.add(mergedRegion.formatAsString());
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String region : ret) {
+            if (sb.length() > 0) {
+                sb.append(',');
+            }
+            sb.append(region);
+        }
+        return sb.toString();
+    }
+
     @Override
     public void close() {
         if (workbook != null) {

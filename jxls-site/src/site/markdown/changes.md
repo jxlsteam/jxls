@@ -1,6 +1,10 @@
 Version History
 ==============
 
+Next
+----
+* [#427 Add optional condition parameter to jx:mergeCells](https://github.com/jxlsteam/jxls/issues/427)
+
 v2.14.0
 -------
 * This is the last Java 8 release.
